@@ -21,7 +21,9 @@ The system must prioritize visual quality, storytelling, audience retention, tec
 5. **Default output**: 1920×1080 resolution (or 1080×1920 vertical), 30 FPS, H.264 MP4, AAC audio.
 6. **All essential functionality** must use open-source libraries or appropriately licensed tools.
 7. **Generate visuals primarily through code**, mathematical models, procedural graphics, simulations, and animation.
-8. **Do not produce a slideshow** or a collection of static images with basic transitions.
+8. **ZERO TEXT-ONLY FRAMES (Motion Graphics & Visuals Mandatory)**:
+   - Do NOT produce text-only slides, plain cards, or bare text on static backgrounds.
+   - Every single scene MUST feature active visual motion graphics: diagrams, procedural physics, telemetry meters, animated technical icons, network flows, or dynamic vector illustrations alongside text.
 9. **Do not stop after generating source code**. Execute the pipeline, render the video, inspect the result, and fix problems within the available time budget.
 10. **Never assume** that a library is installed, that a model is available, or that GPU acceleration is supported. Inspect the environment first.
 11. **Do not introduce unnecessary frameworks** merely to demonstrate that they were used.
@@ -65,6 +67,9 @@ Before implementation, inspect the available computer and development environmen
 - **Editorial Typography & Focal Scale Contrast**:
   - **BIG Equation & Metric Fonts**: Equations, formulas, and primary statistics must use large, bold, prominent typography (font size 50–64+ pt equivalent, scaling to 75–85% of screen width). Never render small or hard-to-read formulas.
   - Pair giant focal elements with small, ultra-clean tracked uppercase sub-labels (`01 / THE MECHANISM`, `GLOBAL MINIMA REACHED`, `SUB-10MS LATENCY`).
+- **Visual Motion & Graphic Anchor Mandatory**:
+  - NO SCENE OR FRAME CAN EVER BE TEXT-ONLY.
+  - Every single scene must feature motion graphics: animated telemetry (circular HUD dials, energy ripples, frequency waves), interactive system node diagrams, 3D WebGL meshes, or Manim procedural animations accompanying the text.
 - **On-Screen Content in English ONLY**: All on-screen visual content (titles, bullet points, labels, stats, compare tables, Manim text/nodes, diagrams, images) MUST be in English. Never put Devanagari/Hindi text on screen.
 
 ### PHASE 5: AUDIENCE RETENTION & STORYTELLING

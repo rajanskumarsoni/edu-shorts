@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import type { SceneSpec } from "../types";
 import { MUTED } from "../theme";
 import { useLayout } from "../layout";
@@ -12,7 +12,9 @@ export const Outro: React.FC<{ scene: SceneSpec; accent: string }> = ({
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const L = useLayout();
-  const s = spring({ frame: frame - 22, fps, config: { damping: 200 } });
+  const s = spring({ frame: frame - 12, fps, config: { damping: 16, stiffness: 120 } });
+  const pulse = (Math.sin(frame / 7) + 1) / 2;
+
   return (
     <AbsoluteFill
       style={{
@@ -21,19 +23,123 @@ export const Outro: React.FC<{ scene: SceneSpec; accent: string }> = ({
         padding: `${L.padTop}px ${L.padX}px ${L.padBottom}px`,
       }}
     >
+      {/* Background Animated Energy Shockwaves */}
+      <div
+        style={{
+          position: "absolute",
+          width: 600,
+          height: 600,
+          borderRadius: "50%",
+          pointerEvents: "none",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          opacity: 0.4 * s,
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            width: 380 + pulse * 70,
+            height: 380 + pulse * 70,
+            borderRadius: "50%",
+            border: `2px solid ${accent}`,
+            opacity: 0.6 * (1 - pulse),
+            boxShadow: `0 0 40px ${accent}66`,
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            width: 260 + pulse * 50,
+            height: 260 + pulse * 50,
+            borderRadius: "50%",
+            border: `1.5px dashed ${accent}`,
+            opacity: 0.4,
+            transform: `rotate(${frame * 2}deg)`,
+          }}
+        />
+      </div>
+
+      {/* Top Channel Badge */}
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 12,
+          padding: "10px 26px",
+          borderRadius: 999,
+          background: "rgba(255, 255, 255, 0.05)",
+          border: `1px solid ${accent}55`,
+          marginBottom: 36,
+          opacity: s,
+          transform: `translateY(${(1 - s) * 20}px)`,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "monospace",
+            fontSize: 20,
+            fontWeight: 800,
+            letterSpacing: "0.22em",
+            color: accent,
+            textTransform: "uppercase",
+          }}
+        >
+          {"05 // MISSION COMPLETE"}
+        </span>
+      </div>
+
+      {/* Main Headline Call to Action */}
       <RevealText
         text={scene.text ?? "Follow for more"}
-        stagger={5}
+        stagger={4}
         style={{
-          fontSize: 112,
+          fontSize: 108,
           fontWeight: 900,
-          color: accent,
+          color: "#FFFFFF",
           lineHeight: 1.05,
-          textShadow: `0 0 60px ${accent}66`,
+          textAlign: "center",
+          textShadow: `0 0 50px ${accent}66, 0 10px 40px rgba(0,0,0,0.7)`,
         }}
       />
-      <div style={{ fontSize: 52, color: MUTED, marginTop: 36, opacity: s }}>
-        New lesson every day
+
+      {/* Animated Action Pill / Subscription Beacon */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 16,
+          marginTop: 44,
+          padding: "16px 36px",
+          borderRadius: 999,
+          background: `linear-gradient(135deg, ${accent}33, ${accent}11)`,
+          border: `2px solid ${accent}`,
+          boxShadow: `0 0 30px ${accent}44`,
+          opacity: s,
+          transform: `scale(${0.92 + 0.08 * s})`,
+        }}
+      >
+        <div
+          style={{
+            width: 14,
+            height: 14,
+            borderRadius: "50%",
+            background: accent,
+            boxShadow: `0 0 16px ${accent}`,
+            transform: `scale(${0.8 + 0.4 * pulse})`,
+          }}
+        />
+        <span
+          style={{
+            fontSize: 38,
+            fontWeight: 800,
+            color: "#FFFFFF",
+            letterSpacing: "0.02em",
+          }}
+        >
+          {"Stay Curious · Follow For Daily Tech"}
+        </span>
       </div>
     </AbsoluteFill>
   );

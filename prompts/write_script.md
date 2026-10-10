@@ -28,6 +28,7 @@ HOOK ──► PROBLEM ──► CURIOSITY ──► EXPLANATION ──► PAYOF
 5. Payoff: वीडियो खत्म होने तक दर्शक क्या नया समझ चुका होगा? (Scene Last: outro)
 
 CINEMATIC VISUAL & MOTION MANDATE (Opus 5.5 Showreel Standard: 3Blue1Brown + Apple Product Launch Film + Dribbble UI Motion):
+- ZERO TEXT-ONLY SCENES: No scene or frame may ever be bare text on a static background. Every scene MUST feature active visual motion graphics: animated telemetry gauges, energy pulses, vector node flows, interactive diagrams, 3D WebGL meshes, or Manim procedural physics alongside the on-screen text.
 - Taste Calibration ("Make it feel expensive"): Restrained palette, deep dark background (`#0B1020`), one vibrant accent color (`#58D6C2`, `#00F0FF`, `#FFC857`), subtle coordinate grids/vignette, and glowing neon accents.
 - One Continuous Flow (Zero Static Slides & Zero Hard Cuts): Prefer continuous visual transformations where elements morph size, shape, and position smoothly with spring easing and short blurs.
 - Editorial Typography & Extreme Scale Contrast:

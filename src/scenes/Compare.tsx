@@ -89,8 +89,11 @@ export const Compare: React.FC<{ scene: SceneSpec; accent: string }> = ({
   scene,
   accent,
 }) => {
+  const frame = useCurrentFrame();
   const L = useLayout();
   const cyan = "#00F0FF";
+  const pulse = (Math.sin(frame / 6) + 1) / 2;
+
   return (
     <AbsoluteFill
       style={{
@@ -99,28 +102,76 @@ export const Compare: React.FC<{ scene: SceneSpec; accent: string }> = ({
       }}
     >
       {scene.title && (
-        <RevealText
-          text={scene.title}
-          style={{
-            fontSize: L.landscape ? 70 : 80,
-            fontWeight: 900,
-            marginBottom: L.landscape ? 36 : 48,
-            lineHeight: 1.05,
-            color: "#FFFFFF",
-            textShadow: "0 8px 30px rgba(0,0,0,0.6)",
-          }}
-        />
+        <div style={{ marginBottom: L.landscape ? 36 : 48 }}>
+          <div
+            style={{
+              fontFamily: "monospace",
+              fontSize: 22,
+              fontWeight: 800,
+              color: accent,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              marginBottom: 12,
+            }}
+          >
+            {"03 // ARCHITECTURAL COMPARISON"}
+          </div>
+          <RevealText
+            text={scene.title}
+            style={{
+              fontSize: L.landscape ? 70 : 80,
+              fontWeight: 900,
+              lineHeight: 1.05,
+              color: "#FFFFFF",
+              textShadow: "0 8px 30px rgba(0,0,0,0.6)",
+            }}
+          />
+        </div>
       )}
+
       <div
         style={{
+          position: "relative",
           display: "flex",
           flexDirection: L.landscape ? "row" : "column",
-          gap: L.landscape ? 40 : 32,
+          gap: L.landscape ? 40 : 36,
         }}
       >
         {scene.left && (
           <Card side={scene.left} color={accent} delay={8} landscape={L.landscape} />
         )}
+
+        {/* Central Animated Neon VS Emblem */}
+        <div
+          style={{
+            alignSelf: "center",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 72,
+            height: 72,
+            borderRadius: "50%",
+            background: "rgba(10, 14, 26, 0.95)",
+            border: `2px solid ${accent}`,
+            boxShadow: `0 0 26px ${accent}66, 0 0 40px ${cyan}33`,
+            zIndex: 10,
+            transform: `scale(${0.9 + 0.15 * pulse})`,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "monospace",
+              fontSize: 26,
+              fontWeight: 900,
+              color: "#FFFFFF",
+              letterSpacing: "0.05em",
+              textShadow: `0 0 12px ${accent}`,
+            }}
+          >
+            VS
+          </span>
+        </div>
+
         {scene.right && (
           <Card side={scene.right} color={cyan} delay={22} landscape={L.landscape} />
         )}
