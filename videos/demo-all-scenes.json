@@ -1,0 +1,32 @@
+{
+  "id": "demo-all-scenes",
+  "format": "vertical",
+  "accent": "#FFC857",
+  "music": null,
+  "meta": {
+    "title": "Demo: every scene type",
+    "description": "Shows each scene type the template can make.",
+    "hashtags": ["demo"],
+    "facts_to_verify": ["Newton wrote the shoulders of giants line in a 1675 letter to Robert Hooke."]
+  },
+  "scenes": [
+    {"type": "hook", "text": "Every scene type in one video",
+     "narration": "This short video shows every kind of scene your template can make."},
+    {"type": "image", "image": "images/sample.jpg", "title": "Photos with a slow zoom",
+     "narration": "Photos fill the screen and slowly push in, like a camera move in a film."},
+    {"type": "compare", "title": "Two sides",
+     "left": {"heading": "Left", "items": ["First point", "Second point"]},
+     "right": {"heading": "Right", "items": ["Another point", "One more"]},
+     "narration": "Comparison scenes put two ideas side by side so viewers can see the difference."},
+    {"type": "manim", "title": "Animated flow",
+     "narration": "Animated diagrams explain steps and processes, drawn by code and timed to your voice.",
+     "manim": {"template": "Flow", "items": ["Idea", "Script", "Voice", "Video"]}},
+    {"type": "quote", "text": "If I have seen further, it is by standing on the shoulders of giants.",
+     "author": "Isaac Newton",
+     "narration": "Quotes get a calm, large layout that gives the words room to land."},
+    {"type": "stat", "value": "100%", "label": "made with code",
+     "narration": "Big numbers count up on screen to make a fact hit harder."},
+    {"type": "outro", "text": "Follow for more",
+     "narration": "That is every scene type. Follow for more."}
+  ]
+}

@@ -1,0 +1,29 @@
+.env
+.env.*
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+
+# Node / Remotion
+node_modules/
+.remotion/
+
+# Media build artifacts & renders
+media/*
+!media/.gitkeep
+out/*
+!out/.gitkeep
+public/*
+!public/.gitkeep
+audio/*
+!audio/.gitkeep
+
+# Installer archives & local toolchains
+.tools/
+

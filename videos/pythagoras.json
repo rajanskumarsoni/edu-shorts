@@ -1,0 +1,59 @@
+{
+  "id": "pythagoras",
+  "format": "vertical",
+  "accent": "#FFC857",
+  "music": null,
+  "meta": {
+    "title": "The equation behind every bridge | Pythagorean theorem in 40 seconds",
+    "description": "Why a squared plus b squared equals c squared shows up in construction, maps and games.",
+    "hashtags": [
+      "math",
+      "pythagoras",
+      "learnontiktok",
+      "education"
+    ],
+    "facts_to_verify": [
+      "The theorem has been known for over 2,500 years (Babylonian tablets are older; the Greek proof is attributed to Pythagoras)."
+    ]
+  },
+  "scenes": [
+    {
+      "type": "hook",
+      "narration": "This one equation built every bridge you have ever crossed.",
+      "text": "The equation behind every bridge"
+    },
+    {
+      "type": "manim",
+      "title": "Pythagorean theorem",
+      "narration": "In a right triangle, the squares of the two short sides add up to the square of the longest side. Take the square root, and you can find any missing length.",
+      "manim": {
+        "template": "Equations",
+        "lines": [
+          "a^2 + b^2 = c^2",
+          "c = \\sqrt{a^2 + b^2}"
+        ]
+      }
+    },
+    {
+      "type": "bullets",
+      "title": "Used in",
+      "narration": "Builders use it to keep walls square. Your phone uses it to compute distance. Games use it to move characters.",
+      "items": [
+        "Construction",
+        "GPS and maps",
+        "Video games"
+      ]
+    },
+    {
+      "type": "stat",
+      "narration": "People have known this for over two and a half thousand years.",
+      "value": "2,500+",
+      "label": "years old"
+    },
+    {
+      "type": "outro",
+      "narration": "Follow for one new idea every day.",
+      "text": "Follow for more"
+    }
+  ]
+}
