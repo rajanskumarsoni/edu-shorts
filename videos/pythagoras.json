@@ -2,30 +2,31 @@
   "id": "pythagoras",
   "format": "vertical",
   "accent": "#FFC857",
+  "audio_mode": "scenes",
   "music": null,
   "meta": {
-    "title": "The equation behind every bridge | Pythagorean theorem in 40 seconds",
-    "description": "Why a squared plus b squared equals c squared shows up in construction, maps and games.",
+    "title": "The Equation Behind Every Bridge | Pythagorean Theorem Explained",
+    "description": "How a squared plus b squared equals c squared powers civil engineering, GPS navigation, and 3D graphics.",
     "hashtags": [
-      "math",
-      "pythagoras",
-      "learnontiktok",
-      "education"
+      "Mathematics",
+      "Engineering",
+      "ScienceInHindi",
+      "STEM"
     ],
     "facts_to_verify": [
-      "The theorem has been known for over 2,500 years (Babylonian tablets are older; the Greek proof is attributed to Pythagoras)."
+      "The theorem was geometrically proven in ancient Greece and remains fundamental to Euclidean vector distance."
     ]
   },
   "scenes": [
     {
       "type": "hook",
-      "narration": "This one equation built every bridge you have ever crossed.",
-      "text": "The equation behind every bridge"
+      "text": "The Formula Behind Every Bridge",
+      "narration": "भाई तुमने आज तक जितने भी विशाल पुल और ऊंची इमारतें देखी हैं, वो सब गणित के सिर्फ एक फॉर्मूले पर टिकी हैं।"
     },
     {
       "type": "manim",
-      "title": "Pythagorean theorem",
-      "narration": "In a right triangle, the squares of the two short sides add up to the square of the longest side. Take the square root, and you can find any missing length.",
+      "title": "Pythagorean Theorem",
+      "narration": "समकोण त्रिभुज में दो छोटी भुजाओं के वर्गों का जोड़ हमेशा सबसे लंबी भुजा के वर्ग के बराबर होता है।",
       "manim": {
         "template": "Equations",
         "lines": [
@@ -36,24 +37,46 @@
     },
     {
       "type": "bullets",
-      "title": "Used in",
-      "narration": "Builders use it to keep walls square. Your phone uses it to compute distance. Games use it to move characters.",
+      "title": "Real-World Architecture",
       "items": [
-        "Construction",
-        "GPS and maps",
-        "Video games"
-      ]
+        "Civil Engineering",
+        "GPS Navigation",
+        "3D Game Engines",
+        "Space Trajectories"
+      ],
+      "narration": "इंजीनियर्स इसका इस्तेमाल दीवारों को सीधा रखने, तुम्हारा फोन जीपीएस से सटीक दूरी नापने, और गेम इंजनों में थ्री-डी वेक्टर्स कैलकुलेट करने के लिए करते हैं।"
+    },
+    {
+      "type": "compare",
+      "title": "2D Plane vs 3D Reality",
+      "left": {
+        "heading": "Flat 2D Plane",
+        "items": [
+          "Square Distance",
+          "X and Y Axes",
+          "Grid Navigation"
+        ]
+      },
+      "right": {
+        "heading": "Spatial 3D Space",
+        "items": [
+          "Full 3D Vectors",
+          "X Y Z Coordinates",
+          "Hyperplane Distance"
+        ]
+      },
+      "narration": "सिर्फ कागज पर ही नहीं, जब तुम अंतरिक्ष में तीसरी दिशा यानी Z-एक्सिस जोड़ते हो, तो यही नियम थ्री-डी स्पेस में किसी भी वस्तु की सटीक दूरी निकालता है।"
     },
     {
       "type": "stat",
-      "narration": "People have known this for over two and a half thousand years.",
       "value": "2,500+",
-      "label": "years old"
+      "label": "Years Of Continuous Use",
+      "narration": "ढाई हजार साल पहले खोजी गई यह साधारण समीकरण आज भी हर मॉडर्न रॉकेट, सैटेलाइट और कंप्यूटर विजन के केंद्र में है।"
     },
     {
       "type": "outro",
-      "narration": "Follow for one new idea every day.",
-      "text": "Follow for more"
+      "text": "Math Powers The Real World",
+      "narration": "गणित केवल किताबों के लिए नहीं, पूरी दुनिया को चलाने के लिए है। ऐसे ही साइंस और टेक ब्रेकडाउन्स के लिए फॉलो जरूर कर लेना!"
     }
   ]
 }

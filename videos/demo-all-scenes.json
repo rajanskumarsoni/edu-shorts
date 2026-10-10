@@ -1,32 +1,98 @@
 {
   "id": "demo-all-scenes",
   "format": "vertical",
-  "accent": "#FFC857",
+  "accent": "#58D6C2",
+  "audio_mode": "scenes",
   "music": null,
   "meta": {
-    "title": "Demo: every scene type",
-    "description": "Shows each scene type the template can make.",
-    "hashtags": ["demo"],
-    "facts_to_verify": ["Newton wrote the shoulders of giants line in a 1675 letter to Robert Hooke."]
+    "title": "Ultimate Showcase: Every Scene Type In Motion",
+    "description": "Full demonstration of all code-driven scene types: 3D WebGL, Manim equations, telemetry gauges, and cinematic motion graphics.",
+    "hashtags": ["VideoEngineering", "MotionDesign", "CreativeCoding", "AI"],
+    "facts_to_verify": [
+      "Every frame is generated programmatically using Remotion, Three.js, GSAP, and Manim CE."
+    ]
   },
   "scenes": [
-    {"type": "hook", "text": "Every scene type in one video",
-     "narration": "This short video shows every kind of scene your template can make."},
-    {"type": "image", "image": "images/sample.jpg", "title": "Photos with a slow zoom",
-     "narration": "Photos fill the screen and slowly push in, like a camera move in a film."},
-    {"type": "compare", "title": "Two sides",
-     "left": {"heading": "Left", "items": ["First point", "Second point"]},
-     "right": {"heading": "Right", "items": ["Another point", "One more"]},
-     "narration": "Comparison scenes put two ideas side by side so viewers can see the difference."},
-    {"type": "manim", "title": "Animated flow",
-     "narration": "Animated diagrams explain steps and processes, drawn by code and timed to your voice.",
-     "manim": {"template": "Flow", "items": ["Idea", "Script", "Voice", "Video"]}},
-    {"type": "quote", "text": "If I have seen further, it is by standing on the shoulders of giants.",
-     "author": "Isaac Newton",
-     "narration": "Quotes get a calm, large layout that gives the words room to land."},
-    {"type": "stat", "value": "100%", "label": "made with code",
-     "narration": "Big numbers count up on screen to make a fact hit harder."},
-    {"type": "outro", "text": "Follow for more",
-     "narration": "That is every scene type. Follow for more."}
+    {
+      "type": "hook",
+      "text": "Every Scene Type In Motion",
+      "narration": "इस वीडियो में तुम देखोगे कि हमारा कोड-ड्रिवन वीडियो इंजन हर सीन को कितने शानदार विजुअल्स और मोशन ग्राफिक्स के साथ रेंडर करता है।"
+    },
+    {
+      "type": "manim",
+      "title": "Procedural Math Engine",
+      "narration": "मैनिम की ताकत से जटिल समीकरण और आर्किटेक्चर फ्लोचार्ट्स सीधे पायथन कोड से ड्रॉ होते हैं, बिल्कुल थ्री ब्लू वन ब्राउन की तरह।",
+      "manim": {
+        "template": "Flow",
+        "items": [
+          "Raw Concept",
+          "Script Spec",
+          "Manim Render",
+          "Final Video"
+        ]
+      }
+    },
+    {
+      "type": "three",
+      "title": "3D WebGL Shader Surface",
+      "variant": "gradient_descent",
+      "equation": "z = f(x, y)",
+      "narration": "नेक्स्ट-जेन थ्री-डी सीन्स में वेब-जीएल और कस्टम शेडर्स का इस्तेमाल होता है, जहाँ कैमरे और ग्रेडिएंट वेक्टर्स स्पेस में लाइव एनिमेट होते हैं।"
+    },
+    {
+      "type": "bullets",
+      "title": "Core Engine Features",
+      "items": [
+        "Real-Time Shaders",
+        "Zero Static Slides",
+        "Circuit Bus Nodes",
+        "120 BPM Momentum"
+      ],
+      "narration": "यहाँ कोई भी बोरिंग स्लाइड नहीं होती। हर सेकंड स्क्रीन पर सर्किट कनेक्टर्स और मोशन ग्राफिक्स लगातार सक्रिय रहते हैं।"
+    },
+    {
+      "type": "compare",
+      "title": "Old Slides vs Code Motion",
+      "left": {
+        "heading": "Static PPT Slides",
+        "items": [
+          "Zero Motion",
+          "Boring Bullet Cards",
+          "High Drop-Off"
+        ]
+      },
+      "right": {
+        "heading": "Opus 5.5 Standard",
+        "items": [
+          "Continuous Flow",
+          "3D Simulations",
+          "High Retention"
+        ]
+      },
+      "narration": "पारंपरिक स्टैटिक प्रेजेंटेशन के मुकाबले कोड-ड्रिवन मोशन ग्राफिक्स दर्शक का ध्यान एक सेकंड के लिए भी भटकने नहीं देते।"
+    },
+    {
+      "type": "stat",
+      "value": "100%",
+      "label": "Rendered Programmatically",
+      "narration": "हर एक फ्रेम, एनिमेशन और कलर पैलेट पूरी तरह से ऑटोमेटेड कोड और एल्गोरिदम से तैयार होता है।"
+    },
+    {
+      "type": "image",
+      "image": "images/sample.jpg",
+      "title": "Cinematic Camera Push",
+      "narration": "इमेजेस को भी सीधे नहीं दिखाया जाता, बल्कि सिनेमैटिक स्लो-ज़ूम और डेप्थ-ऑफ-फील्ड के साथ फिल्म जैसा लुक दिया जाता है।"
+    },
+    {
+      "type": "quote",
+      "text": "Code is the most expressive creative medium in history.",
+      "author": "Engineering Directives",
+      "narration": "क्योंकि कोड केवल सॉफ्टवेयर बनाने के लिए नहीं, बल्कि विज्ञान को खूबसूरती से समझाने का सबसे ताकतवर जरिया है।"
+    },
+    {
+      "type": "outro",
+      "text": "Follow For Code Driven AI",
+      "narration": "यह था पूरा सीन शोकेस। ऐसे ही हाई-इम्पैक्ट टेक और साइंस वीडियोज़ देखने के लिए अभी फॉलो कर लो!"
+    }
   ]
 }
