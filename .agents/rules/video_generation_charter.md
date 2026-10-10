@@ -42,9 +42,11 @@ Before implementation, inspect the available computer and development environmen
 - **Primary Animation Frameworks**:
   - Motion Canvas / Remotion: Main animation timeline, technical diagrams, kinetic typography, transitions, narration-synchronized motion graphics.
   - Manim Community Edition: Mathematical equations, geometric transformations, graphs, scientific explanations, algorithm visualizations.
-  - Three.js: 3D visualizations, animated architectures, particle systems, camera movements.
+  - Three.js & Shaders (GLSL): 3D visualizations, loss surfaces, animated architectures, particle systems, procedural camera movements.
+  - GSAP & SVG Morphing: Advanced tweening, complex path morphs, kinetic timeline synchronization.
+  - Physics Engines (Matter.js for 2D, Cannon-es for 3D): Procedural physics, collisions, gravity, and inertia to visually demonstrate physical principles.
 - **Scientific Computation**: NumPy, SciPy, SymPy, Matplotlib, NetworkX.
-- **Graphics & Assets**: Pillow, OpenCV, SVG vector rendering, LaTeX for equations.
+- **Graphics & Assets**: Lucide React icons, Pillow, OpenCV, SVG vector rendering, LaTeX for equations.
 - **Audio & Synchronization**: Local VoiceStudio TTS (`rajan story teller`), FFmpeg for mixing/encoding. Use narration as primary timing reference.
 - **Video Assembly**: FFmpeg, FFprobe. Render scenes independently, cache intermediate outputs.
 
@@ -53,16 +55,24 @@ Before implementation, inspect the available computer and development environmen
 - Every scene must explain the concept visually rather than merely displaying text.
 - Continuous visual progression: "दर्शक के मन में सवाल" ➔ "वीडियो में क्या होगा".
 
-### PHASE 4: PROFESSIONAL VISUAL DIRECTION
-- Blend of **3Blue1Brown's mathematical clarity**, high-end motion graphics, and modern tech-documentary aesthetics.
-- Dark-mode background (`#0B1020`), vibrant neon accents (`#58D6C2`, `#FFC857`), glowing borders, elegant easing curves.
-- Zero static slides. No generic stock footage. Continuous visual flow.
-- **BIG Equation & Formula Fonts**: Equations, formulas, and mathematical notation must use large, bold, prominent typography (font size 50–64+ pt equivalent, scaling to 80–85% of screen width). Never render small or hard-to-read formulas.
+### PHASE 4: PROFESSIONAL VISUAL DIRECTION (OPUS 5.5 SHOWREEL STANDARD)
+- Aesthetic blend: **Apple product launch film × 3Blue1Brown mathematical clarity × Dribbble UI motion design**.
+- **The "Expensive" Aesthetic**:
+  - Dark-mode canvas (`#0B1020`), refined neon accents (`#58D6C2`, `#00F0FF`, `#FFC857`, `#FF5500`), subtle coordinate grid/vignette backdrops, and glowing bloom edges.
+- **One Continuous Flow (Zero Static Slides & Zero Hard Cuts)**:
+  - Avoid PowerPoint-style slide switches.
+  - Transition between scenes through continuous shape and boundary morphs, camera dolly/pan movements, match cuts, or directional flows.
+- **Editorial Typography & Focal Scale Contrast**:
+  - **BIG Equation & Metric Fonts**: Equations, formulas, and primary statistics must use large, bold, prominent typography (font size 50–64+ pt equivalent, scaling to 75–85% of screen width). Never render small or hard-to-read formulas.
+  - Pair giant focal elements with small, ultra-clean tracked uppercase sub-labels (`01 / THE MECHANISM`, `GLOBAL MINIMA REACHED`, `SUB-10MS LATENCY`).
 - **On-Screen Content in English ONLY**: All on-screen visual content (titles, bullet points, labels, stats, compare tables, Manim text/nodes, diagrams, images) MUST be in English. Never put Devanagari/Hindi text on screen.
 
 ### PHASE 5: AUDIENCE RETENTION & STORYTELLING
 - First 3–5 seconds: scroll-stopping hook (surprising question, counterintuitive claim, dramatic event).
-- Continuous visual changes synchronized with narration.
+- **Micro-Events on the Beat (120 BPM Rhythm)**:
+  - Maintain visual momentum between voice pauses with micro-animations on every beat (particle trail pulses, subtle camera dollies, counter roll-ups, ripple waves).
+- **Physical Realism & "Show, Don't Tell"**:
+  - When the narration describes friction, gradient slopes, congestion, or latency, visually demonstrate the dynamic behavior through actual procedural code simulations.
 - Satisfying visual payoff connecting back to the opening hook.
 
 ### PHASE 6: NARRATION-DRIVEN ANIMATION & LANGUAGE DIVISION

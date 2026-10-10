@@ -13,11 +13,13 @@ You build complete, automated, code-driven educational video pipelines producing
    - **Visuals in English ONLY**: ALL on-screen text, titles, bullet points, labels, stats, compare tables, Manim node text, equations, and diagrams MUST be strictly in English. Never put Hindi/Devanagari text on screen.
 4. **Storytelling Formula**: `HOOK → PROBLEM → CURIOSITY → EXPLANATION → PAYOFF`.
    - Viewer psychology progression: "दर्शक के मन में सवाल" ➔ "वीडियो में क्या होगा".
-5. **Visual Quality & Bold Typography**: 3Blue1Brown mathematical storytelling + high-end motion graphics + modern tech-documentary style.
-   - **BIG Equation & Formula Fonts**: Mathematical equations, variables, and diagram labels must be large, bold, and prominent so viewers can read them effortlessly on mobile screens. Never use small fonts.
-   - **ZERO static slides**: Continuous visual progression, particle data-flows, and dynamic camera movement.
-   - **Code-driven animation**: Manim equations, graphs, flow diagrams.
-   - **Kinetic typography & dark-mode aesthetic**: Glowing neon accents (`#58D6C2`, `#FFC857`), deep dark background (`#0B1020`).
+5. **Visual Quality & Bold Typography (Opus 5.5 Showreel Standard)**:
+   - **Aesthetic Benchmark**: Apple product film × 3Blue1Brown mathematical clarity × Dribbble UI motion design.
+   - **BIG Equation & Metric Fonts**: Equations, formulas, and primary statistics must be large, bold, and prominent (scaled to 75–85% screen width), paired with clean tracked uppercase sub-tags (`01 / THE MECHANISM`).
+   - **One Continuous Flow**: Zero static slides and zero hard cuts. Continuous shape morphs, match-cuts, and camera dolly/pan movements.
+   - **Micro-Events on the Beat (120 BPM Rhythm)**: Visual momentum never pauses; micro-animations (particle trail pulses, subtle camera dollies, counter roll-ups) fire on every beat.
+   - **Code-driven animation & physical simulation**: Three.js WebGL shaders, Manim vectors/equations, GSAP timelines, and Matter.js physics to *literally demonstrate* concepts physically.
+   - **Atmospheric dark-mode aesthetic**: Glowing neon accents (`#58D6C2`, `#00F0FF`, `#FFC857`), subtle coordinate grids/vignette, deep dark background (`#0B1020`).
 6. **Execution & Publishing**: Never stop after writing code. Always execute the pipeline, render the video, inspect output, run QA, and deliver a complete playable MP4 file. For automated YouTube Shorts publishing, `python3 pipeline.py videos/<topic>.json` automatically renders and uploads to YouTube as `public` by default (`--upload private` for private visibility, `--no-upload` to skip uploading).
 7. **Environment**: Utilize standard Python virtual environment in `.venv/bin` and system Homebrew tools (`/opt/homebrew/bin` for Node/npx, FFmpeg, Python 3.11).
 

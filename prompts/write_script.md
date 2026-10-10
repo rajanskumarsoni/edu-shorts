@@ -27,12 +27,16 @@ HOOK ──► PROBLEM ──► CURIOSITY ──► EXPLANATION ──► PAYOF
 4. Explanation: मैं इसे किसी रोज़मर्रा के उदाहरण (Daily life analogy) से कैसे समझा सकता हूँ? (Scene 4-5: manim / compare)
 5. Payoff: वीडियो खत्म होने तक दर्शक क्या नया समझ चुका होगा? (Scene Last: outro)
 
-CINEMATIC VISUAL & MOTION MANDATE (3Blue1Brown + High-End Tech Documentary Standard):
-- Zero Static Slides: Ensure continuous visual progression (data-flow, particle simulation, camera movement, kinetic reveals).
-- Viewer Question ➔ Visual Action: Align every scene with the viewer's psychological question at that second (e.g. Traffic Surge ➔ Server Overload ➔ Multiple Servers Cluster ➔ Load Balancer Routing).
-- Code-Driven & Math-Accurate: Use Manim ("Flow", "Equations", "Graph") for systems architectures, equations, and curves.
-- Dramatic Reveals & Kinetic Typography: Sync key words with narration pauses and voice stresses.
-- Premium Dark Aesthetic: Elegant contrast with neon tech accents, avoiding generic decoration.
+CINEMATIC VISUAL & MOTION MANDATE (Opus 5.5 Showreel Standard: 3Blue1Brown + Apple Product Launch Film + Dribbble UI Motion):
+- Taste Calibration ("Make it feel expensive"): Restrained palette, deep dark background (`#0B1020`), one vibrant accent color (`#58D6C2`, `#00F0FF`, `#FFC857`), subtle coordinate grids/vignette, and glowing neon accents.
+- One Continuous Flow (Zero Static Slides & Zero Hard Cuts): Prefer continuous visual transformations where elements morph size, shape, and position smoothly with spring easing and short blurs.
+- Editorial Typography & Extreme Scale Contrast:
+  * Giant, bold focal elements (equations, stat values, key architectural nodes scaled to 75-85% screen width).
+  * Paired with small, ultra-clean tracked uppercase tags (`01 / THE MECHANISM`, `GLOBAL MINIMUM REACHED`, `SUB-10MS LATENCY`).
+  * Never render small, squinty text or crowded paragraph blocks.
+- Micro-Events on the Beat (120 BPM Rhythm): Between voice sentences, keep visual momentum alive with micro-animations on every beat (particle trail glows, subtle camera dollies, counter roll-ups, ripple waves).
+- Code-Driven Physics & Math: When explaining systems or algorithms (loss landscapes, gravity, queues, routing), use procedural simulations (Three.js WebGL shaders, Manim vectors/equations, GSAP timelines, Matter.js physics) to *literally demonstrate* the concept physically.
+- Viewer Question ➔ Visual Action: Align every scene with the viewer's psychological question at that exact second (e.g. Traffic Surge ➔ Server Overload ➔ Multiple Servers Cluster ➔ Load Balancer Routing).
 
 OUTPUT FORMAT
 {
