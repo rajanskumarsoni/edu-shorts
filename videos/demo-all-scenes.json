@@ -3,96 +3,296 @@
   "format": "vertical",
   "accent": "#58D6C2",
   "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "loop": false,
   "music": null,
+  "music_volume": 0.08,
   "meta": {
-    "title": "Ultimate Showcase: Every Scene Type In Motion",
-    "description": "Full demonstration of all code-driven scene types: 3D WebGL, Manim equations, telemetry gauges, and cinematic motion graphics.",
-    "hashtags": ["VideoEngineering", "MotionDesign", "CreativeCoding", "AI"],
+    "title": "Full Code-Driven Video Pipeline Demo",
+    "description": "Comprehensive tour of procedural video primitives: hooks, mathematical Manim equations, WebGL 3D shaders, structured compare tables, stats, quotes, and outro calls-to-action.",
+    "hashtags": [
+      "EdTech",
+      "Remotion",
+      "Manim",
+      "WebDev",
+      "CreativeCoding"
+    ],
     "facts_to_verify": [
-      "Every frame is generated programmatically using Remotion, Three.js, GSAP, and Manim CE."
+      "Remotion renders deterministic frame-by-frame compositions using React components combined with WebGL shaders and vector Manim clips."
     ]
   },
   "scenes": [
     {
       "type": "hook",
       "text": "Every Scene Type In Motion",
-      "narration": "इस वीडियो में तुम देखोगे कि हमारा कोड-ड्रिवन वीडियो इंजन हर सीन को कितने शानदार विजुअल्स और मोशन ग्राफिक्स के साथ रेंडर करता है।"
+      "icon": "play",
+      "purpose": "Captivate the viewer with the full diversity of code-driven animation primitives",
+      "transition": "zoom_through",
+      "visual": {
+        "start": "Deep dark void with glowing teal coordinate axes expanding in all directions",
+        "objects": [
+          "Giant Play Icon Prism",
+          "Neon Grid Floor",
+          "Kinetic Particle Cloud"
+        ],
+        "action": "Prism spins on its axis as neon light ribbons whip around the camera",
+        "camera": "Forward high-speed dolly plunging through the center of the play prism",
+        "motion_graphics": [
+          "OPUS 5.5 CINEMATIC ENGINE header",
+          "FPS telemetry lock: 30 FPS"
+        ],
+        "end": "Camera breaks through light wall into the mathematical Manim grid"
+      },
+      "narration": "यह वीडियो हमारे कोड-ड्रिवन इंजन के हर एक सीन टाइप का लाइव डेमो है। हुक्स से लेकर थ्री-डी विज़ुअल्स तक, सब कुछ कोड से रेंडर होता है।",
+      "sfx": "fast_whoosh"
     },
     {
       "type": "manim",
       "title": "Procedural Math Engine",
-      "narration": "मैनिम की ताकत से जटिल समीकरण और आर्किटेक्चर फ्लोचार्ट्स सीधे पायथन कोड से ड्रॉ होते हैं, बिल्कुल थ्री ब्लू वन ब्राउन की तरह।",
+      "purpose": "Showcase pixel-perfect procedural mathematics powered by Manim vector rendering",
+      "transition": "morph",
+      "visual": {
+        "start": "Clean Cartesian coordinate system with illuminated cyan axes",
+        "objects": [
+          "Cartesian Coordinate System",
+          "Sine Curve Vector Line",
+          "Tangent Slope Indicator"
+        ],
+        "action": "Sine wave plots itself smoothly from left to right with glowing neon trailing line",
+        "camera": "Slow cinematic camera pan tracking the apex peak of the curve",
+        "motion_graphics": [
+          "Function tag: f(x) = sin(x)",
+          "Extrema point beacon",
+          "Grid coordinate labels"
+        ],
+        "end": "Graph rotates 90 degrees into 3D topographical terrain"
+      },
+      "narration": "दूसरा है मैनम इंटीग्रेशन, जहाँ जटिल गणितीय इक्वेशन्स और स्मूद कर्व्स पिक्सल-परफेक्ट वेक्टर क्वालिटी में एनिमेट होते हैं।",
+      "sfx": "click",
       "manim": {
-        "template": "Flow",
-        "items": [
-          "Raw Concept",
-          "Script Spec",
-          "Manim Render",
-          "Final Video"
+        "template": "Graph",
+        "fn": "np.sin(x)",
+        "x_range": [
+          -4,
+          4,
+          1
+        ],
+        "y_range": [
+          -2,
+          2,
+          1
         ]
       }
     },
     {
       "type": "three",
-      "title": "3D WebGL Shader Surface",
       "variant": "gradient_descent",
-      "equation": "z = f(x, y)",
-      "narration": "नेक्स्ट-जेन थ्री-डी सीन्स में वेब-जीएल और कस्टम शेडर्स का इस्तेमाल होता है, जहाँ कैमरे और ग्रेडिएंट वेक्टर्स स्पेस में लाइव एनिमेट होते हैं।"
+      "title": "3D WebGL Shader Surface",
+      "equation": "z = f(x, y) = \\sin(x) \\cdot \\cos(y)",
+      "metrics": {
+        "Shaders": "Custom GLSL",
+        "Framerate": "60 FPS",
+        "Triangles": "10,000+"
+      },
+      "purpose": "Demonstrate native Three.js 3D WebGL terrain with real-time dynamic lighting",
+      "transition": "match_cut",
+      "visual": {
+        "start": "High-altitude overview of undulating neon 3D mathematical landscape",
+        "objects": [
+          "3D Wireframe Surface",
+          "Dual Colored Particle Probes",
+          "Depth Fog Vignette"
+        ],
+        "action": "Surface ripples dynamically as particle probes travel down contour gradients",
+        "camera": "Continuous 360-degree slow orbit around the central loss crater",
+        "motion_graphics": [
+          "Realtime WebGL shader tag",
+          "Altitude elevation meter",
+          "Surface normal vectors"
+        ],
+        "end": "Camera swoops low across the surface valley into the feature bullet cards"
+      },
+      "narration": "तीसरा है थ्री डॉट जे-एस का थ्री-डी वेब-जी-एल सीन। शेडर्स, पार्टिकल्स और थ्री-डी मॉडल्स सीधे वीडियो के अंदर स्मूदली चलते हैं।",
+      "sfx": "riser"
     },
     {
       "type": "bullets",
       "title": "Core Engine Features",
       "items": [
-        "Real-Time Shaders",
-        "Zero Static Slides",
-        "Circuit Bus Nodes",
-        "120 BPM Momentum"
+        {
+          "text": "Zero Static Slides",
+          "icon": "zap"
+        },
+        {
+          "text": "Procedural Audio SFX",
+          "icon": "volume-2"
+        },
+        {
+          "text": "Continuous Camera Flow",
+          "icon": "video"
+        }
       ],
-      "narration": "यहाँ कोई भी बोरिंग स्लाइड नहीं होती। हर सेकंड स्क्रीन पर सर्किट कनेक्टर्स और मोशन ग्राफिक्स लगातार सक्रिय रहते हैं।"
+      "purpose": "Reinforce the core architectural principles that guarantee high viewer retention",
+      "transition": "whip_pan",
+      "visual": {
+        "start": "Three dark frosted glass cards stacked neatly in perspective",
+        "objects": [
+          "3 Glass Bento Cards",
+          "Glowing Semantic Lucide Icons",
+          "Neon Edge Tracers"
+        ],
+        "action": "Cards deploy horizontally in staggered 120 BPM rhythm with pop micro-animations",
+        "camera": "Subtle push-in with gentle rotational tilt matching bullet pop timing",
+        "motion_graphics": [
+          "Bullet index indicators",
+          "Feature checkmark badges",
+          "Edge illumination glow"
+        ],
+        "end": "Cards lock into unified layout before splitting into compare matrix"
+      },
+      "narration": "चौथा है बुलेट्स सीन, जो बोरिंग लिस्ट्स को हाई-इम्पैक्ट विज़ुअल कार्ड्स में बदल देता है, ताकि दर्शक का ध्यान कभी न भटके।",
+      "sfx": "pop"
     },
     {
       "type": "compare",
       "title": "Old Slides vs Code Motion",
+      "purpose": "Directly compare traditional static presentation slides with dynamic code-driven motion",
+      "transition": "dissolve",
+      "visual": {
+        "start": "Split-screen layout comparing dull monochromatic left card against vibrant glowing right card",
+        "objects": [
+          "Left Monochromatic Card",
+          "Right Neon Glowing Card",
+          "Vertical Laser Divider"
+        ],
+        "action": "Divider sweeps across screen, demonstrating dramatic visual upgrade of code-driven animation",
+        "camera": "Orthographic slow zoom focusing on the contrast between dull text and dynamic motion",
+        "motion_graphics": [
+          "Left status: OBSOLETE",
+          "Right status: MODERN OPUS STANDARD",
+          "Checkmark highlights"
+        ],
+        "end": "Right card expands to dominate frame"
+      },
       "left": {
-        "heading": "Static PPT Slides",
+        "heading": "Old Slides",
         "items": [
-          "Zero Motion",
-          "Boring Bullet Cards",
-          "High Drop-Off"
+          "Boring PowerPoint",
+          "Static Text Only",
+          "High Drop-off"
         ]
       },
       "right": {
-        "heading": "Opus 5.5 Standard",
+        "heading": "Code Motion",
         "items": [
-          "Continuous Flow",
-          "3D Simulations",
-          "High Retention"
+          "Dynamic Three.js",
+          "Pixel-Perfect Manim",
+          "Max Engagement"
         ]
       },
-      "narration": "पारंपरिक स्टैटिक प्रेजेंटेशन के मुकाबले कोड-ड्रिवन मोशन ग्राफिक्स दर्शक का ध्यान एक सेकंड के लिए भी भटकने नहीं देते।"
+      "narration": "पाँचवाँ है कम्पेयर सीन। पुराने थके हुए स्लाइड्स और मॉडर्न कोड मोशन के बीच का फर्क साफ शब्दों और विज़ुअल्स में समझाइए।",
+      "sfx": "whoosh"
     },
     {
       "type": "stat",
-      "value": "100%",
-      "label": "Rendered Programmatically",
-      "narration": "हर एक फ्रेम, एनिमेशन और कलर पैलेट पूरी तरह से ऑटोमेटेड कोड और एल्गोरिदम से तैयार होता है।"
+      "value": "30 FPS",
+      "label": "Realtime Pipeline Rendering",
+      "icon": "zap",
+      "purpose": "Highlight rendering performance with bold full-screen metric typography",
+      "transition": "pop",
+      "visual": {
+        "start": "Black background with faint neon telemetry grid lines",
+        "objects": [
+          "Bold 3D '30 FPS' Metric Glyph",
+          "Glowing Framing Ring",
+          "Speed Particle Trails"
+        ],
+        "action": "Metric rolls up rapidly from 0 to 30 FPS and slams forward with electric green shockwave",
+        "camera": "Rapid punch-in with subtle lens vibration on impact",
+        "motion_graphics": [
+          "Ultra-Smooth Framerate badge",
+          "Realtime Synthesis tag",
+          "Bloom lighting pulse"
+        ],
+        "end": "Numerals lock in center screen with gentle breathing glow"
+      },
+      "narration": "तीस फ्रेम्स पर सेकंड की रफ्तार से यह पूरा सिस्टम बिना किसी रुकावट के आपके वीडियो को तेजी से रेंडर कर देता है।",
+      "sfx": "impact"
     },
     {
       "type": "image",
       "image": "images/sample.jpg",
       "title": "Cinematic Camera Push",
-      "narration": "इमेजेस को भी सीधे नहीं दिखाया जाता, बल्कि सिनेमैटिक स्लो-ज़ूम और डेप्थ-ऑफ-फील्ड के साथ फिल्म जैसा लुक दिया जाता है।"
+      "purpose": "Demonstrate cinematic Ken Burns camera push and lens vignette over image assets",
+      "transition": "dissolve",
+      "visual": {
+        "start": "High-resolution architectural visual asset framed in dark border",
+        "objects": [
+          "High-Res Graphic Asset",
+          "Cinematic Dark Vignette",
+          "Subtle Lens Flare"
+        ],
+        "action": "Smooth Ken Burns camera push-in smoothly gliding toward the focal center",
+        "camera": "Continuous 2.5D dolly-in with atmospheric depth-of-field blur on perimeter",
+        "motion_graphics": [
+          "Cinematic Asset Framing border",
+          "Aspect Ratio 9:16 Crop Guides"
+        ],
+        "end": "Image fades softly into quote pedestal"
+      },
+      "narration": "इमेज सीन में आप किसी भी डायग्राम या स्क्रीनशॉट को सिनेमैटिक कैमरा मोशन के साथ पेश कर सकते हैं।",
+      "sfx": "whoosh"
     },
     {
       "type": "quote",
       "text": "Code is the most expressive creative medium in history.",
-      "author": "Engineering Directives",
-      "narration": "क्योंकि कोड केवल सॉफ्टवेयर बनाने के लिए नहीं, बल्कि विज्ञान को खूबसूरती से समझाने का सबसे ताकतवर जरिया है।"
+      "author": "Antigravity Video Engine",
+      "purpose": "Inspire the audience with memorable philosophy on code-driven creative expression",
+      "transition": "morph",
+      "visual": {
+        "start": "Atmospheric deep navy void with floating serif quotation glyphs",
+        "objects": [
+          "Large 3D Quotation Marks",
+          "Elegantly Formatted Typography Slab",
+          "Gold Accent Line"
+        ],
+        "action": "Quote text reveals smoothly word by word with glowing light sweep across the typography",
+        "camera": "Slow contemplative tilt-up highlighting the author citation",
+        "motion_graphics": [
+          "Golden Author Rule Line",
+          "Typography Glow Mask"
+        ],
+        "end": "Quote letters soften into background stars as outro manifests"
+      },
+      "narration": "और जब बात गहरी बात कहने की हो, तो कोट सीन स्क्रीन पर एक ठहराव और वजन पैदा करता है।",
+      "sfx": "downlifter"
     },
     {
       "type": "outro",
       "text": "Follow For Code Driven AI",
-      "narration": "यह था पूरा सीन शोकेस। ऐसे ही हाई-इम्पैक्ट टेक और साइंस वीडियोज़ देखने के लिए अभी फॉलो कर लो!"
+      "icon": "sparkles",
+      "purpose": "Encourage audience to follow the channel for more automated video technology deep dives",
+      "transition": "dissolve",
+      "visual": {
+        "start": "All components synthesize into a single radiant diamond emblem",
+        "objects": [
+          "Diamond Engine Emblem",
+          "Follow CTA Card",
+          "Cascading Light Particles"
+        ],
+        "action": "Emblem pulses with brilliant cyan energy; follow button springs into view with cheerful sparkle",
+        "camera": "Gentle crane pull-back into dark vignette finish",
+        "motion_graphics": [
+          "Follow for Code-Driven AI badge",
+          "Subscribe Bell Notification Glow",
+          "Channel payoff tag"
+        ],
+        "end": "Final elegant fade to dark-mode black"
+      },
+      "narration": "यह है मॉडर्न वीडियो क्रिएशन का भविष्य। ऐसी ही पावरफुल कोड-ड्रिवन टेक्नोलॉजी के लिए चैनल को अभी फॉलो करें!",
+      "sfx": "sparkle"
     }
   ]
 }

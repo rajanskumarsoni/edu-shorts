@@ -8,6 +8,7 @@ import {
 import type { SceneSpec } from "../types";
 import { useLayout } from "../layout";
 import { RevealText } from "../Reveal";
+import { MotionGraphic } from "../MotionGraphic";
 
 export const Bullets: React.FC<{ scene: SceneSpec; accent: string }> = ({
   scene,
@@ -31,8 +32,8 @@ export const Bullets: React.FC<{ scene: SceneSpec; accent: string }> = ({
           <div
             style={{
               fontFamily: "monospace",
-              fontSize: 22,
-              fontWeight: 700,
+              fontSize: 28,
+              fontWeight: 800,
               color: accent,
               letterSpacing: "0.2em",
               textTransform: "uppercase",
@@ -72,6 +73,8 @@ export const Bullets: React.FC<{ scene: SceneSpec; accent: string }> = ({
         />
 
         {items.map((it, i) => {
+          const itemText = typeof it === "string" ? it : it.text;
+          const itemIcon = typeof it === "object" ? it.icon : undefined;
           const s = spring({
             frame: frame - (12 + i * gap),
             fps,
@@ -93,23 +96,33 @@ export const Bullets: React.FC<{ scene: SceneSpec; accent: string }> = ({
                 border: "1px solid rgba(255, 255, 255, 0.12)",
                 borderLeft: `6px solid ${accent}`,
                 borderRadius: 20,
-                padding: "26px 32px",
+                padding: "24px 30px",
                 boxShadow: `0 18px 45px rgba(0,0,0,0.5), 0 0 30px ${accent}1a`,
                 opacity: s,
                 transform: `translateX(${(1 - s) * -70}px) scale(${0.96 + 0.04 * s})`,
                 filter: s >= 0.999 ? "none" : `blur(${(1 - s) * 8}px)`,
               }}
             >
+              {/* Animated Semantic Motion Graphic for the Bullet Noun */}
+              <MotionGraphic
+                icon={itemIcon}
+                text={itemText}
+                narration={scene.narration}
+                accent={accent}
+                size="sm"
+                showRadar={false}
+              />
+
               <div
                 style={{
                   fontFamily: "monospace",
-                  fontSize: 24,
+                  fontSize: 28,
                   fontWeight: 800,
                   color: accent,
                   background: "rgba(255, 255, 255, 0.05)",
-                  border: `1px solid ${accent}44`,
+                  border: `1.5px solid ${accent}55`,
                   borderRadius: 10,
-                  padding: "6px 14px",
+                  padding: "8px 16px",
                   boxShadow: `0 0 16px ${accent}33`,
                   display: "flex",
                   alignItems: "center",
@@ -131,14 +144,14 @@ export const Bullets: React.FC<{ scene: SceneSpec; accent: string }> = ({
               <div
                 style={{
                   flex: 1,
-                  fontSize: 56,
+                  fontSize: 54,
                   fontWeight: 700,
                   color: "#EDF2F7",
                   lineHeight: 1.18,
                   letterSpacing: "-0.01em",
                 }}
               >
-                {it}
+                {itemText}
               </div>
             </div>
           );

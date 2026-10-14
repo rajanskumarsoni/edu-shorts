@@ -3,6 +3,9 @@ import { AbsoluteFill, spring, useCurrentFrame, useVideoConfig } from "remotion"
 import type { SceneSpec, Side } from "../types";
 import { useLayout } from "../layout";
 import { RevealText } from "../Reveal";
+import { MotionGraphic } from "../MotionGraphic";
+import { resolveSceneTag } from "../theme";
+import { ThreeDSettlement } from "./ThreeDSettlement";
 
 const Card: React.FC<{
   side: Side;
@@ -35,15 +38,26 @@ const Card: React.FC<{
     >
       <div
         style={{
-          fontSize: landscape ? 56 : 64,
-          fontWeight: 900,
-          color,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
           marginBottom: 20,
-          lineHeight: 1.05,
-          textShadow: `0 0 24px ${color}44`,
+          gap: 16,
         }}
       >
-        {side.heading}
+        <div
+          style={{
+            fontSize: landscape ? 56 : 64,
+            fontWeight: 900,
+            color,
+            lineHeight: 1.05,
+            textShadow: `0 0 24px ${color}44`,
+            flex: 1,
+          }}
+        >
+          {side.heading}
+        </div>
+        <MotionGraphic text={side.heading} accent={color} size="sm" showRadar={false} />
       </div>
       {side.items.map((it, i) => {
         const p = spring({
@@ -89,6 +103,17 @@ export const Compare: React.FC<{ scene: SceneSpec; accent: string }> = ({
   scene,
   accent,
 }) => {
+  // Delegate to 3D Bilateral Settlement scene
+  const is3DSettlement =
+    scene.variant === "upi_settlement_3d" ||
+    /settlement|bilateral|dual ledger/i.test(scene.title || "") ||
+    /settlement|bilateral/i.test(scene.tag || "") ||
+    Boolean(scene.left?.heading?.includes("Bank A") && scene.right?.heading?.includes("Bank B"));
+
+  if (is3DSettlement) {
+    return <ThreeDSettlement scene={scene} accent={accent} />;
+  }
+
   const frame = useCurrentFrame();
   const L = useLayout();
   const cyan = "#00F0FF";
@@ -106,7 +131,7 @@ export const Compare: React.FC<{ scene: SceneSpec; accent: string }> = ({
           <div
             style={{
               fontFamily: "monospace",
-              fontSize: 22,
+              fontSize: 28,
               fontWeight: 800,
               color: accent,
               letterSpacing: "0.2em",
@@ -114,7 +139,7 @@ export const Compare: React.FC<{ scene: SceneSpec; accent: string }> = ({
               marginBottom: 12,
             }}
           >
-            {"03 // ARCHITECTURAL COMPARISON"}
+              {resolveSceneTag(scene, "03 // ARCHITECTURAL COMPARISON")}
           </div>
           <RevealText
             text={scene.title}
@@ -148,8 +173,8 @@ export const Compare: React.FC<{ scene: SceneSpec; accent: string }> = ({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            width: 72,
-            height: 72,
+            width: 76,
+            height: 76,
             borderRadius: "50%",
             background: "rgba(10, 14, 26, 0.95)",
             border: `2px solid ${accent}`,
@@ -161,7 +186,7 @@ export const Compare: React.FC<{ scene: SceneSpec; accent: string }> = ({
           <span
             style={{
               fontFamily: "monospace",
-              fontSize: 26,
+              fontSize: 32,
               fontWeight: 900,
               color: "#FFFFFF",
               letterSpacing: "0.05em",

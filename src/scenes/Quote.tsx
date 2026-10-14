@@ -4,6 +4,7 @@ import type { SceneSpec } from "../types";
 import { MUTED } from "../theme";
 import { useLayout } from "../layout";
 import { RevealText } from "../Reveal";
+import { MotionGraphic } from "../MotionGraphic";
 
 export const Quote: React.FC<{ scene: SceneSpec; accent: string }> = ({
   scene,
@@ -50,12 +51,20 @@ export const Quote: React.FC<{ scene: SceneSpec; accent: string }> = ({
             marginTop: 52,
             display: "flex",
             alignItems: "center",
-            gap: 24,
+            gap: 20,
             opacity: a,
             transform: `translateY(${(1 - a) * 24}px)`,
           }}
         >
-          <div style={{ width: 80, height: 6, borderRadius: 3, background: accent }} />
+          <MotionGraphic
+            icon={scene.icon}
+            text={scene.author}
+            accent={accent}
+            size="xs"
+            showPedestal={true}
+            showRadar={false}
+          />
+          <div style={{ width: 60, height: 4, borderRadius: 2, background: accent }} />
           <div style={{ fontSize: 52, fontWeight: 600, color: MUTED }}>
             {scene.author}
           </div>

@@ -129,6 +129,24 @@ def upload_youtube(video, title, description, privacy):
         raise UploadError("YouTube upload completed without returning a video ID.")
     print(f"YouTube upload complete: https://youtu.be/{video_id} (visibility: {privacy})")
 
+    thumb_path = video.parent / f"{video.stem}-thumbnail.jpg"
+    if thumb_path.is_file():
+        try:
+            thumb_url = f"https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId={video_id}"
+            thumb_bytes = thumb_path.read_bytes()
+            request(
+                thumb_url,
+                data=thumb_bytes,
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Content-Type": "image/jpeg",
+                },
+                method="POST",
+            )
+            print(f"Custom thumbnail uploaded successfully: {thumb_path.name}")
+        except Exception as exc:
+            print(f"Note: Could not set custom thumbnail (channel phone-verification or scope needed): {exc}")
+
 
 def instagram_graph_url(version, path):
     return f"{DEFAULT_GRAPH_BASE}/{version}/{path.lstrip('/')}"

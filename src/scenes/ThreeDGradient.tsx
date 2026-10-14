@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import * as THREE from "three";
+import type { SceneSpec } from "../types";
 
 // -----------------------------------------------------------------------------
 // Mathematical Elevation & Analytic Gradients
@@ -22,25 +23,77 @@ function computeGradient(x: number, y: number) {
   return { dx: dz_dx, dy: dz_dy };
 }
 
-// Pre-computed Gradient Descent Trajectory Path Points (Crest to Trough)
-const PATH_STEPS: Array<{ x: number; y: number; z: number }> = [];
-(function generateTrajectory() {
+// -----------------------------------------------------------------------------
+// Pre-computed Trajectories: Batch, Stochastic (SGD), and Mini-Batch
+// -----------------------------------------------------------------------------
+type Step = { x: number; y: number; z: number };
+
+// 1. Full Batch GD (Smooth, direct, deterministic)
+const BATCH_STEPS: Step[] = [];
+(function generateBatchTrajectory() {
   let cx = 2.2, cy = 2.2;
   let vx = 0, vy = 0;
-  const lr = 0.080, momentum = 0.30;
   for (let s = 0; s < 45; s++) {
-    const cz = evaluateElevation(cx, cy);
-    PATH_STEPS.push({ x: cx, y: cy, z: cz });
+    BATCH_STEPS.push({ x: cx, y: cy, z: evaluateElevation(cx, cy) });
     const g = computeGradient(cx, cy);
-    vx = momentum * vx + lr * g.dx;
-    vy = momentum * vy + lr * g.dy;
+    vx = 0.30 * vx + 0.080 * g.dx;
+    vy = 0.30 * vy + 0.080 * g.dy;
     cx -= vx;
     cy -= vy;
   }
 })();
 
+// 2. Stochastic GD (SGD - 1 sample, high variance zig-zag)
+const SGD_STEPS: Step[] = [];
+(function generateSGDTrajectory() {
+  let cx = 2.2, cy = 2.2;
+  let vx = 0, vy = 0;
+  for (let s = 0; s < 45; s++) {
+    SGD_STEPS.push({ x: cx, y: cy, z: evaluateElevation(cx, cy) });
+    const g = computeGradient(cx, cy);
+    const angle = (s * 2.399) % (2 * Math.PI);
+    const noiseMag = 1.4 * Math.sin(s * 3.1) + 1.1;
+    const noiseX = Math.cos(angle) * noiseMag;
+    const noiseY = Math.sin(angle) * noiseMag;
+    vx = 0.20 * vx + 0.055 * (g.dx + noiseX);
+    vy = 0.20 * vy + 0.055 * (g.dy + noiseY);
+    cx = Math.max(-3.5, Math.min(3.5, cx - vx));
+    cy = Math.max(-3.5, Math.min(3.5, cy - vy));
+  }
+})();
+
+// 3. Mini-Batch GD (Small batch B=32, balanced speed & stability)
+const MINIBATCH_STEPS: Step[] = [];
+(function generateMiniBatchTrajectory() {
+  let cx = 2.2, cy = 2.2;
+  let vx = 0, vy = 0;
+  for (let s = 0; s < 45; s++) {
+    MINIBATCH_STEPS.push({ x: cx, y: cy, z: evaluateElevation(cx, cy) });
+    const g = computeGradient(cx, cy);
+    const mbAngle = (s * 1.618) % (2 * Math.PI);
+    const mbNoiseX = Math.cos(mbAngle) * 0.32;
+    const mbNoiseY = Math.sin(mbAngle) * 0.32;
+    vx = 0.32 * vx + 0.085 * (g.dx + mbNoiseX);
+    vy = 0.32 * vy + 0.085 * (g.dy + mbNoiseY);
+    cx = Math.max(-3.5, Math.min(3.5, cx - vx));
+    cy = Math.max(-3.5, Math.min(3.5, cy - vy));
+  }
+})();
+
+// Helper to interpolate position along a step list
+function getInterpolatedPoint(steps: Step[], normTime: number) {
+  const pathIndexFloat = normTime * (steps.length - 1);
+  const idxLow = Math.floor(pathIndexFloat);
+  const idxHigh = Math.min(idxLow + 1, steps.length - 1);
+  const frac = pathIndexFloat - idxLow;
+  const x = steps[idxLow].x + frac * (steps[idxHigh].x - steps[idxLow].x);
+  const y = steps[idxLow].y + frac * (steps[idxHigh].y - steps[idxLow].y);
+  const z = evaluateElevation(x, y);
+  return { x, y, z, idxHigh };
+}
+
 // -----------------------------------------------------------------------------
-// GLSL Shaders (Volcanic Orange, Slate Grey, Electric Cyan)
+// GLSL Shaders
 // -----------------------------------------------------------------------------
 const terrainVertexShader = `
   varying vec3 vPosition;
@@ -103,7 +156,7 @@ const terrainFragmentShader = `
       color += mix(uCyan, uVolcanicOrange, t) * max(0.0, ripple) * 0.35;
     }
 
-    // Simple Directional Lighting
+    // Directional Lighting
     vec3 lightDir = normalize(vec3(0.5, 0.9, 0.6));
     vec3 norm = normalize(vNormal);
     float diff = max(dot(norm, lightDir), 0.18);
@@ -114,28 +167,33 @@ const terrainFragmentShader = `
 `;
 
 interface ThreeDGradientProps {
-  scene?: import("../types").SceneSpec;
+  scene?: SceneSpec;
   accent?: string;
 }
 
-export const ThreeDGradient: React.FC<ThreeDGradientProps> = () => {
+export const ThreeDGradient: React.FC<ThreeDGradientProps> = ({ scene, accent: _accent }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frame = useCurrentFrame();
   const { width, height, durationInFrames } = useVideoConfig();
 
-  // Progress along the path points (0.0 at Crest to 1.0 at Trough)
-  const normTime = Math.min(Math.max((frame - 15) / (durationInFrames - 45), 0), 1);
-  const pathIndexFloat = normTime * (PATH_STEPS.length - 1);
-  const idxLow = Math.floor(pathIndexFloat);
-  const idxHigh = Math.min(idxLow + 1, PATH_STEPS.length - 1);
-  const frac = pathIndexFloat - idxLow;
+  const variant = scene?.variant || "gradient_descent";
+  const isComparison = variant === "comparison_3d" || variant === "all_three" || variant === "race";
+  const isStochastic = variant === "stochastic_gd" || variant === "sgd" || variant === "stochastic";
+  const isMiniBatch = variant === "mini_batch" || variant === "minibatch";
+  const isBatch = variant === "batch_gd" || variant === "full_batch" || variant === "batch" || (!isComparison && !isStochastic && !isMiniBatch);
 
-  const currentX = PATH_STEPS[idxLow].x + frac * (PATH_STEPS[idxHigh].x - PATH_STEPS[idxLow].x);
-  const currentY = PATH_STEPS[idxLow].y + frac * (PATH_STEPS[idxHigh].y - PATH_STEPS[idxLow].y);
-  const currentZ = evaluateElevation(currentX, currentY);
+  // Time progress along steps (0.0 at Crest to 1.0 at Trough)
+  const normTime = Math.min(Math.max((frame - 12) / (durationInFrames - 36), 0), 1);
 
-  const grad = computeGradient(currentX, currentY);
-  const gradNorm = Math.hypot(grad.dx, grad.dy);
+  // Interpolated points
+  const batchPt = getInterpolatedPoint(BATCH_STEPS, normTime);
+  const sgdPt = getInterpolatedPoint(SGD_STEPS, normTime);
+  const mbPt = getInterpolatedPoint(MINIBATCH_STEPS, normTime);
+
+  // Select primary focus point depending on variant
+  const primaryPt = isStochastic ? sgdPt : isMiniBatch ? mbPt : isBatch ? batchPt : mbPt;
+  const primaryGrad = computeGradient(primaryPt.x, primaryPt.y);
+  const primaryGradNorm = Math.hypot(primaryGrad.dx, primaryGrad.dy);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -146,30 +204,30 @@ export const ThreeDGradient: React.FC<ThreeDGradientProps> = () => {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.2;
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x08090c);
-    scene.fog = new THREE.FogExp2(0x08090c, 0.035);
+    const threeScene = new THREE.Scene();
+    threeScene.background = new THREE.Color(0x08090c);
+    threeScene.fog = new THREE.FogExp2(0x08090c, 0.035);
 
-    // Camera setup with subtle drift
+    // Camera setup with dynamic rotation
     const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 100);
-    const camAngle = 0.85 + (frame / durationInFrames) * 0.45;
+    const camAngle = 0.85 + (frame / durationInFrames) * 0.50;
     const camRadius = 11.2;
     camera.position.set(
       Math.sin(camAngle) * camRadius,
-      7.8 - (frame / durationInFrames) * 1.2,
+      7.6 - (frame / durationInFrames) * 1.0,
       Math.cos(camAngle) * camRadius
     );
     camera.lookAt(0, -0.6, 0);
 
     // Lighting
     const ambientLight = new THREE.AmbientLight(0x2a3042, 1.4);
-    scene.add(ambientLight);
+    threeScene.add(ambientLight);
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
     directionalLight.position.set(6, 12, 8);
-    scene.add(directionalLight);
+    threeScene.add(directionalLight);
 
-    // 3D Terrain Geometry & GLSL Shader
+    // 3D Terrain
     const planeSize = 9.0;
     const planeSegments = 140;
     const terrainGeo = new THREE.PlaneGeometry(planeSize, planeSize, planeSegments, planeSegments);
@@ -193,7 +251,7 @@ export const ThreeDGradient: React.FC<ThreeDGradientProps> = () => {
       fragmentShader: terrainFragmentShader,
       uniforms: {
         uTime: { value: frame / 30 },
-        uBallCoords: { value: new THREE.Vector2(currentX, currentY) },
+        uBallCoords: { value: new THREE.Vector2(primaryPt.x, primaryPt.y) },
         uVolcanicOrange: { value: new THREE.Color(0xff4400) },
         uCyan: { value: new THREE.Color(0x00f0ff) },
         uGreyDark: { value: new THREE.Color(0x10131b) },
@@ -206,74 +264,116 @@ export const ThreeDGradient: React.FC<ThreeDGradientProps> = () => {
     });
 
     const terrainMesh = new THREE.Mesh(terrainGeo, terrainMat);
-    scene.add(terrainMesh);
+    threeScene.add(terrainMesh);
 
-    // Trough target ring
-    const ringGeo = new THREE.RingGeometry(0.22, 0.42, 32);
+    // Target minimum ring at center
+    const ringGeo = new THREE.RingGeometry(0.22, 0.44, 32);
     ringGeo.rotateX(-Math.PI / 2);
     const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff, side: THREE.DoubleSide, transparent: true, opacity: 0.85 });
     const ringMesh = new THREE.Mesh(ringGeo, ringMat);
     ringMesh.position.set(0, evaluateElevation(0, 0) + 0.03, 0);
-    scene.add(ringMesh);
+    threeScene.add(ringMesh);
 
-    // Path points up to current progress
-    const activePointCount = Math.min(idxHigh + 1, PATH_STEPS.length);
-    const lineGeo = new THREE.BufferGeometry();
-    const linePositions: number[] = [];
-    const lineColors: number[] = [];
+    // Helper to render a trajectory curve + dots + ball
+    const addTrajectory = (
+      steps: Step[],
+      curPt: Step,
+      highIdx: number,
+      baseColor: THREE.Color,
+      ballRadius: number,
+      showArrow: boolean,
+      isErraticArrow: boolean
+    ) => {
+      const activeCount = Math.min(highIdx + 1, steps.length);
+      const linePositions: number[] = [];
+      const lineColors: number[] = [];
 
-    for (let i = 0; i < activePointCount; i++) {
-      const pt = PATH_STEPS[i];
-      linePositions.push(pt.x, pt.z + 0.04, pt.y);
-      const t = i / (PATH_STEPS.length - 1);
-      const c = new THREE.Color().lerpColors(new THREE.Color(0xff5500), new THREE.Color(0x00f0ff), t);
-      lineColors.push(c.r, c.g, c.b);
+      for (let i = 0; i < activeCount; i++) {
+        const pt = steps[i];
+        linePositions.push(pt.x, pt.z + 0.04, pt.y);
+        lineColors.push(baseColor.r, baseColor.g, baseColor.b);
 
-      // Sphere marker
-      const dotGeo = new THREE.SphereGeometry(0.08, 16, 16);
-      const dotMat = new THREE.MeshBasicMaterial({ color: c });
-      const dotMesh = new THREE.Mesh(dotGeo, dotMat);
-      dotMesh.position.set(pt.x, pt.z + 0.05, pt.y);
-      scene.add(dotMesh);
+        // Dot marker
+        const dotGeo = new THREE.SphereGeometry(0.065, 12, 12);
+        const dotMat = new THREE.MeshBasicMaterial({ color: baseColor });
+        const dotMesh = new THREE.Mesh(dotGeo, dotMat);
+        dotMesh.position.set(pt.x, pt.z + 0.045, pt.y);
+        threeScene.add(dotMesh);
+      }
+
+      if (linePositions.length >= 6) {
+        const lineGeo = new THREE.BufferGeometry();
+        lineGeo.setAttribute("position", new THREE.Float32BufferAttribute(linePositions, 3));
+        lineGeo.setAttribute("color", new THREE.Float32BufferAttribute(lineColors, 3));
+        const lineMat = new THREE.LineBasicMaterial({ vertexColors: true, linewidth: 4 });
+        const pathLine = new THREE.Line(lineGeo, lineMat);
+        threeScene.add(pathLine);
+      }
+
+      // Ball
+      const ballGeo = new THREE.SphereGeometry(ballRadius, 32, 32);
+      const ballMat = new THREE.MeshStandardMaterial({
+        color: baseColor,
+        emissive: baseColor,
+        emissiveIntensity: 0.95,
+        roughness: 0.15,
+        metalness: 0.85
+      });
+      const ballMesh = new THREE.Mesh(ballGeo, ballMat);
+      ballMesh.position.set(curPt.x, curPt.z + ballRadius, curPt.y);
+      threeScene.add(ballMesh);
+
+      // Aura
+      const auraGeo = new THREE.SphereGeometry(ballRadius * 1.5, 16, 16);
+      const auraMat = new THREE.MeshBasicMaterial({ color: baseColor, transparent: true, opacity: 0.35, wireframe: true });
+      const auraMesh = new THREE.Mesh(auraGeo, auraMat);
+      auraMesh.rotation.y = (frame / 30) * 2.0;
+      ballMesh.add(auraMesh);
+
+      // Downhill Vector Arrow
+      if (showArrow) {
+        const g = computeGradient(curPt.x, curPt.y);
+        const gNorm = Math.hypot(g.dx, g.dy);
+        if (gNorm > 0.01) {
+          let arrowDir: THREE.Vector3;
+          if (isErraticArrow) {
+            // Noisy arrow representing 1 random sample
+            const jitterX = Math.sin(frame * 0.4) * 0.6;
+            const jitterY = Math.cos(frame * 0.4) * 0.6;
+            arrowDir = new THREE.Vector3(-g.dx + jitterX, -gNorm * 0.5, -g.dy + jitterY).normalize();
+          } else {
+            arrowDir = new THREE.Vector3(-g.dx, -gNorm * 0.5, -g.dy).normalize();
+          }
+          const arrow = new THREE.ArrowHelper(
+            arrowDir,
+            new THREE.Vector3(curPt.x, curPt.z + ballRadius + 0.02, curPt.y),
+            Math.min(0.4 + gNorm * 0.4, 1.4),
+            baseColor.getHex(),
+            0.28,
+            0.15
+          );
+          threeScene.add(arrow);
+        }
+      }
+    };
+
+    if (isComparison) {
+      // 3D Race: Render all 3 trajectories simultaneously
+      addTrajectory(BATCH_STEPS, batchPt, batchPt.idxHigh, new THREE.Color(0x00f0ff), 0.22, false, false);
+      addTrajectory(SGD_STEPS, sgdPt, sgdPt.idxHigh, new THREE.Color(0xff4400), 0.22, true, true);
+      addTrajectory(MINIBATCH_STEPS, mbPt, mbPt.idxHigh, new THREE.Color(0xffc857), 0.24, true, false);
+    } else if (isStochastic) {
+      // Stochastic GD: Highly erratic orange trajectory
+      addTrajectory(SGD_STEPS, sgdPt, sgdPt.idxHigh, new THREE.Color(0xff4400), 0.25, true, true);
+    } else if (isMiniBatch) {
+      // Mini-Batch GD: Balanced gold trajectory
+      addTrajectory(MINIBATCH_STEPS, mbPt, mbPt.idxHigh, new THREE.Color(0xffc857), 0.25, true, false);
+    } else {
+      // Full Batch GD: Smooth cyan trajectory
+      addTrajectory(BATCH_STEPS, batchPt, batchPt.idxHigh, new THREE.Color(0x00f0ff), 0.25, true, false);
     }
 
-    if (linePositions.length >= 6) {
-      lineGeo.setAttribute("position", new THREE.Float32BufferAttribute(linePositions, 3));
-      lineGeo.setAttribute("color", new THREE.Float32BufferAttribute(lineColors, 3));
-      const lineMat = new THREE.LineBasicMaterial({ vertexColors: true, linewidth: 4 });
-      const pathLine = new THREE.Line(lineGeo, lineMat);
-      scene.add(pathLine);
-    }
-
-    // Glowing Descent Ball
-    const ballGeo = new THREE.SphereGeometry(0.24, 32, 32);
-    const ballCol = new THREE.Color().lerpColors(new THREE.Color(0xff4400), new THREE.Color(0x00f0ff), normTime);
-    const ballMat = new THREE.MeshStandardMaterial({
-      color: ballCol,
-      emissive: ballCol,
-      emissiveIntensity: 0.9,
-      roughness: 0.2,
-      metalness: 0.8
-    });
-    const ballMesh = new THREE.Mesh(ballGeo, ballMat);
-    ballMesh.position.set(currentX, currentZ + 0.24, currentY);
-    scene.add(ballMesh);
-
-    // Ball Wireframe Aura
-    const auraGeo = new THREE.SphereGeometry(0.34, 20, 20);
-    const auraMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.4, wireframe: true });
-    const auraMesh = new THREE.Mesh(auraGeo, auraMat);
-    auraMesh.rotation.y = (frame / 30) * 2.0;
-    ballMesh.add(auraMesh);
-
-    // Negative Gradient Arrow Vector
-    if (gradNorm > 0.01) {
-      const downhill = new THREE.Vector3(-grad.dx, -gradNorm * 0.5, -grad.dy).normalize();
-      const arrow = new THREE.ArrowHelper(downhill, new THREE.Vector3(currentX, currentZ + 0.26, currentY), Math.min(0.4 + gradNorm * 0.4, 1.4), 0x00f0ff, 0.3, 0.16);
-      scene.add(arrow);
-    }
-
-    renderer.render(scene, camera);
+    renderer.render(threeScene, camera);
 
     return () => {
       renderer.dispose();
@@ -281,93 +381,360 @@ export const ThreeDGradient: React.FC<ThreeDGradientProps> = () => {
       terrainMat.dispose();
       ringGeo.dispose();
       ringMat.dispose();
-      ballGeo.dispose();
-      ballMat.dispose();
     };
-  }, [frame, width, height, currentX, currentY, currentZ, normTime, durationInFrames, idxHigh, gradNorm, grad.dx, grad.dy]);
+  }, [
+    frame, width, height, durationInFrames, normTime,
+    isComparison, isStochastic, isMiniBatch, isBatch,
+    primaryPt.x, primaryPt.y, primaryPt.z,
+    batchPt, sgdPt, mbPt
+  ]);
 
-  // SVG HUD mapping for mini contour
+  // SVG mini-contour coordinate mapping
   const toSvg = (v: number) => 55 + (v / 4.5) * 48;
 
   return (
     <AbsoluteFill style={{ background: "#08090c" }}>
-      {/* Real 3D WebGL Canvas */}
+      {/* 3D WebGL Canvas */}
       <canvas ref={canvasRef} width={width} height={height} style={{ width: "100%", height: "100%" }} />
 
       {/* Cinematic HUD Overlay */}
       <div
         style={{
           position: "absolute",
-          top: 150,
-          left: 50,
-          right: 50,
+          top: 100,
+          left: 45,
+          right: 45,
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          pointerEvents: "none"
+          flexDirection: "column",
+          gap: 16,
+          pointerEvents: "none",
         }}
       >
+        {/* Top Header Card */}
+        <div
+          style={{
+            background: "rgba(14, 17, 26, 0.94)",
+            backdropFilter: "blur(24px)",
+            border: "1px solid rgba(255, 255, 255, 0.14)",
+            borderRadius: 24,
+            padding: "20px 28px",
+            boxShadow: "0 20px 45px rgba(0,0,0,0.65)",
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div
+              style={{
+                fontFamily: "monospace",
+                fontSize: 28,
+                letterSpacing: 2,
+                fontWeight: 800,
+                color: isComparison ? "#FFC857" : isStochastic ? "#FF5500" : isMiniBatch ? "#58D6C2" : "#00F0FF",
+                textTransform: "uppercase",
+              }}
+            >
+              {isComparison
+                ? "3D OPTIMIZATION SHOWDOWN"
+                : isStochastic
+                ? "02 / STOCHASTIC GRADIENT DESCENT"
+                : isMiniBatch
+                ? "03 / MINI-BATCH GRADIENT DESCENT"
+                : "01 / FULL BATCH GRADIENT DESCENT"}
+            </div>
+
+            {/* Mode Pill Badge */}
+            <div
+              style={{
+                padding: "8px 20px",
+                borderRadius: 999,
+                background: isComparison
+                  ? "rgba(255, 200, 87, 0.18)"
+                  : isStochastic
+                  ? "rgba(255, 68, 0, 0.22)"
+                  : isMiniBatch
+                  ? "rgba(88, 214, 194, 0.22)"
+                  : "rgba(0, 240, 255, 0.22)",
+                border: `1.5px solid ${
+                  isComparison ? "#FFC857" : isStochastic ? "#FF5500" : isMiniBatch ? "#58D6C2" : "#00F0FF"
+                }`,
+                color: "#FFFFFF",
+                fontFamily: "monospace",
+                fontSize: 28,
+                fontWeight: 800,
+                letterSpacing: 1,
+              }}
+            >
+              {isComparison ? "3-WAY RACE" : isStochastic ? "SGD NOISY" : isMiniBatch ? "GPU PARALLEL" : "EXACT GRADIENT"}
+            </div>
+          </div>
+
+          <div
+            style={{
+              fontSize: 52,
+              fontWeight: 900,
+              color: "#FFFFFF",
+              letterSpacing: -1,
+              lineHeight: 1.15,
+            }}
+          >
+            {scene?.title
+              ? scene.title
+              : isComparison
+              ? "All 3 Flavors On 3D Loss Surface"
+              : isStochastic
+              ? "N = 1 Sample (High Variance)"
+              : isMiniBatch
+              ? "B = 32–128 (Modern AI Standard)"
+              : "N = 100% Dataset (Deterministic)"}
+          </div>
+        </div>
+
+        {/* Telemetry HUD Metrics Card from Scene Specification */}
+        {scene?.metrics && Object.keys(scene.metrics).length > 0 && (
+          <div
+            style={{
+              background: "rgba(14, 17, 26, 0.92)",
+              backdropFilter: "blur(24px)",
+              border: "1px solid rgba(255, 255, 255, 0.14)",
+              borderRadius: 22,
+              padding: "16px 24px",
+              display: "flex",
+              justifyContent: "space-around",
+              alignItems: "center",
+              boxShadow: "0 16px 36px rgba(0,0,0,0.55)",
+            }}
+          >
+            {Object.entries(scene.metrics).map(([key, val], idx) => (
+              <div key={idx} style={{ textAlign: "center", padding: "0 10px", flex: 1 }}>
+                <div
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: 28,
+                    fontWeight: 700,
+                    color: "#9AA3C7",
+                    letterSpacing: 1.5,
+                    textTransform: "uppercase",
+                    marginBottom: 6,
+                  }}
+                >
+                  {key}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: 46,
+                    fontWeight: 900,
+                    color:
+                      idx === 0
+                        ? isComparison ? "#00F0FF" : "#FFFFFF"
+                        : idx === 1
+                        ? isComparison ? "#FF4400" : (isStochastic ? "#FF5500" : isMiniBatch ? "#58D6C2" : "#00F0FF")
+                        : isComparison ? "#FFC857" : "#FFFFFF",
+                    textShadow: "0 0 20px rgba(0,240,255,0.4)",
+                  }}
+                >
+                  {String(val)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Mathematical Formula Card */}
         <div
           style={{
-            background: "rgba(20, 23, 32, 0.88)",
-            backdropFilter: "blur(16px)",
+            background: "rgba(14, 17, 26, 0.92)",
+            backdropFilter: "blur(24px)",
             border: "1px solid rgba(255, 255, 255, 0.12)",
-            borderRadius: 16,
-            padding: "16px 22px",
-            boxShadow: "0 16px 36px rgba(0,0,0,0.5)",
-            maxWidth: 520
+            borderRadius: 22,
+            padding: "18px 26px",
+            boxShadow: "0 18px 40px rgba(0,0,0,0.55)",
           }}
         >
-          <div style={{ fontFamily: "monospace", fontSize: 18, color: "#FFAA33", marginBottom: 6, fontWeight: 700 }}>
-            FIRST-ORDER UPDATE RULE
+          <div
+            style={{
+              fontFamily: "monospace",
+              fontSize: 28,
+              fontWeight: 800,
+              color: "#9AA3C7",
+              marginBottom: 10,
+              letterSpacing: 1.8,
+            }}
+          >
+            PARAMETER UPDATE RULE
           </div>
-          <svg width="420" height="42" viewBox="0 0 280 40">
-            <defs>
-              <filter id="glow-cyan-hud">
-                <feDropShadow dx="0" dy="0" stdDeviation="2" floodColor="#00f0ff" floodOpacity="0.9" />
-              </filter>
-            </defs>
-            <text x="5" y="26" fontFamily="monospace" fontSize="18" fontWeight="700" fill="#00f0ff" filter="url(#glow-cyan-hud)">θ</text>
-            <text x="18" y="31" fontFamily="monospace" fontSize="11" fill="#a9b4cb">t+1</text>
-            <text x="48" y="25" fontFamily="monospace" fontSize="17" fill="#7c88a3">=</text>
-            <text x="70" y="26" fontFamily="monospace" fontSize="18" fontWeight="700" fill="#ffaa33">θ</text>
-            <text x="83" y="31" fontFamily="monospace" fontSize="11" fill="#a9b4cb">t</text>
-            <text x="108" y="25" fontFamily="monospace" fontSize="19" fontWeight="700" fill="#ff5500">−</text>
-            <text x="130" y="26" fontFamily="monospace" fontSize="18" fontWeight="700" fill="#ff8800">α</text>
-            <text x="152" y="26" fontFamily="monospace" fontSize="19" fontWeight="700" fill="#ff5500">∇</text>
-            <text x="172" y="26" fontFamily="monospace" fontSize="17" fontWeight="600" fill="#edf1f8">L(θ)</text>
-          </svg>
+          {isStochastic ? (
+            <svg width="100%" height="64" viewBox="0 0 920 64">
+              <defs>
+                <filter id="glow-orange">
+                  <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#ff4400" floodOpacity="0.9" />
+                </filter>
+              </defs>
+              <text x="10" y="44" fontFamily="monospace" fontSize="46" fontWeight="800" fill="#ff4400" filter="url(#glow-orange)">θ</text>
+              <text x="44" y="52" fontFamily="monospace" fontSize="28" fontWeight="700" fill="#a9b4cb">t+1</text>
+              <text x="110" y="44" fontFamily="monospace" fontSize="42" fill="#7c88a3">=</text>
+              <text x="155" y="44" fontFamily="monospace" fontSize="46" fontWeight="800" fill="#ffffff">θ</text>
+              <text x="188" y="52" fontFamily="monospace" fontSize="28" fontWeight="700" fill="#a9b4cb">t</text>
+              <text x="245" y="44" fontFamily="monospace" fontSize="46" fontWeight="800" fill="#ff4400">−</text>
+              <text x="290" y="44" fontFamily="monospace" fontSize="46" fontWeight="800" fill="#ffaa33">α</text>
+              <text x="335" y="44" fontFamily="monospace" fontSize="46" fontWeight="800" fill="#ff4400">∇</text>
+              <text x="375" y="44" fontFamily="monospace" fontSize="44" fontWeight="700" fill="#edf1f8">L</text>
+              <text x="405" y="52" fontFamily="monospace" fontSize="28" fontWeight="800" fill="#ff4400">i</text>
+              <text x="430" y="44" fontFamily="monospace" fontSize="44" fontWeight="700" fill="#edf1f8">(θ)</text>
+              <text x="680" y="44" fontFamily="monospace" fontSize="28" fontWeight="800" fill="#ff8800">[1 Sample Only]</text>
+            </svg>
+          ) : isMiniBatch ? (
+            <svg width="100%" height="64" viewBox="0 0 920 64">
+              <defs>
+                <filter id="glow-gold">
+                  <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#ffc857" floodOpacity="0.9" />
+                </filter>
+              </defs>
+              <text x="10" y="44" fontFamily="monospace" fontSize="46" fontWeight="800" fill="#ffc857" filter="url(#glow-gold)">θ</text>
+              <text x="44" y="52" fontFamily="monospace" fontSize="28" fontWeight="700" fill="#a9b4cb">t+1</text>
+              <text x="110" y="44" fontFamily="monospace" fontSize="42" fill="#7c88a3">=</text>
+              <text x="155" y="44" fontFamily="monospace" fontSize="46" fontWeight="800" fill="#ffffff">θ</text>
+              <text x="188" y="52" fontFamily="monospace" fontSize="28" fontWeight="700" fill="#a9b4cb">t</text>
+              <text x="245" y="44" fontFamily="monospace" fontSize="46" fontWeight="800" fill="#ffc857">−</text>
+              <text x="285" y="44" fontFamily="monospace" fontSize="44" fontWeight="800" fill="#ffffff">α·¹/B</text>
+              <text x="425" y="46" fontFamily="monospace" fontSize="48" fontWeight="800" fill="#ffc857">∑</text>
+              <text x="475" y="44" fontFamily="monospace" fontSize="46" fontWeight="800" fill="#58d6c2">∇L</text>
+              <text x="545" y="52" fontFamily="monospace" fontSize="28" fontWeight="800" fill="#58d6c2">i</text>
+              <text x="570" y="44" fontFamily="monospace" fontSize="44" fontWeight="700" fill="#edf1f8">(θ)</text>
+              <text x="670" y="44" fontFamily="monospace" fontSize="28" fontWeight="800" fill="#58d6c2">[Batch B=32..128]</text>
+            </svg>
+          ) : isComparison ? (
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0" }}>
+              <div style={{ display: "flex", gap: 20 }}>
+                <span style={{ fontFamily: "monospace", fontSize: 28, color: "#00F0FF", fontWeight: 800 }}>● BATCH (N=All)</span>
+                <span style={{ fontFamily: "monospace", fontSize: 28, color: "#FF4400", fontWeight: 800 }}>● SGD (N=1)</span>
+                <span style={{ fontFamily: "monospace", fontSize: 28, color: "#FFC857", fontWeight: 800 }}>● MINI-BATCH (B=64)</span>
+              </div>
+              <span style={{ fontFamily: "monospace", fontSize: 28, color: "#A9B4CB", fontWeight: 700 }}>min L(θ) Search</span>
+            </div>
+          ) : (
+            <svg width="100%" height="64" viewBox="0 0 920 64">
+              <defs>
+                <filter id="glow-cyan">
+                  <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#00f0ff" floodOpacity="0.9" />
+                </filter>
+              </defs>
+              <text x="10" y="44" fontFamily="monospace" fontSize="46" fontWeight="800" fill="#00f0ff" filter="url(#glow-cyan)">θ</text>
+              <text x="44" y="52" fontFamily="monospace" fontSize="28" fontWeight="700" fill="#a9b4cb">t+1</text>
+              <text x="110" y="44" fontFamily="monospace" fontSize="42" fill="#7c88a3">=</text>
+              <text x="155" y="44" fontFamily="monospace" fontSize="46" fontWeight="800" fill="#ffffff">θ</text>
+              <text x="188" y="52" fontFamily="monospace" fontSize="28" fontWeight="700" fill="#a9b4cb">t</text>
+              <text x="245" y="44" fontFamily="monospace" fontSize="46" fontWeight="800" fill="#00f0ff">−</text>
+              <text x="285" y="44" fontFamily="monospace" fontSize="44" fontWeight="800" fill="#ffffff">α·¹/N</text>
+              <text x="425" y="46" fontFamily="monospace" fontSize="48" fontWeight="800" fill="#00f0ff">∑</text>
+              <text x="475" y="44" fontFamily="monospace" fontSize="46" fontWeight="800" fill="#00f0ff">∇L</text>
+              <text x="545" y="52" fontFamily="monospace" fontSize="28" fontWeight="800" fill="#00f0ff">i</text>
+              <text x="570" y="44" fontFamily="monospace" fontSize="44" fontWeight="700" fill="#edf1f8">(θ)</text>
+              <text x="680" y="44" fontFamily="monospace" fontSize="28" fontWeight="800" fill="#00f0ff">[All N Samples]</text>
+            </svg>
+          )}
         </div>
 
-        {/* Live Synchronized SVG Contour Mini-Radar */}
+        {/* Live Synchronized Telemetry & Mini-Radar */}
         <div
           style={{
-            background: "rgba(20, 23, 32, 0.88)",
-            backdropFilter: "blur(16px)",
-            border: "1px solid rgba(255, 255, 255, 0.12)",
-            borderRadius: 16,
-            padding: 12,
+            background: "rgba(14, 17, 26, 0.92)",
+            backdropFilter: "blur(24px)",
+            border: "1px solid rgba(255, 255, 255, 0.14)",
+            borderRadius: 22,
+            padding: "16px 24px",
             display: "flex",
+            justifyContent: "space-between",
             alignItems: "center",
-            gap: 16,
-            boxShadow: "0 16px 36px rgba(0,0,0,0.5)"
+            boxShadow: "0 18px 40px rgba(0,0,0,0.55)",
           }}
         >
-          <svg width="110" height="110" viewBox="0 0 110 110">
-            <rect width="110" height="110" rx="12" fill="#0d0f14" />
-            <ellipse cx="55" cy="55" rx="46" ry="46" fill="none" stroke="#ff5500" strokeWidth="1" strokeDasharray="2,2" opacity="0.6" />
-            <ellipse cx="55" cy="55" rx="32" ry="32" fill="none" stroke="#ff8800" strokeWidth="1" opacity="0.5" />
-            <ellipse cx="55" cy="55" rx="18" ry="18" fill="none" stroke="#00f0ff" strokeWidth="1.2" opacity="0.7" />
-            <circle cx="55" cy="55" r="4" fill="#00f0ff" />
-            <circle cx={toSvg(currentX)} cy={toSvg(currentY)} r="5" fill="#ff5500" stroke="#fff" strokeWidth="1.5" />
-          </svg>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 120 }}>
-            <div style={{ fontFamily: "monospace", fontSize: 13, color: "#7c88a3" }}>LOSS L(θ)</div>
-            <div style={{ fontFamily: "monospace", fontSize: 20, fontWeight: 700, color: "#ffaa33" }}>{currentZ.toFixed(3)}</div>
-            <div style={{ fontFamily: "monospace", fontSize: 13, color: "#7c88a3" }}>||∇L||</div>
-            <div style={{ fontFamily: "monospace", fontSize: 16, fontWeight: 700, color: "#00f0ff" }}>{gradNorm.toFixed(3)}</div>
+          {/* Live SVG Contour Mini-Radar */}
+          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+            <svg width="100" height="100" viewBox="0 0 110 110">
+              <rect width="110" height="110" rx="16" fill="#090b10" stroke="rgba(255,255,255,0.15)" strokeWidth="1.5" />
+              <ellipse cx="55" cy="55" rx="46" ry="46" fill="none" stroke="#ff5500" strokeWidth="1.2" strokeDasharray="3,3" opacity="0.6" />
+              <ellipse cx="55" cy="55" rx="32" ry="32" fill="none" stroke="#ff8800" strokeWidth="1.2" opacity="0.6" />
+              <ellipse cx="55" cy="55" rx="18" ry="18" fill="none" stroke="#00f0ff" strokeWidth="1.5" opacity="0.8" />
+              <circle cx="55" cy="55" r="4.5" fill="#00f0ff" />
+              {isComparison ? (
+                <>
+                  <circle cx={toSvg(batchPt.x)} cy={toSvg(batchPt.y)} r="5" fill="#00f0ff" stroke="#fff" strokeWidth="1.5" />
+                  <circle cx={toSvg(sgdPt.x)} cy={toSvg(sgdPt.y)} r="5" fill="#ff4400" stroke="#fff" strokeWidth="1.5" />
+                  <circle cx={toSvg(mbPt.x)} cy={toSvg(mbPt.y)} r="5.5" fill="#ffc857" stroke="#fff" strokeWidth="1.5" />
+                </>
+              ) : (
+                <circle
+                  cx={toSvg(primaryPt.x)}
+                  cy={toSvg(primaryPt.y)}
+                  r="6"
+                  fill={isStochastic ? "#ff4400" : isMiniBatch ? "#ffc857" : "#00f0ff"}
+                  stroke="#ffffff"
+                  strokeWidth="2"
+                />
+              )}
+            </svg>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <div style={{ fontFamily: "monospace", fontSize: 28, fontWeight: 700, color: "#9AA3C7", letterSpacing: 1.5 }}>
+                TOPOLOGY RADAR
+              </div>
+              <div style={{ fontFamily: "monospace", fontSize: 34, fontWeight: 800, color: "#FFFFFF" }}>
+                {isComparison ? "3 Active Paths" : `(${primaryPt.x.toFixed(2)}, ${primaryPt.y.toFixed(2)})`}
+              </div>
+              <div style={{ fontFamily: "monospace", fontSize: 28, fontWeight: 700, color: "#58D6C2" }}>
+                Target Min: (0.00, 0.00)
+              </div>
+            </div>
           </div>
+
+          {/* Telemetry Metrics */}
+          {isComparison ? (
+            <div style={{ display: "flex", gap: 24 }}>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontFamily: "monospace", fontSize: 28, fontWeight: 700, color: "#00F0FF" }}>BATCH L(θ)</div>
+                <div style={{ fontFamily: "monospace", fontSize: 38, fontWeight: 900, color: "#FFFFFF" }}>
+                  {batchPt.z.toFixed(2)}
+                </div>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontFamily: "monospace", fontSize: 28, fontWeight: 700, color: "#FF5500" }}>SGD L(θ)</div>
+                <div style={{ fontFamily: "monospace", fontSize: 38, fontWeight: 900, color: "#FFFFFF" }}>
+                  {sgdPt.z.toFixed(2)}
+                </div>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontFamily: "monospace", fontSize: 28, fontWeight: 700, color: "#FFC857" }}>MINI-BATCH</div>
+                <div style={{ fontFamily: "monospace", fontSize: 38, fontWeight: 900, color: "#FFC857" }}>
+                  {mbPt.z.toFixed(2)}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div style={{ display: "flex", gap: 32 }}>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontFamily: "monospace", fontSize: 28, fontWeight: 700, color: "#9AA3C7" }}>CURRENT LOSS</div>
+                <div
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: 46,
+                    fontWeight: 900,
+                    color: isStochastic ? "#FF5500" : isMiniBatch ? "#FFC857" : "#00F0FF",
+                    textShadow: "0 0 20px rgba(0,240,255,0.4)",
+                  }}
+                >
+                  {primaryPt.z.toFixed(3)}
+                </div>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontFamily: "monospace", fontSize: 28, fontWeight: 700, color: "#9AA3C7" }}>GRADIENT NORM</div>
+                <div style={{ fontFamily: "monospace", fontSize: 44, fontWeight: 900, color: "#FFFFFF" }}>
+                  {primaryGradNorm.toFixed(3)}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </AbsoluteFill>

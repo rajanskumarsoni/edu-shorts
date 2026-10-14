@@ -1,0 +1,295 @@
+{
+  "id": "gradient-descent",
+  "format": "vertical",
+  "accent": "#00F0FF",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "loop": false,
+  "music": null,
+  "music_volume": 0.08,
+  "meta": {
+    "title": "Gradient Descent: Batch vs Stochastic vs Mini-Batch 3D Explained",
+    "description": "Learn how modern machine learning models optimize weights in 3D. Compare Full Batch, Stochastic Gradient Descent, and Mini-Batch with procedural loss landscapes.",
+    "hashtags": [
+      "MachineLearning",
+      "DeepLearning",
+      "DataScience",
+      "AI",
+      "CodingInHindi",
+      "NeuralNetworks"
+    ],
+    "facts_to_verify": [
+      "Mini-batch gradient descent is the industry standard optimization method for modern deep learning models like transformers and CNNs."
+    ]
+  },
+  "scenes": [
+    {
+      "type": "hook",
+      "text": "Stochastic vs Batch Gradient",
+      "icon": "brain",
+      "purpose": "Hook viewer interest by posing the central machine learning optimization puzzle",
+      "transition": "zoom_through",
+      "visual": {
+        "start": "Pitch dark void with neon coordinate grid spanning the ground",
+        "objects": [
+          "3D Neural Brain Hologram",
+          "Rotating Synaptic Nodes",
+          "Energy Pulses"
+        ],
+        "action": "Holographic neural brain pulses rapidly; synaptic connections ripple as a glowing question mark illuminates overhead",
+        "camera": "Forward dolly-in through the frontal lobes into the mathematical core",
+        "motion_graphics": [
+          "Tracked uppercase header 01 / THE CONUNDRUM",
+          "Glowing cyan node rings"
+        ],
+        "end": "Camera plunges through neural center into a vast topographical loss landscape"
+      },
+      "narration": "मशीन लर्निंग में मॉडल को ट्रेन करते वक्त सबसे बड़ा सवाल यह होता है कि वेट्स को कैसे अपडेट करें: पूरे डेटा को एक साथ लेकर, या एक-एक करके? चलिए इसे थ्री-डी में देखते हैं।",
+      "sfx": "fast_whoosh"
+    },
+    {
+      "type": "three",
+      "variant": "batch_gd",
+      "title": "Full Batch Gradient Descent",
+      "equation": "\\theta_{t+1} = \\theta_t - \\alpha \\nabla L(\\theta)",
+      "metrics": {
+        "Batch Size": "All (N)",
+        "Path": "Smooth",
+        "Memory": "Heavy"
+      },
+      "purpose": "Visualize deterministic, ultra-smooth trajectory of Full Batch optimization",
+      "transition": "match_cut",
+      "visual": {
+        "start": "Wide angle overlooking smooth mountainous 3D loss surface terrain",
+        "objects": [
+          "3D Loss Surface Wireframe",
+          "Glowing Cyan Ball",
+          "Trajectory Path Ribbon"
+        ],
+        "action": "Cyan ball calculates gradient from entire dataset and glides smoothly straight toward global minimum",
+        "camera": "Slow cinematic orbit 45 degrees around the descent path tracking the descending ball",
+        "motion_graphics": [
+          "Bold LaTeX formula overlay",
+          "Telemetry HUD metrics card",
+          "Vector gradient arrow"
+        ],
+        "end": "Cyan ball rests securely in the valley trough"
+      },
+      "narration": "बैच ग्रेडिएंट डिसेंट में मॉडल हर स्टेप पर पूरे डेटासेट का लॉस कैलकुलेट करता है। इसका पाथ एकदम स्मूद और सीधा होता है, लेकिन बड़े डेटा पर यह बहुत धीमा और भारी साबित होता है।",
+      "sfx": "riser"
+    },
+    {
+      "type": "three",
+      "variant": "stochastic_gd",
+      "title": "Stochastic Gradient Descent (SGD)",
+      "equation": "\\theta_{t+1} = \\theta_t - \\alpha \\nabla L_i(\\theta)",
+      "metrics": {
+        "Batch Size": "1 Sample",
+        "Path": "Noisy",
+        "Memory": "Sub-1MB"
+      },
+      "purpose": "Illustrate extreme noise and rapid erratic jumps of single-sample SGD",
+      "transition": "match_cut",
+      "visual": {
+        "start": "High-angle view centered on rocky high-loss plateau",
+        "objects": [
+          "3D Loss Surface",
+          "Neon Amber Particle Ball",
+          "Zig-zag Erratic Trail"
+        ],
+        "action": "Amber ball bounces violently left and right across ripples, jumping out of local minima with rapid frantic steps",
+        "camera": "Dynamic crane pan tracking the erratic leaps of the amber particle",
+        "motion_graphics": [
+          "Formula tag for single sample",
+          "HUD noisy trajectory badge",
+          "Noise oscillation meter"
+        ],
+        "end": "Particle oscillates rapidly around the base of the basin"
+      },
+      "narration": "एस-जी-डी यानी स्टोकेस्टिक ग्रेडिएंट डिसेंट हर बार सिर्फ एक सैंपल देखकर कदम बढ़ाता है। यह सुपर फास्ट है, लेकिन इसका रास्ता इतना जिग-जैग और शोर भरा होता है कि सही जगह पहुँचना मुश्किल हो जाता है।",
+      "sfx": "impact"
+    },
+    {
+      "type": "manim",
+      "title": "Mathematical Update Rules",
+      "purpose": "Provide exact mathematical grounding comparing single sample vs full batch summations",
+      "transition": "morph",
+      "visual": {
+        "start": "Clean dark mathematical workspace with glowing blueprint grid lines",
+        "objects": [
+          "Neon LaTeX Equation Vectors",
+          "Mathematical Sigma Summation Glyphs",
+          "Gradient Vector Arrows"
+        ],
+        "action": "Equations write themselves onto screen character by character with glowing particle dust",
+        "camera": "Orthographic slow zoom focusing on the summation operator differences",
+        "motion_graphics": [
+          "Glowing formula brackets",
+          "Underline emphasis waves on alpha learning rate"
+        ],
+        "end": "Formulas align horizontally before folding into the next 3D demonstration"
+      },
+      "narration": "गणित में अंतर बहुत साफ है: बैच पूरे एन सैंपल्स का औसत लेता है, जबकि स्टोकेस्टिक सिर्फ एक रैंडम पॉइंट के ग्रेडिएंट पर काम करता है।",
+      "sfx": "click",
+      "manim": {
+        "template": "Equations",
+        "lines": [
+          "\\theta_{t+1} = \\theta_t - \\alpha \\nabla L_B(\\theta)",
+          "\\theta_{t+1} = \\theta_t - \\alpha \\nabla L_i(\\theta)"
+        ]
+      }
+    },
+    {
+      "type": "three",
+      "variant": "mini_batch",
+      "title": "Mini-Batch Gradient Descent",
+      "equation": "\\theta_{t+1} = \\theta_t - \\frac{\\alpha}{B} \\sum_{i \\in B} \\nabla L_i(\\theta)",
+      "metrics": {
+        "Batch Size": "32-512",
+        "Hardware": "GPU SIMD",
+        "Status": "Gold Standard"
+      },
+      "purpose": "Present Mini-Batch as the optimal synthesis of speed and stability",
+      "transition": "match_cut",
+      "visual": {
+        "start": "Overhead view of glowing green cluster of particles converging on the hillside",
+        "objects": [
+          "3D Loss Surface",
+          "Cluster of 64 Neon Green Particles",
+          "Balanced Trajectory Ribbon"
+        ],
+        "action": "Particles march forward together in harmonious bursts, gliding down the slope with gentle controlled momentum",
+        "camera": "Smooth 60 FPS sweeping dolly following the cluster down the valley ridge",
+        "motion_graphics": [
+          "Mini-batch equation card",
+          "GPU SIMD vectorization tag",
+          "Optimal balance indicator"
+        ],
+        "end": "Cluster gathers tightly at the optimal loss minimum"
+      },
+      "narration": "और यहीं आता है मिनी-बैच ग्रेडिएंट डिसेंट! यह बत्तीस से पाँच सौ बारह सैंपल्स का छोटा बैच लेता है। यह दोनों का बेस्ट कॉम्बिनेशन है: स्मूद पाथ और सुपर फास्ट स्पीड!",
+      "sfx": "pop"
+    },
+    {
+      "type": "three",
+      "variant": "comparison_3d",
+      "title": "3D Optimization Showdown",
+      "metrics": {
+        "Cyan": "Batch (Slow)",
+        "Amber": "SGD (Noisy)",
+        "Green": "Mini-Batch (Winner)"
+      },
+      "purpose": "Race all three optimization algorithms simultaneously to prove Mini-Batch superiority",
+      "transition": "dissolve",
+      "visual": {
+        "start": "Wide multi-track vista over 3D loss valley with 3 starting gates",
+        "objects": [
+          "3D Terrain",
+          "Cyan Ball (Batch)",
+          "Amber Ball (SGD)",
+          "Green Ball (Mini-Batch)"
+        ],
+        "action": "All three balls release at once: Cyan creeps slowly; Amber zig-zags frantically; Green sprints smoothly and wins",
+        "camera": "Wide helicopter orbit tracking the comparative distance between all three runners",
+        "motion_graphics": [
+          "3-way race HUD overlay",
+          "Convergence time stopwatches",
+          "Winner crown beacon"
+        ],
+        "end": "Green ball captures the flag in the center with golden particle flash"
+      },
+      "narration": "तीनों को एक साथ दौड़ते हुए देखिए: बैच बहुत धीरे चल रहा है, एस-जी-डी भटक रहा है, और मिनी-बैच सबसे तेजी से सीधे लक्ष्य तक पहुँच जाता है।",
+      "sfx": "ka_ching"
+    },
+    {
+      "type": "compare",
+      "title": "Comparison Matrix",
+      "purpose": "Provide a clean structured summary of tradeoffs between Full Batch and Mini-Batch",
+      "transition": "dissolve",
+      "visual": {
+        "start": "Split-screen comparison matrix with glowing neon vertical dividing line",
+        "objects": [
+          "Dual Frosted Glass Bento Cards",
+          "Animated Row Bullets",
+          "Interactive Checkmarks"
+        ],
+        "action": "Rows slide in rhythmically from opposite sides on the beat, highlighting stability vs GPU parallelism",
+        "camera": "Frontal orthographic push with soft spotlighting alternating left and right",
+        "motion_graphics": [
+          "Left red caution indicators",
+          "Right neon cyan efficiency badges"
+        ],
+        "end": "Both cards lock in balanced symmetry"
+      },
+      "left": {
+        "heading": "Full Batch",
+        "items": [
+          "High Memory Usage",
+          "Slow Per Iteration",
+          "Gets Stuck Easily"
+        ]
+      },
+      "right": {
+        "heading": "Mini-Batch",
+        "items": [
+          "GPU Vectorized",
+          "Fast Convergence",
+          "Industry Standard"
+        ]
+      },
+      "narration": "यही वजह है कि जी-पी-यू पर पैरेलल प्रोसेसिंग का पूरा फायदा उठाने के लिए मॉडर्न डीप लर्निंग में हमेशा मिनी-बैच का ही इस्तेमाल किया जाता है।",
+      "sfx": "whoosh"
+    },
+    {
+      "type": "stat",
+      "value": "64",
+      "label": "Standard Batch Size in Practice",
+      "icon": "cpu",
+      "purpose": "Deliver memorable practical metric for real-world machine learning engineers",
+      "transition": "pop",
+      "visual": {
+        "start": "Dark screen with faint microchip motherboard tracks in background",
+        "objects": [
+          "Giant 3D Holographic '64' Numerals",
+          "GPU Memory Bus Model",
+          "Glow Neon Ring"
+        ],
+        "action": "Number 64 slams into the frame with impact shockwave, vibrating with electric blue bloom",
+        "camera": "Rapid zoom-in with kinetic camera recoil on impact beat",
+        "motion_graphics": [
+          "GPU SIMD alignment tag",
+          "Batch size recommendation badge"
+        ],
+        "end": "Numerals settle with soft ambient hovering pulse"
+      },
+      "narration": "प्रैक्टिस में बत्तीस या चौंसठ का बैच साइज सबसे कॉमन माना जाता है क्योंकि यह मेमोरी और स्पीड का एकदम परफेक्ट संतुलन देता है।",
+      "sfx": "impact"
+    },
+    {
+      "type": "outro",
+      "text": "Master Modern Machine Learning",
+      "icon": "sparkles",
+      "purpose": "Inspire viewer to explore deep learning concepts and subscribe for future videos",
+      "transition": "dissolve",
+      "visual": {
+        "start": "Loss surface shrinks down into an elegant 3D crystal trophy",
+        "objects": [
+          "Golden ML Optimization Trophy",
+          "Floating Follow Badge",
+          "Sparkling Light Particles"
+        ],
+        "action": "Trophy rotates smoothly as neon subscribe button materializes with rhythmic pulse",
+        "camera": "Slow cinematic pull-back into atmospheric dark-mode vignette",
+        "motion_graphics": [
+          "Subscribe CTA notification bell",
+          "Deep learning roadmap badge"
+        ],
+        "end": "Final glowing signature fade to black"
+      },
+      "narration": "अगली बार जब आप कोई न्यूरल नेटवर्क ट्रेन करें, तो सही ऑप्टिमाइज़र चुनना मत भूलना। ऐसे ही ए-आई कॉन्सेप्ट्स को थ्री-डी में समझने के लिए सब्सक्राइब जरूर करें!",
+      "sfx": "sparkle"
+    }
+  ]
+}

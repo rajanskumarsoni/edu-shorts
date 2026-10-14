@@ -20,17 +20,33 @@ MAX_SECONDS = 300          # hard limit: 5 minutes
 SHORTS_SECONDS = 180       # above this it is no longer a Short/Reel
 WORDS_PER_SECOND = 2.5     # rough speaking speed used for the estimate
 
-TOP_ALLOWED = {"id", "format", "audio_mode", "accent", "music", "meta", "scenes"}
+TOP_ALLOWED = {"id", "format", "audio_mode", "accent", "music", "music_volume", "captions", "progress", "sfx", "loop", "meta", "scenes"}
+COMMON_SCENE_FIELDS = {
+    "sfx", "sfxVolume", "icon", "graphic", "visual", "motion",
+    "purpose", "transition", "camera", "action", "objects", "tag", "tone"
+}
 ALLOWED = {
-    "hook": {"type", "text", "narration", "seconds"},
-    "bullets": {"type", "title", "items", "narration", "seconds"},
-    "stat": {"type", "value", "label", "narration", "seconds"},
-    "manim": {"type", "title", "manim", "narration", "seconds"},
-    "outro": {"type", "text", "narration", "seconds"},
-    "image": {"type", "image", "title", "narration", "seconds"},
-    "quote": {"type", "text", "author", "narration", "seconds"},
-    "compare": {"type", "title", "left", "right", "narration", "seconds"},
-    "three": {"type", "title", "variant", "component", "equation", "metrics", "narration", "seconds"},
+    "hook": {"type", "text", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "bullets": {"type", "title", "items", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "stat": {"type", "value", "label", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "manim": {"type", "title", "manim", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "outro": {"type", "text", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "image": {"type", "image", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "quote": {"type", "text", "author", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "compare": {"type", "title", "left", "right", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "three": {"type", "title", "variant", "component", "equation", "metrics", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "code": {"type", "title", "code", "lines", "language", "filename", "highlight", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "architecture": {"type", "title", "nodes", "steps", "subtext", "tag", "direction", "activeNode", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "gauge": {"type", "title", "value", "startValue", "endValue", "unit", "min", "max", "status", "label", "badge", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "timeline": {"type", "title", "steps", "items", "activeStep", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "callout": {"type", "title", "text", "subtext", "category", "badge", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "bento": {"type", "title", "bentoItems", "items", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "benchmark": {"type", "title", "runners", "unit", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "hierarchy": {"type", "title", "layers", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "data_structure": {"type", "title", "structure", "operations", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "inspector": {"type", "title", "sections", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "quadrant": {"type", "title", "xAxis", "yAxis", "points", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "concentric": {"type", "title", "rings", "narration", "seconds"} | COMMON_SCENE_FIELDS,
 }
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
 BUILTIN = {
@@ -191,8 +207,8 @@ def validate_data(data, root=ROOT):
 
     music = data.get("music")
     if music is not None:
-        if not isinstance(music, str) or not (root / music).exists():
-            rep.err("music", f'file not found: {music!r} (use null for no music)')
+        if music != "none" and (not isinstance(music, str) or not (root / music).exists()):
+            rep.err("music", f'file not found: {music!r} (use null for default Warm Focus, or "none" to disable)')
 
     meta = data.get("meta")
     if meta is not None:
@@ -269,6 +285,28 @@ def validate_data(data, root=ROOT):
                 rep.warn(where, "narration has symbols; write it the way it is spoken "
                                 '(e.g. "plus", "percent", "squared") so your TTS reads it right')
 
+        # visual storyboard check (supports rich string or detailed storyboard dict)
+        vis = s.get("visual")
+        if vis is None or (isinstance(vis, str) and not vis.strip()):
+            rep.warn(where, 'missing "visual" description: describe the intended 3D environment, camera motion, or animation')
+        elif isinstance(vis, dict):
+            recognized_storyboard = {
+                "camera", "objects", "action", "motion_graphics",
+                "start", "end", "environment", "purpose", "transition",
+                "lighting", "mood", "lens", "style"
+            }
+            for k in vis.keys():
+                if k not in recognized_storyboard:
+                    rep.warn(where, f'unrecognized storyboard property in "visual": "{k}"')
+        elif not isinstance(vis, str):
+            rep.err(where, '"visual" must be a descriptive text string or structured storyboard dictionary')
+
+        # optional high-fidelity storyboard properties
+        if "purpose" in s and not isinstance(s["purpose"], str):
+            rep.err(where, '"purpose" must be a descriptive text string')
+        if "transition" in s and not isinstance(s["transition"], str):
+            rep.err(where, '"transition" must be a text string (e.g. "zoom_through", "match_cut", "whip_pan")')
+
         # type-specific
         if t in ("hook", "outro"):
             txt = s.get("text")
@@ -278,14 +316,19 @@ def validate_data(data, root=ROOT):
                 rep.warn(where, f'"text" is {words(txt)} words; keep it to 8 or fewer')
         elif t == "bullets":
             items = s.get("items")
-            if not isinstance(items, list) or not items or not all(isinstance(x, str) and x.strip() for x in items):
-                rep.err(where, 'bullets needs "items": a non-empty list of short strings')
+            def item_str(x):
+                if isinstance(x, str): return x.strip()
+                if isinstance(x, dict) and isinstance(x.get("text"), str): return x["text"].strip()
+                return ""
+            if not isinstance(items, list) or not items or not all(bool(item_str(x)) for x in items):
+                rep.err(where, 'bullets needs "items": a non-empty list of short strings or {"text": "...", "icon": "..."} objects')
             else:
                 if len(items) > 4:
                     rep.warn(where, f"{len(items)} items; 4 or fewer fits the screen")
                 for it in items:
-                    if words(it) > 4:
-                        rep.warn(where, f'item "{it}" is over 4 words')
+                    txt = it if isinstance(it, str) else it.get("text", "")
+                    if words(txt) > 4:
+                        rep.warn(where, f'item "{txt}" is over 4 words')
             if isinstance(s.get("title"), str) and words(s["title"]) > 4:
                 rep.warn(where, "title is over 4 words")
         elif t == "stat":
@@ -341,14 +384,83 @@ def validate_data(data, root=ROOT):
                 check_manim(s["manim"], where, rep)
             if isinstance(s.get("title"), str) and words(s["title"]) > 5:
                 rep.warn(where, "title is over 5 words")
+        elif t == "code":
+            if "lines" not in s and "code" not in s:
+                rep.err(where, 'code scene needs "lines" (list of strings) or "code" (text string)')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
+        elif t == "architecture":
+            nodes = s.get("nodes") or s.get("steps")
+            if not isinstance(nodes, list) or not nodes or not all(isinstance(x, str) and x.strip() for x in nodes):
+                rep.err(where, 'architecture needs "nodes": a non-empty list of short strings')
+            elif len(nodes) > 5:
+                rep.warn(where, f'{len(nodes)} nodes; 3 to 5 fits the screen best')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
+        elif t == "gauge":
+            if "value" not in s and "endValue" not in s:
+                rep.err(where, 'gauge needs "value" or "endValue" numeric/text metric')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
+        elif t == "timeline":
+            steps = s.get("steps") or s.get("items")
+            if not isinstance(steps, list) or not steps or not all(isinstance(x, str) and x.strip() for x in steps):
+                rep.err(where, 'timeline needs "steps": a non-empty list of short strings')
+            elif len(steps) > 5:
+                rep.warn(where, f'{len(steps)} steps; 3 to 5 fits the screen best')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
+        elif t == "callout":
+            if "text" not in s and "title" not in s:
+                rep.err(where, 'callout needs "text" or "title"')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
+        elif t == "bento":
+            if "bentoItems" not in s and "items" not in s:
+                rep.err(where, 'bento needs "bentoItems" or "items"')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
+        elif t == "benchmark":
+            runners = s.get("runners")
+            if not isinstance(runners, list) or not runners:
+                rep.err(where, 'benchmark needs "runners": list of runner objects')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
+        elif t == "hierarchy":
+            layers = s.get("layers")
+            if not isinstance(layers, list) or not layers:
+                rep.err(where, 'hierarchy needs "layers": list of layer objects')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
+        elif t == "data_structure":
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
+        elif t == "inspector":
+            sections = s.get("sections")
+            if not isinstance(sections, list) or not sections:
+                rep.err(where, 'inspector needs "sections": list of section cards')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
+        elif t == "quadrant":
+            points = s.get("points")
+            if not isinstance(points, list) or not points:
+                rep.err(where, 'quadrant needs "points": list of 2D coordinates')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
+        elif t == "concentric":
+            rings = s.get("rings")
+            if not isinstance(rings, list) or not rings:
+                rep.err(where, 'concentric needs "rings": list of ring layer strings')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
 
     types = [s.get("type") for s in scenes if isinstance(s, dict)]
     if types and types[0] != "hook":
         rep.warn("scenes", "first scene should be a hook")
     if types and types[-1] != "outro":
         rep.warn("scenes", "last scene should be an outro")
-    if "manim" not in types and "three" not in types:
-        rep.warn("scenes", "no manim or three.js scene; at least one animated visual explanation is recommended")
+    if not any(t in types for t in ("manim", "three", "architecture", "code", "gauge", "bento", "benchmark", "hierarchy", "data_structure", "inspector", "quadrant", "concentric")):
+        rep.warn("scenes", "no animated visual explanation (manim, three, architecture, code, gauge, bento, benchmark...); at least one is recommended")
 
     # same visual type 3+ times in a row gets monotonous in long videos
     run = 1

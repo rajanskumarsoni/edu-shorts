@@ -1,32 +1,76 @@
 {
   "id": "pythagoras",
   "format": "vertical",
-  "accent": "#FFC857",
+  "accent": "#00F0FF",
   "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "loop": false,
   "music": null,
+  "music_volume": 0.08,
   "meta": {
-    "title": "The Equation Behind Every Bridge | Pythagorean Theorem Explained",
-    "description": "How a squared plus b squared equals c squared powers civil engineering, GPS navigation, and 3D graphics.",
+    "title": "Why Pythagoras Still Runs the Modern World",
+    "description": "Discover why a 2,500-year-old geometric formula: a squared plus b squared equals c squared: remains the secret engine behind GPS satellites, 3D video game engines, and skyscraper engineering.",
     "hashtags": [
       "Mathematics",
-      "Engineering",
-      "ScienceInHindi",
-      "STEM"
+      "Geometry",
+      "ScienceExplained",
+      "STEM",
+      "CodingInHindi"
     ],
     "facts_to_verify": [
-      "The theorem was geometrically proven in ancient Greece and remains fundamental to Euclidean vector distance."
+      "The Pythagorean Theorem is the foundational distance metric for Euclidean space, used directly in GPS triangulation and 3D graphics dot-product calculations."
     ]
   },
   "scenes": [
     {
       "type": "hook",
       "text": "The Formula Behind Every Bridge",
-      "narration": "भाई तुमने आज तक जितने भी विशाल पुल और ऊंची इमारतें देखी हैं, वो सब गणित के सिर्फ एक फॉर्मूले पर टिकी हैं।"
+      "icon": "triangle",
+      "purpose": "Hook curiosity by showing how an ancient math formula secretly powers modern skyscrapers and GPS",
+      "transition": "zoom_through",
+      "visual": {
+        "start": "High-altitude view over an illuminated modern suspension bridge at night",
+        "objects": [
+          "3D Suspension Bridge Model",
+          "Neon Geometric Wireframe Cables",
+          "Glowing Roadway"
+        ],
+        "action": "Bridge cables dissolve into glowing right-angle triangles as structural stress lines illuminate",
+        "camera": "Rapid fly-through along the bridge suspension cables into the central steel pylon",
+        "motion_graphics": [
+          "01 / THE FOUNDATION tag",
+          "Glowing right-angle square symbol (90°)"
+        ],
+        "end": "Camera plunges through steel joint into pure geometric coordinate plane"
+      },
+      "narration": "ढाई हजार साल पुराना एक साधारण फॉर्मूला आज भी दुनिया के हर पुल, गगनचुंबी इमारत और यहाँ तक कि आपके फोन के जी-पी-एस को चला रहा है।",
+      "sfx": "fast_whoosh"
     },
     {
       "type": "manim",
       "title": "Pythagorean Theorem",
-      "narration": "समकोण त्रिभुज में दो छोटी भुजाओं के वर्गों का जोड़ हमेशा सबसे लंबी भुजा के वर्ग के बराबर होता है।",
+      "purpose": "Demonstrate the mathematical formula and square geometric proof with procedural Manim equations",
+      "transition": "morph",
+      "visual": {
+        "start": "Crisp dark blueprint grid with a floating glowing right-angle triangle",
+        "objects": [
+          "Neon Right Triangle",
+          "Adjacent Square a²",
+          "Opposite Square b²",
+          "Hypotenuse Square c²"
+        ],
+        "action": "Squares emerge from all three sides; water-like neon particles from a² and b² pour seamlessly into c²",
+        "camera": "Direct orthographic zoom centered on the hypotenuse equation",
+        "motion_graphics": [
+          "Bold LaTeX formula overlay: a² + b² = c²",
+          "Side length indicator tags: a, b, c"
+        ],
+        "end": "Formula locks in brilliant cyan before transitioning to architectural applications"
+      },
+      "narration": "पाइथागोरस प्रमेय कहता है कि किसी भी समकोण त्रिभुज में आधार और लंब के वर्गों का योग हमेशा कर्ण के वर्ग के बराबर होता है।",
+      "sfx": "click",
       "manim": {
         "template": "Equations",
         "lines": [
@@ -39,44 +83,129 @@
       "type": "bullets",
       "title": "Real-World Architecture",
       "items": [
-        "Civil Engineering",
-        "GPS Navigation",
-        "3D Game Engines",
-        "Space Trajectories"
+        {
+          "text": "GPS Satellite Trilateration",
+          "icon": "satellite"
+        },
+        {
+          "text": "3D Game Engine Distances",
+          "icon": "gamepad-2"
+        },
+        {
+          "text": "Skyscraper Structural Truss",
+          "icon": "building-2"
+        }
       ],
-      "narration": "इंजीनियर्स इसका इस्तेमाल दीवारों को सीधा रखने, तुम्हारा फोन जीपीएस से सटीक दूरी नापने, और गेम इंजनों में थ्री-डी वेक्टर्स कैलकुलेट करने के लिए करते हैं।"
+      "purpose": "Provide concrete real-world engineering domains that rely directly on the theorem",
+      "transition": "whip_pan",
+      "visual": {
+        "start": "Three dark glass panels floating in orbital space",
+        "objects": [
+          "3 Glass Bento Cards",
+          "GPS Satellite Hologram",
+          "3D Game Controller Mesh",
+          "Skyscraper Truss"
+        ],
+        "action": "Cards deploy with snappy staggered entrance on the beat; 3D icons rotate smoothly",
+        "camera": "Dynamic horizontal panning dolly with depth-of-field shifting across cards",
+        "motion_graphics": [
+          "Industry domain tags",
+          "Distance vector computation lines"
+        ],
+        "end": "Cards slide together into a comparison matrix"
+      },
+      "narration": "चाहे वीडियो गेम में दो किरदारों के बीच की दूरी नापनी हो, या अंतरिक्ष से जी-पी-एस सैटेलाइट से आपकी लोकेशन पता करनी हो, हर जगह यही सूत्र काम करता है।",
+      "sfx": "pop"
     },
     {
       "type": "compare",
       "title": "2D Plane vs 3D Reality",
+      "purpose": "Explain how the 2D formula extends seamlessly into 3D Euclidean space (x² + y² + z² = d²)",
+      "transition": "dissolve",
+      "visual": {
+        "start": "Split-screen interface: left shows flat 2D blueprint; right shows volumetric 3D coordinate cube",
+        "objects": [
+          "2D Flat Triangle",
+          "3D Volumetric Coordinate Cube",
+          "Diagonal Distance Vector"
+        ],
+        "action": "Formula expands from 2 terms on the left to 3 terms on the right as diagonal vector stretches in 3D",
+        "camera": "Slow orbit around the 3D cube illustrating depth coordinate Z",
+        "motion_graphics": [
+          "Left: 2D Euclidean tag",
+          "Right: 3D Spatial Vector tag",
+          "Norm formula indicator"
+        ],
+        "end": "Right side 3D cube sparkles with verification checkmark"
+      },
       "left": {
-        "heading": "Flat 2D Plane",
+        "heading": "2D Flat Geometry",
         "items": [
-          "Square Distance",
-          "X and Y Axes",
-          "Grid Navigation"
+          "Sheet Paper Proof",
+          "Distance = √(x² + y²)",
+          "Simple Surveying"
         ]
       },
       "right": {
-        "heading": "Spatial 3D Space",
+        "heading": "3D Spatial Computing",
         "items": [
-          "Full 3D Vectors",
-          "X Y Z Coordinates",
-          "Hyperplane Distance"
+          "VR Headset Tracking",
+          "Spatial Distance",
+          "Game Physics Engines"
         ]
       },
-      "narration": "सिर्फ कागज पर ही नहीं, जब तुम अंतरिक्ष में तीसरी दिशा यानी Z-एक्सिस जोड़ते हो, तो यही नियम थ्री-डी स्पेस में किसी भी वस्तु की सटीक दूरी निकालता है।"
+      "narration": "थ्री-डी स्पेस में इसी फॉर्मूले में बस एक तीसरा कोऑर्डिनेट जुड़ जाता है, जिससे पूरी कंप्यूटर ग्राफिक्स की दुनिया खड़ी होती है।",
+      "sfx": "whoosh"
     },
     {
       "type": "stat",
-      "value": "2,500+",
-      "label": "Years Of Continuous Use",
-      "narration": "ढाई हजार साल पहले खोजी गई यह साधारण समीकरण आज भी हर मॉडर्न रॉकेट, सैटेलाइट और कंप्यूटर विजन के केंद्र में है।"
+      "value": "100%",
+      "label": "Foundation of Euclidean Distance",
+      "icon": "compass",
+      "purpose": "Deliver impactful takeaway on the universal ubiquity of the formula across physics and computer science",
+      "transition": "pop",
+      "visual": {
+        "start": "Clean dark void with glowing golden compass divider in center",
+        "objects": [
+          "Giant 3D '100%' Glyph",
+          "Golden Architectural Compass",
+          "Glowing Measurement Ring"
+        ],
+        "action": "Compass rotates 360 degrees drawing a perfect cyan measurement circle; 100% punches forward on the beat",
+        "camera": "Kinetic punch-in on number 100% with bloom illumination",
+        "motion_graphics": [
+          "Euclidean Metric seal",
+          "Universal Constant tag"
+        ],
+        "end": "Glyph hovers serenely with soft radial pulse"
+      },
+      "narration": "सौ प्रतिशत सटीकता के साथ यह फॉर्मूला साबित करता है कि गणित सिर्फ किताबों के लिए नहीं, बल्कि पूरी दुनिया को रचने का कोड है।",
+      "sfx": "impact"
     },
     {
       "type": "outro",
       "text": "Math Powers The Real World",
-      "narration": "गणित केवल किताबों के लिए नहीं, पूरी दुनिया को चलाने के लिए है। ऐसे ही साइंस और टेक ब्रेकडाउन्स के लिए फॉलो जरूर कर लेना!"
+      "icon": "sparkles",
+      "purpose": "Inspire the viewer to appreciate math and subscribe for more STEM explanations",
+      "transition": "dissolve",
+      "visual": {
+        "start": "Golden right triangle transforms into a radiant star beacon",
+        "objects": [
+          "Golden Star Beacon",
+          "Floating YouTube Subscribe Badge",
+          "Expanding Energy Waves"
+        ],
+        "action": "Star beacon emits warm golden particle shower; subscribe button slides in with playful spring bounce",
+        "camera": "Smooth pull-back into atmospheric dark vignette finish",
+        "motion_graphics": [
+          "Math in Motion badge",
+          "STEM Deep Dives payoff tag",
+          "Subscribe notification bell"
+        ],
+        "end": "Final dark-mode fade to black"
+      },
+      "narration": "गणित के ऐसे ही जादुई सिद्धांतों को विज़ुअली समझने के लिए हमें अभी फॉलो करें। मिलते हैं अगले वीडियो में!",
+      "sfx": "sparkle"
     }
   ]
 }

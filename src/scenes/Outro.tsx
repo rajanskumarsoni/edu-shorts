@@ -1,14 +1,29 @@
 import React from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import type { SceneSpec } from "../types";
-import { MUTED } from "../theme";
+import { MUTED, resolveSceneTag } from "../theme";
 import { useLayout } from "../layout";
 import { RevealText } from "../Reveal";
+import { MotionGraphic } from "../MotionGraphic";
+import { ThreeDOutroPayoff } from "./ThreeDOutroPayoff";
 
 export const Outro: React.FC<{ scene: SceneSpec; accent: string }> = ({
   scene,
   accent,
 }) => {
+  // Delegate to 3D WebGL Digital India Outro
+  const is3DOutro =
+    scene.variant === "upi_outro_3d" ||
+    scene.variant === "outro_3d" ||
+    scene.variant === "digital_india_3d" ||
+    /digital india|seconds on screen|systems behind/i.test(scene.text || "") ||
+    /mission accomplished|digital india/i.test(scene.tag || "") ||
+    (scene.type === "outro" && (scene.icon === "sparkles" || scene.icon === "smartphone"));
+
+  if (is3DOutro) {
+    return <ThreeDOutroPayoff scene={scene} accent={accent} />;
+  }
+
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const L = useLayout();
@@ -79,16 +94,26 @@ export const Outro: React.FC<{ scene: SceneSpec; accent: string }> = ({
         <span
           style={{
             fontFamily: "monospace",
-            fontSize: 20,
+            fontSize: 28,
             fontWeight: 800,
             letterSpacing: "0.22em",
             color: accent,
             textTransform: "uppercase",
           }}
         >
-          {"05 // MISSION COMPLETE"}
+          {resolveSceneTag(scene, "05 // MISSION COMPLETE")}
         </span>
       </div>
+
+      {/* Dynamic Animated Outro/Payoff Motion Graphic */}
+      <MotionGraphic
+        icon={scene.icon || "sparkles"}
+        text={scene.text}
+        narration={scene.narration}
+        accent={accent}
+        size="lg"
+        style={{ marginBottom: 40 }}
+      />
 
       {/* Main Headline Call to Action */}
       <RevealText

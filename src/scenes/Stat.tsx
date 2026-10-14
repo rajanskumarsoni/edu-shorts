@@ -8,9 +8,10 @@ import {
   useVideoConfig,
 } from "remotion";
 import type { SceneSpec } from "../types";
-import { MUTED } from "../theme";
+import { MUTED, resolveSceneTag } from "../theme";
 import { useLayout } from "../layout";
 import { RevealText } from "../Reveal";
+import { MotionGraphic } from "../MotionGraphic";
 
 // "2,500+" -> counts up from 0 to 2,500 and keeps the "+"; text without numbers is shown as is
 const countUp = (value: string, p: number): string => {
@@ -72,16 +73,27 @@ export const Stat: React.FC<{ scene: SceneSpec; accent: string }> = ({
         <span
           style={{
             fontFamily: "monospace",
-            fontSize: 20,
+            fontSize: 28,
             fontWeight: 800,
             letterSpacing: "0.22em",
             color: accent,
             textTransform: "uppercase",
           }}
         >
-          {"02 // PEAK METRIC MONITOR"}
+          {resolveSceneTag(scene, "02 // PEAK METRIC MONITOR")}
         </span>
       </div>
+
+      {/* Floating Semantic Metric Motion Graphic */}
+      <MotionGraphic
+        icon={scene.icon}
+        text={scene.label}
+        narration={scene.narration}
+        accent={accent}
+        size="md"
+        showRadar={false}
+        style={{ marginBottom: 20 }}
+      />
 
       {/* Center Animated Metric Graphic with Circular HUD Gauge */}
       <div
@@ -155,7 +167,7 @@ export const Stat: React.FC<{ scene: SceneSpec; accent: string }> = ({
             lineHeight: 1,
           }}
         >
-          {countUp(scene.value ?? "", p)}
+          {countUp(String(scene.value ?? ""), p)}
         </div>
       </div>
 

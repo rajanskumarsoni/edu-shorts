@@ -388,7 +388,7 @@ def build(spec_path: str, args):
     scenes_out = []
     for n, s, src_scene, frames in plan:
         print(f"[scene {n}] {s['type']}")
-        scene = {k: v for k, v in s.items() if k not in ("narration", "manim", "seconds")}
+        scene = {k: v for k, v in s.items() if k not in ("manim", "seconds")}
         if src_scene:
             dst = pub / f"s{n}{src_scene.suffix}"
             shutil.copy(src_scene, dst)
@@ -403,20 +403,40 @@ def build(spec_path: str, args):
             scene["image"] = f"{vid}/{dst.name}"
         if s["type"] == "manim":
             clip = pub / f"s{n}.mp4"
-            print(f"  rendering Manim ({frames / FPS:.1f}s)...")
-            msize = (size[0] * args.scale, size[1] * args.scale)
-            render_manim(s.get("manim", {}), frames / FPS, accent, clip, msize, fmt)
-            scene["video"] = f"{vid}/s{n}.mp4"
+            if not getattr(args, "thumbnail", False) or n == 1:
+                print(f"  rendering Manim ({frames / FPS:.1f}s)...")
+                msize = (size[0] * args.scale, size[1] * args.scale)
+                render_manim(s.get("manim", {}), frames / FPS, accent, clip, msize, fmt)
+                scene["video"] = f"{vid}/s{n}.mp4"
         scenes_out.append(scene)
 
-    manifest = {"fps": FPS, "width": size[0], "height": size[1], "accent": accent,
-                "scenes": scenes_out}
+    manifest = {
+        "fps": FPS,
+        "width": size[0],
+        "height": size[1],
+        "accent": accent,
+        "captions": spec.get("captions", True),
+        "progress": spec.get("progress", True),
+        "sfx": spec.get("sfx", True),
+        "loop": spec.get("loop", False),
+        "scenes": scenes_out,
+    }
     if narration_rel:
         manifest["narration"] = narration_rel
     music = spec.get("music")
-    if music:
-        shutil.copy(ROOT / music, pub / Path(music).name)
-        manifest["music"] = f"{vid}/{Path(music).name}"
+    if music == "none":
+        manifest["music"] = "none"
+    elif music and (ROOT / music).exists():
+        music_path = Path(music)
+        if music_path.name in ("Warm Focus.wav", "warm_focus.wav", "warm_focus.mp3"):
+            manifest["music"] = "music/warm_focus.mp3"
+        else:
+            shutil.copy(ROOT / music, pub / music_path.name)
+            manifest["music"] = f"{vid}/{music_path.name}"
+    else:
+        # Default background music across every video: Warm Focus
+        manifest["music"] = "music/warm_focus.mp3"
+    manifest["music_volume"] = float(spec.get("music_volume", 0.32))
     (pub / "manifest.json").write_text(json.dumps(manifest, indent=2))
 
     meta = spec.get("meta")
@@ -437,14 +457,35 @@ def build(spec_path: str, args):
             (ROOT / "out" / f"{vid}-upload.txt").write_text("\n".join(parts), encoding="utf-8")
             print(f"Upload text written: out/{vid}-upload.txt")
 
+    npx = shutil.which("npx") or "/opt/homebrew/bin/npx" or "npx"
+    ffmpeg = shutil.which("ffmpeg") or "/opt/homebrew/bin/ffmpeg" or "ffmpeg"
+
+    # Automated high-CTR thumbnail render
+    if getattr(args, "thumbnail", False):
+        thumb_out = ROOT / "out" / f"{vid}-thumbnail.jpg"
+        thumb_cmd = [npx, "remotion", "still", "src/index.ts", "Video", str(thumb_out),
+                     f"--props=public/{vid}/manifest.json", "--frame=20"]
+        print(f"Rendering high-CTR thumbnail still (1080x1920)...")
+        subprocess.run(thumb_cmd, check=True, cwd=ROOT)
+        print(f"Thumbnail ready -> {thumb_out}")
+        return
+
     if args.no_render:
         print(f"Preview: npx remotion studio src/index.ts --props=public/{vid}/manifest.json")
         return
 
     out = ROOT / "out" / f"{vid}.mp4"
     out.parent.mkdir(exist_ok=True)
-    npx = shutil.which("npx") or "/opt/homebrew/bin/npx" or "npx"
-    ffmpeg = shutil.which("ffmpeg") or "/opt/homebrew/bin/ffmpeg" or "ffmpeg"
+
+    # Auto-generate thumbnail alongside video
+    thumb_out = ROOT / "out" / f"{vid}-thumbnail.jpg"
+    thumb_cmd = [npx, "remotion", "still", "src/index.ts", "Video", str(thumb_out),
+                 f"--props=public/{vid}/manifest.json", "--frame=20"]
+    try:
+        subprocess.run(thumb_cmd, check=True, cwd=ROOT)
+        print(f"Cover thumbnail generated -> {thumb_out}")
+    except Exception:
+        pass
 
     if args.motion_blur:
         raw_out = ROOT / "out" / f"{vid}_raw.mp4"
@@ -482,6 +523,7 @@ def main():
     ap.add_argument("specs", nargs="+", help="one or more JSON files (globs ok)")
     ap.add_argument("--export-text", action="store_true")
     ap.add_argument("--no-render", action="store_true")
+    ap.add_argument("--thumbnail", action="store_true", help="Render only high-CTR 1080x1920 cover thumbnail still in out/<id>-thumbnail.jpg")
     ap.add_argument("--skip-validate", action="store_true")
     ap.add_argument("--upload", nargs="?", const="public", default="public", choices=["public", "private", "unlisted"],
                     help="Automatically upload video to YouTube once render finishes (default: public)")

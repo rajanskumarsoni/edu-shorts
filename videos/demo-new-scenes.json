@@ -1,0 +1,340 @@
+{
+  "id": "demo-new-scenes",
+  "format": "vertical",
+  "accent": "#00F0FF",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "loop": false,
+  "music": null,
+  "music_volume": 0.08,
+  "meta": {
+    "title": "Advanced Motion Graphics Engine Showcase",
+    "description": "Showcasing next-generation procedural video scenes: code editors, system architecture, circular gauges, dynamic timelines, callout badges, and 3D WebGL neural networks.",
+    "hashtags": [
+      "MotionDesign",
+      "SystemDesign",
+      "SoftwareEngineering",
+      "ThreeJS",
+      "CodingInHindi"
+    ],
+    "facts_to_verify": [
+      "Hardware-accelerated WebGL combined with Remotion provides deterministic frame-by-frame video synthesis in modern browsers."
+    ]
+  },
+  "scenes": [
+    {
+      "type": "hook",
+      "text": "New Scene Types Unlocked",
+      "icon": "zap",
+      "purpose": "Introduce the expansive array of newly unlocked high-fidelity motion graphics scenes",
+      "transition": "zoom_through",
+      "visual": {
+        "start": "Dark high-tech laboratory with holographic interface consoles floating in mid-air",
+        "objects": [
+          "Glowing Core Console",
+          "Floating Holographic Badges",
+          "Neon Light Rings"
+        ],
+        "action": "Power switch triggers; glowing circuit patterns spread across the floor toward the camera",
+        "camera": "Rapid forward push-in passing through neon energy gateway",
+        "motion_graphics": [
+          "ENGINE VERSION 2.0 telemetry badge",
+          "Active rendering status: READY"
+        ],
+        "end": "Screen transitions through flash into the code editor IDE"
+      },
+      "narration": "दोस्तों, हमारे वीडियो इंजन में अब शामिल हो चुके हैं दस नए पावरफुल सीन्स! चलिए देखते हैं कि अब हमारे वीडियो कितने नेक्स्ट लेवल बन सकते हैं।",
+      "sfx": "fast_whoosh"
+    },
+    {
+      "type": "code",
+      "title": "Async Worker Loop",
+      "language": "python",
+      "filename": "worker.py",
+      "lines": [
+        "async def process_task(task_id: str):",
+        "    data = await fetch_payload(task_id)",
+        "    result = await engine.compute(data)",
+        "    await queue.acknowledge(task_id)"
+      ],
+      "highlight": 2,
+      "purpose": "Demonstrate native dark-mode macOS terminal code scene with live syntax highlighting",
+      "transition": "match_cut",
+      "visual": {
+        "start": "macOS window frame with red, yellow, and green window control dots",
+        "objects": [
+          "Dark Terminal Window",
+          "Monaco Font Syntax Highlighting",
+          "Glowing Cursor Bar"
+        ],
+        "action": "Code types in rhythmically; line 3 lights up with bright cyan background highlighting",
+        "camera": "Subtle 3D Dutch tilt emphasizing the terminal depth and glass reflection",
+        "motion_graphics": [
+          "Line number counter",
+          "Python async execution pulse indicator"
+        ],
+        "end": "Terminal minimizes into a floating micro-node"
+      },
+      "narration": "पहला है कोड सीन, जहाँ सिंटेक्स हाइलाइटिंग और कर्सर टाइपिंग के साथ आप किसी भी जटिल एल्गोरिदम को आसानी से समझा सकते हैं।",
+      "sfx": "typing"
+    },
+    {
+      "type": "architecture",
+      "title": "Distributed Topology",
+      "nodes": [
+        "API Gateway",
+        "Auth Service",
+        "Worker Pool",
+        "Redis Cache"
+      ],
+      "steps": [
+        "01 / Validate Token",
+        "02 / Route Request",
+        "03 / Execute Task",
+        "04 / Write State"
+      ],
+      "activeNode": 2,
+      "tag": "ASYNC DISPATCH",
+      "purpose": "Illustrate complex distributed backend services with synchronized pulsing nodes",
+      "transition": "morph",
+      "visual": {
+        "start": "Four server node blocks arranged in clean vertical hierarchy",
+        "objects": [
+          "4 Service Nodes",
+          "Interconnecting Neon Fiber Lines",
+          "Data Packet Beams"
+        ],
+        "action": "Active node pulses brightly as data packet travels from API Gateway down to Redis Cache",
+        "camera": "Vertical tracking pan following packet trajectory down the service chain",
+        "motion_graphics": [
+          "ASYNC DISPATCH tag",
+          "Step progress badges 01 to 04"
+        ],
+        "end": "All 4 nodes illuminate simultaneously in healthy green state"
+      },
+      "narration": "दूसरा है आर्किटेक्चर सीन! माइक्रोसर्विसेज और सिस्टम डिजाइन के फ्लो को अब आप डायनेमिक नोड्स के साथ दिखा सकते हैं।",
+      "sfx": "radar_beep"
+    },
+    {
+      "type": "gauge",
+      "title": "Sub-10ms Response Time",
+      "startValue": 120,
+      "endValue": 8,
+      "unit": "ms",
+      "status": "Ultra Fast",
+      "badge": "Top 1%",
+      "min": 0,
+      "max": 150,
+      "purpose": "Showcase high-performance metrics with kinetic circular speedometer dial",
+      "transition": "pop",
+      "visual": {
+        "start": "Circular speedometer gauge resting at 120ms amber alert zone",
+        "objects": [
+          "3D Speedometer Dial",
+          "Radial HUD Arc",
+          "High-Precision Metric Counter"
+        ],
+        "action": "Gauge needle swings back rapidly from 120ms down to 8ms with neon green bloom",
+        "camera": "Direct front-on zoom with gentle micro-shake when needle locks into place",
+        "motion_graphics": [
+          "Ultra Fast status badge",
+          "Top 1% achievement tag",
+          "Glowing radial tick marks"
+        ],
+        "end": "Gauge emits expanding pulse ring celebrating sub-10ms latency"
+      },
+      "narration": "तीसरा है गेज सीन, जो लेटेंसी और परफॉरमेंस मैट्रिक्स को एक लाइव स्पीडोमीटर की तरह रोल-अप करके दिखाता है।",
+      "sfx": "ka_ching"
+    },
+    {
+      "type": "timeline",
+      "title": "4-Phase Execution Pipeline",
+      "steps": [
+        "Ingest Raw Stream",
+        "Tokenize & Embed",
+        "Vector Search (HNSW)",
+        "LLM Inference"
+      ],
+      "activeStep": 2,
+      "purpose": "Walk through ordered multi-stage engineering pipelines with sequential timeline radar beats",
+      "transition": "match_cut",
+      "visual": {
+        "start": "Horizontal timeline track with 4 sequential milestone circles",
+        "objects": [
+          "Timeline Track Ribbon",
+          "4 Phase Markers",
+          "Active Step Radar Ring"
+        ],
+        "action": "Steps 1 and 2 check off; Step 3 pulses with radar wave showing active vector search in progress",
+        "camera": "Smooth horizontal dolly sliding across the execution track",
+        "motion_graphics": [
+          "Step index tags 01 through 04",
+          "Active radar ripple effect"
+        ],
+        "end": "Camera anchors on Step 3 before transitioning to callout"
+      },
+      "narration": "चौथा है टाइमलाइन सीन! डेटा पाइपलाइन और लाइफसाइकिल स्टेप्स को दिखाने का यह सबसे साफ और सुंदर तरीका है।",
+      "sfx": "tick"
+    },
+    {
+      "type": "callout",
+      "title": "Cache Invalidation Is Hard",
+      "category": "Golden Rule",
+      "text": "There are only two hard things in Computer Science: cache invalidation and naming things.",
+      "subtext": "Always set sensible TTL and leverage write-through invalidation buffers.",
+      "purpose": "Highlight foundational software engineering principles with high-visibility frosted card",
+      "transition": "whip_pan",
+      "visual": {
+        "start": "Clean dark background with subtle gold ambient spotlight",
+        "objects": [
+          "Floating Glassmorphic Card",
+          "Glowing Golden Shield Icon",
+          "Headline Text Ribbon"
+        ],
+        "action": "Golden Rule card slides into frame from the bottom with spring physics and glowing border",
+        "camera": "Slight tilt-up as card docks securely in screen center",
+        "motion_graphics": [
+          "Golden Rule ribbon badge",
+          "Subtext advice container",
+          "Gold light sweep across surface"
+        ],
+        "end": "Card dissolves gracefully into the 3D neural network"
+      },
+      "narration": "पाँचवाँ है कॉलआउट सीन, जो किसी भी गोल्डन रूल या अहम वॉर्निंग को स्क्रीन पर सबसे अलग और चमकदार तरीके से उभारता है।",
+      "sfx": "impact"
+    },
+    {
+      "type": "three",
+      "variant": "neural_network_3d",
+      "title": "Deep Neural Activation",
+      "equation": "a^{(l)} = \\sigma(W^{(l)} a^{(l-1)} + b^{(l)})",
+      "metrics": {
+        "Layers": "12",
+        "Parameters": "175B",
+        "Activation": "GELU"
+      },
+      "purpose": "Demonstrate deep neural network feedforward signals in native 3D WebGL",
+      "transition": "zoom_through",
+      "visual": {
+        "start": "Camera inside the input layer of a multi-layer 3D neural network",
+        "objects": [
+          "12 Floating Neural Layers",
+          "Synaptic Connection Filaments",
+          "Signal Charge Orbs"
+        ],
+        "action": "Bright energy pulses fire from input layer through hidden layers to output nodes in wave motion",
+        "camera": "Flying dolly through the interior synaptic forest between layer columns",
+        "motion_graphics": [
+          "Layer activation formula",
+          "175B Parameters telemetry HUD",
+          "Synaptic weight density map"
+        ],
+        "end": "Output layer sparks bright white, transferring into benchmark comparison"
+      },
+      "narration": "छठा है थ्री-डी न्यूरल नेटवर्क सीन, जहाँ थ्री डॉट जे-एस की मदद से आप डीप लर्निंग लेयर्स को असली थ्री-डी में घूमकर दिखा सकते हैं।",
+      "sfx": "radar_beep"
+    },
+    {
+      "type": "benchmark",
+      "title": "Speed Optimization Showdown",
+      "unit": "ms",
+      "runners": [
+        {
+          "name": "Python Loops",
+          "value": 450,
+          "status": "Slow",
+          "color": "#FF5500"
+        },
+        {
+          "name": "NumPy SIMD",
+          "value": 42,
+          "status": "Fast",
+          "color": "#FFC857"
+        },
+        {
+          "name": "Rust SIMD",
+          "value": 4,
+          "status": "Winner",
+          "color": "#00F0FF"
+        }
+      ],
+      "purpose": "Pit technologies head-to-head with animated racing progress bars",
+      "transition": "pop",
+      "visual": {
+        "start": "Three horizontal race tracks at starting line with zero progress",
+        "objects": [
+          "3 Racing Bar Tracks",
+          "Neon Fill Bars",
+          "Performance Badges"
+        ],
+        "action": "All three bars launch forward: Python crawls, NumPy dashes, and Rust sprints across finish line in 4ms",
+        "camera": "Direct frontal view with dynamic tracking zoom on the winning Rust bar",
+        "motion_graphics": [
+          "Winner trophy beacon",
+          "Time delta counter",
+          "Execution unit indicator (ms)"
+        ],
+        "end": "Winning bar flashes in brilliant cyan with victory sparkles"
+      },
+      "narration": "सातवाँ है बेंचमार्क सीन! अलग-अलग टूल्स और लैंग्वेजेस की स्पीड को लाइव रेसिंग बार्स के साथ कंपेयर कीजिए।",
+      "sfx": "ka_ching"
+    },
+    {
+      "type": "three",
+      "variant": "server_rack_3d",
+      "title": "Datacenter Rack Mesh",
+      "metrics": {
+        "Uptime SLA": "99.999%",
+        "Cooling": "Direct Liquid",
+        "Rack Density": "42U / 15kW"
+      },
+      "purpose": "Showcase industrial cloud infrastructure with photorealistic server rack modules",
+      "transition": "match_cut",
+      "visual": {
+        "start": "High angle overlooking glowing aisle of 3D server racks in datacenter",
+        "objects": [
+          "High-Density 3D Server Racks",
+          "Pulsating Activity LEDs",
+          "Cooling Exhaust Grid"
+        ],
+        "action": "LED status indicators flicker rapidly; overhead fiber trays illuminate with pulsating data transit",
+        "camera": "Cinematic low-angle tracking dolly alongside the server cabinet faces",
+        "motion_graphics": [
+          "99.999% Uptime SLA tag",
+          "Active server cluster monitor HUD",
+          "Rack thermal telemetry"
+        ],
+        "end": "Camera pans up toward overhead ceiling lights"
+      },
+      "narration": "आठवाँ है सर्वर रैक सीन, जो क्लाउड इंफ्रास्ट्रक्चर और डेटाबेस क्लस्टर्स को एक हाई-टेक डेटा सेंटर जैसा रियलिस्टिक लुक देता है।",
+      "sfx": "whoosh"
+    },
+    {
+      "type": "outro",
+      "text": "Code-Driven Video Pipeline",
+      "icon": "sparkles",
+      "purpose": "Conclude showcase with call-to-action to build engaging educational content",
+      "transition": "dissolve",
+      "visual": {
+        "start": "All 10 scene icons converge into a central rotating holographic cube",
+        "objects": [
+          "Central Holographic Prism",
+          "Particle Stream Orbit",
+          "Glowing Subscribe Plate"
+        ],
+        "action": "Prism bursts into radiant neon light rays; follow button slides into view with crisp spring motion",
+        "camera": "Smooth pull-back into deep atmospheric dark-mode finish",
+        "motion_graphics": [
+          "Follow for Tech Insights CTA",
+          "Opus 5.5 Production Quality seal",
+          "Notification bell ring animation"
+        ],
+        "end": "Final brand logo shines in centered serenity"
+      },
+      "narration": "ये सभी सीन्स पूरी तरह से ऑटोमेटेड और कोड-ड्रिवन हैं। तो देर किस बात की? चलिए मिलकर बनाते हैं दुनिया के सबसे शानदार एजुकेशनल वीडियोज!",
+      "sfx": "sparkle"
+    }
+  ]
+}
