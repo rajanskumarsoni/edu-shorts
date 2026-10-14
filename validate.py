@@ -2,8 +2,8 @@
 """
 Checks a video script JSON against the pipeline's rules.
 
-  python validate.py videos/topic.json
-  python validate.py videos/*.json
+  python validate.py episodes/<id>/storyboard.json
+  python validate.py episodes/*/storyboard.json
 
 Errors   -> the pipeline would fail or render wrong. Exit code 1.
 Warnings -> style problems (too long, too many items...). Exit code 0.
@@ -16,30 +16,34 @@ from pathlib import Path
 
 ROOT = Path(__file__).parent
 
-MAX_SECONDS = 300          # hard limit: 5 minutes
-SHORTS_SECONDS = 180       # above this it is no longer a Short/Reel
+MAX_SECONDS = 180          # hard production limit: 3 minutes
+SHORTS_SECONDS = MAX_SECONDS
 WORDS_PER_SECOND = 2.5     # rough speaking speed used for the estimate
 
-TOP_ALLOWED = {"id", "format", "audio_mode", "accent", "music", "music_volume", "captions", "progress", "sfx", "loop", "meta", "scenes"}
+TOP_ALLOWED = {"$schema", "id", "format", "audio_mode", "accent", "art_direction", "music", "music_volume", "captions", "progress", "sfx", "loop", "meta", "journey", "pad_seconds", "scenes"}
 COMMON_SCENE_FIELDS = {
     "sfx", "sfxVolume", "icon", "graphic", "visual", "motion",
-    "purpose", "transition", "camera", "action", "objects", "tag", "tone"
+    "purpose", "transition", "camera", "action", "objects", "tag", "tone",
+    "beats", "journeyStep", "search_image", "generate_image", "search_video",
+    "search_sfx", "search_model", "search_icon", "icon_path", "image_provider", "video_provider"
 }
 ALLOWED = {
     "hook": {"type", "text", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "bullets": {"type", "title", "items", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "stat": {"type", "value", "label", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "manim": {"type", "title", "manim", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "video": {"type", "video", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "diagram": {"type", "title", "diagram", "mermaid", "graphviz", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "outro": {"type", "text", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "image": {"type", "image", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "quote": {"type", "text", "author", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "compare": {"type", "title", "left", "right", "narration", "seconds"} | COMMON_SCENE_FIELDS,
-    "three": {"type", "title", "variant", "component", "equation", "metrics", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "three": {"type", "title", "variant", "component", "equation", "metrics", "model", "modelScale", "modelRotation", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "code": {"type", "title", "code", "lines", "language", "filename", "highlight", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "architecture": {"type", "title", "nodes", "steps", "subtext", "tag", "direction", "activeNode", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "gauge": {"type", "title", "value", "startValue", "endValue", "unit", "min", "max", "status", "label", "badge", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "timeline": {"type", "title", "steps", "items", "activeStep", "narration", "seconds"} | COMMON_SCENE_FIELDS,
-    "callout": {"type", "title", "text", "subtext", "category", "badge", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "callout": {"type", "title", "text", "subtext", "category", "badge", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "bento": {"type", "title", "bentoItems", "items", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "benchmark": {"type", "title", "runners", "unit", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "hierarchy": {"type", "title", "layers", "narration", "seconds"} | COMMON_SCENE_FIELDS,
@@ -47,8 +51,12 @@ ALLOWED = {
     "inspector": {"type", "title", "sections", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "quadrant": {"type", "title", "xAxis", "yAxis", "points", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "concentric": {"type", "title", "rings", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "seat_booking": {"type", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "neural_network_graph": {"type", "title", "equation", "mode", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "interview": {"type", "title", "text", "interview", "author", "subtext", "narration", "seconds"} | COMMON_SCENE_FIELDS,
 }
-IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
+IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp", ".svg")
+VIDEO_EXTS = (".mp4", ".mov", ".webm")
 BUILTIN = {
     "Equations": {"template", "lines", "file"},
     "Graph": {"template", "fn", "x_range", "y_range", "file"},
@@ -61,6 +69,68 @@ CONTROL_HINTS = {
     "\n": "a line break (from a single backslash in \\neq, \\nu ...)",
     "\r": "\\r (from a single backslash in \\rho, \\right ...)",
 }
+
+# ---------------------------------------------------------------------------
+# Physical-Real Scenario Mandate: every "three" scene MUST map to a concrete
+# 3D WebGL component. Unknown variants silently fall back to the abstract
+# `gradient_descent` math grid, which is exactly the failure mode this
+# validator exists to catch. See AGENTS.md "Physical-Real Scenario Mandate".
+# ---------------------------------------------------------------------------
+REGISTERED_3D_VARIANTS = {
+    # ATM / Payments
+    "atm_machine_3d", "atm_hook_3d", "atm_3d", "cash_dispenser_3d", "atm_kiosk_3d",
+    "upi_hook_3d", "hook_3d", "qr_scan_3d", "smartphone_qr_3d",
+    "concentric_security_3d", "zero_knowledge_pin_3d", "pin_security_3d",
+    "concentric_3d", "security_rings_3d",
+    "upi_tunnel_3d", "digital_tunnel_3d", "cyber_tunnel", "highway_3d",
+    "highway", "traffic_3d", "tunnel_3d",
+    "upi_city_3d", "city_network_3d", "participants_3d", "city_3d",
+    "upi_qr_3d", "qr_inspection_3d", "qr_matrix_3d", "qr_3d", "qrcode_3d",
+    "upi_phone_layers_3d", "phone_layers_3d", "sandbox_3d", "phone_3d",
+    "smartphone_3d", "mobile_3d",
+    "upi_bank_vault_3d", "bank_vault_3d", "upi_bank_vault_credit_3d",
+    "cbs_ledger_3d", "bank_3d", "vault_3d",
+    "neural_network_3d", "neural_network", "backprop_3d", "brain_3d", "ai_3d",
+    "globe_network_3d", "globe_network", "distributed_mesh", "network_3d",
+    "internet_3d", "cloud_3d",
+    "gps_trilateration_3d", "trilateration_3d", "gps_constellation_3d", "satellite_orbit_3d",
+    "bluetooth_link_3d", "bluetooth_radio_3d", "bluetooth_discovery_3d",
+    "bluetooth_pairing_3d", "bluetooth_layers_3d", "bluetooth_digital_data_3d",
+    "bluetooth_spectrum_3d", "frequency_hopping_3d", "bluetooth_audio_path_3d",
+    "packet_to_sound_3d", "bluetooth_interference_3d", "bluetooth_local_p2p_3d",
+    "bluetooth_ecosystem_3d", "bluetooth_pipeline_3d", "bluetooth_reveal_3d",
+    "bluetooth_master_recap_3d", "bluetooth_3d",
+    "server_rack_3d", "server_rack", "datacenter_3d", "npci_datacenter",
+    "server_3d", "servers_3d",
+    "upi_settlement_3d", "settlement_3d", "dual_ledger_3d",
+    "bilateral_settlement_3d",
+    "upi_gauge_3d", "telemetry_gauge_3d", "gauge_3d", "speedometer_3d",
+    "upi_architecture_3d", "architecture_3d", "pipeline_3d",
+    "upi_alert_3d", "alert_3d", "callout_3d", "reconciliation_3d", "payment_reconciliation_alert",
+    "upi_outro_3d", "outro_3d", "digital_india_3d",
+    "database_cluster_3d", "database_rows_3d", "datastore_3d",
+    "database_3d", "db_cluster_3d",
+    "overflow_stack_3d", "connection_pool_3d", "connection_stack_3d",
+    "buffer_overflow_3d", "stack_overflow_3d",
+    "route_segments_3d", "track_segments_3d", "bitmask_route_3d",
+    "railway_route_3d",
+    # Gradient descent sub-variants (math topics only)
+    "batch_gd", "stochastic_gd", "mini_batch", "comparison_3d",
+    # Generic physical primitives (see ThreeDGenericPhysical.tsx)
+    "conveyor_3d", "factory_conveyor_3d", "pipeline_3d_physical",
+    "container_dock_3d", "shipping_dock_3d", "docker_dock_3d",
+    # Washing Machine / Centrifugal / Molecular physics
+    "washing_machine_3d", "washer_3d", "washing_machine", "washer_drum_3d",
+    "centrifugal_spin_3d", "drum_spin_3d", "surfactant_micelle_3d", "micelle_3d",
+    "gradient_descent", "crest_to_trough",
+    # Dedicated GLTF/GLB 3D model variants
+    "model_3d", "gltf_model", "model_viewer_3d", "custom_model_3d",
+}
+
+# Topics where the default `gradient_descent` math grid IS the correct
+# physical representation (math / optimization visuals only).
+MATH_TOPIC_HINTS = ("gradient", "loss", "descent", "optimization", "math",
+                    "equation", "calculus", "derivative", "function")
 
 
 class Report:
@@ -197,6 +267,10 @@ def validate_data(data, root=ROOT):
     if fmt not in ("vertical", "landscape"):
         rep.err("format", f'must be "vertical" (reel size, default) or "landscape" (16:9), got {fmt!r}')
 
+    art_direction = data.get("art_direction", "editorial")
+    if art_direction not in ("editorial", "cinematic"):
+        rep.err("art_direction", f'must be "editorial" (default) or "cinematic", got {art_direction!r}')
+
     mode = data.get("audio_mode", "single")
     if mode not in ("single", "scenes"):
         rep.err("audio_mode", f'must be "single" (one narration file, default) or "scenes" (one file per scene), got {mode!r}')
@@ -215,17 +289,28 @@ def validate_data(data, root=ROOT):
         if not isinstance(meta, dict):
             rep.err("meta", 'must be an object like {"title": "...", "description": "...", "hashtags": [...]}')
         else:
-            extra = set(meta) - {"title", "description", "hashtags", "facts_to_verify"}
+            extra = set(meta) - {"title", "description", "hashtags", "facts_to_verify", "misconceptions", "analogy"}
             if extra:
                 rep.warn("meta", f"unknown fields ignored: {sorted(extra)}")
-            for k in ("title", "description"):
+            for k in ("title", "description", "analogy"):
                 if k in meta and not isinstance(meta[k], str):
                     rep.err("meta", f'"{k}" must be text')
-            for k in ("hashtags", "facts_to_verify"):
+            for k in ("hashtags", "facts_to_verify", "misconceptions"):
                 if k in meta and not (isinstance(meta[k], list) and all(isinstance(x, str) for x in meta[k])):
                     rep.err("meta", f'"{k}" must be a list of text items')
             if isinstance(meta.get("title"), str) and len(meta["title"]) > 100:
                 rep.warn("meta", "title is over 100 characters (YouTube's limit)")
+
+    journey = data.get("journey")
+    if journey is not None:
+        if (not isinstance(journey, list) or not 2 <= len(journey) <= 5
+                or not all(isinstance(x, str) and x.strip() for x in journey)):
+            rep.err("journey", 'must be 2 to 5 non-empty stage labels, e.g. ["SEARCH", "BOOK NOW", "PAYMENT"]')
+            journey = None
+        else:
+            for label in journey:
+                if words(label) > 3:
+                    rep.warn("journey", f'stage label "{label}" is over 3 words; shorten it for the persistent rail')
 
     scenes = data.get("scenes")
     if not isinstance(scenes, list) or not scenes:
@@ -285,11 +370,45 @@ def validate_data(data, root=ROOT):
                 rep.warn(where, "narration has symbols; write it the way it is spoken "
                                 '(e.g. "plus", "percent", "squared") so your TTS reads it right')
 
-        # visual storyboard check (supports rich string or detailed storyboard dict)
+        # Visual storyboards are required for most scene types, but structure varies.
+        # Scenes that are primarily text/UI (hook, outro, interview, quote, callout, stat, bullets)
+        # can have minimal visual storyboards; diagram/3D scenes need full cinematic storyboards.
         vis = s.get("visual")
-        if vis is None or (isinstance(vis, str) and not vis.strip()):
-            rep.warn(where, 'missing "visual" description: describe the intended 3D environment, camera motion, or animation')
-        elif isinstance(vis, dict):
+        if not isinstance(vis, dict):
+            rep.err(where, '"visual" must be a structured storyboard object')
+        else:
+            # Core fields that all scenes should have at minimum
+            core_fields = {
+                "start": str,
+                "action": str,
+                "end": str,
+            }
+            # Extended fields for cinematic/diagram scenes (three, manim, architecture, code, etc.)
+            cinematic_types = {"three", "manim", "architecture", "code", "image", "video",
+                               "compare", "gauge", "timeline", "bento", "benchmark",
+                               "hierarchy", "data_structure", "inspector", "quadrant",
+                               "concentric", "seat_booking", "neural_network_graph"}
+            is_cinematic = t in cinematic_types
+            if is_cinematic:
+                required_visual_fields = {
+                    **core_fields,
+                    "objects": list,
+                    "camera": str,
+                    "motion_graphics": list,
+                }
+            else:
+                required_visual_fields = core_fields
+            for field, expected_type in required_visual_fields.items():
+                value = vis.get(field)
+                if not isinstance(value, expected_type) or (
+                    isinstance(value, str) and not value.strip()
+                ):
+                    rep.err(where, f'"visual.{field}" must be a non-empty {expected_type.__name__}')
+                elif expected_type is list and (
+                    (field in ("objects", "motion_graphics") and not value)
+                    or not all(isinstance(item, str) and item.strip() for item in value)
+                ):
+                    rep.err(where, f'"visual.{field}" must contain non-empty strings')
             recognized_storyboard = {
                 "camera", "objects", "action", "motion_graphics",
                 "start", "end", "environment", "purpose", "transition",
@@ -298,14 +417,57 @@ def validate_data(data, root=ROOT):
             for k in vis.keys():
                 if k not in recognized_storyboard:
                     rep.warn(where, f'unrecognized storyboard property in "visual": "{k}"')
-        elif not isinstance(vis, str):
-            rep.err(where, '"visual" must be a descriptive text string or structured storyboard dictionary')
 
         # optional high-fidelity storyboard properties
         if "purpose" in s and not isinstance(s["purpose"], str):
             rep.err(where, '"purpose" must be a descriptive text string')
         if "transition" in s and not isinstance(s["transition"], str):
             rep.err(where, '"transition" must be a text string (e.g. "zoom_through", "match_cut", "whip_pan")')
+        if "journeyStep" in s:
+            step = s["journeyStep"]
+            if not isinstance(step, int) or isinstance(step, bool) or step < 0:
+                rep.err(where, '"journeyStep" must be a zero-based non-negative integer')
+            elif journey is not None and step >= len(journey):
+                rep.err(where, f'"journeyStep" must be less than the {len(journey)} journey stages')
+        elif journey is not None:
+            rep.err(where, '"journeyStep" is required when a top-level "journey" is defined')
+
+        beats = s.get("beats")
+        if beats is not None:
+            if not isinstance(beats, list) or not beats:
+                rep.err(where, '"beats" must be a non-empty list of timed visual beat objects')
+            else:
+                previous_at = -1
+                for beat_index, beat in enumerate(beats, 1):
+                    beat_where = f"{where} beat {beat_index}"
+                    if not isinstance(beat, dict):
+                        rep.err(beat_where, 'must be an object with "at", "label", and "action"')
+                        continue
+                    extra_beat_fields = set(beat) - {"at", "label", "action", "state", "visualState", "focus", "journeyStep"}
+                    if extra_beat_fields:
+                        rep.warn(beat_where, f"unknown beat fields ignored: {sorted(extra_beat_fields)}")
+                    at = beat.get("at")
+                    if not is_num(at) or not 0 <= at <= 1:
+                        rep.err(beat_where, '"at" must be normalized scene progress from 0 to 1')
+                    elif at <= previous_at:
+                        rep.err(beat_where, '"at" values must be strictly increasing')
+                    else:
+                        previous_at = at
+                    for field in ("label", "action"):
+                        if not isinstance(beat.get(field), str) or not beat[field].strip():
+                            rep.err(beat_where, f'"{field}" must be non-empty text')
+                    for field in ("state", "visualState", "focus"):
+                        if field in beat and (not isinstance(beat[field], str) or not beat[field].strip()):
+                            rep.err(beat_where, f'"{field}" must be non-empty text when provided')
+                    if "journeyStep" in beat:
+                        beat_step = beat["journeyStep"]
+                        if not isinstance(beat_step, int) or isinstance(beat_step, bool) or beat_step < 0:
+                            rep.err(beat_where, '"journeyStep" must be a zero-based non-negative integer')
+                        elif journey is not None and beat_step >= len(journey):
+                            rep.err(beat_where, f'"journeyStep" must be less than the {len(journey)} journey stages')
+                if isinstance(beats, list) and beats and isinstance(beats[0], dict):
+                    if is_num(beats[0].get("at")) and beats[0]["at"] != 0:
+                        rep.warn(where, 'the first visual beat should start at "at": 0')
 
         # type-specific
         if t in ("hook", "outro"):
@@ -339,12 +501,43 @@ def validate_data(data, root=ROOT):
                 rep.warn(where, "value is long; big stats work best at 8 characters or fewer")
         elif t == "image":
             img = s.get("image")
-            if not isinstance(img, str) or not img.strip():
-                rep.err(where, 'image needs "image": a picture path inside the project, e.g. "images/pyramid.jpg"')
-            elif not (root / img).exists():
-                rep.err(where, f"image file not found: {img}")
-            elif Path(img).suffix.lower() not in IMAGE_EXTS:
-                rep.err(where, f"image must be one of {', '.join(IMAGE_EXTS)}")
+            s_img = s.get("search_image")
+            g_img = s.get("generate_image")
+            if not img and not s_img and not g_img:
+                rep.err(where, 'image needs "image": a picture path, "search_image": query, or "generate_image": prompt')
+            elif img:
+                exists = (root / img).exists() or (ROOT / img).exists() or (ROOT / "public" / img).exists()
+                if not exists:
+                    if s_img or g_img:
+                        rep.warn(where, f'image not found locally; will auto-fetch or generate via {s_img or g_img}')
+                    else:
+                        rep.err(where, f"image file not found: {img}")
+                elif Path(img).suffix.lower() not in IMAGE_EXTS:
+                    rep.err(where, f"image must be one of {', '.join(IMAGE_EXTS)}")
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "caption (title) is over 8 words")
+        elif t == "diagram":
+            diag = s.get("diagram")
+            mmd = s.get("mermaid")
+            dot = s.get("graphviz")
+            if not diag and not mmd and not dot and not s.get("image"):
+                rep.err(where, 'diagram needs "diagram": path, or "mermaid": string, or "graphviz": string')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "caption (title) is over 8 words")
+        elif t == "video":
+            clip = s.get("video")
+            s_vid = s.get("search_video")
+            if not clip and not s_vid:
+                rep.err(where, 'video needs "video": a video path, or "search_video": an internet B-roll query')
+            elif clip:
+                exists = (root / clip).exists() or (ROOT / clip).exists() or (ROOT / "public" / clip).exists()
+                if not exists:
+                    if s_vid:
+                        rep.warn(where, f'video clip not found locally; will auto-fetch via search_video "{s_vid}"')
+                    else:
+                        rep.err(where, f"video file not found: {clip}")
+                elif Path(clip).suffix.lower() not in VIDEO_EXTS:
+                    rep.err(where, f"video must be one of {', '.join(VIDEO_EXTS)}")
             if isinstance(s.get("title"), str) and words(s["title"]) > 8:
                 rep.warn(where, "caption (title) is over 8 words")
         elif t == "quote":
@@ -377,6 +570,22 @@ def validate_data(data, root=ROOT):
         elif t == "three":
             if isinstance(s.get("title"), str) and words(s["title"]) > 8:
                 rep.warn(where, "title is over 8 words")
+            # ---- Physical-Real Scenario Mandate: reject unmapped / default variants
+            variant = s.get("variant")
+            if not isinstance(variant, str) or not variant.strip():
+                rep.err(where, 'three scene needs a "variant" that maps to a real 3D '
+                               'physical object (e.g. "server_rack_3d", "database_cluster_3d")')
+            elif variant not in REGISTERED_3D_VARIANTS:
+                rep.err(where, f'unregistered 3D variant "{variant}" — it would silently fall '
+                               f'back to the abstract gradient_descent math grid. Either use an '
+                               f'existing registered variant or add the alias + component to '
+                               f'ThreeScene.tsx (see AGENTS.md Physical-Real Scenario Mandate)')
+            elif variant in ("gradient_descent", "crest_to_trough"):
+                topic = (data.get("id") or "").lower()
+                if not any(h in topic for h in MATH_TOPIC_HINTS):
+                    rep.err(where, f'variant "gradient_descent" is the abstract math default and is '
+                                   f'only valid for math/optimization topics. For "{topic}" map to a '
+                                   f'real physical 3D object variant instead')
         elif t == "manim":
             if "manim" not in s:
                 rep.err(where, 'manim scene needs a "manim" object')
@@ -413,6 +622,13 @@ def validate_data(data, root=ROOT):
         elif t == "callout":
             if "text" not in s and "title" not in s:
                 rep.err(where, 'callout needs "text" or "title"')
+            if "variant" in s:
+                allowed_callout_variants = {
+                    "payment_reconciliation_alert", "upi_alert_3d", "alert_3d", "callout_3d",
+                    "standard", "default"
+                }
+                if s["variant"] not in allowed_callout_variants:
+                    rep.err(where, f'unknown callout variant: {s["variant"]!r} (expected one of {sorted(allowed_callout_variants)})')
             if isinstance(s.get("title"), str) and words(s["title"]) > 8:
                 rep.warn(where, "title is over 8 words")
         elif t == "bento":
@@ -453,13 +669,26 @@ def validate_data(data, root=ROOT):
                 rep.err(where, 'concentric needs "rings": list of ring layer strings')
             if isinstance(s.get("title"), str) and words(s["title"]) > 8:
                 rep.warn(where, "title is over 8 words")
+        elif t == "seat_booking":
+            beats = s.get("beats")
+            if not isinstance(beats, list) or not beats:
+                rep.err(where, 'seat_booking needs "beats" to animate the booking state')
+            else:
+                allowed_states = {"search", "collision", "locked", "payment", "booked", "segments"}
+                for beat_index, beat in enumerate(beats, 1):
+                    if isinstance(beat, dict) and beat.get("visualState") not in allowed_states:
+                        rep.err(where, f'beat {beat_index} needs a "visualState" from {sorted(allowed_states)}')
+        elif t == "interview":
+            iv = s.get("interview")
+            if not iv and "text" not in s and "title" not in s:
+                rep.err(where, 'interview needs "interview" object or "text"/"title"')
 
     types = [s.get("type") for s in scenes if isinstance(s, dict)]
-    if types and types[0] != "hook":
-        rep.warn("scenes", "first scene should be a hook")
-    if types and types[-1] != "outro":
-        rep.warn("scenes", "last scene should be an outro")
-    if not any(t in types for t in ("manim", "three", "architecture", "code", "gauge", "bento", "benchmark", "hierarchy", "data_structure", "inspector", "quadrant", "concentric")):
+    if types and types[0] not in ("hook", "interview"):
+        rep.warn("scenes", "first scene should be a hook or an interview prompt")
+    if types and types[-1] not in ("outro", "interview"):
+        rep.warn("scenes", "last scene should be an outro or recap")
+    if not any(t in types for t in ("manim", "three", "architecture", "code", "gauge", "bento", "benchmark", "hierarchy", "data_structure", "inspector", "quadrant", "concentric", "seat_booking", "neural_network_graph", "interview")):
         rep.warn("scenes", "no animated visual explanation (manim, three, architecture, code, gauge, bento, benchmark...); at least one is recommended")
 
     # same visual type 3+ times in a row gets monotonous in long videos
@@ -474,9 +703,6 @@ def validate_data(data, root=ROOT):
         over = int((est - MAX_SECONDS) * WORDS_PER_SECOND) + 1
         rep.err("length", f"estimated ~{est:.0f}s exceeds the {MAX_SECONDS // 60}-minute limit "
                           f"(cut about {over} words of narration)")
-    elif est > SHORTS_SECONDS:
-        rep.warn("length", f"estimated ~{est:.0f}s: over 3 minutes, so it cannot be a YouTube Short/Reel "
-                           f"(fine as a normal upload)")
     rep.estimate = est
     rep.total_words = total_words
     return rep
@@ -484,10 +710,21 @@ def validate_data(data, root=ROOT):
 
 def validate_file(path):
     rep = Report()
+    p = Path(path)
+    if p.is_dir():
+        if (p / "storyboard.json").exists():
+            p = p / "storyboard.json"
+        else:
+            jsons = list(p.glob("*.json"))
+            if jsons:
+                p = jsons[0]
+            else:
+                rep.err("file", f"directory {path} contains no storyboard.json or *.json file")
+                return rep
     try:
-        text = Path(path).read_text(encoding="utf-8")
+        text = p.read_text(encoding="utf-8")
     except OSError as e:
-        rep.err("file", f"cannot read {path}: {e}")
+        rep.err("file", f"cannot read {p}: {e}")
         return rep
     try:
         data = json.loads(text)
@@ -501,7 +738,7 @@ def validate_file(path):
             hint = " (text after the JSON ends: remove any explanation or ``` fences)"
         rep.err("json", f"line {e.lineno}, column {e.colno}: {e.msg}{hint}")
         return rep
-    rep = validate_data(data)
+    rep = validate_data(data, root=p.parent)
     return rep
 
 
@@ -523,7 +760,22 @@ def main(argv):
         return 1
     files = []
     for pat in argv:
-        files += sorted(glob.glob(pat)) or [pat]
+        p = Path(pat)
+        if p.is_dir():
+            if (p / "storyboard.json").exists():
+                files.append(str(p / "storyboard.json"))
+            else:
+                found = sorted(str(f) for f in p.rglob("*.json"))
+                if found:
+                    files.extend(found)
+                else:
+                    files.append(str(p))
+        else:
+            matches = sorted(glob.glob(pat))
+            if matches:
+                files.extend(matches)
+            else:
+                files.append(pat)
     bad = False
     for f in files:
         rep = validate_file(f)

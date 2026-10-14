@@ -6,15 +6,14 @@ scenes, Manim math/diagram animations, background effects and your voice.
 
 - **Default size: vertical 1080x1920 (Reels / Shorts / TikTok), full HD.**
 - Optional: landscape 1920x1080 (normal YouTube video). Optional double resolution with `--scale 2`.
-- Maximum length: **5 minutes** (enforced).
-- No captions are shown. The narration is audio only.
-- **8 scene types:** hook, bullets, stat (counting number), manim (animated math/diagrams), image (photo with
-  slow camera push), quote, compare (two sides), outro.
-- **Cinematic motion-graphics look, all made by code:** slow camera drift on every scene, word-by-word blur-in titles,
-  glowing accents, floating light particles (bokeh), a light sweep on each scene change, teal/orange color grade,
-  vignette and film grain.
-
-Preview images of each scene type are in the `docs/` folder.
+- Maximum length: **3 minutes / 180 seconds** (enforced).
+- Optional word-highlighted captions can be enabled per script; they preserve the approved Hindi narration verbatim.
+- Scene types include hook, bullets, stat, manim, image, quote, compare, outro, native 3D, architecture,
+  code, timelines, data visualizations, and topic-specific scenes.
+- Scripts may define timed visual beats and a persistent chapter rail to make important state changes
+  trackable through a scene and across the video.
+- **Editorial motion-graphics look by default:** stable diagrams, a subtle blueprint grid, and restrained composition.
+  Set `"art_direction": "cinematic"` to opt into legacy camera drift, bokeh, light sweeps, color grade, vignette, and grain.
 
 Honest scope: this gives a polished, modern motion-graphics look. It is not a film-style 3D render
 (realistic lighting, cameras, characters). For that you would use a 3D tool such as Blender.
@@ -44,33 +43,33 @@ Honest scope: this gives a polished, modern motion-graphics look. It is not a fi
 
 ## 1. How it works
 
-By default the whole video uses **ONE narration audio file**.
+For new videos, keep each episode's source material and deliverables together:
 
 ```
-videos/topic.json  (your script)
-        |
-        |  python pipeline.py videos/topic.json --export-text
-        v
-audio/topic/narration_text.txt   all narration in one text, one paragraph per scene
-        |
-        |  YOUR TTS MODEL (one run)
-        v
-audio/topic/narration.wav        ONE audio file for the whole video
-        |
-        |  python pipeline.py videos/topic.json
-        v
- 1. validates the script
- 2. finds where each scene starts inside the audio
-    (pauses between scenes, or speech recognition, or a timings file)
- 3. renders Manim animations, timed to fit each scene
- 4. Remotion combines everything -> out/topic.mp4
+episodes/<id>/
+  brief.yaml, script.md, storyboard.json
+  audio/                 narration audio
+  media/                 thumbnails, scene stills, QA contact sheets
+  post.md                publishing metadata
+  final.mp4              rendered video
 ```
 
-Key idea: **audio decides timing.** Each scene lasts from the moment its narration starts until
-the next scene's narration starts, so sound and picture always match.
+Validate and render an episode with:
 
-Prefer one audio file per scene instead? Set `"audio_mode": "scenes"` in the script
-([section 6.5](#65-alternative-one-audio-file-per-scene)).
+```bash
+python3 validate.py episodes/<id>/storyboard.json
+python3 pipeline.py episodes/<id>/storyboard.json --preview --no-upload
+python3 pipeline.py episodes/<id>/storyboard.json --no-upload
+```
+
+The pipeline generates Remotion's temporary/runtime assets in `public/<id>/`. That folder is
+not a second source of truth: its copied audio and scene assets are staging inputs for rendering.
+Legacy specs in `videos/<id>.json` are still supported and continue to use `audio/<id>/`,
+`media/<id>/`, and `out/<id>.mp4`.
+
+By default, the whole video uses **ONE narration audio file**; set `"audio_mode": "scenes"` to use
+one narration file per scene. **Audio decides timing:** each scene lasts from its narration start
+until the next scene's narration starts.
 
 ---
 
@@ -82,18 +81,20 @@ edu-shorts/
   validate.py            checks your script for mistakes (also runs automatically)
   make_test_audio.py     makes placeholder audio so you can try the pipeline
   tts.py                 optional: plug in your TTS model to automate the narration audio
-  videos/                YOUR SCRIPTS (one .json per video)
-  audio/<id>/            narration text, narration.wav (YOUR audio), timings files
-  public/<id>/           working files (copied audio, Manim clips); safe to delete
-  out/                   FINISHED VIDEOS (.mp4)
-  images/                your pictures for image scenes (sample.jpg is a placeholder)
+  episodes/<id>/         canonical source, narration, media, metadata, and final render
+  videos/                legacy standalone storyboard JSON files
+  public/<id>/           generated Remotion staging assets; do not author source files here
+  audio/<id>/            legacy narration input for specs in videos/
+  media/<id>/            legacy images and QA stills for specs in videos/
+  out/                   legacy renders and generated upload metadata
   manim_templates/       Manim animation templates (Equations, Graph, Flow) + your own
   src/                   Remotion (React) code: scenes, look, effects
-  prompts/               ready-made prompts for another AI: write_script.md, fix_errors.md, topic_ideas.md
+  prompts/               shared production prompts and templates
   package.json, requirements.txt, tsconfig.json, remotion.config.ts   setup files
 ```
 
-You will mostly touch only `videos/`, `audio/` and `out/`.
+For new work, use `episodes/<id>/`. The detailed walkthrough and command examples below document
+the still-supported legacy `videos/` workflow; existing files are not moved or rewritten.
 
 ---
 
@@ -389,13 +390,17 @@ timeline and check layout and timing. Press Ctrl+C in the terminal to close it.
 ```
 python pipeline.py videos/my-topic.json
 ```
-It will: validate, find scene starts, stop if the video is over 5 minutes, render the Manim scenes,
+It will: validate, find scene starts, stop if the video is over 3 minutes, render the Manim scenes,
 and render the final MP4 to `out/my-topic.mp4`.
 **Read the printed scene start times.** If any look wrong, see section 6.3.
 
 ### Step 8: Review
 Watch the whole file once with sound. Check: hook is strong, nothing is cut off at the edges,
-each animation appears while its narration is spoken, volume is fine.
+each animation appears while its narration is spoken, the key object/state is immediately legible
+on a phone, and volume is fine. Create a sampled contact sheet for a fast visual pass:
+`python scripts/make_qa_contact_sheet.py out/my-topic.mp4`.
+It writes `media/my-topic/qa/contact-sheet.jpg`; review it at phone size for mismatched visuals,
+clipped text, unclear state changes, and scenes whose focal object is too small.
 
 ### Step 9: Fix and re-run
 - Changed on-screen text, equations, items? Just re-run Step 7.
@@ -470,8 +475,10 @@ permissions, and account settings are controlled by Google and Meta and may chan
 {
   "id": "how-vaccines-work",
   "format": "vertical",
+  "art_direction": "editorial",
   "accent": "#FFC857",
   "music": null,
+  "journey": ["SEARCH", "BOOK NOW", "PAYMENT"],
   "meta": {"title": "...", "description": "...", "hashtags": ["..."], "facts_to_verify": ["..."]},
   "scenes": [ ... ]
 }
@@ -481,9 +488,11 @@ permissions, and account settings are controlled by Google and Meta and may chan
 |---|---|---|
 | `id` | yes | Lowercase letters, digits, dashes. Names the audio folder and the output file. |
 | `format` | no | `"vertical"` (default, 1080x1920) or `"landscape"` (1920x1080). |
+| `art_direction` | no | `"editorial"` (default: stable diagrams and restrained styling) or `"cinematic"` (legacy glow, bokeh, drift, grade, and light sweeps). |
 | `audio_mode` | no | `"single"` (default): ONE narration file for the whole video. `"scenes"`: one audio file per scene. |
 | `accent` | no | Highlight color as hex, default `#FFC857`. |
 | `music` | no | `null` for none, or a path like `"bg.mp3"` (file inside the project folder). Plays quietly (8%) under the voice. |
+| `journey` | no | Optional 2–5 short stage labels kept on screen across scenes. Every scene needs a zero-based `journeyStep`; a visual beat can override it. |
 | `meta` | no | `{title, description, hashtags, facts_to_verify}`. Not shown in the video; written to `out/<id>-upload.txt` for uploading. |
 | `scenes` | yes | List of scenes, played in order. |
 
@@ -502,6 +511,20 @@ have no narration, and then it needs `"seconds": N` (otherwise 3 seconds of sile
 | `image` | `image`, `title` (caption, optional) | caption 8 words | Full-screen photo with a slow camera push and caption. |
 | `quote` | `text`, `author` (optional) | 25 words | Large quote with an opening mark. |
 | `compare` | `title` (optional), `left`, `right` | heading 3 words, 3 items per side, 5 words each | Two cards (stacked in vertical, side by side in landscape). |
+| `three` | `title`, `variant` | Use a registered 3D variant | Native WebGL scene rendered by the variant router. |
+| `code` | `title`, `language`, `lines` | Keep visible code short | Animated, syntax-colored code walkthrough. |
+| `architecture` | `title`, `nodes`, optional `steps` | 3–5 nodes fit best | Animated system topology with a traveling signal. |
+| `gauge` | `title`, `value` or `endValue` | Numeric values work best | Animated metric dial. |
+| `timeline` | `title`, `steps` | 3–5 steps fit best | Sequential process with an active step. |
+| `callout` | `title` or `text` | Keep the key takeaway short | Animated warning, tip, or rule. |
+| `bento` | `title`, `bentoItems` | Use concise item labels | Modular feature and metric grid. |
+| `benchmark` | `title`, `runners` | Numeric runner values | Animated comparison bars. |
+| `hierarchy` | `title`, `layers` | Use concise layer labels | Layered stack visualization. |
+| `data_structure` | `title`, `structure`, `operations` | Queue, stack, buffer, or hashmap | Animated data-structure operations. |
+| `inspector` | `title`, `sections` | Short decoded field labels | Payload or packet inspection panels. |
+| `quadrant` | `title`, `xAxis`, `yAxis`, `points` | Use a few labeled points | Animated 2D trade-off map. |
+| `concentric` | `title`, `rings` | Keep ring labels concise | Layered security or system perimeter. |
+| `seat_booking` | `title`, `beats` | Beat `visualState`: `search`, `collision`, `locked`, `payment`, `booked`, `segments` | Train seat and database row change together through a booking race and route-segment overlap. |
 
 Details for the three newer types:
 
@@ -520,7 +543,36 @@ Details for the three newer types:
   check them and list them in `meta.facts_to_verify`.
 - **compare:** keep each side to 2-3 short items.
 
-### 8.3 Manim templates (inside a `manim` scene)
+### Timed visual beats and journey rails
+
+Use `beats` when a scene needs distinct visual actions or state changes. `at` is normalized scene
+progress from `0` to `1` (not seconds or frames), so it stays aligned when audio timing changes.
+The renderer advances the on-screen beat card from the current scene frame. `action` describes what
+the viewer sees happen, `state` names the resulting visible state, and `focus` identifies what a
+purpose-built scene should emphasize. `visualState` is an optional machine-readable state for
+purpose-built renderers. Keep beats in strictly increasing order and begin at `0`.
+
+```json
+"journey": ["SEARCH", "BOOK NOW", "PAYMENT"],
+"scenes": [
+  {
+    "type": "seat_booking",
+    "journeyStep": 0,
+    "beats": [
+      {"at": 0, "label": "SEARCH", "action": "Read the seat list", "state": "Seat 23 · FREE", "visualState": "search", "focus": "seat-row", "journeyStep": 0},
+      {"at": 0.35, "label": "CLAIM", "action": "Lock the seat row briefly", "state": "Seat 23 · LOCKED", "visualState": "locked", "focus": "row-lock", "journeyStep": 1},
+      {"at": 0.7, "label": "PAYMENT", "action": "Release the row lock and start a timed hold", "state": "Seat 23 · HELD", "visualState": "payment", "focus": "payment-hold", "journeyStep": 2}
+    ]
+  }
+]
+```
+
+The persistent journey rail advances with the active scene or beat. Beats are storyboard and renderer
+cues, not a replacement for a dedicated scene component: topic-specific scenes should use their
+`visualState`/`focus` values to animate the physical object and data display together. See
+[the seat-booking demo](videos/seat-booking-demo.json) for a complete example.
+
+### 8.4 Manim templates (inside a `manim` scene)
 
 **Equations** (needs LaTeX). LaTeX lines that morph into each other. Max 3 lines.
 ```json
@@ -545,7 +597,7 @@ Max 5 items, max 3 words each. Vertical video stacks them top to bottom; landsca
 
 **Custom**: your own scene, see [section 13](#13-write-your-own-manim-animation).
 
-### 8.4 Complete example
+### 8.5 Complete example
 
 ```json
 {
@@ -569,7 +621,7 @@ Max 5 items, max 3 words each. Vertical video stacks them top to bottom; landsca
 }
 ```
 
-### 8.5 Writing good narration
+### 8.6 Writing good narration
 - Write for the ear: short sentences, no symbols (`=`, `%`, `( )`), no abbreviations.
 - Write numbers as spoken ("two and a half thousand").
 - 15 to 45 words per scene, one idea per scene.
@@ -608,8 +660,8 @@ See [`prompts/hindi_script_framework.md`](prompts/hindi_script_framework.md) for
 ### 9.2 What the AI needs to know
 
 Give the AI **two things**: your **brief** (changes every video) and the **format rules**
-(never changes). The file `prompts/write_script.md` already contains the format rules plus a
-brief form at the top. You only fill in the brief.
+(never changes). The file `prompts/script.md` contains the scriptwriting rules, phonetic glossary,
+and analogy references.
 
 | Brief field | What to write | Why the AI needs it |
 |---|---|---|
@@ -628,17 +680,13 @@ brief form at the top. You only fill in the brief.
 
 ### 9.3 Step by step
 
-1. Open `prompts/write_script.md` in a text editor.
-2. Fill in every `<...>` in the "MY BRIEF" box (lines between the `=====` rules).
-3. Copy the **whole file** and paste it into your AI chat (ChatGPT, Gemini, Claude, local Ollama). Send it.
-4. The AI replies with one JSON object. Copy it (without any ``` fences or extra text).
-5. Save it as `videos/<id>.json`, where `<id>` equals the `"id"` inside the JSON.
-6. Run `python validate.py videos/<id>.json`.
-7. If there are errors, open `prompts/fix_errors.md`, paste the validator output into it,
-   send it to the same AI chat, and save the corrected JSON over your file. Repeat step 6.
-8. Read the narration once yourself (or open `audio/<id>/narration_labeled.txt` after exporting).
-   Check facts, especially everything listed in `meta.facts_to_verify`.
-9. Continue with Step 4 of [section 7](#7-make-a-real-video-the-full-routine).
+1. Review `prompts/script.md` for narration guidelines, phonetic spellings, and analogies.
+2. Draft the narration script and save it as `episodes/<id>/script.md`.
+3. Use `prompts/storyboard.md` to compile the approved script into `episodes/<id>/storyboard.json`.
+4. Run `python validate.py episodes/<id>/storyboard.json` to verify the schema.
+5. If there are errors, open `prompts/fix_errors.md` to triage and fix issues.
+6. Verify narration facts, especially technical numbers and acronyms.
+7. Continue with Step 4 of [section 7](#7-make-a-real-video-the-full-routine).
 
 Example of a filled-in brief:
 ```
@@ -713,7 +761,7 @@ Structure:
 
 - `meta` is optional. When present, the pipeline writes `out/<id>-upload.txt` with your title,
   description, hashtags and the facts to verify, ready to copy when uploading. It is not shown in the video.
-- Allowed scene types: `hook`, `bullets`, `stat`, `manim`, `outro`. Anything else is an error.
+- Allowed scene types are listed in [section 8.2](#82-scene-types). Anything else is an error.
 - Full field limits are in [section 8](#8-script-json-reference).
 
 ### 9.5 Common mistakes AIs make (and the fix)
@@ -723,7 +771,7 @@ Structure:
 | Wrapped in ``` or added explanation text | `json: ... Extra data` or `Expecting value` | "Output only the JSON object." (or delete the extra text yourself) |
 | Trailing comma | `Expecting property name` | Paste the error into `prompts/fix_errors.md` |
 | LaTeX with single backslash | `contains \f / a tab ...` or `Invalid \escape` | "Write every LaTeX backslash twice" |
-| Too long | `exceeds the 5-minute limit (cut about N words)` | "Cut about N words" |
+| Too long | `exceeds the 180-second limit (cut about N words)` | "Cut about N words" |
 | Equation fails (no LaTeX installed) | (Manim error at render) | "Use Flow or Graph instead of Equations" |
 | Numbers/abbreviations in narration | warnings about digits / ALL-CAPS | "Spell numbers out; space letter acronyms" |
 | Same scene type repeated | warning | "Vary scene types" |
@@ -733,7 +781,7 @@ Structure:
 ### 9.6 Getting topic ideas first
 
 Open `prompts/topic_ideas.md`, fill in the three lines, and send it. You get 10 ideas with hooks and
-the best visual for each. Pick one and put it in the TOPIC field of `prompts/write_script.md`.
+the best visual for each. Pick one and put it in the TOPIC field of `prompts/script.md`.
 To make many videos: pick several ideas and run the script prompt once per idea (see
 [section 11](#11-make-many-videos-batch)).
 
@@ -757,12 +805,9 @@ To make many videos: pick several ideas and run the script prompt once per idea 
 | Set with | nothing, or `"format": "vertical"` | `"format": "landscape"` |
 
 - **Shorts / Reels** must be vertical and **3 minutes or less**.
-- **3 to 5 minutes**: works as a normal upload (vertical or landscape), not as a Short.
-- Hard limit **5 minutes**. The validator estimates length from word count
-  (about 2.5 words per second, so 700 words is about 5 minutes). The pipeline re-checks with the
-  real audio before rendering and stops if it is too long.
-- Guide: 1 min = about 140 words / 4-5 scenes; 3 min = about 400 words / 10-12 scenes;
-  5 min = about 700 words / 16-20 scenes.
+- Hard limit **3 minutes / 180 seconds** for all outputs. The validator estimates length from word count
+  (about 2.5 words per second); the pipeline re-checks the final audio and scene padding before rendering.
+- Guide: 1 min is roughly 140-150 spoken words; keep scripts shorter than the theoretical maximum to leave room for pauses and scene transitions.
 - **Resolution:** 1080p (full HD) by default, encoded at high quality (CRF 18, 95% frame quality).
   For double resolution add `--scale 2` (vertical becomes 2160x3840, landscape 3840x2160):
   `python pipeline.py videos/<id>.json --scale 2`. This takes roughly 3-4 times longer to render, and the Manim
@@ -777,7 +822,7 @@ To make many videos: pick several ideas and run the script prompt once per idea 
 These are **estimates, not measurements**. The time depends mostly on how many CPU cores you have.
 Measure your own computer with the test below before planning a batch.
 
-Rough total time for a **5-minute vertical video at 1080p**:
+Rough total time for a **3-minute vertical video at 1080p**:
 
 | Your computer | Estimated total time |
 |---|---|
@@ -788,7 +833,7 @@ Rough total time for a **5-minute vertical video at 1080p**:
 A 3-minute video takes about 60% of these times, a 1-minute video about 20%.
 
 Where the time goes:
-1. **Remotion final render (the biggest part).** 5 minutes at 30 fps is 9,000 frames, and every frame has several
+1. **Remotion final render (the biggest part).** 3 minutes at 30 fps is 5,400 frames, and every frame has several
    costly effects (film grain, color grade, floating particles, blur-in text).
 2. **Manim animations.** They render first, one clip per `manim` scene (roughly 1 to 2 minutes each).
    The first `Equations` scene is slower because LaTeX has to compile.
@@ -832,18 +877,17 @@ you fix it (the validator checks all files first).
 
 ## 12. Change the look
 
-What every video already has (all code, no extra assets): slow camera drift and tilt on each scene
-(alternating direction), word-by-word blur-in titles, glow on accent elements, floating light particles,
-a light sweep at each scene change, a number counter for `stat`, a teal/orange color grade, vignette and film grain.
+The default editorial treatment uses stable framing and a subtle blueprint grid. Set top-level
+`"art_direction": "cinematic"` to opt into global camera drift, floating particles, light sweeps,
+teal/orange grade, vignette, and film grain.
 
 - **Accent color** for one video: `"accent": "#4C6FFF"` in the JSON.
 - **Font:** install the free **Inter** font on your computer (https://rsms.me/inter/) for the best result.
   Without it the video falls back to Segoe UI / Helvetica / Arial. To use another installed font, edit `FONT`
   in `src/theme.ts`. (Web fonts via `@remotion/google-fonts` also work but need internet at render time.)
 - **Colors for all videos:** `src/theme.ts` (`BG`, `FG`, `MUTED`, card colors).
-- **Strength of effects:** `src/Cinematic.tsx` (bokeh count `N`, light sweep, grade colors, vignette strength,
-  grain `opacity`) and `src/Video.tsx` (camera drift amounts; the `filter` on the root sets contrast/saturation).
-  Set the grain `opacity` to 0 or remove `<LightSweep />` if you want a cleaner look.
+- **Strength of cinematic effects:** `src/Cinematic.tsx` (bokeh count `N`, light sweep, grade colors, vignette strength,
+  grain `opacity`) and `src/Video.tsx` (camera drift amounts). Choose `"editorial"` instead of editing effects out.
 - **Scene designs:** `src/scenes/` (Hook, Bullets, Stat, Outro, ManimClip, ImageScene, Quote, Compare).
 - **Title animation:** `src/Reveal.tsx` (`stagger` = frames between words).
 - **Layout margins** for vertical/landscape: `src/layout.ts`.
@@ -851,8 +895,7 @@ a light sweep at each scene change, a number counter for `stat`, a teal/orange c
   Use only music you have the rights to use.
 After any change, preview with `npx remotion studio` (section 7, Step 6).
 
-Note: Manim scenes have a plain dark background (same color as the video), so the floating particles are not
-visible behind the animation itself; they appear in all other scenes.
+Note: Manim scenes have their own background treatment; the global cinematic effects may not show behind Manim.
 
 ---
 
@@ -894,7 +937,7 @@ visible behind the animation itself; they appear in all other scenes.
 | Image looks blurry | Use a larger picture (at least 1080 px on the short side). |
 | Text looks different from the previews | Install the Inter font (section 12). |
 | `no narration. With one narration file ...` | Every scene needs narration in single mode, or set `"audio_mode": "scenes"`. |
-| `over the 5-minute limit` | Cut narration (the message says about how many words), or speed up the audio. |
+| `over the 180-second limit` | Cut narration (the message says about how many words), or speed up the audio. |
 | Manim: `latex ... not found` | LaTeX is not installed (3.4). Install it, or use Graph/Flow. |
 | Manim: Cairo/Pango errors | Install the system libraries (3.5). |
 | `No module named manim` | The venv is not active. Activate it (section 4, step 4). |
@@ -909,7 +952,7 @@ visible behind the animation itself; they appear in all other scenes.
 
 ---
 
-## 15. Command cheat sheet
+## 15. Legacy command cheat sheet (`videos/` workflow)
 
 ```
 python validate.py videos/x.json                 check a script

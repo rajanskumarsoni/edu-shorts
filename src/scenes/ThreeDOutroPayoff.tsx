@@ -61,7 +61,7 @@ export const ThreeDOutroPayoff: React.FC<{
 
     // --- 1. 3D Smartphone on Counter ---
     const phoneGroup = new THREE.Group();
-    phoneGroup.position.set(0, -0.6, 0.8);
+    phoneGroup.position.set(0, -1.2, 0.4);
 
     // Chassis
     const phoneBody = new THREE.Mesh(
@@ -145,7 +145,7 @@ export const ThreeDOutroPayoff: React.FC<{
 
     // --- 3. Sculpted 3D Subscribe CTA Plaque ---
     const subscribeGroup = new THREE.Group();
-    subscribeGroup.position.set(0, 0.75, 0.2);
+    subscribeGroup.position.set(0, 0.55, 0.2);
 
     // High-res Canvas Texture for 3D YouTube Subscribe Pill Badge
     const subCanvas = document.createElement("canvas");
@@ -157,6 +157,10 @@ export const ThreeDOutroPayoff: React.FC<{
     sCtx.fillStyle = "#FF0033";
     sCtx.roundRect(10, 10, 492, 140, 70);
     sCtx.fill();
+    sCtx.strokeStyle = "#FFFFFF";
+    sCtx.lineWidth = 4;
+    sCtx.roundRect(10, 10, 492, 140, 70);
+    sCtx.stroke();
 
     // White Play Triangle
     sCtx.fillStyle = "#FFFFFF";
@@ -182,20 +186,8 @@ export const ThreeDOutroPayoff: React.FC<{
       transparent: true,
       side: THREE.DoubleSide,
     });
-    const subPlaque = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 0.82), subPlaqueMat);
+    const subPlaque = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 0.75), subPlaqueMat);
     subscribeGroup.add(subPlaque);
-
-    // Glowing Red Backing Slab
-    const slabMat = new THREE.MeshStandardMaterial({
-      color: 0x1e293b,
-      metalness: 0.9,
-      roughness: 0.2,
-      emissive: 0xcc0022,
-      emissiveIntensity: 0.4,
-    });
-    const slab = new THREE.Mesh(new THREE.BoxGeometry(2.65, 0.86, 0.1), slabMat);
-    slab.position.z = -0.06;
-    subscribeGroup.add(slab);
 
     threeScene.add(subscribeGroup);
 

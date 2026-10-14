@@ -298,10 +298,15 @@ export const ThreeDBankVault: React.FC<{
     s.camera.position.z = 8.5;
     s.camera.lookAt(-0.1, 0.1, 0);
 
-    // Subtle coin hovering
+    // Beat-driven spring micro-animations for 120 BPM visual momentum
+    const beatPhase = (frame % 25) / 25;
+    const beatPulse = 1 + Math.sin(beatPhase * Math.PI * 2) * 0.006;
+
+    // Subtle coin hovering with beat-driven pulse
     s.tokenGroup.children.forEach((coin, idx) => {
       coin.rotation.z = frame * 0.02 + idx * 0.4;
       coin.position.y = Math.sin(frame * 0.04 + idx) * 0.05;
+      coin.scale.setScalar(beatPulse);
     });
 
     s.renderer.render(s.scene, s.camera);

@@ -1,0 +1,251 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "neural-network-gradient-training",
+  "format": "vertical",
+  "accent": "#00F0FF",
+  "art_direction": "editorial",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "pad_seconds": 0.28,
+  "meta": {
+    "title": "How Neural Networks Are Trained (Step-by-Step AI Math)",
+    "description": "Discover how AI actually learns! Step-by-step breakdown of Forward Pass, Loss Function, Backpropagation Chain Rule, and Gradient Descent in 3D.",
+    "hashtags": [
+      "#MachineLearning",
+      "#DeepLearning",
+      "#AI",
+      "#NeuralNetworks",
+      "#DataScience",
+      "#MathAnimation"
+    ],
+    "facts_to_verify": [
+      "Chain rule computation for reverse mode automatic differentiation",
+      "Gradient descent parameter update formula"
+    ],
+    "misconceptions": [
+      "AI is coded with rules manually",
+      "AI has human consciousness"
+    ],
+    "analogy": "Blindfolded hiker walking down a misty mountain slope towards minimum valley"
+  },
+  "scenes": [
+    {
+      "type": "hook",
+      "text": "How Does AI Learn?",
+      "icon": "brain",
+      "graphic": "neural_network_3d",
+      "tag": "01 / THE LEARNING PUZZLE",
+      "purpose": "Hook the viewer with the mystery of how AI models like ChatGPT learn without manual rules.",
+      "tone": "[Curious, high energy]",
+      "narration": "क्या आपने कभी सोचा है कि एक ए-आई मॉडल जैसे चैट-जी-पी-टी सीखता कैसे है? क्या कोई प्रोग्रामर इसमें लाखों नियम खुद कोड करता है? बिल्कुल नहीं!",
+      "transition": "zoom_through",
+      "sfx": [
+        { "sound": "whoosh", "frame": 0 },
+        { "sound": "radar_beep", "frame": 15, "volume": 0.2 }
+      ],
+      "visual": {
+        "start": "A floating 3D neural brain hologram in dark space with neon coordinate grid spanning the ground.",
+        "objects": ["3D neural brain nodes", "synaptic fiber lines", "light pulses"],
+        "action": "Brain nodes ignite, sending luminous activation pulses rippling across multi-layer synapses.",
+        "camera": "Slow orbital drift moving smoothly around the 3D neural structure.",
+        "motion_graphics": ["Overhead glowing question mark", "Hook headline typography", "Tracked uppercase tag"],
+        "end": "Full neural brain fully illuminated with cascading energy."
+      }
+    },
+    {
+      "type": "compare",
+      "tag": "02 / THE STARTING PARADOX",
+      "purpose": "Establish the problem: untrained networks start with totally random weights producing pure noise.",
+      "tone": "[Analytical, revealing]",
+      "title": "THE INITIAL STATE",
+      "left": {
+        "heading": "UNTRAINED MODEL",
+        "items": ["Random Weights", "Massive Error Rate", "Pure Random Noise"]
+      },
+      "right": {
+        "heading": "TRAINED BRAIN",
+        "items": ["Tuned Parameters", "Near-Zero Error", "Accurate Prediction"]
+      },
+      "narration": "शुरुआत में, हर न्यूरल नेटवर्क पूरी तरह खाली और अज्ञानी होता है। इसके लाखों वेट्स सिर्फ रैंडम नंबर्स होते हैं, जो शुरुआत में सौ प्रतिशत गलत जवाब और कचरा फेंकते हैं।",
+      "transition": "match_cut",
+      "sfx": [
+        { "sound": "whoosh", "frame": 0 },
+        { "sound": "glitch", "frame": 18, "volume": 0.25 }
+      ],
+      "visual": {
+        "start": "Split screen comparison layout with vibrant cyan and red contrasting cards.",
+        "objects": ["Random noise data matrix", "Optimized pattern card", "Status badges"],
+        "action": "Left red card flashes with erratic noise while right cyan card reveals structured convergence.",
+        "camera": "Centrally focused locked camera framing high-impact text cards.",
+        "motion_graphics": ["Side-by-side metric comparison", "Warning glitch effect", "Checkmark icon"],
+        "end": "Viewer sees that training is the bridge transforming random noise into intelligence."
+      }
+    },
+    {
+      "type": "neural_network_graph",
+      "mode": "forward",
+      "tag": "03 / STAGE 1: FORWARD PASS",
+      "purpose": "Explain the forward pass: inputs multiplied by weights, bias added, and activated.",
+      "tone": "[Explaining mechanism]",
+      "title": "NEURAL FORWARD PASS",
+      "equation": "z = W · x + b  →  a = σ(z)",
+      "narration": "सीखने की शुरुआत होती है फॉरवर्ड पास से। इनपुट डेटा अंदर आता है, न्यूरॉन्स के वेट्स से गुणा होता है, बायस जुड़ता है, और एक एक्टिवेशन फंक्शन से भविष्यवाणी बाहर निकलती है।",
+      "transition": "whip_pan",
+      "sfx": [
+        { "sound": "whoosh", "frame": 0 },
+        { "sound": "pop", "frame": 14, "volume": 0.2 }
+      ],
+      "visual": {
+        "start": "A multi-layer neural network graph with input, hidden, and output columns in dark space.",
+        "objects": ["Input neurons x1, x2, x3", "Hidden neurons h1-h8", "Synaptic connection lines", "Output neuron ŷ"],
+        "action": "Inputs activate, sending glowing cyan data packets across synapses calculating dot products and activations.",
+        "camera": "Centrally focused high-legibility diagram framing with active neuron glow.",
+        "motion_graphics": ["Synapse glow lines", "Layer headers", "Active dot product telemetry card"],
+        "end": "Output neuron illuminates brightly with final prediction probability."
+      }
+    },
+    {
+      "type": "gauge",
+      "tag": "04 / STAGE 2: LOSS FUNCTION",
+      "purpose": "Demonstrate how the loss function quantifies error, and how learning aims to drive error to zero.",
+      "tone": "[Urgent, precision]",
+      "title": "LOSS ERROR PENALTY",
+      "startValue": 3.8,
+      "endValue": 0.12,
+      "unit": "MSE",
+      "status": "Optimizing",
+      "badge": "TARGET: MINIMUM LOSS",
+      "narration": "अब नेटवर्क अपनी गलती नापता है लॉस फंक्शन से। सही जवाब और भविष्यवाणी के बीच का फर्क ही लॉस है। लक्ष्य है इस गलती को घटाकर ज़ीरो तक लाना।",
+      "transition": "match_cut",
+      "sfx": [
+        { "sound": "whoosh", "frame": 0 },
+        { "sound": "impact", "frame": 12, "volume": 0.22 }
+      ],
+      "visual": {
+        "start": "Circular telemetry dial initialized at high error penalty state in red alert territory.",
+        "objects": ["High-precision gauge dial", "Error threshold arcs", "Digital readout"],
+        "action": "Needle sweeps dynamically counter-clockwise from 3.80 down into the cyan safe zone of 0.12.",
+        "camera": "Direct head-on cinematic macro framing on the dial mechanism.",
+        "motion_graphics": ["Color-shifting dial arc", "Live dropping numerical counter", "Status indicator badge"],
+        "end": "Needle locks steadily in the safe green zone symbolizing error reduction."
+      }
+    },
+    {
+      "type": "neural_network_graph",
+      "mode": "backward",
+      "tag": "05 / STAGE 3: BACKPROPAGATION",
+      "purpose": "Demystify backpropagation: using the calculus Chain Rule to apportion error blame to each weight.",
+      "tone": "[Curious, deep mathematical]",
+      "title": "BACKPROPAGATION GRAPH",
+      "equation": "∂L/∂w = (∂L/∂a) · (∂a/∂z) · (∂z/∂w)",
+      "narration": "यहाँ आता है असली जादू: बैकप्रॉपगेशन! कैलकुलस के चेन रूल का इस्तेमाल करके हर न्यूरॉन पीछे जाकर हिसाब लगाता है कि कुल गलती में उसका कितना कसूर था।",
+      "transition": "morph",
+      "sfx": [
+        { "sound": "whoosh", "frame": 0 },
+        { "sound": "ting", "frame": 16, "volume": 0.2 }
+      ],
+      "visual": {
+        "start": "Full neural network graph illuminated with high prediction error state at output node.",
+        "objects": ["Output node ŷ", "Synaptic weight connections", "Hidden neurons", "Chain rule equation"],
+        "action": "Error gradients flow backwards from output to input as red-orange pulses, dynamically recalibrating weights.",
+        "camera": "Clean front-facing diagram framing tracking error signal propagation.",
+        "motion_graphics": ["Backwards error pulses", "Chain rule HUD banner", "Weight update telemetry"],
+        "end": "Synaptic weights turn cyan as parameters are successfully optimized."
+      }
+    },
+    {
+      "type": "three",
+      "variant": "gradient_descent",
+      "tag": "06 / STAGE 4: GRADIENT DESCENT",
+      "purpose": "Show the spatial physical metaphor: descending the 3D loss mountain to find the minimum valley.",
+      "tone": "[Dramatic, spatial]",
+      "title": "3D LOSS LANDSCAPE",
+      "equation": "\\theta_{t+1} = \\theta_t - \\alpha \\nabla L",
+      "metrics": {
+        "Optimization": "Stochastic GD",
+        "Learning Rate": "α = 0.01"
+      },
+      "narration": "फिर काम आता है ग्रेडिएंट डिसेंट। जैसे घने कोहरे में ट्रेकर ढलान महसूस करके नीचे घाटी की तरफ कदम बढ़ाता है, नेटवर्क भी अपने वेट्स को न्यूनतम लॉस की दिशा में बदलता है।",
+      "transition": "zoom_through",
+      "sfx": [
+        { "sound": "whoosh", "frame": 0 },
+        { "sound": "radar_beep", "frame": 15, "volume": 0.22 }
+      ],
+      "visual": {
+        "start": "3D topological mountain mesh with illuminated elevation ridges and contour lines.",
+        "objects": ["3D elevation terrain", "Rolling descent ball", "Tangent gradient arrows"],
+        "action": "Glowing ball rolls down steep slopes, following negative gradient vectors directly into the trough.",
+        "camera": "Angled perspective orbit showcasing the 3D depth of peaks and valleys.",
+        "motion_graphics": ["Contour grid lines", "Descent trajectory path", "Tangent slope HUD vector"],
+        "end": "Descent ball settles safely at the deepest global minimum of the loss valley."
+      }
+    },
+    {
+      "type": "benchmark",
+      "tag": "07 / TRAINING CONVERGENCE",
+      "purpose": "Show the payoff: repeating this cycle across epochs converts random guess to 98%+ accuracy.",
+      "tone": "[Triumphant, energetic]",
+      "title": "EPOCH ACCURACY",
+      "unit": "% Acc",
+      "runners": [
+        {
+          "name": "Epoch 1 (Initial)",
+          "value": 12.4,
+          "status": "Random Guess",
+          "color": "#FF5555"
+        },
+        {
+          "name": "Epoch 1,000 (Mid)",
+          "value": 74.2,
+          "status": "Learning Patterns",
+          "color": "#FFC857"
+        },
+        {
+          "name": "Epoch 10,000 (Final)",
+          "value": 98.7,
+          "status": "Converged Winner",
+          "color": "#00F0FF"
+        }
+      ],
+      "narration": "यह चक्र लाखों बार दोहराया जाता है। हर इपॉक के साथ गलती कम होती जाती है, और एक बेतरतीब मशीन बन जाती है एक सुपर-स्मार्ट दिमाग!",
+      "transition": "match_cut",
+      "sfx": [
+        { "sound": "whoosh", "frame": 0 },
+        { "sound": "ka_ching", "frame": 20, "volume": 0.25 }
+      ],
+      "visual": {
+        "start": "Three horizontal benchmark progress tracks styled with dark glass cards.",
+        "objects": ["Horizontal progress bars", "Epoch badges", "Percentage counters"],
+        "action": "Bars race forward, with Epoch 10,000 sprinting ahead to 98.7% and earning the gold winner badge.",
+        "camera": "Centrally locked clean editorial framing.",
+        "motion_graphics": ["Racing progress fills", "Live counting numbers", "Winner badge animation"],
+        "end": "Final epoch shines with glowing cyan victory aura."
+      }
+    },
+    {
+      "type": "outro",
+      "tag": "08 / THE MASTER FORMULA",
+      "purpose": "Provide the memorable takeaway and call to action: AI is math and optimization.",
+      "tone": "[Inspiring, call to action]",
+      "title": "THE CORE TRUTH",
+      "text": "Math + Data = Machine Intelligence",
+      "icon": "sparkles",
+      "narration": "अगली बार जब आप ए-आई का इस्तेमाल करें, तो याद रखें—यह कोई चमत्कार नहीं, बल्कि शुद्ध मैथ और ऑप्टिमाइज़ेशन का कमाल है! सब्सक्राइब करें ऐसी ही गहरी समझ के लिए।",
+      "transition": "cross_fade",
+      "sfx": [
+        { "sound": "whoosh", "frame": 0 },
+        { "sound": "sparkle", "frame": 12, "volume": 0.25 }
+      ],
+      "visual": {
+        "start": "Hero payoff screen with glowing neon typography and particle illumination.",
+        "objects": ["Central payoff text card", "Sparkle star icon", "Subscribe callout badge"],
+        "action": "Central card pulses with cyan aura as subscribe CTA animates with inviting bounce.",
+        "camera": "Subtle push-in toward the central takeaway statement.",
+        "motion_graphics": ["Pulsing radial glow", "Channel watermark", "Tracked uppercase CTA"],
+        "end": "Smooth fade into glowing channel signature."
+      }
+    }
+  ]
+}

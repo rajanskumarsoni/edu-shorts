@@ -51,6 +51,20 @@ export const ImageScene: React.FC<{ scene: SceneSpec; accent: string }> = ({
             padding: `0 ${L.padX}px ${L.padBottom}px`,
           }}
         >
+          {scene.tag && (
+            <div
+              style={{
+                fontSize: 22,
+                fontWeight: 800,
+                letterSpacing: "0.22em",
+                color: accent,
+                textTransform: "uppercase",
+                marginBottom: 12,
+              }}
+            >
+              {scene.tag}
+            </div>
+          )}
           <div
             style={{
               width: 140 * bar,
@@ -58,7 +72,7 @@ export const ImageScene: React.FC<{ scene: SceneSpec; accent: string }> = ({
               borderRadius: 4,
               background: accent,
               boxShadow: `0 0 28px ${accent}`,
-              marginBottom: 28,
+              marginBottom: 24,
             }}
           />
           <RevealText

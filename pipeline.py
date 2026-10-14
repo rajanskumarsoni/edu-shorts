@@ -2,12 +2,12 @@
 """
 JSON script + narration audio  ->  Manim clips  ->  Remotion render
 
-  python pipeline.py videos/topic.json --export-text   # step 1: narration text for your TTS
-  python pipeline.py videos/topic.json                 # step 2: build + render mp4 + auto-upload to YouTube (public by default)
-  python pipeline.py videos/topic.json --upload private # auto-upload with private visibility
-  python pipeline.py videos/topic.json --no-upload     # render only (skip YouTube auto-upload)
-  python pipeline.py videos/*.json                     # batch many videos
-  python pipeline.py videos/topic.json --no-render     # prep only (for studio preview)
+  python pipeline.py episodes/<id>/storyboard.json --export-text   # step 1: narration text for your TTS
+  python pipeline.py episodes/<id>/storyboard.json                 # step 2: build + render mp4 (no upload)
+  python pipeline.py episodes/<id>/storyboard.json --upload private # auto-upload with private visibility
+  python pipeline.py episodes/<id>/storyboard.json --no-upload     # render only (explicit no-upload)
+  python pipeline.py episodes/*/storyboard.json                    # batch many videos
+  python pipeline.py episodes/<id>/storyboard.json --no-render     # prep only (for studio preview)
 
 Audio modes (set "audio_mode" in the script JSON):
   "single" (default)  ONE file: audio/<id>/narration.wav|mp3|m4a|ogg|flac
@@ -15,6 +15,7 @@ Audio modes (set "audio_mode" in the script JSON):
   "scenes"            one file per scene: audio/<id>/s1.wav, s2.wav ...
 
 Scenes are validated first (see validate.py); --skip-validate to bypass.
+YouTube upload only occurs when explicitly requested with --upload.
 """
 import argparse
 import difflib
@@ -43,10 +44,78 @@ for _t_dir in [
 
 FPS = 30
 FORMATS = {"vertical": (1080, 1920), "landscape": (1920, 1080)}  # vertical = Reels/Shorts size
-PAD_SECONDS = 0.45   # scenes mode: pause added after each scene's audio
+PAD_SECONDS = 0.05  # scenes mode: short padding; most TTS clips already include natural pause
 TAIL_SECONDS = 0.6   # single mode: video continues this long after the last word
 AUDIO_EXTS = (".wav", ".mp3", ".m4a", ".ogg", ".flac", ".aac")
 SILENCE_CONFIDENCE = 1.4  # chosen boundary pauses must be this much longer than the next-longest pause
+
+
+# ----------------------------------------------------------------- staging helpers
+def stage_file(src: Path, dst: Path) -> None:
+    """Stage a file to a destination using zero-copy hardlinks when possible.
+    Preserves disk space by reusing the source inode. Falls back to symlinks
+    or copying if hardlinking fails (e.g. cross-filesystem boundary)."""
+    src = Path(src).resolve()
+    dst = Path(dst)
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    if dst.is_symlink() or dst.exists():
+        try:
+            if dst.exists() and dst.samefile(src):
+                return
+        except OSError:
+            pass
+        try:
+            if dst.is_dir() and not dst.is_symlink():
+                shutil.rmtree(dst)
+            else:
+                dst.unlink()
+        except OSError:
+            pass
+
+    try:
+        os.link(src, dst)
+        return
+    except OSError:
+        pass
+
+    try:
+        os.symlink(src, dst)
+        return
+    except OSError:
+        pass
+
+    shutil.copy2(src, dst)
+
+
+def clean_cache(preserve: set[str] = None) -> list[str]:
+    """Prune temporary episode staging directories and files in public/
+    while preserving permanent shared directories (sfx, music, models) and .gitkeep."""
+    if preserve is None:
+        preserve = {"sfx", "music", "models", ".gitkeep"}
+    pub_dir = ROOT / "public"
+    if not pub_dir.exists():
+        return []
+
+    cleaned = []
+    for item in sorted(pub_dir.iterdir()):
+        if item.name.startswith(".") and item.name != ".DS_Store":
+            continue
+        if item.name in preserve:
+            continue
+        try:
+            if item.is_dir() and not item.is_symlink():
+                shutil.rmtree(item)
+            else:
+                item.unlink()
+            cleaned.append(item.name)
+        except Exception as e:
+            print(f"  Warning: could not remove {item}: {e}")
+
+    if cleaned:
+        print(f"Cleaned staging cache in public/: {', '.join(cleaned)}")
+    else:
+        print("Staging cache in public/ is already clean.")
+    return cleaned
 
 
 # ----------------------------------------------------------------- audio helpers
@@ -55,6 +124,39 @@ def audio_duration(path: Path) -> float:
         ["ffprobe", "-v", "error", "-show_entries", "format=duration",
          "-of", "csv=p=0", str(path)], text=True)
     return float(out.strip())
+
+
+def measure_speech_end(path: Path, threshold_db: float = -50.0, min_silence: float = 0.15) -> tuple[float, float]:
+    """Non-destructively measure (total_duration, speech_end_seconds) of an audio file.
+    Never re-encodes or modifies the source audio file, preserving 100% original clarity."""
+    if not path or not path.exists():
+        return 0.0, 0.0
+    total = audio_duration(path)
+    cmd = [
+        "ffmpeg", "-hide_banner", "-nostats", "-i", str(path),
+        "-af", f"silencedetect=noise={threshold_db}dB:d={min_silence}",
+        "-f", "null", "-"
+    ]
+    try:
+        err = subprocess.run(cmd, capture_output=True, text=True).stderr
+        last_start = None
+        last_end = None
+        for line in err.splitlines():
+            m_s = re.search(r"silence_start: (-?[\d.]+)", line)
+            if m_s:
+                last_start = max(0.0, float(m_s.group(1)))
+                last_end = None
+                continue
+            m_e = re.search(r"silence_end: (-?[\d.]+)", line)
+            if m_e and last_start is not None:
+                last_end = float(m_e.group(1))
+        if last_start is not None and last_start > 0.3:
+            if last_end is None or last_end >= total - 0.08:
+                return total, last_start
+    except Exception:
+        pass
+    return total, total
+
 
 
 def find_audio(folder: Path, stem: str):
@@ -90,7 +192,7 @@ def export_text(spec: dict, folder: Path, mode: str, sep: str):
 
 
 # ----------------------------------------------------------------- scenes mode audio
-def get_scene_audio(narration: str, folder: Path, n: int) -> Path:
+def get_scene_audio(narration: str, folder: Path, n: int, tone: str = None) -> Path:
     p = find_audio(folder, f"s{n}")
     if p:
         return p
@@ -101,7 +203,7 @@ def get_scene_audio(narration: str, folder: Path, n: int) -> Path:
     if tts is not None:
         out = folder / f"s{n}{tts.TTS_EXT}"
         try:
-            tts.synthesize(narration, str(out))
+            tts.synthesize(narration, str(out), tone=tone)
             if out.exists():
                 return out
             raise SystemExit(f"tts.synthesize() did not create {out}")
@@ -303,6 +405,45 @@ def render_manim(spec: dict, duration: float, accent: str, out_mp4: Path,
         shutil.copy(found[0], out_mp4)
 
 
+# ----------------------------------------------------------------- word timing
+def generate_word_timings(audio_path: Path, narration: str):
+    """Generate word-level start/end times for exact caption sync.
+    Uses simple energy-based segmentation as a fast local fallback;
+    returns None if no audio is available."""
+    if not audio_path or not audio_path.exists():
+        return None
+    try:
+        import tts
+        # Use faster-whisper if available for precise alignment
+        if importlib.util.find_spec("faster_whisper"):
+            return _whisper_word_timings(audio_path, narration)
+    except Exception:
+        pass
+    # Fallback: proportional timing based on word count
+    try:
+        dur = audio_duration(audio_path)
+    except Exception:
+        return None
+    words = [w for w in narration.split() if w.strip()]
+    if not words:
+        return None
+    per_word = dur / len(words)
+    return [{"word": w, "start": i * per_word, "end": (i + 1) * per_word}
+            for i, w in enumerate(words)]
+
+
+def _whisper_word_timings(audio_path: Path, narration: str):
+    """Use faster-whisper forced alignment for exact word timings."""
+    from faster_whisper import WhisperModel
+    model = WhisperModel("base", device="cpu", compute_type="int8")
+    segs, _ = model.transcribe(str(audio_path), word_timestamps=True)
+    words = []
+    for seg in segs:
+        for w in seg.words:
+            words.append({"word": w.word.strip(), "start": w.start, "end": w.end})
+    return words if words else None
+
+
 # ----------------------------------------------------------------- build
 def fmt_time(t):
     return f"{int(t // 60)}:{t % 60:05.2f}"
@@ -310,7 +451,35 @@ def fmt_time(t):
 
 def build(spec_path: str, args):
     import validate
-    spec = json.loads(Path(spec_path).read_text(encoding="utf-8"))
+    spec_p = Path(spec_path)
+    if spec_p.is_dir():
+        episode_dir = spec_p
+        spec_file = episode_dir / "storyboard.json"
+        if not spec_file.exists():
+            jsons = list(episode_dir.glob("*.json"))
+            if jsons:
+                spec_file = jsons[0]
+            else:
+                raise SystemExit(f"No storyboard.json or *.json found in episode directory {episode_dir}")
+    elif spec_p.name == "storyboard.json" or "episodes" in spec_p.parts:
+        spec_file = spec_p
+        try:
+            episode_relative = spec_p.resolve().relative_to(ROOT.resolve() / "episodes")
+        except ValueError:
+            episode_relative = None
+        episode_dir = spec_p.parent if episode_relative is not None and len(episode_relative.parts) == 2 else None
+    else:
+        spec_file = spec_p
+        episode_dir = None
+
+    if not getattr(args, "no_fetch_assets", False):
+        try:
+            from tools.asset_finder import resolve_spec_assets
+            resolve_spec_assets(spec_file)
+        except Exception as e:
+            print(f"  [Asset Auto-Resolver Warning] {e}")
+
+    spec = json.loads(spec_file.read_text(encoding="utf-8"))
     vid = spec["id"]
     accent = spec.get("accent", "#FFC857")
     fmt = spec.get("format", "vertical")
@@ -320,7 +489,13 @@ def build(spec_path: str, args):
     mode = spec.get("audio_mode", "single")
     if mode not in ("single", "scenes"):
         raise SystemExit(f'audio_mode must be "single" or "scenes", got {mode!r}')
-    audio_dir = ROOT / "audio" / vid
+
+    if episode_dir:
+        audio_dir = episode_dir / "audio"
+        media_dir = episode_dir / "media"
+    else:
+        audio_dir = ROOT / "audio" / vid
+        media_dir = ROOT / "media" / vid
     pub = ROOT / "public" / vid
 
     if args.export_text:
@@ -329,21 +504,46 @@ def build(spec_path: str, args):
 
     audio_dir.mkdir(parents=True, exist_ok=True)
     pub.mkdir(parents=True, exist_ok=True)
-    print(f"=== {vid} ({fmt} {size[0] * args.scale}x{size[1] * args.scale}, audio: {mode}) ===")
+    media_dir.mkdir(parents=True, exist_ok=True)
+    scale_label = 0.5 if getattr(args, "preview", False) else args.scale
+    print(f"=== {vid} ({fmt} {int(size[0] * scale_label)}x{int(size[1] * scale_label)}, audio: {mode}) ===")
 
     scenes_spec = spec["scenes"]
     plan = []  # (n, scene_spec, per-scene audio or None, frames)
     narration_rel = None
 
+    pad_sec = getattr(args, "pad_seconds", None)
+    if pad_sec is None:
+        pad_sec = float(spec.get("pad_seconds", PAD_SECONDS))
+
     if mode == "scenes":
         for n, s in enumerate(scenes_spec, 1):
             narration = s.get("narration", "").strip()
             if narration:
-                src = get_scene_audio(narration, audio_dir, n)
-                dur = audio_duration(src)
+                src = get_scene_audio(narration, audio_dir, n, tone=s.get("tone"))
+                # Ensure audio is 48kHz stereo to avoid playback speed artifacts
+                if src and src.suffix.lower() in ('.mp3', '.wav'):
+                    norm_path = src.with_name(f"norm_{src.name}")
+                    subprocess.run(["ffmpeg", "-y", "-i", str(src), "-ar", "48000", "-ac", "2", str(norm_path)], check=True)
+                    src = norm_path
+                total_dur, speech_end = measure_speech_end(src)
+                # Generate word-level timings for millisecond-precise caption sync
+                s["wordTimings"] = generate_word_timings(src, narration)
+                # If trailing silence is excessive (> 0.40s), trim the dead silence by ending at speech_end + max(0.25, pad_sec).
+                # Otherwise, guarantee scene duration is at least total_dur + 0.08s so Remotion never cuts off <Audio> mid-playback.
+                if getattr(args, "trim_silence", True) and (total_dur - speech_end) > 0.40:
+                    audio_span = speech_end + max(0.25, pad_sec)
+                else:
+                    audio_span = max(total_dur + 0.08, speech_end + pad_sec)
+                target_sec = float(s.get("seconds", 0))
+                effective_sec = max(target_sec, audio_span) if target_sec > 0 else audio_span
+                frames = math.ceil(effective_sec * FPS)
+                print(f"  [scene {n} audio] speech={speech_end:.2f}s, file={total_dur:.2f}s -> scene={frames / FPS:.2f}s ({frames} frames)")
             else:
                 src, dur = None, float(s.get("seconds", 3))
-            plan.append((n, s, src, math.ceil((dur + PAD_SECONDS) * FPS)))
+                effective_sec = dur
+                frames = math.ceil(effective_sec * FPS)
+            plan.append((n, s, src, frames))
     else:
         texts = []
         for n, s in enumerate(scenes_spec, 1):
@@ -374,16 +574,14 @@ def build(spec_path: str, args):
             if (fb[n] - fb[n - 1]) / FPS < 1.5:
                 print(f"  WARNING: scene {n} is only {(fb[n] - fb[n - 1]) / FPS:.1f}s; boundaries may be wrong.")
         ext = src.suffix
-        shutil.copy(src, pub / f"narration{ext}")
+        stage_file(src, pub / f"narration{ext}")
         narration_rel = f"{vid}/narration{ext}"
 
     total = sum(p[3] for p in plan) / FPS
     print(f"Total length: {int(total // 60)}m{int(total % 60):02d}s")
     if total > validate.MAX_SECONDS:
-        raise SystemExit(f"Video is {total:.0f}s, over the {validate.MAX_SECONDS // 60}-minute limit. "
+        raise SystemExit(f"Video is {total:.0f}s, over the {validate.MAX_SECONDS}-second limit. "
                          f"Shorten the narration or speed up the audio.")
-    if total > validate.SHORTS_SECONDS:
-        print("Note: over 3 minutes, so this is a regular upload, not a Short/Reel.")
 
     scenes_out = []
     for n, s, src_scene, frames in plan:
@@ -391,23 +589,105 @@ def build(spec_path: str, args):
         scene = {k: v for k, v in s.items() if k not in ("manim", "seconds")}
         if src_scene:
             dst = pub / f"s{n}{src_scene.suffix}"
-            shutil.copy(src_scene, dst)
+            stage_file(src_scene, dst)
             scene["audio"] = f"{vid}/{dst.name}"
         scene["durationInFrames"] = frames
         if s["type"] == "image":
             img = ROOT / s["image"]
             if not img.exists():
+                img = media_dir / Path(s["image"]).name
+            if not img.exists():
+                img = ROOT / "images" / Path(s["image"]).name
+            if not img.exists():
                 raise SystemExit(f"Scene {n}: image not found: {s['image']}")
             dst = pub / f"img{n}{img.suffix.lower()}"
-            shutil.copy(img, dst)
+            stage_file(img, dst)
+            media_copy = media_dir / dst.name
+            if not media_copy.exists():
+                stage_file(img, media_copy)
             scene["image"] = f"{vid}/{dst.name}"
+        if s["type"] == "video":
+            vpath = ROOT / s["video"]
+            if not vpath.exists():
+                vpath = media_dir / Path(s["video"]).name
+            if not vpath.exists():
+                vpath = pub / Path(s["video"]).name
+            if not vpath.exists():
+                raise SystemExit(f"Scene {n}: video not found: {s['video']}")
+            dst = pub / f"vid{n}{vpath.suffix.lower()}"
+            stage_file(vpath, dst)
+            media_copy = media_dir / dst.name
+            if not media_copy.exists():
+                stage_file(vpath, media_copy)
+            scene["video"] = f"{vid}/{dst.name}"
         if s["type"] == "manim":
             clip = pub / f"s{n}.mp4"
-            if not getattr(args, "thumbnail", False) or n == 1:
+            # In thumbnail mode, render all manim scenes (not just first)
+            if not getattr(args, "thumbnail", False):
                 print(f"  rendering Manim ({frames / FPS:.1f}s)...")
                 msize = (size[0] * args.scale, size[1] * args.scale)
                 render_manim(s.get("manim", {}), frames / FPS, accent, clip, msize, fmt)
                 scene["video"] = f"{vid}/s{n}.mp4"
+            else:
+                # For thumbnail, we still need the clip to exist for the still render
+                if clip.exists():
+                    scene["video"] = f"{vid}/s{n}.mp4"
+                else:
+                    print(f"  rendering Manim for thumbnail ({frames / FPS:.1f}s)...")
+                    msize = (size[0] * args.scale, size[1] * args.scale)
+                    render_manim(s.get("manim", {}), frames / FPS, accent, clip, msize, fmt)
+                    scene["video"] = f"{vid}/s{n}.mp4"
+        if s["type"] == "diagram":
+            diag_file = None
+            if s.get("diagram"):
+                cand = ROOT / s["diagram"]
+                if not cand.exists():
+                    cand = media_dir / Path(s["diagram"]).name
+                if not cand.exists():
+                    cand = pub / Path(s["diagram"]).name
+                if cand.exists():
+                    diag_file = cand
+            elif s.get("mermaid") or s.get("graphviz"):
+                try:
+                    from tools.diagram_renderer import render_diagram
+                    dtype = "graphviz" if s.get("graphviz") else "mermaid"
+                    code = s.get("graphviz") or s.get("mermaid")
+                    target_svg = media_dir / f"diag{n}.svg"
+                    render_diagram(code, diagram_type=dtype, out_path=target_svg)
+                    diag_file = target_svg
+                except Exception as e:
+                    print(f"  [Diagram Render Warning] {e}")
+
+            if diag_file and diag_file.exists():
+                dst = pub / f"diag{n}{diag_file.suffix.lower()}"
+                stage_file(diag_file, dst)
+                media_copy = media_dir / dst.name
+                if not media_copy.exists():
+                    stage_file(diag_file, media_copy)
+                scene["diagram"] = f"{vid}/{dst.name}"
+            elif not s.get("diagram") and not s.get("image"):
+                print(f"  Warning: Scene {n} (diagram) has no rendered diagram file.")
+        # Handle 3D model files for "three" type scenes with model_3d variant
+        if s["type"] == "three" and s.get("model"):
+            model_src = ROOT / s["model"]
+            if not model_src.exists():
+                model_src = media_dir / Path(s["model"]).name
+            if not model_src.exists():
+                model_src = ROOT / "public" / s["model"]
+            if not model_src.exists():
+                raise SystemExit(f"Scene {n}: 3D model not found: {s['model']}")
+            # Stage to public/<vid>/models/ preserving subdirectory structure
+            model_rel = Path(s["model"])
+            dst = pub / model_rel
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            stage_file(model_src, dst)
+            # Also stage to media_dir for persistence
+            media_copy = media_dir / model_rel
+            media_copy.parent.mkdir(parents=True, exist_ok=True)
+            if not media_copy.exists():
+                stage_file(model_src, media_copy)
+            # Update scene with public path for staticFile()
+            scene["model"] = f"{vid}/{model_rel}"
         scenes_out.append(scene)
 
     manifest = {
@@ -415,12 +695,16 @@ def build(spec_path: str, args):
         "width": size[0],
         "height": size[1],
         "accent": accent,
+        "art_direction": spec.get("art_direction", "editorial"),
         "captions": spec.get("captions", True),
         "progress": spec.get("progress", True),
         "sfx": spec.get("sfx", True),
         "loop": spec.get("loop", False),
+        "beatPulse": spec.get("beatPulse", True),
         "scenes": scenes_out,
     }
+    if isinstance(spec.get("journey"), list):
+        manifest["journey"] = spec["journey"]
     if narration_rel:
         manifest["narration"] = narration_rel
     music = spec.get("music")
@@ -431,7 +715,7 @@ def build(spec_path: str, args):
         if music_path.name in ("Warm Focus.wav", "warm_focus.wav", "warm_focus.mp3"):
             manifest["music"] = "music/warm_focus.mp3"
         else:
-            shutil.copy(ROOT / music, pub / music_path.name)
+            stage_file(ROOT / music, pub / music_path.name)
             manifest["music"] = f"{vid}/{music_path.name}"
     else:
         # Default background music across every video: Warm Focus
@@ -453,46 +737,79 @@ def build(spec_path: str, args):
         if ver:
             parts.append("FACTS TO VERIFY BEFORE PUBLISHING:\n" + "\n".join("- " + v for v in ver) + "\n")
         if parts:
-            (ROOT / "out").mkdir(exist_ok=True)
-            (ROOT / "out" / f"{vid}-upload.txt").write_text("\n".join(parts), encoding="utf-8")
-            print(f"Upload text written: out/{vid}-upload.txt")
+            if episode_dir:
+                (episode_dir / "post.md").write_text("\n".join(parts), encoding="utf-8")
+                print(f"Upload text written: {episode_dir / 'post.md'}")
+            else:
+                (ROOT / "out").mkdir(exist_ok=True)
+                print(f"Upload text written: out/{vid}-upload.txt")
+                (ROOT / "out" / f"{vid}-upload.txt").write_text("\n".join(parts), encoding="utf-8")
 
     npx = shutil.which("npx") or "/opt/homebrew/bin/npx" or "npx"
     ffmpeg = shutil.which("ffmpeg") or "/opt/homebrew/bin/ffmpeg" or "ffmpeg"
 
     # Automated high-CTR thumbnail render
+    thumb_media = media_dir / f"{vid}-thumbnail.jpg"
     if getattr(args, "thumbnail", False):
-        thumb_out = ROOT / "out" / f"{vid}-thumbnail.jpg"
-        thumb_cmd = [npx, "remotion", "still", "src/index.ts", "Video", str(thumb_out),
+        thumb_cmd = [npx, "remotion", "still", "src/index.ts", "Video", str(thumb_media),
                      f"--props=public/{vid}/manifest.json", "--frame=20"]
         print(f"Rendering high-CTR thumbnail still (1080x1920)...")
         subprocess.run(thumb_cmd, check=True, cwd=ROOT)
-        print(f"Thumbnail ready -> {thumb_out}")
+        if not episode_dir:
+            (ROOT / "out").mkdir(exist_ok=True)
+            stage_file(thumb_media, ROOT / "out" / f"{vid}-thumbnail.jpg")
+        print(f"Thumbnail ready -> {thumb_media}")
+        return
+
+    # Render scene preview stills if requested
+    if getattr(args, "stills", False):
+        print(f"Rendering preview stills for all scenes to {media_dir}...")
+        cur_frame = 0
+        for n, s, _, f_count in plan:
+            frame_to_capture = cur_frame + min(15, f_count // 2)
+            tag_name = re.sub(r'[^a-zA-Z0-9_-]', '_', s.get('tag', s.get('type', f'scene_{n}'))).strip('_').lower()
+            still_path = media_dir / f"scene_{n:02d}_{tag_name}.jpg"
+            still_cmd = [npx, "remotion", "still", "src/index.ts", "Video", str(still_path),
+                         f"--props=public/{vid}/manifest.json", f"--frame={frame_to_capture}"]
+            try:
+                subprocess.run(still_cmd, check=True, cwd=ROOT)
+                print(f"  [Scene {n}] still saved -> {still_path.relative_to(ROOT)}")
+            except Exception as e:
+                print(f"  [Scene {n}] still warning: {e}")
+            cur_frame += f_count
         return
 
     if args.no_render:
         print(f"Preview: npx remotion studio src/index.ts --props=public/{vid}/manifest.json")
         return
 
-    out = ROOT / "out" / f"{vid}.mp4"
-    out.parent.mkdir(exist_ok=True)
+    if episode_dir:
+        out = episode_dir / "final.mp4"
+    else:
+        out = ROOT / "out" / f"{vid}.mp4"
+    out.parent.mkdir(parents=True, exist_ok=True)
 
-    # Auto-generate thumbnail alongside video
-    thumb_out = ROOT / "out" / f"{vid}-thumbnail.jpg"
-    thumb_cmd = [npx, "remotion", "still", "src/index.ts", "Video", str(thumb_out),
+    # Auto-generate thumbnail alongside video in media/<vid>/
+    thumb_cmd = [npx, "remotion", "still", "src/index.ts", "Video", str(thumb_media),
                  f"--props=public/{vid}/manifest.json", "--frame=20"]
     try:
         subprocess.run(thumb_cmd, check=True, cwd=ROOT)
-        print(f"Cover thumbnail generated -> {thumb_out}")
+        if not episode_dir:
+            stage_file(thumb_media, ROOT / "out" / f"{vid}-thumbnail.jpg")
+        print(f"  Cover thumbnail generated -> {thumb_media}")
     except Exception:
         pass
 
+    render_scale = 0.5 if getattr(args, "preview", False) else args.scale
+    concurrency_val = str(getattr(args, "concurrency", 2))
     if args.motion_blur:
-        raw_out = ROOT / "out" / f"{vid}_raw.mp4"
+        raw_out = out.with_name(f"{out.stem}_raw{out.suffix}")
         cmd = [npx, "remotion", "render", "src/index.ts", "Video", str(raw_out),
-               f"--props=public/{vid}/manifest.json"]
-        if args.scale != 1:
-            cmd.append(f"--scale={args.scale}")
+               f"--props=public/{vid}/manifest.json", f"--concurrency={concurrency_val}"]
+        if render_scale != 1:
+            cmd.append(f"--scale={render_scale}")
+        if getattr(args, "preview", False):
+            cmd.extend(["--jpeg-quality=70"])
         subprocess.run(cmd, check=True, cwd=ROOT)
         print(f"Applying cinematic motion blur (temporal subframe blending)...")
         blur_cmd = [
@@ -505,28 +822,36 @@ def build(spec_path: str, args):
         raw_out.unlink(missing_ok=True)
     else:
         cmd = [npx, "remotion", "render", "src/index.ts", "Video", str(out),
-               f"--props=public/{vid}/manifest.json"]
-        if args.scale != 1:
-            cmd.append(f"--scale={args.scale}")
+               f"--props=public/{vid}/manifest.json", f"--concurrency={concurrency_val}"]
+        if render_scale != 1:
+            cmd.append(f"--scale={render_scale}")
+        if getattr(args, "preview", False):
+            cmd.extend(["--jpeg-quality=70"])
         subprocess.run(cmd, check=True, cwd=ROOT)
+
     print(f"Done -> {out}")
 
     if not args.no_upload and args.upload:
         print(f"\n[AUTO-UPLOAD] Video is ready! Uploading to YouTube as {args.upload}...")
-        auto_script = ROOT / "scripts" / "auto_upload.py"
+        auto_script = ROOT / "tools" / "auto_upload.py"
+        if not auto_script.exists():
+            auto_script = ROOT / "scripts" / "auto_upload.py"
         subprocess.run([sys.executable, str(auto_script), str(out), "--privacy", args.upload],
                        check=True, cwd=ROOT)
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("specs", nargs="+", help="one or more JSON files (globs ok)")
+    ap.add_argument("specs", nargs="*", default=[], help="one or more JSON files (globs ok)")
+    ap.add_argument("--clean-cache", action="store_true", help="Prune temporary episode staging directories in public/")
     ap.add_argument("--export-text", action="store_true")
     ap.add_argument("--no-render", action="store_true")
-    ap.add_argument("--thumbnail", action="store_true", help="Render only high-CTR 1080x1920 cover thumbnail still in out/<id>-thumbnail.jpg")
+    ap.add_argument("--preview", action="store_true", help="Fast 360p draft render for rapid visual iteration")
+    ap.add_argument("--thumbnail", action="store_true", help="Render only high-CTR 1080x1920 cover thumbnail still in media/<id>/<id>-thumbnail.jpg")
+    ap.add_argument("--stills", action="store_true", help="Render preview still images for all scenes into media/<id>/")
     ap.add_argument("--skip-validate", action="store_true")
-    ap.add_argument("--upload", nargs="?", const="public", default="public", choices=["public", "private", "unlisted"],
-                    help="Automatically upload video to YouTube once render finishes (default: public)")
+    ap.add_argument("--upload", nargs="?", const="public", default=None, choices=["public", "private", "unlisted"],
+                    help="Upload after rendering; bare --upload means public (default: do not upload)")
     ap.add_argument("--no-upload", action="store_true", help="Skip uploading to YouTube")
     ap.add_argument("--align", choices=["auto", "silence", "whisper", "manual"], default="auto",
                     help="single-audio mode: how scene starts are found (default auto)")
@@ -537,12 +862,47 @@ def main():
                     help="2 = double resolution (vertical 2160x3840 / landscape 4K); slower")
     ap.add_argument("--motion-blur", action="store_true",
                     help="Apply temporal subframe motion blur for authentic shutter angle effect")
+    ap.add_argument("--no-fetch-assets", action="store_true",
+                    help="Skip automated internet search & asset downloading")
     ap.add_argument("--separator", default="", help="text on its own line between scenes in narration_text.txt "
                                                       "(e.g. your TTS's pause tag)")
+    ap.add_argument("--pad-seconds", type=float, default=None,
+                    help="Pause added after each scene audio in scenes mode (default 0.0: scene length matches audio exactly)")
+    ap.add_argument("--trim-silence", action=argparse.BooleanOptionalAction, default=True,
+                    help="Automatically trim dead trailing silence from scene audio clips (default True)")
+    ap.add_argument("--concurrency", type=int, default=2,
+                    help="Remotion render concurrency (default 2 for stable WebGL context handling)")
     args = ap.parse_args()
+    if args.clean_cache:
+        clean_cache()
+        if not args.specs:
+            return
+
+    if not args.specs:
+        ap.print_help()
+        return
+
     files = []
     for pat in args.specs:
-        files += sorted(glob.glob(pat)) or [pat]
+        p = Path(pat)
+        if p.is_dir():
+            if (p / "storyboard.json").exists():
+                files.append(str(p / "storyboard.json"))
+            else:
+                found = sorted(str(f) for f in p.rglob("*.json"))
+                if found:
+                    files.extend(found)
+                else:
+                    files.append(str(p))
+        else:
+            files += sorted(glob.glob(pat)) or [pat]
+    if not args.no_fetch_assets:
+        try:
+            from tools.asset_finder import resolve_spec_assets
+            for f in files:
+                resolve_spec_assets(f)
+        except Exception as e:
+            print(f"Asset auto-resolution warning: {e}")
     if not args.skip_validate:
         import validate
         bad = False

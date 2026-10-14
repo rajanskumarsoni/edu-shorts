@@ -1,0 +1,130 @@
+{
+  "id": "demo-system-primitives",
+  "format": "vertical",
+  "accent": "#00F0FF",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "meta": {
+    "title": "System Design: Why You Never Hold a Database Lock During Payment",
+    "description": "Visualizing distributed database row locking, connection pool exhaustion, and bitmask route segmentation in high-concurrency booking engines.",
+    "hashtags": ["SystemDesign", "SoftwareArchitecture", "Backend", "Concurrency"],
+    "facts_to_verify": [
+      "Database connection pools typically cap at 100-300 connections per instance",
+      "Payment gateway round-trips take 1500ms to 4000ms",
+      "Holding an ACID lock during payment starves the connection pool in under 2 seconds"
+    ],
+    "misconceptions": [
+      "You should lock the database row until the user finishes payment",
+      "More concurrent users simply need a bigger database",
+      "A train seat or resource can only belong to one customer for the whole journey"
+    ],
+    "analogy": "A bank teller locking the vault door and walking away for 5 minutes while a customer checks their wallet"
+  },
+  "scenes": [
+    {
+      "type": "interview",
+      "tag": "01 / THE NAIVE CONCURRENCY TRAP",
+      "purpose": "Debunk the naive assumption that a database lock should stay open while payment processes.",
+      "tone": "[Curious, slightly provocative]",
+      "narration": "इंजीनियरिंग इंटरव्यू में एक सवाल हमेशा पूछा जाता है: क्या पेमेंट होने तक डेटाबेस रो को लॉक रखना चाहिए? अगर आपका जवाब हाँ है, तो आपका सिस्टम क्रैश होने वाला है!",
+      "interview": {
+        "speaker": "INTERVIEWER VS CANDIDATE",
+        "text": "Why not lock the seat row in the database until the payment completes?",
+        "strikethrough": true,
+        "highlight": ["lock the seat row", "payment completes"],
+        "subtext": "MYTH: Keeping an open ACID transaction during external gateway calls"
+      },
+      "transition": "zoom_through",
+      "sfx": "impact",
+      "visual": {
+        "start": "High-contrast editorial interview card framed against deep blueprint grid.",
+        "objects": ["Interview Card", "Speaker Badges", "Assertive Red Strikethrough Vector"],
+        "action": "The naive suggestion appears, highlighted with golden neon, followed by a dynamic red strikethrough slashing across the text.",
+        "camera": "Front-on hero angle with subtle Dutch tilt, zooming slightly forward on impact.",
+        "motion_graphics": ["01 / THE NAIVE CONCURRENCY TRAP", "Interviewer badge", "Red strikethrough animation"],
+        "end": "The struck-through text dissolves into a 3D isometric view of the database."
+      }
+    },
+    {
+      "type": "three",
+      "variant": "database_cluster_3d",
+      "tag": "02 / ROW LOCK & READ REPLICAS",
+      "purpose": "Show the authoritative primary DB taking writes while read replicas handle search traffic, with a physical padlock snapping onto the contested row.",
+      "tone": "[Authoritative, precise]",
+      "narration": "सर्चिंग के लिए रीड रेप्लिका काम आती हैं। लेकिन जब दो यूज़र्स एक ही सीट पर क्लिक करते हैं, तो सिर्फ मेन डेटाबेस पर एक छोटा रो लॉक लगता है, मिलीसेकंड्स के लिए!",
+      "transition": "match_cut",
+      "sfx": "click",
+      "visual": {
+        "start": "3D isometric view of primary DB cylinder connected via neon fiber conduits to three glowing read replicas.",
+        "objects": ["Primary DB Cylinder", "3 Read Replica Platters", "Floating Glass Row Slabs", "Golden 3D Padlock"],
+        "action": "A golden 3D padlock snaps down with magnetic snap onto Row 23 while read requests stream through cyan conduits.",
+        "camera": "45-degree isometric orbit, dollying inward toward the contested Row 23 platter.",
+        "motion_graphics": ["02 / ROW LOCK & READ REPLICAS", "MAIN DB · WRITES badge", "READ REPLICAS (3X) badge"],
+        "end": "The camera cranes up as connection requests begin piling onto the server chassis."
+      }
+    },
+    {
+      "type": "three",
+      "variant": "overflow_stack_3d",
+      "tag": "03 / CONNECTION POOL EXHAUSTION",
+      "purpose": "Demonstrate thread starvation and connection pool crash when locks are held during slow payment calls.",
+      "tone": "[Urgent, dramatic]",
+      "narration": "अगर आप पेमेंट के दौरान लॉक खुला रखेंगे, तो हर रिक्वेस्ट एक कनेक्शन रोके रखेगी। दो ही सेकंड में कनेक्शन पूल भर जाएगा, और पूरा सर्वर क्रैश हो जाएगा!",
+      "transition": "whip_pan",
+      "sfx": "glitch",
+      "visual": {
+        "start": "3D metallic server chassis with glowing blue connection plates stacking vertically.",
+        "objects": ["Server Chassis Blade", "Stacking Connection Plates", "Volumetric Red Warning Aura"],
+        "action": "Connection plates rapidly stack higher and higher; on reaching 100% capacity, the stack wobbles violently and pulses crimson red.",
+        "camera": "Low-angle heroic upward push tracking the rapid vertical stacking of connection plates.",
+        "motion_graphics": ["03 / CONNECTION POOL EXHAUSTION", "POOL SATURATED: 100% HUD", "CRITICAL FAILURE alert card"],
+        "end": "Red warning flares transition cleanly into an aerial railway track."
+      }
+    },
+    {
+      "type": "three",
+      "variant": "route_segments_3d",
+      "tag": "04 / BITMASK ROUTE SEGMENTATION",
+      "purpose": "Explain how systems sell the same physical seat on non-overlapping legs using bitmask segmentation.",
+      "tone": "[Curious, enlightening]",
+      "narration": "असली समाधान है टाइमर बेस्ड होल्ड और बिटमास्क रूट सेगमेंटेशन! एक ही सीट दिल्ली से कानपुर और कानपुर से पटना दो अलग यात्रियों को बिना कन्फ्लिक्ट के बेची जा सकती है।",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "visual": {
+        "start": "Aerial 3D perspective of an illuminated railway transit trunk divided into discrete station blocks.",
+        "objects": ["Segmented Rail Track", "Station Platform Light Towers", "Neon Route Segment Slabs"],
+        "action": "Delhi to Kanpur illuminates in cyan, while Kanpur to Patna activates in golden neon as an independent valid booking.",
+        "camera": "High-altitude isometric flyover tracking along the segmented railway corridor.",
+        "motion_graphics": ["04 / BITMASK ROUTE SEGMENTATION", "Leg 1 [BIT 0] HUD", "Leg 2 [BIT 1] HUD"],
+        "end": "The track glows as both legs lock in safely without collision."
+      }
+    },
+    {
+      "type": "interview",
+      "tag": "05 / THE GOLDEN RULE",
+      "purpose": "Deliver the final memorable architectural takeaway.",
+      "tone": "[Inspiring, payoff]",
+      "narration": "याद रखिए: डेटाबेस लॉक सिर्फ स्टेट बदलने के लिए होता है, इंतज़ार करने के लिए नहीं। होल्ड सीट पर रखिए, डेटाबेस लॉक पर नहीं!",
+      "interview": {
+        "speaker": "ARCHITECTURAL GOLDEN RULE",
+        "text": "Hold the resource with a timed token, never the database lock.",
+        "strikethrough": false,
+        "highlight": ["timed token", "never the database lock"],
+        "subtext": "Keep transactions under 10ms · Offload user waits to Redis or state machines"
+      },
+      "transition": "dissolve",
+      "sfx": "ka_ching",
+      "visual": {
+        "start": "Summary takeaway card with glowing cyan border and architectural seal.",
+        "objects": ["Takeaway Card", "Golden Architectural Emblem", "Telemetry Badges"],
+        "action": "Golden Rule headline pulses with kinetic typography; key phrases illuminate with radiant cyan glow.",
+        "camera": "Center lock framing with gentle, cinematic slow pull back.",
+        "motion_graphics": ["05 / THE GOLDEN RULE", "Latency < 10ms badge", "Redis hold indicator"],
+        "end": "Fade gracefully to deep navy blueprint finish."
+      }
+    }
+  ]
+}
+

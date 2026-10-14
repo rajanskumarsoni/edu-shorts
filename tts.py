@@ -12,7 +12,7 @@ Usage as module in pipeline.py:
 Usage as CLI:
     python tts.py --check
     python tts.py "Narration text here" out.mp3
-    python tts.py --video videos/backpropagation.json [--force]
+    python tts.py --video episodes/<id>/storyboard.json [--force]
 """
 
 import argparse
@@ -29,6 +29,28 @@ TTS_EXT = ".mp3"
 DEFAULT_VOICE_ID = "e42e619e"
 DEFAULT_VOICE_NAME = "rajan story teller"
 DEFAULT_URL = "http://127.0.0.1:3900"
+
+TONE_PRESETS = {
+    'shock': {'speed': 1.05, 'pitch': 1.04, 'energy': 1.1},
+    'curious': {'speed': 0.98, 'pitch': 1.02, 'energy': 1.0},
+    'urgent': {'speed': 1.10, 'pitch': 1.03, 'energy': 1.15},
+    'alert': {'speed': 1.08, 'pitch': 1.02, 'energy': 1.12},
+    'warning': {'speed': 1.04, 'pitch': 0.98, 'energy': 1.08},
+    'authoritative': {'speed': 0.96, 'pitch': 0.96, 'energy': 1.05},
+    'calm': {'speed': 0.94, 'pitch': 0.98, 'energy': 0.95},
+    'warm': {'speed': 0.96, 'pitch': 1.0, 'energy': 0.98},
+    'energetic': {'speed': 1.08, 'pitch': 1.03, 'energy': 1.12},
+}
+
+def parse_tone_parameters(tone_str: str) -> dict:
+    if not tone_str:
+        return {}
+    tone_str = tone_str.lower().strip('[] ')
+    for key, preset in TONE_PRESETS.items():
+        if key in tone_str:
+            return preset
+    return {}
+
 
 
 def load_env_file():
@@ -75,7 +97,7 @@ def get_voice_id() -> str:
     return DEFAULT_VOICE_ID
 
 
-def synthesize(text: str, out_path: str, voice: str = None) -> None:
+def synthesize(text: str, out_path: str, voice: str = None, tone: str = None) -> None:
     """Synthesize text for a single scene and write audio to out_path."""
     text = (text or "").strip()
     if not text:
@@ -86,11 +108,18 @@ def synthesize(text: str, out_path: str, voice: str = None) -> None:
     out = Path(out_path)
     out.parent.mkdir(parents=True, exist_ok=True)
 
-    payload = json.dumps({
+    tone_params = parse_tone_parameters(tone)
+    body = {
         "input": text,
         "voice": voice_id,
         "response_format": "mp3",
-    }).encode("utf-8")
+    }
+    if tone_params:
+        if "speed" in tone_params:
+            body["speed"] = tone_params["speed"]
+        if "pitch" in tone_params:
+            body["pitch"] = tone_params["pitch"]
+    payload = json.dumps(body).encode("utf-8")
 
     req = urllib.request.Request(
         f"{base_url}/v1/audio/speech",
@@ -152,11 +181,20 @@ def synthesize_video(spec_path: str, force: bool = False):
     spec_file = Path(spec_path)
     if not spec_file.is_file():
         raise SystemExit(f"Spec file not found: {spec_path}")
+    spec_file = spec_file.resolve()
 
     spec = json.loads(spec_file.read_text(encoding="utf-8"))
     vid = spec["id"]
     mode = spec.get("audio_mode", "single")
-    audio_dir = ROOT / "audio" / vid
+    episode_root = ROOT / "episodes"
+    try:
+        episode_relative = spec_file.relative_to(episode_root)
+    except ValueError:
+        episode_relative = None
+    if episode_relative is not None and len(episode_relative.parts) == 2:
+        audio_dir = spec_file.parent / "audio"
+    else:
+        audio_dir = ROOT / "audio" / vid
     audio_dir.mkdir(parents=True, exist_ok=True)
     voice_id = get_voice_id()
 
@@ -172,7 +210,8 @@ def synthesize_video(spec_path: str, force: bool = False):
                 print(f"  [skip] Scene {n}: {out_file.name} exists (use --force to overwrite)")
                 continue
             print(f"  [synthesizing] Scene {n}: {narration[:60]}...")
-            synthesize(narration, str(out_file), voice=voice_id)
+            tone_cue = scene.get("tone", "")
+            synthesize(narration, str(out_file), voice=voice_id, tone=tone_cue)
             print(f"  [saved] {out_file}")
     else:
         out_file = audio_dir / f"narration{TTS_EXT}"

@@ -1,3 +1,7 @@
+import { createContext } from "react";
+
+export const ArtDirectionContext = createContext<"editorial" | "cinematic">("editorial");
+
 export const BG = "#0B1020";
 export const FG = "#F5F7FF";
 export const MUTED = "#9AA3C7";
@@ -9,10 +13,27 @@ export const MONO =
 export const CARD_BG = "rgba(255,255,255,0.06)";
 export const CARD_BORDER = "rgba(255,255,255,0.14)";
 
+export const COLORS = {
+  bg: "#0B1020",
+  fg: "#F5F7FF",
+  muted: "#9AA3C7",
+  cardBg: "rgba(255,255,255,0.06)",
+  cardBorder: "rgba(255,255,255,0.14)",
+  gold: "#FFC857",
+  cyan: "#00F0FF",
+  mint: "#58D6C2",
+  red: "#FF5555",
+  danger: "#EF4444",
+  warning: "#F59E0B",
+  success: "#10B981",
+  accent: "#00F0FF",
+};
+
 export const hexAlpha = (a: number): string =>
   Math.round(Math.max(0, Math.min(1, a)) * 255)
     .toString(16)
     .padStart(2, "0");
+
 
 // -----------------------------------------------------------------------------
 // Mobile Shorts & Reels Typography Standards (1080x1920)
@@ -93,4 +114,3 @@ export const resolveSceneTag = (scene: any, fallback: string): string => {
   }
   return fallback;
 };
-

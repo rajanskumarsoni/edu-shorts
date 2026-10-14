@@ -17,16 +17,20 @@ export const Callout: React.FC<{ scene: SceneSpec; accent: string }> = ({
   scene,
   accent,
 }) => {
-  // Delegate to 3D Security Shield Alert
-  const is3DAlert =
+  // Explicit variant selection has highest precedence, with legacy keyword fallback for backward compatibility
+  const isExplicit3DAlert =
+    scene.variant === "payment_reconciliation_alert" ||
     scene.variant === "upi_alert_3d" ||
     scene.variant === "alert_3d" ||
-    scene.variant === "callout_3d" ||
-    /payment fail|reconciliation|pending|golden rule/i.test(scene.title || "") ||
-    /golden rule|warning|alert/i.test(scene.tag || "") ||
-    /pending|reconcil/i.test(scene.text || "");
+    scene.variant === "callout_3d";
 
-  if (is3DAlert) {
+  const isLegacyKeywordAlert =
+    !scene.variant &&
+    (/payment fail|reconciliation|pending|golden rule/i.test(scene.title || "") ||
+     /golden rule|warning|alert/i.test(scene.tag || "") ||
+     /pending|reconcil/i.test(scene.text || ""));
+
+  if (isExplicit3DAlert || isLegacyKeywordAlert) {
     return <ThreeDCalloutAlert scene={scene} accent={accent} />;
   }
 

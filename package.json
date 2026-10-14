@@ -4,7 +4,22 @@
   "private": true,
   "scripts": {
     "studio": "remotion studio src/index.ts",
-    "render": "remotion render src/index.ts Video out/video.mp4"
+    "render": "remotion render src/index.ts Video out/video.mp4",
+    "validate": "python3 validate.py",
+    "voice": "python3 tts.py",
+    "pipeline": "python3 pipeline.py",
+    "build": "python3 pipeline.py",
+    "qa": "python3 tools/qa_suite.py",
+    "contact-sheet": "python3 tools/contact_sheet.py",
+    "preview": "bash tools/preview.sh",
+    "model": "python3 tools/model_manager.py",
+    "asset": "python3 tools/asset_finder.py",
+    "diagram": "python3 tools/diagram_renderer.py",
+    "record-html": "python3 tools/html_recorder.py",
+    "edit-video": "python3 tools/video_editor.py",
+    "blender": "python3 tools/blender_render.py",
+    "manimgx": ".tools/manimgx-env/bin/manimgx",
+    "post": "python3 tools/upload_video.py"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.0",

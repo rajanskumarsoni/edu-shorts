@@ -21,9 +21,22 @@ out/*
 !out/.gitkeep
 public/*
 !public/.gitkeep
+!public/sfx/
+!public/music/
+!public/models/
 audio/*
 !audio/.gitkeep
+episodes/*/final*.mp4
 
 # Installer archives & local toolchains
 .tools/
+
+# Scratch / one-off test files
+out.mp3
+test.py
+images/
+
+# Pipeline-generated text artifacts (re-run --export-text / --align to regenerate)
+audio/*/*.txt
+!audio/*/timings.txt
 

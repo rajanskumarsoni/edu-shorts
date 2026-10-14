@@ -10,7 +10,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import type { SceneSpec, VideoProps } from "./types";
-import { BG, FG, FONT } from "./theme";
+import { ArtDirectionContext, BG, FG, FONT } from "./theme";
 import { Background, Finish, LightSweep } from "./Cinematic";
 import { Hook } from "./scenes/Hook";
 import { Bullets } from "./scenes/Bullets";
@@ -34,12 +34,21 @@ import { Inspector } from "./scenes/Inspector";
 import { Quadrant } from "./scenes/Quadrant";
 import { Concentric } from "./scenes/Concentric";
 import { Captions } from "./Captions";
+import { useBeatPulse, useSfxPulse } from "./layout";
+import { getActiveVisualBeat, JourneyRail, VisualBeatOverlay } from "./VisualStory";
+import { SeatBookingScene } from "./scenes/SeatBooking";
+import { InterviewCard } from "./scenes/InterviewCard";
+import { VideoScene } from "./scenes/VideoScene";
+import { DiagramScene } from "./scenes/DiagramScene";
+import { NeuralNetworkGraph } from "./scenes/NeuralNetworkGraph";
 
 const SCENES = {
   hook: Hook,
   bullets: Bullets,
   stat: Stat,
   manim: ManimClip,
+  video: VideoScene,
+  diagram: DiagramScene,
   outro: Outro,
   image: ImageScene,
   quote: Quote,
@@ -57,28 +66,31 @@ const SCENES = {
   inspector: Inspector,
   quadrant: Quadrant,
   concentric: Concentric,
+  seat_booking: SeatBookingScene,
+  neural_network_graph: NeuralNetworkGraph,
+  interview: InterviewCard,
 };
 
 const DEFAULT_SFX_VOLUMES: Record<string, number> = {
-  whoosh: 0.22,
-  fast_whoosh: 0.24,
-  riser: 0.28,
-  downlifter: 0.25,
-  pop: 0.35,
-  tick: 0.25,
-  click: 0.30,
-  ting: 0.28,
-  ding: 0.32,
-  ka_ching: 0.32,
-  impact: 0.38,
-  bass_drop: 0.40,
-  thud: 0.35,
-  heartbeat: 0.40,
-  typing: 0.25,
-  camera_shutter: 0.30,
-  glitch: 0.28,
-  sparkle: 0.30,
-  radar_beep: 0.30,
+  whoosh: 0.10,
+  fast_whoosh: 0.12,
+  riser: 0.14,
+  downlifter: 0.12,
+  pop: 0.15,
+  tick: 0.12,
+  click: 0.14,
+  ting: 0.14,
+  ding: 0.16,
+  ka_ching: 0.15,
+  impact: 0.18,
+  bass_drop: 0.18,
+  thud: 0.16,
+  heartbeat: 0.18,
+  typing: 0.12,
+  camera_shutter: 0.14,
+  glitch: 0.14,
+  sparkle: 0.15,
+  radar_beep: 0.12,
 };
 
 function resolveSfxPath(name: string): string {
@@ -112,11 +124,11 @@ const SceneSFX: React.FC<{
     });
   }
 
-  // 2. Scene-specific sound cues
+  // 2. Scene-specific sound cues (staggered slightly after transition whoosh so narration start stays clear)
   if (typeof scene.sfx === "string" && scene.sfx !== "whoosh") {
     const sName = resolveSfxName(scene.sfx);
-    const vol = scene.sfxVolume ?? DEFAULT_SFX_VOLUMES[sName] ?? 0.3;
-    const offset = sName === "impact" || sName === "thud" || sName === "bass_drop" ? 4 : 0;
+    const vol = scene.sfxVolume ?? DEFAULT_SFX_VOLUMES[sName] ?? 0.14;
+    const offset = index > 0 ? 12 : (sName === "impact" || sName === "thud" || sName === "bass_drop" ? 4 : 0);
     cues.push({ sound: scene.sfx, frame: offset, volume: vol });
   } else if (Array.isArray(scene.sfx)) {
     for (const item of scene.sfx) {
@@ -171,28 +183,46 @@ const SceneView: React.FC<{
   index: number;
   captions?: boolean;
   sfx?: boolean;
-}> = ({ scene, accent, index, captions = true, sfx = true }) => {
+  beatPulse?: boolean;
+  artDirection: "editorial" | "cinematic";
+  sceneStartFrame: number; // local frame offset for this scene
+}> = ({
+  scene,
+  accent,
+  index,
+  captions = true,
+  sfx = true,
+  beatPulse = true,
+  artDirection,
+  sceneStartFrame,
+}) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
+  const sceneArtDirection = artDirection;
+  // Local frame within this scene (0 to durationInFrames)
+  const localFrame = frame - sceneStartFrame;
   // Snappy cinematic cross-blend: enter in 6 frames, hold until handoff to avoid black dip
   const opacity = interpolate(
-    frame,
+    localFrame,
     [0, 6, durationInFrames - 2, durationInFrames],
-    [0, 1, 1, 0.9],
+    sceneArtDirection === "cinematic" ? [0, 1, 1, 0.9] : [1, 1, 1, 1],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
 
-  // slow "camera" drift: push-in with a small pan and tilt, alternating direction per scene
+  // Cinematic drift is opt-in; diagram scenes need stable geometry by default.
   const dir = index % 2 === 0 ? 1 : -1;
   const p = frame / Math.max(durationInFrames, 1);
   const zoom = 1 + 0.05 * p;
   const panX = dir * interpolate(p, [0, 1], [-10, 10]);
   const panY = interpolate(p, [0, 1], [6, -6]);
   const tilt = dir * interpolate(p, [0, 1], [-0.25, 0.25]);
+  const beatPulseScale = useBeatPulse({});
+
   const Content = SCENES[scene.type] || Hook;
-  // image and native 3D scenes manage their own 3D cameras
+  // image, video and native 3D scenes manage their own 3D cameras
   const isNative3D =
     scene.type === "image" ||
+    scene.type === "video" ||
     scene.type === "three" ||
     Boolean(scene.variant && scene.variant.includes("3d")) ||
     Boolean(scene.graphic && scene.graphic.includes("3d")) ||
@@ -206,21 +236,28 @@ const SceneView: React.FC<{
     (scene.type === "outro" && (/digital india|seconds on screen|systems behind|mission accomplished/i.test(scene.tag || scene.text || "") || scene.icon === "sparkles"));
   const camera = isNative3D
     ? "none"
-    : `translate(${panX}px, ${panY}px) scale(${zoom}) rotate(${tilt}deg)`;
+    : sceneArtDirection === "cinematic"
+      ? `translate(${panX}px, ${panY}px) scale(${zoom * (beatPulse ? beatPulseScale : 1)}) rotate(${tilt}deg)`
+      : "none";
 
   return (
     <AbsoluteFill style={{ opacity }}>
       {scene.audio && <Audio src={staticFile(scene.audio)} />}
       <SceneSFX scene={scene} index={index} globalSfx={sfx} />
-      <AbsoluteFill style={{ transform: camera }}>
-        <Content scene={scene} accent={accent} />
-      </AbsoluteFill>
-      <LightSweep />
+      <ArtDirectionContext.Provider value={sceneArtDirection}>
+        <AbsoluteFill style={{ transform: camera }}>
+          <Content scene={scene} accent={accent} />
+        </AbsoluteFill>
+      </ArtDirectionContext.Provider>
+      <VisualBeatOverlay beats={scene.beats} accent={accent} artDirection={sceneArtDirection} localFrame={localFrame} sceneDuration={durationInFrames} />
+      {sceneArtDirection === "cinematic" && <LightSweep />}
       {captions && scene.narration && (
         <Captions
           narration={scene.narration}
           durationInFrames={durationInFrames}
           accent={accent}
+          wordTimings={scene.wordTimings}
+          localFrame={localFrame}
         />
       )}
     </AbsoluteFill>
@@ -237,14 +274,35 @@ export const Video: React.FC<VideoProps> = ({
   progress = true,
   sfx = true,
   loop = false,
+  journey,
+  beatPulse = true,
+  art_direction = "editorial",
 }) => {
   const globalFrame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width, height } = useVideoConfig();
   const totalFrames = scenes.reduce((acc, s) => acc + s.durationInFrames, 0);
   const progressPercent = Math.min(
     100,
     Math.max(0, (globalFrame / Math.max(1, totalFrames)) * 100)
   );
+  let frameCursor = 0;
+  let activeSceneStart = 0;
+  const activeScene = scenes.find((scene) => {
+    const sceneStart = frameCursor;
+    const isActive = globalFrame < sceneStart + scene.durationInFrames;
+    if (isActive) activeSceneStart = sceneStart;
+    frameCursor += scene.durationInFrames;
+    return isActive;
+  }) ?? scenes[scenes.length - 1];
+  const activeBeat = getActiveVisualBeat(
+    activeScene?.beats,
+    (globalFrame - activeSceneStart) / Math.max(1, (activeScene?.durationInFrames ?? 1) - 1)
+  );
+  const inferredJourneyStep = Math.min(
+    (journey?.length ?? 1) - 1,
+    Math.floor((globalFrame / Math.max(1, totalFrames)) * (journey?.length ?? 1))
+  );
+  const activeJourneyStep = activeBeat?.journeyStep ?? activeScene?.journeyStep ?? inferredJourneyStep;
 
   let from = 0;
   return (
@@ -253,11 +311,11 @@ export const Video: React.FC<VideoProps> = ({
         background: BG,
         color: FG,
         fontFamily: FONT,
-        filter: "contrast(1.05) saturate(1.1)",
+        filter: art_direction === "cinematic" ? "contrast(1.05) saturate(1.1)" : undefined,
       }}
     >
       <style>{"*, *::before, *::after { box-sizing: border-box; }"}</style>
-      <Background accent={accent} />
+      <Background accent={accent} artDirection={art_direction} />
 
       {/* Global Glowing Top Progress Scrub Bar */}
       {progress && (
@@ -268,13 +326,24 @@ export const Video: React.FC<VideoProps> = ({
             left: 0,
             height: 5,
             width: `${progressPercent}%`,
-            background: `linear-gradient(90deg, ${accent}, #FFFFFF)`,
-            boxShadow: `0 0 16px ${accent}, 0 0 4px #FFFFFF`,
+            background:
+              art_direction === "cinematic"
+                ? `linear-gradient(90deg, ${accent}, #FFFFFF)`
+                : accent,
+            boxShadow: art_direction === "cinematic" ? `0 0 16px ${accent}, 0 0 4px #FFFFFF` : "none",
             zIndex: 100,
             pointerEvents: "none",
           }}
         />
       )}
+      <JourneyRail
+        steps={journey}
+        activeStep={activeJourneyStep}
+        width={width}
+        height={height}
+        accent={accent}
+        artDirection={art_direction}
+      />
 
       {scenes.map((s, i) => {
         const start = from;
@@ -287,6 +356,9 @@ export const Video: React.FC<VideoProps> = ({
               index={i}
               captions={captions}
               sfx={sfx}
+              beatPulse={beatPulse}
+              artDirection={art_direction}
+              sceneStartFrame={start}
             />
           </Sequence>
         );
@@ -308,7 +380,7 @@ export const Video: React.FC<VideoProps> = ({
           </Loop>
         );
       })()}
-      <Finish />
+      <Finish artDirection={art_direction} />
     </AbsoluteFill>
   );
 };

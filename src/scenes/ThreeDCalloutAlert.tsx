@@ -20,7 +20,7 @@ export const ThreeDCalloutAlert: React.FC<{
     shieldMaterial: THREE.MeshStandardMaterial;
     rings: THREE.Mesh[];
     clockGroup: THREE.Group;
-    clockHand: THREE.Mesh;
+    clockHand: THREE.Group;
     strobeLight: THREE.PointLight;
   } | null>(null);
 
@@ -213,11 +213,21 @@ export const ThreeDCalloutAlert: React.FC<{
       shieldMaterial,
       rings,
       clockGroup,
-      clockHand: handGroup as any,
+      clockHand: handGroup,
       strobeLight,
     };
 
     return () => {
+      threeScene.traverse((obj) => {
+        if (obj instanceof THREE.Mesh) {
+          obj.geometry?.dispose();
+          if (Array.isArray(obj.material)) {
+            obj.material.forEach((m) => m.dispose());
+          } else if (obj.material) {
+            obj.material.dispose();
+          }
+        }
+      });
       renderer.dispose();
     };
   }, [width, height, accent]);
@@ -372,7 +382,7 @@ export const ThreeDCalloutAlert: React.FC<{
               letterSpacing: "0.15em",
             }}
           >
-            STATUS: TRANSACTION PENDING
+            {scene.text || "STATUS: TRANSACTION PENDING"}
           </span>
           <span
             style={{
@@ -386,20 +396,20 @@ export const ThreeDCalloutAlert: React.FC<{
               border: "1px solid #FFC857",
             }}
           >
-            T+1 RECONCILIATION
+            {scene.category || "RECOMMENDED"}
           </span>
         </div>
 
         <p
           style={{
             margin: 0,
-            fontSize: 30,
+            fontSize: 28,
             fontWeight: 700,
             lineHeight: 1.3,
             color: "#FFFFFF",
           }}
         >
-          Do not pay twice immediately. The banking switch reconciles and auto-refunds safely.
+          {scene.subtext || "Do not pay twice immediately. The banking switch reconciles and auto-refunds safely."}
         </p>
       </div>
     </AbsoluteFill>

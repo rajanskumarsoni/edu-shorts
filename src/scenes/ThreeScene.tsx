@@ -16,6 +16,14 @@ import { ThreeDTelemetryGauge } from "./ThreeDTelemetryGauge";
 import { ThreeDArchitecturePipeline } from "./ThreeDArchitecturePipeline";
 import { ThreeDCalloutAlert } from "./ThreeDCalloutAlert";
 import { ThreeDOutroPayoff } from "./ThreeDOutroPayoff";
+import { ThreeDATMMachine } from "./ThreeDATMMachine";
+import { ThreeDDataStore } from "./ThreeDDataStore";
+import { ThreeDOverflowStack } from "./ThreeDOverflowStack";
+import { ThreeDRouteSegments } from "./ThreeDRouteSegments";
+import { ThreeDWashingMachine } from "./ThreeDWashingMachine";
+import { ThreeDModelViewer } from "./ThreeDModelViewer";
+import { ThreeDGPSTrilateration } from "./ThreeDGPSTrilateration";
+import { ThreeDBluetoothSpace } from "./ThreeDBluetoothSpace";
 
 interface ThreeSceneProps {
   scene: SceneSpec;
@@ -23,10 +31,28 @@ interface ThreeSceneProps {
 }
 
 export const ThreeScene: React.FC<ThreeSceneProps> = ({ scene, accent }) => {
+  // If an explicit GLB/GLTF model is provided, prioritize 3D model viewer
+  if (scene.model || (scene as any).modelUrl) {
+    return <ThreeDModelViewer scene={scene} accent={accent} />;
+  }
+
   // Variant router for 3D WebGL scenes
   const variant = scene.variant || "gradient_descent";
 
   switch (variant) {
+    case "model_3d":
+    case "gltf_model":
+    case "model_viewer_3d":
+    case "custom_model_3d":
+      return <ThreeDModelViewer scene={scene} accent={accent} />;
+
+    case "atm_machine_3d":
+    case "atm_hook_3d":
+    case "atm_3d":
+    case "cash_dispenser_3d":
+    case "atm_kiosk_3d":
+      return <ThreeDATMMachine scene={scene} accent={accent} />;
+
     case "upi_hook_3d":
     case "hook_3d":
     case "qr_scan_3d":
@@ -92,6 +118,31 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({ scene, accent }) => {
     case "cloud_3d":
       return <ThreeDGlobeNetwork scene={scene} accent={accent} />;
 
+    case "gps_trilateration_3d":
+    case "trilateration_3d":
+    case "gps_constellation_3d":
+    case "satellite_orbit_3d":
+      return <ThreeDGPSTrilateration scene={scene} accent={accent} />;
+
+    case "bluetooth_link_3d":
+    case "bluetooth_radio_3d":
+    case "bluetooth_discovery_3d":
+    case "bluetooth_pairing_3d":
+    case "bluetooth_layers_3d":
+    case "bluetooth_digital_data_3d":
+    case "bluetooth_spectrum_3d":
+    case "frequency_hopping_3d":
+    case "bluetooth_audio_path_3d":
+    case "packet_to_sound_3d":
+    case "bluetooth_interference_3d":
+    case "bluetooth_local_p2p_3d":
+    case "bluetooth_ecosystem_3d":
+    case "bluetooth_pipeline_3d":
+    case "bluetooth_reveal_3d":
+    case "bluetooth_master_recap_3d":
+    case "bluetooth_3d":
+      return <ThreeDBluetoothSpace scene={scene} accent={accent} />;
+
     case "server_rack_3d":
     case "server_rack":
     case "datacenter_3d":
@@ -127,6 +178,36 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({ scene, accent }) => {
     case "outro_3d":
     case "digital_india_3d":
       return <ThreeDOutroPayoff scene={scene} accent={accent} />;
+
+    case "database_cluster_3d":
+    case "database_rows_3d":
+    case "datastore_3d":
+    case "database_3d":
+    case "db_cluster_3d":
+      return <ThreeDDataStore scene={scene} accent={accent} />;
+
+    case "overflow_stack_3d":
+    case "connection_pool_3d":
+    case "connection_stack_3d":
+    case "buffer_overflow_3d":
+    case "stack_overflow_3d":
+      return <ThreeDOverflowStack scene={scene} accent={accent} />;
+
+    case "route_segments_3d":
+    case "track_segments_3d":
+    case "bitmask_route_3d":
+    case "railway_route_3d":
+      return <ThreeDRouteSegments scene={scene} accent={accent} />;
+
+    case "washing_machine_3d":
+    case "washer_3d":
+    case "washing_machine":
+    case "washer_drum_3d":
+    case "centrifugal_spin_3d":
+    case "drum_spin_3d":
+    case "surfactant_micelle_3d":
+    case "micelle_3d":
+      return <ThreeDWashingMachine scene={scene} accent={accent} />;
 
     case "gradient_descent":
     case "crest_to_trough":

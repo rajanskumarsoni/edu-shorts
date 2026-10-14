@@ -213,20 +213,26 @@ export const ThreeDSettlement: React.FC<{
     if (!s) return;
 
     // Dynamic 3/4 perspective camera pan
-    const camAngle = Math.sin(frame * 0.02) * 0.12;
-    s.camera.position.x = Math.sin(camAngle) * 2.2;
-    s.camera.position.y = 2.8 + Math.cos(frame * 0.02) * 0.15;
-    s.camera.position.z = 7.8;
-    s.camera.lookAt(0, 1.2, 0);
+    const camAngle = Math.sin(frame * 0.02) * 0.1;
+    s.camera.position.x = Math.sin(camAngle) * 2.0;
+    s.camera.position.y = 1.6 + Math.cos(frame * 0.02) * 0.12;
+    s.camera.position.z = 8.2;
+    s.camera.lookAt(0, 0.4, 0);
 
-    // Laser beam pulses
-    s.laserBeam.scale.x = 0.9 + Math.sin(frame * 0.3) * 0.2;
+    // Beat-driven spring micro-animations for 120 BPM visual momentum
+    const beatPhase = (frame % 25) / 25;
+    const beatPulse = 1 + Math.sin(beatPhase * Math.PI * 2) * 0.006;
+
+    // Laser beam pulses with beat-driven rhythm
+    s.laserBeam.scale.x = (0.9 + Math.sin(frame * 0.3) * 0.2) * beatPulse;
 
     // Pop in synchronized 3D checkmarks after frame 35
     const isSettled = frame >= 35;
     const popScale = isSettled ? Math.min(1.0, (frame - 35) / 15) : 0;
+    // Beat-driven ka-ching pulse on settlement confirmation
+    const settlePulse = isSettled ? 1 + Math.sin(((frame - 35) % 10) / 10 * Math.PI * 2) * 0.04 : 1;
     s.checkmarks.forEach((cm) => {
-      cm.scale.setScalar(popScale);
+      cm.scale.setScalar(popScale * settlePulse);
       cm.rotation.y = frame * 0.03;
       cm.lookAt(s.camera.position);
     });

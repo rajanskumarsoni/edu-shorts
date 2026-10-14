@@ -1,0 +1,22 @@
+id: "neural-network-gradient-training"
+topic: "How Neural Networks Are Trained (Forward Pass, Loss, Backprop, Gradient Descent)"
+audience: "Curious non-technical viewers, computer science students, AI enthusiasts"
+hook_angle: "Does ChatGPT or AI think like a human, or does a programmer write millions of rules? Neither! It learns purely through calculus and trial-and-error."
+analogy: "Hiking down a mountain in pitch-black fog by feeling the ground slope with your feet (Gradient Descent), and a master chef tracing a salty soup backward step-by-step to find the culprit ingredient (Backpropagation)."
+format: "vertical" # 1080x1920 (9:16 Shorts/Reels)
+accent: "#00F0FF"
+key_points:
+  - "Weights & Biases initialization: millions of random numbers"
+  - "Forward Pass: Matrix multiplication z = Wx + b and activation a = sigma(z)"
+  - "Loss Function: Quantifying the error penalty between prediction and ground truth"
+  - "Backpropagation: Calculus Chain Rule calculating partial derivatives backwards"
+  - "Gradient Descent: Updating weights opposite to gradient with learning rate alpha"
+  - "Convergence across epochs: From random gibberish to 98%+ accuracy"
+misconceptions:
+  - "AI is pre-programmed with all answers by software engineers (debunk: rules are never written; weights start random and self-tune)"
+  - "Neural networks have human consciousness (debunk: it is pure linear algebra, matrix multiplications, and calculus)"
+  - "Learning happens in one magical instant (debunk: it takes thousands of iterative micro-steps along a 3D loss surface)"
+facts_to_verify:
+  - "Modern LLMs train using AdamW/SGD across billions of parameters"
+  - "Chain rule allows exact analytical computation of gradients for every single weight in O(N) time"
+cta: "Subscribe for deep-dive AI architectures and visual engineering breakdowns"

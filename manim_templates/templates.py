@@ -44,9 +44,23 @@ class Equations(Scene):
                 return m
             except Exception:
                 # High-contrast bold unicode fallback when LaTeX packages are missing
-                replacements = {
-                    "\\sqrt": "√",
-                    "\\frac": "",
+                # Order matters: handle complex patterns first, then simple chars
+                clean = ln
+                # Handle \frac{a}{b} → a/b
+                import re as _re
+                clean = _re.sub(r'\\frac\{([^}]+)\}\{([^}]+)\}', r'\1/\2', clean)
+                # Handle \sqrt{a} → √a
+                clean = _re.sub(r'\\sqrt\{([^}]+)\}', r'√\1', clean)
+                # Handle \hat{y} → ŷ
+                clean = _re.sub(r'\\hat\{([^}]+)\}', r'\1̂', clean)
+                # Handle subscripts _{...} → (…)
+                clean = _re.sub(r'_\{([^}]+)\}', r' (\1)', clean)
+                clean = _re.sub(r'_([a-zA-Z0-9]+)', r' (\1)', clean)
+                # Handle superscripts ^{...} → ^(…)
+                clean = _re.sub(r'\^\{([^}]+)\}', r'^\1', clean)
+                clean = _re.sub(r'\^([a-zA-Z0-9]+)', r'^\1', clean)
+                # Simple replacements
+                simple_replacements = {
                     "\\cdot": " · ",
                     "\\times": " × ",
                     "\\approx": " ≈ ",
@@ -59,21 +73,15 @@ class Equations(Scene):
                     "\\partial": "∂",
                     "\\nabla": "∇",
                     "\\sum": "∑ ",
-                    "_{t+1}": " (t+1)",
-                    "_t": " (t)",
-                    "_i": " (i)",
+                    "\\hat": "",  # already handled above
                     "^2": "²",
                     "^3": "³",
                     "^T": "ᵀ",
-                    "_{out}": "ₒᵤₜ",
-                    "_{in}": "ᵢₙ",
-                    "\\hat{y}": "ŷ",
                     "{": "",
                     "}": "",
                     "\\": "",
                 }
-                clean = ln
-                for k, v in replacements.items():
+                for k, v in simple_replacements.items():
                     clean = clean.replace(k, v)
                 fs = 64 if not LAND else 72
                 t = Text(clean, font_size=fs, weight=BOLD, color=WHITE)

@@ -47,7 +47,7 @@ A studio-grade, procedurally synthesized sound effects library located in `publi
 
 ---
 
-## 🎬 How to Pick Sounds in Your Video Script (`videos/<name>.json`)
+## 🎬 How to Pick Sounds in Your Video Script (`episodes/<id>/storyboard.json`)
 
 ### Option 1: Simple Sound Name
 Just specify `"sfx": "<sound_name>"` in any scene:

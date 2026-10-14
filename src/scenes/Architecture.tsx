@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   AbsoluteFill,
   interpolate,
@@ -9,29 +9,39 @@ import {
 import type { SceneSpec } from "../types";
 import { useLayout } from "../layout";
 import { RevealText } from "../Reveal";
-import { FONT } from "../theme";
+import { ArtDirectionContext, FONT } from "../theme";
 import { MotionGraphic } from "../MotionGraphic";
 import { ThreeDArchitecturePipeline } from "./ThreeDArchitecturePipeline";
+import { NeuralNetworkGraph } from "./NeuralNetworkGraph";
 
 export const Architecture: React.FC<{ scene: SceneSpec; accent: string }> = ({
   scene,
   accent,
 }) => {
-  // Delegate to 3D WebGL Architecture Pipeline
+  const artDirection = useContext(ArtDirectionContext);
+  const frame = useCurrentFrame();
+  const { fps, durationInFrames } = useVideoConfig();
+  const L = useLayout();
+
+  const isNeuralNetwork =
+    scene.variant === "neural_network_graph" ||
+    scene.variant === "neural_network" ||
+    /neural network|forward pass|backprop/i.test(scene.title || "") ||
+    /neural network|forward pass|backprop/i.test(scene.tag || "");
+
+  if (isNeuralNetwork) {
+    return <NeuralNetworkGraph scene={scene} accent={accent} />;
+  }
+
   const is3DArchitecture =
-    scene.variant === "upi_architecture_3d" ||
-    scene.variant === "architecture_3d" ||
-    scene.variant === "pipeline_3d" ||
-    /upi architecture|end-to-end pipeline|microservice/i.test(scene.title || "") ||
-    /pipeline|architecture|end-to-end/i.test(scene.tag || "");
+    Boolean(scene.variant && scene.variant.includes("3d")) ||
+    (artDirection === "cinematic" &&
+      (/upi architecture|end-to-end pipeline|microservice/i.test(scene.title || "") ||
+        /pipeline|architecture|end-to-end/i.test(scene.tag || "")));
 
   if (is3DArchitecture) {
     return <ThreeDArchitecturePipeline scene={scene} accent={accent} />;
   }
-
-  const frame = useCurrentFrame();
-  const { fps, durationInFrames } = useVideoConfig();
-  const L = useLayout();
 
   const rawNodes = scene.nodes ?? scene.steps ?? [
     "Client Request",
@@ -50,6 +60,133 @@ export const Architecture: React.FC<{ scene: SceneSpec; accent: string }> = ({
         );
 
   const stepDuration = (durationInFrames * 0.6) / Math.max(nodes.length, 1);
+
+  if (artDirection === "editorial") {
+    return (
+      <AbsoluteFill
+        style={{
+          justifyContent: "center",
+          padding: `${L.padTop}px ${L.padX}px ${L.padBottom}px`,
+          fontFamily: FONT,
+        }}
+      >
+        {scene.title && (
+          <div style={{ marginBottom: 56 }}>
+            {scene.tag && (
+              <div
+                style={{
+                  fontFamily: "monospace",
+                  fontSize: 26,
+                  fontWeight: 700,
+                  color: accent,
+                  letterSpacing: "0.12em",
+                  marginBottom: 12,
+                }}
+              >
+                {scene.tag.toUpperCase()}
+              </div>
+            )}
+            <RevealText
+              text={scene.title}
+              align="left"
+              style={{
+                fontSize: L.landscape ? 58 : 68,
+                fontWeight: 750,
+                color: "#FFFFFF",
+                lineHeight: 1.08,
+              }}
+            />
+          </div>
+        )}
+        <div style={{ width: "100%" }}>
+          {nodes.map((nodeName, idx) => {
+            const nodeSpring = spring({
+              frame: frame - 10 - idx * stepDuration,
+              fps,
+              config: { damping: 18, stiffness: 100 },
+            });
+            const isActive = idx === activeIndex;
+            const isPassed = idx < activeIndex;
+            return (
+              <React.Fragment key={`${nodeName}-${idx}`}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 22,
+                    minHeight: L.landscape ? 76 : 88,
+                    opacity: nodeSpring,
+                    transform: `translateX(${(1 - nodeSpring) * 18}px)`,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 38,
+                      height: 38,
+                      borderRadius: "50%",
+                      border: `2px solid ${isActive || isPassed ? accent : "#657187"}`,
+                      background: isPassed ? accent : "#0B1020",
+                      color: isPassed ? "#0B1020" : isActive ? accent : "#AAB4C4",
+                      display: "grid",
+                      placeItems: "center",
+                      flexShrink: 0,
+                      fontFamily: "monospace",
+                      fontSize: 20,
+                      fontWeight: 700,
+                    }}
+                  >
+                    {String(idx + 1).padStart(2, "0")}
+                  </div>
+                  <div
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      alignItems: "baseline",
+                      justifyContent: "space-between",
+                      gap: 16,
+                      borderBottom: `1px solid ${isActive ? `${accent}99` : "rgba(180, 195, 216, 0.24)"}`,
+                      padding: "18px 0",
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: isActive ? "#FFFFFF" : isPassed ? "#D5DDE8" : "#9AA6B7",
+                        fontSize: L.landscape ? 34 : 38,
+                        fontWeight: isActive ? 700 : 500,
+                        lineHeight: 1.15,
+                      }}
+                    >
+                      {nodeName}
+                    </span>
+                    <span
+                      style={{
+                        color: isActive ? accent : "#8995A8",
+                        fontFamily: "monospace",
+                        fontSize: L.landscape ? 20 : 22,
+                        letterSpacing: "0.08em",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {isActive ? "IN PROGRESS" : isPassed ? "COMPLETE" : "UP NEXT"}
+                    </span>
+                  </div>
+                </div>
+                {idx < nodes.length - 1 && (
+                  <div
+                    style={{
+                      height: L.landscape ? 28 : 34,
+                      marginLeft: 18,
+                      borderLeft: `2px solid ${idx < activeIndex ? accent : "rgba(180, 195, 216, 0.24)"}`,
+                    }}
+                  />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+      </AbsoluteFill>
+    );
+  }
 
   return (
     <AbsoluteFill

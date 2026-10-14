@@ -9,9 +9,24 @@ import {
 import { BG, hexAlpha } from "./theme";
 
 // Slowly drifting colored glows + floating soft "bokeh" lights (parallax by size).
-export const Background: React.FC<{ accent: string }> = ({ accent }) => {
+export const Background: React.FC<{
+  accent: string;
+  artDirection?: "editorial" | "cinematic";
+}> = ({ accent, artDirection = "editorial" }) => {
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
+  if (artDirection === "editorial") {
+    return (
+      <AbsoluteFill
+        style={{
+          backgroundColor: BG,
+          backgroundImage:
+            "linear-gradient(rgba(145, 174, 211, 0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(145, 174, 211, 0.045) 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+        }}
+      />
+    );
+  }
   const unit = Math.min(width, height) / 1080;
   const x1 = 30 + Math.sin(frame / 90) * 15;
   const y1 = 25 + Math.cos(frame / 110) * 10;
@@ -84,8 +99,11 @@ export const LightSweep: React.FC = () => {
 };
 
 // Final look: teal/orange color grade, vignette, film grain.
-export const Finish: React.FC = () => {
+export const Finish: React.FC<{
+  artDirection?: "editorial" | "cinematic";
+}> = ({ artDirection = "editorial" }) => {
   const frame = useCurrentFrame();
+  if (artDirection === "editorial") return null;
   return (
     <>
       <AbsoluteFill

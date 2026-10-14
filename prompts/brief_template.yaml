@@ -1,0 +1,20 @@
+id: "008-rate-limiter"
+topic: "Rate Limiter in System Design"
+audience: "Tech enthusiasts, system design beginners, software engineers"
+hook_angle: "How does BookMyShow or Ticketmaster survive 10 million simultaneous ticket clicks without server meltdown?"
+analogy: "Metro station turnstile gate / digital bouncer with token counter"
+format: "vertical" # "vertical" (1080x1920) or "landscape" (1920x1080)
+accent: "#00F0FF"
+key_points:
+  - "Token Bucket algorithm and burst capacity"
+  - "Sliding Window log precision"
+  - "Distributed Redis cache counters"
+  - "Graceful degradation and HTTP 429 Too Many Requests"
+misconceptions:
+  - "Rate limiters just block malicious DDoS hackers (debunk: they primarily protect internal services from normal traffic spikes)"
+  - "Rate limiting happens at the database level (debunk: it happens at API Gateway / Reverse Proxy layer)"
+facts_to_verify:
+  - "Average ticket spike requests/sec during major concerts"
+  - "Standard HTTP status code 429 with Retry-After header"
+cta: "Follow for real-world system design and backend architecture breakdowns"
+

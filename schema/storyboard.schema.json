@@ -1,0 +1,597 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/rajankumarsoni/edu-shorts/main/schema/storyboard.schema.json",
+  "title": "StoryboardSpec",
+  "description": "Validation schema for educational video storyboard compositions in the edu-shorts pipeline.",
+  "type": "object",
+  "required": ["id", "scenes"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional URI referencing this schema"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "description": "Unique identifier for the video composition (used for directory and output naming)."
+    },
+    "format": {
+      "type": "string",
+      "enum": ["vertical", "landscape"],
+      "default": "vertical",
+      "description": "Video canvas format: 'vertical' (1080x1920, Shorts/Reels) or 'landscape' (1920x1080, YouTube)."
+    },
+    "accent": {
+      "type": "string",
+      "pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
+      "default": "#00F0FF",
+      "description": "Primary glowing neon accent color (Hex string)."
+    },
+    "art_direction": {
+      "type": "string",
+      "enum": ["editorial", "cinematic"],
+      "default": "editorial",
+      "description": "Editorial uses stable diagrams, a restrained grid, and no global camera drift; cinematic enables the legacy glow, bokeh, grade, and camera drift."
+    },
+    "music": {
+      "type": ["string", "null"],
+      "description": "Path to background music track relative to repository root."
+    },
+    "music_volume": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "default": 0.08,
+      "description": "Ducked background music volume (recommended: 0.04 - 0.12)."
+    },
+    "captions": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable synchronized, kinetic word-by-word highlighted captions."
+    },
+    "progress": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable glowing top progress bar."
+    },
+    "sfx": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable procedural and scene-level sound effects."
+    },
+    "loop": {
+      "type": "boolean",
+      "default": false,
+      "description": "Optimize video for infinite seamless looping on mobile feeds."
+    },
+    "audio_mode": {
+      "type": "string",
+      "enum": ["single", "scenes"],
+      "default": "single",
+      "description": "Audio alignment mode: 'scenes' (recommended, per-scene audio files) or 'single' (monolithic audio with boundary detection)."
+    },
+    "pad_seconds": {
+      "type": "number",
+      "minimum": 0.0,
+      "default": 0.0,
+      "description": "Pause added after each scene's audio in scenes mode (default 0.0: adjust scene length strictly as per audio length)."
+    },
+    "journey": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Optional list of milestones for persistent journey progress indicators."
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "hashtags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "facts_to_verify": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "misconceptions": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "analogy": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Ordered sequence of scenes forming the video timeline.",
+      "items": {
+        "$ref": "#/definitions/Scene"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "StoryboardVisual": {
+      "type": "object",
+      "required": ["start", "objects", "action", "camera", "motion_graphics", "end"],
+      "properties": {
+        "start": { "type": "string", "minLength": 1, "description": "Starting visual frame and spatial environment setup." },
+        "objects": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "List of physical or 3D technical objects present on screen."
+        },
+        "action": { "type": "string", "minLength": 1, "description": "Kinetic transformation, particle movement, or mechanism happening." },
+        "camera": { "type": "string", "minLength": 1, "description": "Dynamic camera movement, angle, framing, and focal length." },
+        "motion_graphics": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "On-screen motion typography, telemetry HUD cards, or callouts."
+        },
+        "end": { "type": "string", "minLength": 1, "description": "Final frame state transitioning seamlessly to the next scene." }
+      },
+      "additionalProperties": true
+    },
+    "CommonSceneProperties": {
+      "type": "object",
+      "required": ["visual"],
+      "properties": {
+        "tag": {
+          "type": "string",
+          "description": "Tracked uppercase step badge (e.g. '01 / THE 2-SECOND MIRACLE')."
+        },
+        "purpose": {
+          "type": "string",
+          "description": "Core pedagogical takeaway for the viewer in this scene."
+        },
+        "tone": {
+          "type": "string",
+          "description": "Optional delivery emotion cue for VoiceStudio TTS."
+        },
+        "narration": {
+          "type": "string",
+          "description": "Spoken Hindi narration (Devanagari / conversational Hinglish)."
+        },
+        "seconds": {
+          "type": "number",
+          "minimum": 0.5,
+          "description": "Manual scene duration override in seconds."
+        },
+        "transition": {
+          "type": "string",
+          "enum": ["zoom_through", "match_cut", "whip_pan", "morph", "dissolve", "slide_left", "slide_up", "none"],
+          "default": "zoom_through",
+          "description": "Cinematic transition into the next scene."
+        },
+        "icon": {
+          "type": "string",
+          "description": "Semantic Lucide icon name (e.g., 'shield-alert', 'server', 'zap')."
+        },
+        "graphic": {
+          "type": "string",
+          "description": "Visual anchor or shader identifier."
+        },
+        "motion": {
+          "type": "string",
+          "description": "Procedural physics or kinetic transition directives."
+        },
+        "sfx": {
+          "type": ["string", "array"],
+          "description": "Sound effect identifier from local library, list of cues, or frame-accurate cue objects."
+        },
+        "sfxVolume": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Per-scene sound effects volume multiplier."
+        },
+        "journeyStep": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Active milestone index in top-level journey progress."
+        },
+        "beats": {
+          "type": "array",
+          "items": { "type": "object" },
+          "description": "Micro-events synchronized to narration audio beats."
+        },
+        "search_image": {
+          "type": "string",
+          "description": "Automated web image search query for asset acquisition."
+        },
+        "generate_image": {
+          "type": "string",
+          "description": "Instant GenAI image generation prompt via Pollinations.ai."
+        },
+        "search_video": {
+          "type": "string",
+          "description": "Automated web stock B-roll video query for asset acquisition."
+        },
+        "search_icon": {
+          "type": "string",
+          "description": "Automated vector SVG icon search query via Iconify."
+        },
+        "icon_path": {
+          "type": "string",
+          "description": "Path to local vector SVG icon in /public."
+        },
+        "image_provider": {
+          "type": "string",
+          "enum": ["auto", "wikimedia", "openverse", "nasa", "museum", "pexels", "unsplash", "pixabay", "pollinations"],
+          "description": "Preferred image search provider."
+        },
+        "video_provider": {
+          "type": "string",
+          "enum": ["auto", "pexels", "pixabay", "nasa", "archive", "wikimedia"],
+          "description": "Preferred stock video search provider."
+        },
+        "search_sfx": {
+          "type": "string",
+          "description": "Automated sound effect query or custom sound name for asset acquisition."
+        },
+        "search_model": {
+          "type": "string",
+          "description": "Automated 3D model query or AI generation prompt."
+        },
+        "visual": {
+          "$ref": "#/definitions/StoryboardVisual"
+        }
+      }
+    },
+    "Scene": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "three",
+            "callout",
+            "code",
+            "architecture",
+            "gauge",
+            "timeline",
+            "benchmark",
+            "bento",
+            "hierarchy",
+            "data_structure",
+            "inspector",
+            "quadrant",
+            "concentric",
+            "seat_booking",
+            "interview",
+            "compare",
+            "stat",
+            "bullets",
+            "hook",
+            "outro",
+            "image",
+            "video",
+            "diagram",
+            "quote",
+            "manim",
+            "neural_network_graph"
+          ]
+        }
+      },
+      "allOf": [
+        { "$ref": "#/definitions/CommonSceneProperties" },
+        {
+          "if": { "properties": { "type": { "const": "three" } } },
+          "then": {
+            "required": ["variant"],
+            "properties": {
+              "title": { "type": "string" },
+              "variant": {
+                "type": "string",
+                "enum": [
+                  "atm_machine_3d", "atm_hook_3d", "atm_3d", "cash_dispenser_3d", "atm_kiosk_3d",
+                  "upi_hook_3d", "hook_3d", "qr_scan_3d", "smartphone_qr_3d",
+                  "concentric_security_3d", "zero_knowledge_pin_3d", "pin_security_3d",
+                  "concentric_3d", "security_rings_3d",
+                  "upi_tunnel_3d", "digital_tunnel_3d", "cyber_tunnel", "highway_3d",
+                  "highway", "traffic_3d", "tunnel_3d",
+                  "upi_city_3d", "city_network_3d", "participants_3d", "city_3d",
+                  "upi_qr_3d", "qr_inspection_3d", "qr_matrix_3d", "qr_3d", "qrcode_3d",
+                  "upi_phone_layers_3d", "phone_layers_3d", "sandbox_3d", "phone_3d",
+                  "smartphone_3d", "mobile_3d",
+                  "upi_bank_vault_3d", "bank_vault_3d", "upi_bank_vault_credit_3d",
+                  "cbs_ledger_3d", "bank_3d", "vault_3d",
+                  "neural_network_3d", "neural_network", "backprop_3d", "brain_3d", "ai_3d",
+                  "globe_network_3d", "globe_network", "distributed_mesh", "network_3d",
+                  "internet_3d", "cloud_3d",
+                  "gps_trilateration_3d", "trilateration_3d", "gps_constellation_3d", "satellite_orbit_3d",
+                  "bluetooth_link_3d", "bluetooth_radio_3d", "bluetooth_discovery_3d",
+                  "bluetooth_pairing_3d", "bluetooth_layers_3d", "bluetooth_spectrum_3d",
+                  "frequency_hopping_3d", "bluetooth_audio_path_3d", "packet_to_sound_3d",
+                  "bluetooth_interference_3d", "bluetooth_local_p2p_3d", "bluetooth_ecosystem_3d",
+                  "bluetooth_pipeline_3d", "bluetooth_reveal_3d", "bluetooth_3d",
+                  "server_rack_3d", "server_rack", "datacenter_3d", "npci_datacenter",
+                  "server_3d", "servers_3d",
+                  "upi_settlement_3d", "settlement_3d", "dual_ledger_3d", "bilateral_settlement_3d",
+                  "upi_gauge_3d", "telemetry_gauge_3d", "gauge_3d", "speedometer_3d",
+                  "upi_architecture_3d", "architecture_3d", "pipeline_3d",
+                  "upi_alert_3d", "alert_3d", "callout_3d", "reconciliation_3d",
+                  "upi_outro_3d", "outro_3d", "digital_india_3d",
+                  "database_cluster_3d", "database_rows_3d", "datastore_3d", "database_3d", "db_cluster_3d",
+                  "overflow_stack_3d", "connection_pool_3d", "connection_stack_3d",
+                  "buffer_overflow_3d", "stack_overflow_3d",
+                  "route_segments_3d", "track_segments_3d", "bitmask_route_3d", "railway_route_3d",
+                  "batch_gd", "stochastic_gd", "mini_batch", "comparison_3d",
+                  "conveyor_3d", "factory_conveyor_3d", "pipeline_3d_physical",
+                  "container_dock_3d", "shipping_dock_3d", "docker_dock_3d",
+                  "washing_machine_3d", "washer_3d", "washing_machine", "washer_drum_3d",
+                  "centrifugal_spin_3d", "drum_spin_3d", "surfactant_micelle_3d", "micelle_3d",
+                  "gradient_descent", "crest_to_trough",
+                  "model_3d", "gltf_model", "model_viewer_3d", "custom_model_3d"
+                ]
+              },
+              "model": { "type": "string", "description": "Relative path in /public (e.g. models/phone.glb) or URL to .glb/.gltf" },
+              "modelScale": { "type": "number", "minimum": 0.01, "default": 1.0 },
+              "modelRotation": {
+                "type": "array",
+                "items": { "type": "number" },
+                "minItems": 3,
+                "maxItems": 3,
+                "description": "Initial Euler rotation offset [x, y, z] in radians"
+              },
+              "component": { "type": "string" },
+              "equation": { "type": "string" },
+              "metrics": {
+                "type": "object",
+                "additionalProperties": { "type": ["string", "number"] }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "callout" } } },
+          "then": {
+            "properties": {
+              "title": { "type": "string" },
+              "text": { "type": "string" },
+              "subtext": { "type": "string" },
+              "category": { "type": "string" },
+              "badge": { "type": "string" },
+              "variant": {
+                "type": "string",
+                "enum": ["payment_reconciliation_alert", "upi_alert_3d", "alert_3d", "callout_3d", "standard", "default"]
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "code" } } },
+          "then": {
+            "properties": {
+              "title": { "type": "string" },
+              "code": { "type": "string" },
+              "lines": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "language": { "type": "string" },
+              "filename": { "type": "string" },
+              "highlight": {
+                "type": ["integer", "array"],
+                "items": { "type": "integer" }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "architecture" } } },
+          "then": {
+            "properties": {
+              "title": { "type": "string" },
+              "nodes": { "type": "array" },
+              "steps": { "type": "array" },
+              "direction": { "type": "string", "enum": ["horizontal", "vertical"] },
+              "activeNode": { "type": ["string", "integer"] }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "gauge" } } },
+          "then": {
+            "properties": {
+              "title": { "type": "string" },
+              "value": { "type": "number" },
+              "startValue": { "type": "number" },
+              "endValue": { "type": "number" },
+              "unit": { "type": "string" },
+              "status": { "type": "string" },
+              "badge": { "type": "string" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "benchmark" } } },
+          "then": {
+            "required": ["runners"],
+            "properties": {
+              "title": { "type": "string" },
+              "unit": { "type": "string" },
+              "runners": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["name", "value"],
+                  "properties": {
+                    "name": { "type": "string" },
+                    "value": { "type": "number" },
+                    "status": { "type": "string" },
+                    "color": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "bento" } } },
+          "then": {
+            "properties": {
+              "title": { "type": "string" },
+              "bentoItems": { "type": "array" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "hierarchy" } } },
+          "then": {
+            "required": ["layers"],
+            "properties": {
+              "title": { "type": "string" },
+              "layers": { "type": "array" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "timeline" } } },
+          "then": {
+            "properties": {
+              "title": { "type": "string" },
+              "steps": { "type": "array" },
+              "activeStep": { "type": "integer" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "data_structure" } } },
+          "then": {
+            "properties": {
+              "title": { "type": "string" },
+              "structure": { "type": "string", "enum": ["queue", "stack", "buffer", "array", "tree", "hashmap"] },
+              "operations": { "type": "array" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "inspector" } } },
+          "then": {
+            "required": ["sections"],
+            "properties": {
+              "title": { "type": "string" },
+              "sections": { "type": "array" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "concentric" } } },
+          "then": {
+            "required": ["rings"],
+            "properties": {
+              "title": { "type": "string" },
+              "rings": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "seat_booking" } } },
+          "then": {
+            "required": ["beats"],
+            "properties": {
+              "title": { "type": "string" },
+              "beats": { "type": "array" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "compare" } } },
+          "then": {
+            "required": ["left", "right"],
+            "properties": {
+              "title": { "type": "string" },
+              "left": { "type": "object" },
+              "right": { "type": "object" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "stat" } } },
+          "then": {
+            "required": ["value"],
+            "properties": {
+              "title": { "type": "string" },
+              "value": { "type": ["string", "number"] },
+              "label": { "type": "string" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "bullets" } } },
+          "then": {
+            "required": ["items"],
+            "properties": {
+              "title": { "type": "string" },
+              "items": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "manim" } } },
+          "then": {
+            "required": ["manim"],
+            "properties": {
+              "title": { "type": "string" },
+              "manim": {
+                "type": "object",
+                "required": ["template"],
+                "properties": {
+                  "template": { "type": "string" },
+                  "lines": { "type": "array", "items": { "type": "string" } },
+                  "fn": { "type": "string" },
+                  "x_range": { "type": "array", "items": { "type": "number" } },
+                  "y_range": { "type": "array", "items": { "type": "number" } },
+                  "items": { "type": "array" }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "image" } } },
+          "then": {
+            "properties": {
+              "title": { "type": "string" },
+              "image": { "type": "string" },
+              "search_image": { "type": "string" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "video" } } },
+          "then": {
+            "properties": {
+              "title": { "type": "string" },
+              "video": { "type": "string" },
+              "search_video": { "type": "string" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "diagram" } } },
+          "then": {
+            "properties": {
+              "title": { "type": "string" },
+              "diagram": { "type": "string" },
+              "mermaid": { "type": "string" },
+              "graphviz": { "type": "string" }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

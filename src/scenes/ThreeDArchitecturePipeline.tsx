@@ -63,11 +63,11 @@ export const ThreeDArchitecturePipeline: React.FC<{
 
     // Define 5 Node Positions in 3D vertical composition space (cascading serpentine layout)
     const nodeCoords: [number, number, number][] = [
-      [-1.25, 1.3, 0.8],   // 1: Payer App (mid-upper left)
-      [1.25, 0.55, 0.2],    // 2: NPCI Switch (mid-upper right)
-      [-1.25, -0.25, -0.4], // 3: Bank A Debit (mid-lower left)
-      [1.25, -1.05, -0.8],  // 4: Bank B Credit (mid-lower right)
-      [0.0, -1.85, -0.2],  // 5: Status Broadcast (center bottom)
+      [-1.2, 0.9, 0.8],   // 1: Payer App (mid-upper left)
+      [1.2, 0.3, 0.2],    // 2: NPCI Switch (mid-upper right)
+      [-1.2, -0.4, -0.4], // 3: Bank A Debit (mid-lower left)
+      [1.2, -1.1, -0.8],  // 4: Bank B Credit (mid-lower right)
+      [0.0, -1.9, -0.2],  // 5: Status Broadcast (center bottom)
     ];
 
     const nodesData = [
@@ -232,8 +232,8 @@ export const ThreeDArchitecturePipeline: React.FC<{
         transparent: true,
         side: THREE.DoubleSide,
       });
-      const badge = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 0.47), badgeMat);
-      badge.position.set(0, 1.45, 0);
+      const badge = new THREE.Mesh(new THREE.PlaneGeometry(1.35, 0.42), badgeMat);
+      badge.position.set(0, 1.05, 0.1);
       grp.add(badge);
 
       threeScene.add(grp);

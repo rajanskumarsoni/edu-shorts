@@ -53,13 +53,18 @@ const NeuralBrainHologram3D: React.FC<{ accent: string }> = ({ accent }) => {
     pointLight.position.set(0, 3, 10);
     scene.add(pointLight);
 
-    // 3D Neural Brain Nodes: Dual hemisphere cluster
-    const nodeCount = 36;
-    const nodePositions: THREE.Vector3[] = [];
+    // 3D Neural Network Graph: 4 Distinct Multi-Layer Columns
+    const layerSizes = [3, 5, 5, 2];
+    const layerXSpacing = 2.8;
+    const nodeYSpacing = 1.5;
+    const startX = -((layerSizes.length - 1) * layerXSpacing) / 2;
+
+    const nodePositions: THREE.Vector3[][] = [];
+    const allNodePositions: THREE.Vector3[] = [];
     const nodeMeshes: THREE.Mesh[] = [];
     const ringMeshes: THREE.Mesh[] = [];
 
-    const sphereGeo = new THREE.SphereGeometry(0.24, 20, 20);
+    const sphereGeo = new THREE.SphereGeometry(0.28, 20, 20);
     const nodeMat = new THREE.MeshStandardMaterial({
       color: new THREE.Color(accent),
       emissive: new THREE.Color(accent),
@@ -68,49 +73,49 @@ const NeuralBrainHologram3D: React.FC<{ accent: string }> = ({ accent }) => {
       metalness: 0.85,
     });
 
-    const ringGeo = new THREE.RingGeometry(0.38, 0.46, 24);
+    const ringGeo = new THREE.RingGeometry(0.40, 0.48, 24);
     const ringMat = new THREE.MeshBasicMaterial({
       color: new THREE.Color(accent),
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.75,
     });
 
-    for (let i = 0; i < nodeCount; i++) {
-      const hemisphere = i % 2 === 0 ? 1 : -1;
-      const u = (Math.floor(i / 2) / (nodeCount / 2)) * Math.PI;
-      const v = ((i % 5) / 5) * Math.PI * 2;
-      const r = 2.4 + 0.4 * Math.sin(u * 3);
+    layerSizes.forEach((count, lIdx) => {
+      const layerNodes: THREE.Vector3[] = [];
+      const x = startX + lIdx * layerXSpacing;
+      const startY = -((count - 1) * nodeYSpacing) / 2;
 
-      const x = hemisphere * (1.1 + Math.abs(r * Math.sin(u) * Math.cos(v) * 0.9));
-      const y = r * Math.cos(u) * 1.2;
-      const z = r * Math.sin(u) * Math.sin(v) * 0.9;
+      for (let nIdx = 0; nIdx < count; nIdx++) {
+        const y = startY + nIdx * nodeYSpacing;
+        const z = (Math.sin(lIdx * 1.6 + nIdx) * 0.3);
+        const pos = new THREE.Vector3(x, y, z);
+        layerNodes.push(pos);
+        allNodePositions.push(pos);
 
-      const pos = new THREE.Vector3(x, y, z);
-      nodePositions.push(pos);
+        const mesh = new THREE.Mesh(sphereGeo, nodeMat.clone());
+        mesh.position.copy(pos);
+        scene.add(mesh);
+        nodeMeshes.push(mesh);
 
-      const mesh = new THREE.Mesh(sphereGeo, nodeMat.clone());
-      mesh.position.copy(pos);
-      scene.add(mesh);
-      nodeMeshes.push(mesh);
-
-      // Add glowing cyan node rings to select focal nodes
-      if (i % 4 === 0) {
+        // Add glowing cyan halo ring to every node
         const ring = new THREE.Mesh(ringGeo, ringMat.clone());
         ring.position.copy(pos);
         scene.add(ring);
         ringMeshes.push(ring);
       }
-    }
+      nodePositions.push(layerNodes);
+    });
 
-    // Synaptic Connection Lines: Connect close neighbors
+    // Synaptic Connection Lines: Connect adjacent layer columns
     const linePoints: THREE.Vector3[] = [];
-    for (let i = 0; i < nodeCount; i++) {
-      for (let j = i + 1; j < nodeCount; j++) {
-        const dist = nodePositions[i].distanceTo(nodePositions[j]);
-        if (dist < 2.3) {
-          linePoints.push(nodePositions[i]);
-          linePoints.push(nodePositions[j]);
+    for (let l = 0; l < nodePositions.length - 1; l++) {
+      const currentLayer = nodePositions[l];
+      const nextLayer = nodePositions[l + 1];
+      for (const p1 of currentLayer) {
+        for (const p2 of nextLayer) {
+          linePoints.push(p1);
+          linePoints.push(p2);
         }
       }
     }
@@ -252,10 +257,7 @@ export const Hook: React.FC<{ scene: SceneSpec; accent: string }> = ({
   const isNeuralBrain =
     scene.icon === "brain" ||
     scene.graphic === "neural_network_3d" ||
-    (typeof scene.visual === "object" &&
-      Array.isArray(scene.visual?.objects) &&
-      scene.visual.objects.some((o: string) => /brain|neural|synap/i.test(o))) ||
-    (typeof scene.visual === "string" && /brain|neural/i.test(scene.visual));
+    scene.visual?.objects.some((o) => /brain|neural|synap/i.test(o));
 
   return (
     <AbsoluteFill

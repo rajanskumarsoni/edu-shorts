@@ -3,6 +3,8 @@
 
 > **Core Philosophy**:  
 > जटिल टेक कॉन्सेप्ट्स को किताबी भाषा में नहीं, बल्कि रोज़मर्रा की बातचीत (Day-to-day Hindi / Hinglish) और दैनिक जीवन के उदाहरणों से समझाना।
+>
+> Follow `AGENTS.md` and `prompts/master_production_prompt.md` for the current shared production standard. Prefer clear editorial diagrams; use 3D and cinematic treatment only when they improve comprehension.
 
 ---
 
@@ -105,6 +107,10 @@ HOOK ──► PROBLEM ──► CURIOSITY ──► EXPLANATION ──► PAYOF
 | **Rate Limiter** | मेट्रो स्टेशन का टर्नस्टाइल गेट जो एक बार में एक ही टोकन लेता है | `bullets`: Token Bucket, Requests, Drop |
 | **Gradient Descent** | घने कोहरे में पहाड़ से सबसे ढलान वाले रास्ते से नीचे उतरना | `manim` (Graph): Loss curve slope |
 | **Microservices vs Monolith** | एक ऑल-इन-वन सुपरमार्केट vs अलग-अलग स्पेशलिस्ट दुकानें | `compare`: Monolith vs Microservices |
+| **Database Row Locking & ACID** | बैंक लॉकर या ट्रेन की सीट जिस पर ताला लग जाता है ताकि कोई दूसरा न ले सके | `three` (`database_cluster_3d`): Floating row slabs with snapping physical padlock |
+| **Connection Pool Exhaustion** | रेस्टोरेंट में सारे वेटर्स व्यस्त हो जाएं और नए ग्राहक गेट पर जाम हो जाएं | `three` (`overflow_stack_3d`): Server blade with red connection stack overflowing |
+| **Multi-Leg Segment Booking (Bitmasks)** | एक ट्रेन की सीट दिल्ली से कानपुर और कानपुर से पटना दो अलग-अलग लोगों को बिकना | `three` (`route_segments_3d`): Segmented railway track with independent illuminated legs |
+| **Interviewer Misconception Debunk** | इंटरव्यूअर का ट्रिकी सवाल और आपका पहला गलत अंदाज़ा | `interview`: Dialogue card with animated red strikethrough crossing out the naive answer |
 
 ---
 
@@ -143,24 +149,24 @@ HOOK ──► PROBLEM ──► CURIOSITY ──► EXPLANATION ──► PAYOF
 
 ## 8. Sound Design & Audio Direction (कब, कहाँ और कैसे SFX इस्तेमाल करें)
 
-> **Mandate**:  
-> हर शॉर्ट वीडियो में विजुअल गति और नरेशन के साथ-साथ **ऑडियो इफेक्ट्स (SFX)** रिटेंशन को 2× बढ़ा देते हैं। इंजन में `public/sfx/` लाइब्रेरी बिल्ट-इन है।
+> **Optional sound design**:
+> `public/sfx/` में मौजूद effects को तभी चुनें जब वे narration या meaningful visual event को reinforce करें. Silence भी सही विकल्प है.
 
 ### कब और कहाँ कौन-सा साउंड इस्तेमाल करें:
 1. **Transition & Speed Ramps (सीन बदलना / कैमरा मोशन)**:
-   - `whoosh`: हर सामान्य सीन ट्रांज़िशन के लिए डिफ़ॉल्ट।
+   - `whoosh`: scene handoff पर, जब यह transition को support करे।
    - `fast_whoosh`: बहुत तेज़ स्वाइप, व्हिप-पैन, या अचानक ट्विस्ट पर।
    - `riser`: किसी बड़े ड्रामैटिक सवाल या पे-ऑफ से ठीक पहले का सस्पेंस।
 2. **Impacts & Dramatic Numbers (बड़ा नंबर / क्रैश / समस्या)**:
-   - `impact`: `stat` सीन पर (जैसे "Crash!", "10 Million", "₹20 Lakh Cr")।
+   - `impact`: किसी महत्वपूर्ण stat या समस्या के reveal पर।
    - `bass_drop`: जब कोई गंभीर समस्या या बड़ा खतरा बताया जाए।
    - `glitch`: जब कोई बग, सर्वर एरर, या गलत धारणा (misconception) दिखाई जाए।
 3. **UI Elements & Actions (बटन / टिक / चेकलिस्ट)**:
-   - `pop`: `bullets` का हर पॉइंट या `callout` बैज दिखने पर।
+   - `pop`: किसी खास bullet या `callout` reveal पर, अगर इससे emphasis मिले।
    - `tick`: टाइमलाइन या काउंटर रोल-अप पर।
    - `click` / `ting`: इंटरफ़ेस स्विच या नोटिफिकेशन पिंग।
 4. **Real-World Foley & Domain Specifics**:
-   - `ka_ching`: पेमेंट, मनी, रेवेन्यू, या UPI सेटलमेंट पर।
+   - `ka_ching`: पेमेंट, मनी, रेवेन्यू, या UPI सेटलमेंट के महत्वपूर्ण पल पर।
    - `typing`: `code` टर्मिनल सीन पर।
    - `camera_shutter`: QR कोड स्कैनिंग या इमेज स्नैपशॉट पर।
    - `radar_beep`: 3D नेटवर्क, सर्वर रैक या पैकेट फ्लो पर।
@@ -188,12 +194,9 @@ HOOK ──► PROBLEM ──► CURIOSITY ──► EXPLANATION ──► PAYOF
 
 ---
 
-## 9. Semantic Visual Grounding ("See What You Hear" - जो सुनो, वही स्क्रीन पर दिखे)
+## 9. Semantic Visual Grounding ("Show What Changes" - जो बदलता है, वह दिखाओ)
 
-> [!IMPORTANT]
-> **NO ABSTRACT SLIDES OR GENERIC CIRCLES FOR REAL OBJECTS**:
-> जब भी नरेशन में किसी भौतिक या तकनीकी वस्तु का नाम लिया जाए (Phone, QR Code, Server, Bank Vault, Tunnel, Highway, Database, AI Brain, PIN), तो स्क्रीन पर केवल अमूर्त वृत्त (abstract circles) या सादा टेक्स्ट नहीं दिखना चाहिए!
-> हर सीन को वास्तविक दुनिया की तरह 3D WebGL या रिच मोशन ग्राफिक्स में एनिमेट करें:
+हर सीन में बोली गई बात का एक स्पष्ट दृश्य रूप दिखाओ: diagram, relationship, mechanism, object, या state change. Generic circles और bare text से बचो. Flows और data के लिए clean 2D/2.5D diagrams अक्सर 3D से बेहतर होते हैं. 3D तभी चुनो जब physical scale, depth, या spatial relationships समझने में मदद करें:
 > - **Phone / Mobile**: 3D Smartphone स्क्रीन और ग्लास लेयर्स के साथ (`variant: "upi_hook_3d"` या `"phone_layers_3d"`)
 > - **QR Code / Scanning**: 3D QR स्टैंडी और लेजर स्कैनर (`variant: "qr_inspection_3d"` या `"qr_scan_3d"`)
 > - **Tunnel / Highway / Transit**: 3D फाइबर-ऑप्टिक स्पीड टनल जिसमें चमकते हुए करेंसी पैकेट्स दौड़ रहे हों (`variant: "upi_tunnel_3d"` या `"highway_3d"`)
@@ -203,7 +206,7 @@ HOOK ──► PROBLEM ──► CURIOSITY ──► EXPLANATION ──► PAYOF
 > - **Bank / Ledger / Settlement**: दो 3D बैंक वॉल्ट्स जिनमें बैलेंस मीटर रियल-टाइम डेबिट और क्रेडिट दिखा रहे हों (`variant: "bank_vault_3d"`)
 > - **Global Cloud / Internet**: 3D होलोग्राफिक पृथ्वी ग्लोब और ऑर्बिटल सैटेलाइट मेश (`variant: "globe_network_3d"`)
 > - **AI / Neural Network**: 3D सिनेप्टिक ब्रेन जिसमें वेट एक्टिवेशन पल्स प्रवाहित हो रही हों (`variant: "neural_network_3d"`)
-> - **Extensibility Mandate**: अगर कोई नया विषय आता है (जैसे डॉकर कंटेनर्स, काफ्का क्यू, गिट ब्रांच ट्री), तो इंजीनियर को `src/scenes/` में एक समर्पित Three.js कंपोनेंट बनाना होगा। कभी भी फ्लैट टेक्स्ट पर वापस न लौटें!
+> - नया Three.js कंपोनेंट तभी बनाओ जब वह समझ को स्पष्ट रूप से बेहतर करे; साफ vector diagram भी मान्य visual है.
 
 ---
 
@@ -212,7 +215,8 @@ HOOK ──► PROBLEM ──► CURIOSITY ──► EXPLANATION ──► PAYOF
 वीडियो को ठीक वैसा बनाने के लिए जैसा क्रिएटर चाहता है, हर सीन में नीचे दिए गए स्पेसिफिक कंट्रोल्स पास किए जाने चाहिए:
 
 ### 1. टॉप-लेवल ग्लोबल सेटिंग्स:
-- `"captions": true` (स्क्रीन पर शब्द-दर-शब्द एनिमेटेड कैप्शन्स)
+- `"art_direction": "editorial"` (default; stable, restrained diagrams) या `"cinematic"` (opt-in legacy global effects)
+- `"captions": true` (approved Hindi narration के verbatim, शब्द-दर-शब्द highlighted captions)
 - `"progress": true` (स्क्रीन के शीर्ष पर नियॉन प्रोग्रेस बार)
 - `"sfx": true` (प्रोसीजरल साउंड इफेक्ट्स मास्टर स्विच)
 - `"music_volume": 0.08` (बैकग्राउंड म्यूज़िक का वॉल्यूम)
@@ -262,7 +266,209 @@ HOOK ──► PROBLEM ──► CURIOSITY ──► EXPLANATION ──► PAYOF
 
 ---
 
-## 10. Complete Example Spec (JSON) - "How UPI Works" Gold Standard Benchmark
+## 10. STRICT REAL-OBJECT VISUALIZATION POLICY — NO PLACEHOLDER GEOMETRY
+
+### Core rule
+
+**Every real-world object must be represented by a recognizable, detailed 3D model or a high-quality realistic graphic of that actual object. Do not represent real objects using generic boxes, cubes, cylinders, spheres, or wireframe shapes.**
+
+The audience must be able to recognize the object immediately, even if its label is hidden.
+
+For example:
+- A laptop must look like an actual laptop, with a screen, keyboard, trackpad, hinge, and realistic proportions.
+- A smartphone must look like an actual smartphone, with a screen, bezels, camera system, and recognizable body design.
+- Wireless earbuds must look like real earbuds, with appropriate earbud shapes, speaker openings, stems where applicable, and a charging case when needed.
+- A smartwatch must have a recognizable watch face, strap, and body.
+- A keyboard must have individual keys and a recognizable keyboard layout.
+- A Bluetooth speaker must have a realistic speaker enclosure and visible speaker grille.
+- A game controller must have recognizable grips, buttons, thumbsticks, and triggers.
+- A human hand must look anatomically plausible when interacting with a device.
+- An ear must have a recognizable anatomical form when showing how sound reaches the listener.
+
+**Do not use a rectangular box with the label “LAPTOP” as a laptop. Do not use a cube with the label “PHONE” as a smartphone. Labels do not compensate for missing object detail.**
+
+### 10.1 Object-by-object modeling requirements
+
+#### Smartphone
+Use a recognizable, realistic 3D smartphone model featuring:
+- Rounded corners and appropriate body thickness.
+- Front glass and screen.
+- Visible display bezels or a realistic edge-to-edge display.
+- Camera module where appropriate.
+- Side buttons and charging port where visible.
+- Realistic glass, metal, or polymer materials.
+- Correct proportions and reflections.
+
+When explaining internal processing, use a believable transparent cutaway of the same smartphone. Reveal internal layers inside or alongside the device instead of replacing the entire phone with four unrelated boxes.
+
+#### Laptop
+Use a recognizable 3D laptop model featuring:
+- Display panel and bezel.
+- Keyboard with individual keys.
+- Trackpad.
+- Hinge.
+- Base chassis.
+- Realistic screen and keyboard materials.
+- Appropriate thickness, proportions, and viewing angle.
+
+When showing Bluetooth communication, place the laptop in a real environment and animate a signal between the laptop and another device.
+
+#### Wireless earbuds
+Use a realistic pair of earbuds, including:
+- Correctly shaped left and right earbuds.
+- Ear tips or stems appropriate to the selected design.
+- Speaker openings and sensor details where visible.
+- Realistic charging contacts where relevant.
+- A recognizable charging case whenever the scene requires it.
+
+Do not replace earbuds with two glowing capsules.
+
+#### Smartwatch
+Include:
+- Watch body.
+- Screen.
+- Strap or band.
+- Visible controls where appropriate.
+- A believable wrist placement if worn by a person.
+
+#### Keyboard and game controller
+Use realistic models with the recognizable physical controls of the actual device category. Animate individual keys or buttons when the narration refers to an input action.
+
+#### Bluetooth speaker
+Use a recognizable speaker enclosure with a grille, control buttons, and realistic materials. If showing its operation, reveal the speaker driver through a technically plausible cutaway.
+
+#### Human interaction
+When a person presses a phone, inserts an earbud, wears a watch, or uses a laptop, the hand and object interaction must be physically plausible.
+
+Do not allow fingers to pass through objects, buttons to move independently of the device, or objects to float through the hand unintentionally.
+
+---
+
+### 10.2 Use realistic assets before procedural substitutes
+
+Before modeling an object from scratch, inspect the existing project assets and available 3D model libraries.
+
+Use this priority order:
+
+1. Existing high-quality assets already available in the project.
+2. High-quality, legally usable 3D models in supported formats.
+3. Realistic models created or refined in Blender.
+4. Detailed procedural models only when realistic assets are unavailable.
+
+Suitable model formats may include `.glb`, `.gltf`, `.fbx`, `.obj`, and `.blend`, depending on the available tooling.
+
+Use consistent asset scale, orientation, materials, and quality across the project.
+
+If a downloaded model has poor topology, missing textures, incorrect proportions, or an unrealistic silhouette, repair it or replace it.
+
+Do not use a low-quality model merely because it is easy to import.
+
+Do not assume that a model is suitable based only on its filename. Inspect its actual geometry, materials, and rendered appearance.
+
+---
+
+### 10.3 Real objects must remain visible during technical explanations
+
+Technical diagrams must explain how the real objects communicate, not replace the objects with abstract shapes.
+
+For example, when explaining Bluetooth discovery:
+
+**Incorrect:**
+Two cubes with labels `PHONE` and `EARBUDS`, with a glowing line between them.
+
+**Required:**
+A realistic smartphone and recognizable wireless earbuds in a 3D environment, with a cyan discovery signal originating from the earbuds and a scanning visualization around the smartphone.
+
+When explaining radio transmission:
+
+**Incorrect:**
+Two generic boxes connected by a glowing tube.
+
+**Required:**
+A realistic phone and earbuds, with a technically styled radio visualization travelling through the space between them.
+
+When explaining the internal phone architecture:
+
+**Incorrect:**
+Four generic boxes labelled `APP`, `PROCESSING`, `BLUETOOTH`, and `RADIO`, with no recognizable phone.
+
+**Required:**
+A realistic smartphone cutaway showing the conceptual processing stages inside the device or in clearly associated exploded layers. Preserve the phone's overall shape and show how the components relate to the real device.
+
+When explaining audio playback:
+
+**Incorrect:**
+A sphere labelled `SPEAKER` emitting decorative rings.
+
+**Required:**
+A recognizable earbud with a miniature speaker assembly. Show the diaphragm moving, then show sound waves emerging from that speaker towards a recognizable human ear.
+
+When explaining a laptop connection:
+
+**Incorrect:**
+A flat rectangular slab with the word `LAPTOP`.
+
+**Required:**
+A recognizable 3D laptop with an open screen, keyboard, trackpad, hinge, and realistic proportions, with the Bluetooth communication path visibly connecting it to the relevant device.
+
+---
+
+### 10.4 Distinguish real objects from abstract technical visualizations
+
+Abstract elements are permitted only when they represent something that is inherently abstract, such as:
+- Radio waves.
+- Digital data packets.
+- Software processes.
+- Security relationships.
+- Frequency channels.
+- Signal strength.
+- Connection states.
+- Communication protocols.
+- Data-flow arrows.
+
+These abstract elements must be visually associated with the real objects or processes they explain.
+
+For instance, digital packets may be represented as small luminous blocks, but the devices receiving and transmitting those packets must still be recognizable real-world devices.
+
+**The rule is simple: abstract representations may explain the invisible mechanism, but they must never substitute for the visible physical object.**
+
+---
+
+### 10.5 Realism and visual-quality checks
+
+For every scene, render a representative frame and inspect the physical objects.
+
+Ask:
+
+1. Can a viewer immediately recognize each real-world object without reading its label?
+2. Does the laptop look like a laptop rather than a box?
+3. Do the earbuds look like actual wireless earbuds rather than generic capsules?
+4. Are the object's proportions, components, materials, and silhouette believable?
+5. Does the animation preserve the object's physical identity?
+6. Are the technical effects layered around the objects rather than obscuring them?
+7. Is the result sufficiently detailed for a premium technology explainer viewed on a phone?
+
+If any principal object fails these checks, revise the model, materials, camera angle, or lighting before approving the scene.
+
+Do not wait until the final video to discover that the assets are inadequate.
+
+### 10.6 Mandatory object-quality gate
+
+A scene must not pass quality assurance if a principal real-world object is represented only by:
+- A generic box or cube.
+- An unlabeled primitive shape.
+- A flat icon pretending to be a 3D device.
+- An abstract wireframe without recognizable physical detail.
+- A low-detail placeholder model.
+- A text label attached to an unrelated shape.
+
+A realistic model may be simplified for rendering performance, but its silhouette and defining physical features must remain recognizable.
+
+**Final enforcement rule:** Prioritize recognizable real-world 3D objects first, technical animation second, and decorative effects third. Never sacrifice object realism to make the scene easier to code. Every scene must pass the object-quality gate before final assembly.
+
+---
+
+## 11. Complete Example Spec (JSON) - "How UPI Works" Gold Standard Benchmark
 
 ```json
 {
