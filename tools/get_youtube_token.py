@@ -10,7 +10,6 @@ and updates .env automatically.
 import http.server
 import json
 import os
-import sys
 import urllib.parse
 import urllib.request
 import webbrowser
@@ -145,7 +144,7 @@ def main():
     })
     print("\nAll YouTube credentials are saved in .env!")
     print("You are ready to upload videos with:")
-    print("  python3 scripts/upload_video.py out/whatsapp-bluetick.mp4 --platform youtube --privacy public --publish")
+    print("  python3 tools/upload_video.py episodes/whatsapp-bluetick/final.mp4 --platform youtube --privacy public --publish")
     return 0
 
 

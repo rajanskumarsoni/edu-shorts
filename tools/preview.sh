@@ -6,7 +6,7 @@ set -euo pipefail
 # Configuration
 QUALITY_MODE="${1:-fast}"  # fast or full
 VIDEO_INPUT="${2:-}"       # Input video file or scene JSON
-OUTPUT_DIR="${3:-out/preview}"
+OUTPUT_DIR="${3:-scratch/preview}"
 
 # Default settings
 FAST_SETTINGS="--width 360 --height 640 --fps 24 --image-format png --codec libx264 --preset ultrafast --crf 28"
@@ -22,7 +22,7 @@ if [[ -z "$VIDEO_INPUT" ]]; then
     echo "  full:  Full quality 1080x1920 for final export"
     echo "  Examples:"
     echo "    $0 fast videos/how-web-requests.json"
-    echo "    $0 full out/video.mp4 out/final"
+    echo "    $0 full episodes/<id>/final.mp4 scratch/preview"
     exit 1
 fi
 

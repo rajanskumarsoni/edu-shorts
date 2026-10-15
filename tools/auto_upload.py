@@ -7,21 +7,20 @@ Standard Usage (Method 1 - Direct Pipeline Flag):
   python3 pipeline.py videos/<topic>.json --upload private    # Render & auto-upload (private)
 
 Standalone Usage:
-  python3 scripts/auto_upload.py out/<video>.mp4 --privacy public
+  python3 tools/auto_upload.py episodes/<id>/final.mp4 --privacy public
 """
 
 import argparse
 import json
-import os
 import subprocess
 import sys
 import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_DIR = ROOT / "out"
-UPLOAD_SCRIPT = ROOT / "scripts" / "upload_video.py"
-TRACKER_FILE = OUT_DIR / ".uploaded_manifest.json"
+EPISODES_DIR = ROOT / "episodes"
+UPLOAD_SCRIPT = ROOT / "tools" / "upload_video.py"
+TRACKER_FILE = EPISODES_DIR / ".uploaded_manifest.json"
 
 
 def load_tracker():
@@ -34,7 +33,7 @@ def load_tracker():
 
 
 def save_tracker(tracker):
-    OUT_DIR.mkdir(exist_ok=True)
+    EPISODES_DIR.mkdir(exist_ok=True)
     TRACKER_FILE.write_text(json.dumps(sorted(list(tracker)), indent=2), encoding="utf-8")
 
 
@@ -94,7 +93,7 @@ def upload_video(video_path: Path, privacy: str = "public") -> bool:
 
 def watch_directory(privacy: str, interval: float = 4.0):
     print("=" * 60)
-    print(f"  Watching {OUT_DIR} for newly rendered MP4 videos...")
+    print(f"  Watching {EPISODES_DIR} for newly rendered final.mp4 videos...")
     print(f"  Target: YouTube Shorts | Visibility: {privacy}")
     print(f"  Check interval: {interval}s (Press Ctrl+C to stop)")
     print("=" * 60)
@@ -103,9 +102,9 @@ def watch_directory(privacy: str, interval: float = 4.0):
 
     while True:
         try:
-            mp4_files = sorted(OUT_DIR.glob("*.mp4"))
+            mp4_files = sorted(EPISODES_DIR.glob("*/final.mp4"))
             for mp4 in mp4_files:
-                rel_name = mp4.name
+                rel_name = f"{mp4.parent.name}/{mp4.name}"
                 if rel_name in uploaded:
                     continue
                 print(f"[AUTO-UPLOAD] New video detected: {rel_name}. Checking render completion...")
@@ -141,7 +140,7 @@ def wait_and_upload(video_path: Path, privacy: str, timeout: float = 1800):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("video", nargs="?", type=Path, help="Specific video to upload (optional)")
-    parser.add_argument("--watch", action="store_true", help="Continuously watch out/ folder for new videos")
+    parser.add_argument("--watch", action="store_true", help="Continuously watch episodes/ for new videos")
     parser.add_argument("--wait", action="store_true", help="Wait if video file does not exist yet")
     parser.add_argument("--privacy", choices=("public", "private", "unlisted"), default="public",
                         help="YouTube upload privacy (default: public)")
@@ -153,7 +152,7 @@ def main():
         return 0
 
     if not args.video:
-        parser.error("Specify a video file to upload, or use --watch to monitor out/")
+        parser.error("Specify a video file to upload, or use --watch to monitor episodes/")
 
     target_video = (ROOT / args.video).resolve() if not args.video.is_absolute() else args.video.resolve()
 

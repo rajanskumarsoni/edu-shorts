@@ -33,6 +33,12 @@
       "default": "editorial",
       "description": "Editorial uses stable diagrams, a restrained grid, and no global camera drift; cinematic enables the legacy glow, bokeh, grade, and camera drift."
     },
+    "theme": {
+      "type": "string",
+      "enum": ["cyberpunk", "slate", "amber", "emerald", "whiteboard"],
+      "default": "cyberpunk",
+      "description": "Design token palette: cyberpunk (default dark cyan), slate (tech blue-gray), amber (editorial warm), emerald (scientific mint), whiteboard (clean minimalist light)."
+    },
     "music": {
       "type": ["string", "null"],
       "description": "Path to background music track relative to repository root."
@@ -43,6 +49,11 @@
       "maximum": 1.0,
       "default": 0.08,
       "description": "Ducked background music volume (recommended: 0.04 - 0.12)."
+    },
+    "music_ducking": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable dynamic sidechain audio ducking under speech."
     },
     "captions": {
       "type": "boolean",
@@ -274,7 +285,15 @@
             "diagram",
             "quote",
             "manim",
-            "neural_network_graph"
+            "neural_network_graph",
+            "terminal",
+            "screenshot",
+            "chart",
+            "product",
+            "sorting_visualizer",
+            "amazon_shopping",
+            "whiteboard",
+            "refrigerator"
           ]
         }
       },
@@ -588,6 +607,45 @@
               "diagram": { "type": "string" },
               "mermaid": { "type": "string" },
               "graphviz": { "type": "string" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "product" } } },
+          "then": {
+            "properties": {
+              "title": { "type": "string" },
+              "image": { "type": "string" },
+              "search_image": { "type": "string" },
+              "tag": { "type": "string" },
+              "specs": { "type": ["array", "object"] },
+              "highlight": { "type": "string" },
+              "price": { "type": "string" },
+              "tagline": { "type": "string" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "whiteboard" } } },
+          "then": {
+            "properties": {
+              "title": { "type": "string" },
+              "tag": { "type": "string" },
+              "image": { "type": "string" },
+              "diagram": { "type": "string" },
+              "whiteboardType": {
+                "type": "string",
+                "enum": ["algorithm", "sorting", "architecture", "tree", "math", "flow", "napkin", "freehand", "infographic", "radial", "comparison", "loop"]
+              },
+              "whiteboardTheme": {
+                "type": "string",
+                "enum": ["chalkboard", "whiteboard", "grid"]
+              },
+              "brushName": { "type": "string" },
+              "paper": { "type": "string" },
+              "equation": { "type": "string" },
+              "whiteboardData": { "type": "array" },
+              "strokes": { "type": "array" }
             }
           }
         }

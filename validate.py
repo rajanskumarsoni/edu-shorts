@@ -20,15 +20,16 @@ MAX_SECONDS = 180          # hard production limit: 3 minutes
 SHORTS_SECONDS = MAX_SECONDS
 WORDS_PER_SECOND = 2.5     # rough speaking speed used for the estimate
 
-TOP_ALLOWED = {"$schema", "id", "format", "audio_mode", "accent", "art_direction", "music", "music_volume", "captions", "progress", "sfx", "loop", "meta", "journey", "pad_seconds", "scenes"}
+TOP_ALLOWED = {"$schema", "id", "format", "audio_mode", "accent", "theme", "art_direction", "music", "music_volume", "music_ducking", "captions", "progress", "sfx", "loop", "meta", "journey", "pad_seconds", "scenes"}
 COMMON_SCENE_FIELDS = {
     "sfx", "sfxVolume", "icon", "graphic", "visual", "motion",
     "purpose", "transition", "camera", "action", "objects", "tag", "tone",
     "beats", "journeyStep", "search_image", "generate_image", "search_video",
-    "search_sfx", "search_model", "search_icon", "icon_path", "image_provider", "video_provider"
+    "search_sfx", "search_model", "search_icon", "icon_path", "image_provider", "video_provider",
+    "variant", "sortTriggerFrame"
 }
 ALLOWED = {
-    "hook": {"type", "text", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "hook": {"type", "text", "title", "image", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "bullets": {"type", "title", "items", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "stat": {"type", "value", "label", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "manim": {"type", "title", "manim", "narration", "seconds"} | COMMON_SCENE_FIELDS,
@@ -52,8 +53,16 @@ ALLOWED = {
     "quadrant": {"type", "title", "xAxis", "yAxis", "points", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "concentric": {"type", "title", "rings", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "seat_booking": {"type", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
-    "neural_network_graph": {"type", "title", "equation", "mode", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "neural_network_graph": {"type", "title", "equation", "mode", "variant", "metrics", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "interview": {"type", "title", "text", "interview", "author", "subtext", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "terminal": {"type", "title", "tag", "terminalSteps", "prompt", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "screenshot": {"type", "title", "tag", "image", "screenshotSteps", "backgroundSize", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "chart": {"type", "title", "tag", "chartType", "chartData", "chartTitle", "unit", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "product": {"type", "title", "image", "tag", "specs", "highlight", "price", "tagline", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "sorting_visualizer": {"type", "title", "tag", "mode", "array", "equation", "metrics", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "amazon_shopping": {"type", "title", "tag", "text", "sortTriggerFrame", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "whiteboard": {"type", "title", "tag", "whiteboardType", "whiteboardTheme", "brushName", "paper", "strokes", "whiteboardData", "equation", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "refrigerator": {"type", "title", "tag", "variant", "image", "video", "metrics", "specs", "narration", "seconds"} | COMMON_SCENE_FIELDS,
 }
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp", ".svg")
 VIDEO_EXTS = (".mp4", ".mov", ".webm")
@@ -69,6 +78,23 @@ CONTROL_HINTS = {
     "\n": "a line break (from a single backslash in \\neq, \\nu ...)",
     "\r": "\\r (from a single backslash in \\rho, \\right ...)",
 }
+
+def hex_contrast_ratio(fg_hex: str, bg_hex: str) -> float:
+    """Calculates WCAG 2.1 relative luminance contrast ratio between two hex colors."""
+    def lin(c):
+        c = c / 255.0
+        return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+    try:
+        fg = fg_hex.lstrip("#")
+        bg = bg_hex.lstrip("#")
+        r1, g1, b1 = int(fg[0:2], 16), int(fg[2:4], 16), int(fg[4:6], 16)
+        r2, g2, b2 = int(bg[0:2], 16), int(bg[2:4], 16), int(bg[4:6], 16)
+        l1 = 0.2126 * lin(r1) + 0.7152 * lin(g1) + 0.0722 * lin(b1)
+        l2 = 0.2126 * lin(r2) + 0.7152 * lin(g2) + 0.0722 * lin(b2)
+        lighter, darker = max(l1, l2), min(l1, l2)
+        return (lighter + 0.05) / (darker + 0.05)
+    except Exception:
+        return 7.0
 
 # ---------------------------------------------------------------------------
 # Physical-Real Scenario Mandate: every "three" scene MUST map to a concrete
@@ -238,6 +264,15 @@ def check_manim(m, where, rep):
                 rep.err(where, f'custom scene file not found: {f}')
             elif not re.search(rf"^class\s+{re.escape(tpl)}\b", p.read_text(encoding="utf-8"), re.M):
                 rep.err(where, f'class "{tpl}" not found in {f}')
+            else:
+                try:
+                    from tools.code_safety import scan_file_safety
+                    is_safe, violations = scan_file_safety(p)
+                    if not is_safe:
+                        for viol in violations:
+                            rep.err(where, f"custom scene code safety violation: {viol}")
+                except Exception:
+                    pass
 
 
 def validate_data(data, root=ROOT):
@@ -254,6 +289,10 @@ def validate_data(data, root=ROOT):
                     rep.warn(path, "narration contains a line break")
                 else:
                     rep.err(path, f"contains {hint}. In JSON write every LaTeX backslash twice (\\\\frac).")
+        if s.startswith("out/") or "/out/" in s:
+            rep.err(path, f"Forbidden reference to root 'out/' directory: '{s}'. All episode assets and renders must be in 'episodes/<id>/'.")
+        if (s.startswith("public/") or "/public/" in s) and not any(s.startswith(f"public/{p}") or f"/public/{p}" in s for p in ("sfx", "music", "models")):
+            rep.warn(path, f"Direct reference to temporary 'public/' staging in '{s}'. Source assets must be stored in 'episodes/<id>/media/' (or 'audio/').")
 
     extra = set(data) - TOP_ALLOWED
     if extra:
@@ -279,6 +318,19 @@ def validate_data(data, root=ROOT):
     if not isinstance(acc, str) or not re.fullmatch(r"#[0-9a-fA-F]{6}", acc):
         rep.err("accent", f'must be a hex color like "#FFC857", got {acc!r}')
 
+    thm = data.get("theme")
+    valid_themes = {"cyberpunk", "slate", "amber", "emerald", "whiteboard"}
+    if thm is not None:
+        if not isinstance(thm, str) or thm.lower() not in valid_themes:
+            rep.warn("theme", f'unknown theme "{thm}". Curated themes are: {sorted(valid_themes)}')
+
+    # WCAG 2.1 Contrast Ratio Check on accent color against background
+    if isinstance(acc, str) and re.fullmatch(r"#[0-9a-fA-F]{6}", acc):
+        bg_hex = "#F8FAFC" if (thm and thm.lower() == "whiteboard") else "#0B1020"
+        ratio = hex_contrast_ratio(acc, bg_hex)
+        if ratio < 3.0:
+            rep.warn("accent", f'accent color "{acc}" has low contrast ratio ({ratio:.1f}:1) against {bg_hex}; aim for >= 3.0:1 for mobile legibility')
+
     music = data.get("music")
     if music is not None:
         if music != "none" and (not isinstance(music, str) or not (root / music).exists()):
@@ -289,7 +341,11 @@ def validate_data(data, root=ROOT):
         if not isinstance(meta, dict):
             rep.err("meta", 'must be an object like {"title": "...", "description": "...", "hashtags": [...]}')
         else:
-            extra = set(meta) - {"title", "description", "hashtags", "facts_to_verify", "misconceptions", "analogy"}
+            allowed_meta = {
+                "title", "description", "hashtags", "facts_to_verify", "misconceptions", "analogy",
+                "trending_visual_style", "recommended_libraries", "empirical_benchmarks"
+            }
+            extra = set(meta) - allowed_meta
             if extra:
                 rep.warn("meta", f"unknown fields ignored: {sorted(extra)}")
             for k in ("title", "description", "analogy"):
@@ -387,7 +443,7 @@ def validate_data(data, root=ROOT):
             cinematic_types = {"three", "manim", "architecture", "code", "image", "video",
                                "compare", "gauge", "timeline", "bento", "benchmark",
                                "hierarchy", "data_structure", "inspector", "quadrant",
-                               "concentric", "seat_booking", "neural_network_graph"}
+                               "concentric", "seat_booking", "neural_network_graph", "sorting_visualizer", "refrigerator"}
             is_cinematic = t in cinematic_types
             if is_cinematic:
                 required_visual_fields = {
@@ -682,21 +738,69 @@ def validate_data(data, root=ROOT):
             iv = s.get("interview")
             if not iv and "text" not in s and "title" not in s:
                 rep.err(where, 'interview needs "interview" object or "text"/"title"')
+        elif t == "terminal":
+            steps = s.get("terminalSteps")
+            if not isinstance(steps, list) or not steps:
+                rep.err(where, 'terminal needs "terminalSteps": list of terminal step objects')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
+        elif t == "screenshot":
+            if not s.get("image") and not s.get("search_image"):
+                rep.err(where, 'screenshot needs "image": image path or "search_image": query')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
+        elif t == "chart":
+            data = s.get("chartData")
+            if not isinstance(data, list) or not data:
+                rep.err(where, 'chart needs "chartData": list of {label, value} objects')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
+        elif t == "product":
+            if not s.get("image") and not s.get("title") and not s.get("search_image"):
+                rep.err(where, 'product needs "image", "title", or "search_image"')
+            if isinstance(s.get("title"), str) and words(s["title"]) > 8:
+                rep.warn(where, "title is over 8 words")
 
     types = [s.get("type") for s in scenes if isinstance(s, dict)]
     if types and types[0] not in ("hook", "interview"):
         rep.warn("scenes", "first scene should be a hook or an interview prompt")
     if types and types[-1] not in ("outro", "interview"):
         rep.warn("scenes", "last scene should be an outro or recap")
-    if not any(t in types for t in ("manim", "three", "architecture", "code", "gauge", "bento", "benchmark", "hierarchy", "data_structure", "inspector", "quadrant", "concentric", "seat_booking", "neural_network_graph", "interview")):
+    if not any(t in types for t in ("manim", "three", "architecture", "code", "gauge", "bento", "benchmark", "hierarchy", "data_structure", "inspector", "quadrant", "concentric", "seat_booking", "neural_network_graph", "interview", "terminal", "screenshot", "chart", "product", "sorting_visualizer", "refrigerator")):
         rep.warn("scenes", "no animated visual explanation (manim, three, architecture, code, gauge, bento, benchmark...); at least one is recommended")
 
-    # same visual type 3+ times in a row gets monotonous in long videos
-    run = 1
+    # No Consecutive Twins rule: Never use the exact same scene type and variant twice in a row
     for i in range(1, len(types)):
-        run = run + 1 if types[i] == types[i - 1] else 1
-        if run == 3:
-            rep.warn(f"scene {i + 1}", f'3 "{types[i]}" scenes in a row; mix scene types for variety')
+        if types[i] == types[i - 1]:
+            curr_var = scenes[i].get("variant") if isinstance(scenes[i], dict) else None
+            prev_var = scenes[i-1].get("variant") if isinstance(scenes[i-1], dict) else None
+            if not (curr_var and prev_var and curr_var != prev_var):
+                rep.warn(f"scene {i + 1}", f'Consecutive twin scene types detected: scene {i} and scene {i + 1} are both "{types[i]}"; alternate scene types (Spatial ➔ Analytical ➔ Impact) for visual momentum')
+
+    # Mobile Vertical Safe Zone checks (1080x1920)
+    for idx, s in enumerate(scenes, 1):
+        if not isinstance(s, dict):
+            continue
+        where = f"scene {idx}"
+        # Warn if explicit component height exceeds vertical safe zone (960px)
+        if s.get("height") and isinstance(s["height"], (int, float)) and s["height"] > 960:
+            rep.warn(where, f'visual height {s["height"]}px exceeds vertical safe zone of 960px (may collide with 350px bottom subtitle clearance)')
+        # Warn if scene 1 hook is purely abstract text without an image, variant, or real-world grounding
+        if idx == 1 and s.get("type") == "hook" and not s.get("variant") and not s.get("image") and not s.get("search_image"):
+            rep.warn(where, 'scene 1 hook should ideally ground the concept in an authentic app UI or real-world scenario (e.g. "variant": "amazon_shopping") rather than bare text')
+
+    # Automated Slideshow Risk & Scene Variation Analysis (from OpenMontage heuristics)
+    try:
+        from tools.slideshow_risk import analyze_slideshow_risk
+        risk = analyze_slideshow_risk(scenes)
+        for w in risk.get("warnings", []):
+            rep.warn("slideshow_risk", w)
+        for v in risk.get("violations", []):
+            rep.warn("slideshow_risk", f"[High Risk] {v}")
+        rep.slideshow_score = risk.get("score")
+        rep.slideshow_verdict = risk.get("verdict")
+    except Exception:
+        pass
 
     total_words = sum(words(x.get("narration", "")) for x in scenes if isinstance(x, dict))
     if est > MAX_SECONDS:
@@ -750,7 +854,13 @@ def print_report(path, rep):
         print(f"  warning {w}: {m}")
     if not rep.errors:
         est = getattr(rep, "estimate", None)
-        extra = f" (est. length ~{int(est // 60)}m{int(est % 60):02d}s, {rep.total_words} narration words)" if est else ""
+        extra_parts = []
+        if est:
+            extra_parts.append(f"est. length ~{int(est // 60)}m{int(est % 60):02d}s")
+            extra_parts.append(f"{rep.total_words} narration words")
+        if getattr(rep, "slideshow_verdict", None):
+            extra_parts.append(f"visual momentum: {rep.slideshow_verdict} [{rep.slideshow_score}/5.0]")
+        extra = f" ({', '.join(extra_parts)})" if extra_parts else ""
         print(f"  OK{extra}" + ("" if not rep.warnings else f", {len(rep.warnings)} warning(s)"))
 
 
@@ -781,6 +891,8 @@ def main(argv):
         rep = validate_file(f)
         print_report(f, rep)
         bad |= bool(rep.errors)
+    if (ROOT / "out").is_dir():
+        print("\n  [WORKSPACE WARNING] Deprecated root 'out/' directory detected! All episode outputs and renders must reside strictly under 'episodes/<id>/'.")
     return 1 if bad else 0
 
 

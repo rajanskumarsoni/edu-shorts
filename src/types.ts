@@ -24,7 +24,15 @@ export type SceneType =
   | "concentric"
   | "seat_booking"
   | "neural_network_graph"
-  | "interview";
+  | "interview"
+  | "terminal"
+  | "screenshot"
+  | "chart"
+  | "product"
+  | "sorting_visualizer"
+  | "amazon_shopping"
+  | "whiteboard"
+  | "refrigerator";
 
 export type Side = { heading: string; items: string[] };
 
@@ -65,6 +73,33 @@ export type QuadrantPoint = {
   y: number;
   icon?: string;
 };
+
+export type TerminalStep =
+  | { kind: "cmd"; text: string; typeSpeed?: number; holdSeconds?: number }
+  | { kind: "out"; text: string; holdSeconds?: number }
+  | { kind: "pause"; seconds: number }
+  | { kind: "pill"; text: string; color?: string; durationSeconds?: number };
+
+export type ScreenshotRegion = { x: number; y: number; w: number; h: number };
+export type ScreenshotPoint = [number, number];
+
+export type ScreenshotStep =
+  | { kind: "cursor_move"; to: ScreenshotPoint; durationSeconds?: number }
+  | { kind: "click_pulse"; at?: ScreenshotPoint; durationSeconds?: number; color?: string }
+  | { kind: "type_into"; region: ScreenshotRegion; text: string; typeSpeed?: number; color?: string }
+  | { kind: "bubble_append"; region: ScreenshotRegion; text: string; role?: "user" | "assistant"; durationSeconds?: number; stream?: boolean }
+  | { kind: "typing_dots"; at: ScreenshotPoint; durationSeconds?: number; color?: string }
+  | { kind: "highlight_box"; region: ScreenshotRegion; durationSeconds?: number; color?: string }
+  | { kind: "callout_balloon"; anchor: ScreenshotPoint; text: string; position?: "top" | "bottom" | "left" | "right"; durationSeconds?: number; color?: string }
+  | { kind: "pause"; seconds: number };
+
+export type ChartDatum = {
+  label: string;
+  value: number;
+  color?: string;
+};
+
+export type ChartType = "bar" | "line" | "kpi";
 
 export type VisualStoryboard = {
   camera: string;
@@ -137,7 +172,7 @@ export type SceneSpec = {
   lines?: string[];
   language?: string;
   filename?: string;
-  highlight?: number | number[];
+  highlight?: number | number[] | string;
   // architecture scene
   nodes?: string[];
   steps?: string[];
@@ -174,6 +209,9 @@ export type SceneSpec = {
   points?: QuadrantPoint[];
   // concentric scene
   rings?: string[];
+  // neural_network_graph / sorting_visualizer scene
+  mode?: "forward" | "backward" | "compare_pair" | "pass_one" | "shrinking_arena" | "sorted" | string;
+  sortTriggerFrame?: number;
   // interview scene
   interview?: {
     speaker?: string;
@@ -182,6 +220,51 @@ export type SceneSpec = {
     highlight?: string | string[];
     subtext?: string;
   };
+  // terminal scene
+  terminalSteps?: TerminalStep[];
+  prompt?: string;
+  // screenshot scene
+  screenshotSteps?: ScreenshotStep[];
+  backgroundSize?: { width: number; height: number };
+  // chart scene
+  chartType?: ChartType;
+  chartData?: ChartDatum[];
+  chartTitle?: string;
+  // product scene (real object / hardware showcase)
+  specs?: Array<{ label: string; value: string }> | Record<string, string>;
+  price?: string;
+  tagline?: string;
+  // whiteboard / hand-drawn scene (powered by p5.brush)
+  whiteboardType?: "algorithm" | "sorting" | "architecture" | "tree" | "math" | "flow" | "napkin" | "freehand" | "infographic" | "radial" | "comparison" | "loop";
+  whiteboardTheme?: "chalkboard" | "whiteboard" | "grid";
+  brushName?: "rotring" | "HB" | "2B" | "pen" | "cpencil" | "marker" | "charcoal" | string;
+  paper?: "chalkboard" | "whiteboard" | "grid";
+  whiteboardData?: Array<{
+    label?: string;
+    value?: number | string;
+    highlight?: boolean;
+    color?: string;
+    subtext?: string;
+  }>;
+  strokes?: Array<{
+    type: "line" | "rect" | "circle" | "spline" | "arrow" | "text" | "hatch";
+    from?: [number, number];
+    to?: [number, number];
+    points?: [number, number][];
+    center?: [number, number];
+    radius?: number;
+    width?: number;
+    height?: number;
+    text?: string;
+    color?: string;
+    brush?: string;
+    weight?: number;
+    fill?: string;
+    hatchAngle?: number;
+    hatchDist?: number;
+    startFrame?: number;
+    duration?: number;
+  }>;
   narration?: string;
   // sound fx: pick any sound from the local library (e.g. "ka_ching", "impact", "glitch", "pop", "typing") or timed cues
   sfx?: SceneSfxSpec;
@@ -216,6 +299,10 @@ export type SoundCue = {
   sound: SoundFxName;
   frame?: number; // frame offset within scene (default 0)
   volume?: number; // 0.0 to 1.0
+  loop?: boolean; // if true, loops audio for duration frames
+  duration?: number; // duration in frames to loop or sustain
+  repeat?: number; // repeat count
+  interval?: number; // frame interval between repeats
 };
 
 export type SceneSfxSpec = SoundFxName | SoundFxName[] | SoundCue | SoundCue[] | boolean;
@@ -226,8 +313,10 @@ export type VideoProps = {
   height: number;
   music?: string;
   music_volume?: number;
+  music_ducking?: boolean; // toggle dynamic sidechain ducking under narration (default: true)
   narration?: string; // single narration track covering the whole video
   accent?: string;
+  theme?: string; // design token palette: "cyberpunk" | "slate" | "amber" | "emerald" | "whiteboard"
   art_direction?: ArtDirection; // restrained editorial motion graphics by default
   captions?: boolean; // toggle kinetic word captions (default: true)
   progress?: boolean; // toggle top glowing progress bar (default: true)

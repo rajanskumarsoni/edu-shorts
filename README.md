@@ -71,6 +71,43 @@ By default, the whole video uses **ONE narration audio file**; set `"audio_mode"
 one narration file per scene. **Audio decides timing:** each scene lasts from its narration start
 until the next scene's narration starts.
 
+### Use a HyperFrames-authored scene
+
+Use the HyperFrames agent plugin to author and render a visual scene, then import its exported clip
+into the episode. The import step normalizes it to the episode's format, H.264, 30 fps, and silent
+video; edu-shorts remains responsible for narration, captions, final assembly, and QA.
+
+```bash
+python3 tools/html_recorder.py import-video /path/to/hyperframes-export.mp4 \
+  --episode <id> --name scene-03
+```
+
+This writes `episodes/<id>/media/scene-03.mp4` without overwriting an existing asset. Add a scene
+that references it in `storyboard.json`:
+
+```json
+{
+  "type": "video",
+  "title": "A visual mechanism",
+  "video": "media/scene-03.mp4",
+  "narration": "यह approved Hindi narration है।",
+  "visual": {
+    "start": "The visual starts on the mechanism at rest.",
+    "objects": ["The mechanism", "Its moving parts"],
+    "action": "The parts move to show cause and effect.",
+    "camera": "Stable, readable framing.",
+    "motion_graphics": ["English label", "Directional arrow"],
+    "end": "The mechanism reaches its resulting state."
+  }
+}
+```
+
+Render HyperFrames scenes without baked-in narration or captions when possible; this compositor
+adds the approved episode audio and subtitles. Imported clip audio is removed. If the clip contains
+baked-in text, check it against the episode's English on-screen text and caption rules before use.
+The optional `--force` flag replaces an existing imported file. HyperFrames is not required at
+render time; only its exported clip is needed for the import and final edu-shorts render.
+
 ---
 
 ## 2. What is in the folder
@@ -651,11 +688,11 @@ Before writing any script, answer these 5 questions:
 4. **Explanation**: मैं इसे किसी रोज़मर्रा के उदाहरण से कैसे समझा सकता हूँ? *(Scene 4-5: manim / flow)*
 5. **Payoff**: वीडियो खत्म होने तक दर्शक क्या नया समझ चुका होगा? *(Scene 6: outro)*
 
-See [`prompts/hindi_script_framework.md`](prompts/hindi_script_framework.md) for full guidelines, analogy cheat sheets, viewer question-to-visual progression models, and examples.
+See [`prompts/script.md`](prompts/script.md) for full guidelines, analogy cheat sheets, phonetic acronym dictionary, and examples.
 
 > ⏱️ **Duration**: Videos can be up to **3 minutes (180 seconds)** (maximum standard for Shorts/Reels). Use 45–75 seconds for quick concepts, or up to 3 minutes for comprehensive multi-stage deep-dives.
 >
-> 🎬 **Cinematic Motion Standard**: Every video blends **3Blue1Brown-style mathematical storytelling**, high-end motion design, and modern tech-documentary visuals. Avoid static slides; maintain continuous visual progression with Manim code-driven animations, data-flow pipelines, kinetic typography, and dramatic visual reveals synchronized with voice narration.
+> **Visual Standard**: Choose the medium and pacing that best explain this topic. Use creator references only as optional technique inspiration, never as a style to copy; stable diagrams and restrained motion are valid when clearest.
 
 ### 9.2 What the AI needs to know
 
@@ -684,7 +721,7 @@ and analogy references.
 2. Draft the narration script and save it as `episodes/<id>/script.md`.
 3. Use `prompts/storyboard.md` to compile the approved script into `episodes/<id>/storyboard.json`.
 4. Run `python validate.py episodes/<id>/storyboard.json` to verify the schema.
-5. If there are errors, open `prompts/fix_errors.md` to triage and fix issues.
+5. If there are errors, check the actionable output from `validate.py` to fix schema or timing issues.
 6. Verify narration facts, especially technical numbers and acronyms.
 7. Continue with Step 4 of [section 7](#7-make-a-real-video-the-full-routine).
 
@@ -769,7 +806,7 @@ Structure:
 | Mistake | What the validator says | What to tell the AI |
 |---|---|---|
 | Wrapped in ``` or added explanation text | `json: ... Extra data` or `Expecting value` | "Output only the JSON object." (or delete the extra text yourself) |
-| Trailing comma | `Expecting property name` | Paste the error into `prompts/fix_errors.md` |
+| Trailing comma | `Expecting property name` | Remove trailing comma in JSON |
 | LaTeX with single backslash | `contains \f / a tab ...` or `Invalid \escape` | "Write every LaTeX backslash twice" |
 | Too long | `exceeds the 180-second limit (cut about N words)` | "Cut about N words" |
 | Equation fails (no LaTeX installed) | (Manim error at render) | "Use Flow or Graph instead of Equations" |
@@ -780,10 +817,7 @@ Structure:
 
 ### 9.6 Getting topic ideas first
 
-Open `prompts/topic_ideas.md`, fill in the three lines, and send it. You get 10 ideas with hooks and
-the best visual for each. Pick one and put it in the TOPIC field of `prompts/script.md`.
-To make many videos: pick several ideas and run the script prompt once per idea (see
-[section 11](#11-make-many-videos-batch)).
+Ask the AI for 5–10 ideas following the hook-problem-curiosity-explanation-payoff formula directly in chat, pick one, and begin with `prompts/script.md`.
 
 ### 9.7 Tips for better scripts
 

@@ -12,7 +12,6 @@ Categories:
 - Magic & Tech: glitch, sparkle, radar_beep
 """
 import math
-import os
 import random
 import struct
 import wave

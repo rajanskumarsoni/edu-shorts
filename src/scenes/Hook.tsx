@@ -7,6 +7,8 @@ import { RevealText } from "../Reveal";
 import { MotionGraphic } from "../MotionGraphic";
 import { resolveSceneTag } from "../theme";
 import { ThreeDUPIHook } from "./ThreeDUPIHook";
+import { AmazonShoppingHook } from "./AmazonShoppingHook";
+import { RefrigeratorVisualizer } from "./RefrigeratorVisualizer";
 
 const NeuralBrainHologram3D: React.FC<{ accent: string }> = ({ accent }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -243,6 +245,28 @@ export const Hook: React.FC<{ scene: SceneSpec; accent: string }> = ({
 
   if (isUPIHook) {
     return <ThreeDUPIHook scene={scene} accent={accent} />;
+  }
+
+  // Detect whether to render Amazon Shopping App Hook
+  const isAmazonHook =
+    scene.variant === "amazon_shopping" ||
+    scene.graphic === "amazon" ||
+    scene.graphic === "amazon_shopping" ||
+    /amazon|shopping/i.test(scene.variant || "") ||
+    /amazon|shopping/i.test(scene.graphic || "");
+
+  if (isAmazonHook) {
+    return <AmazonShoppingHook scene={scene} accent={accent} />;
+  }
+
+  const isFridgeHook =
+    scene.variant === "hook_fridge" ||
+    scene.graphic === "refrigerator" ||
+    /fridge|refrigerator/i.test(scene.variant || "") ||
+    /fridge|refrigerator/i.test(scene.graphic || "");
+
+  if (isFridgeHook) {
+    return <RefrigeratorVisualizer scene={{ ...scene, variant: "hook_fridge" }} accent={accent} />;
   }
 
   // Entrance spring

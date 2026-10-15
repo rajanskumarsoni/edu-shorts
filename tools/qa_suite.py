@@ -4,18 +4,18 @@ Unified QA Suite for edu-shorts video productions.
 Executes render verification, contact sheet generation, and audio quality checks.
 
 Usage:
-  python3 tools/qa_suite.py out/video.mp4
+  python3 tools/qa_suite.py episodes/001-how-upi-works/final.mp4
   python3 tools/qa_suite.py episodes/001-how-upi-works
 """
 import argparse
 import json
-import os
-import shutil
 import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 
 def resolve_video_path(target: Path) -> Path:
@@ -24,17 +24,13 @@ def resolve_video_path(target: Path) -> Path:
     if target.is_dir():
         if (target / "final.mp4").is_file():
             return target / "final.mp4"
-        # Check out/<name>.mp4
-        candidate = ROOT / "out" / f"{target.name}.mp4"
-        if candidate.is_file():
-            return candidate
         mp4s = list(target.glob("*.mp4"))
         if mp4s:
             return mp4s[0]
-    # Check if target exists in out/
-    out_candidate = ROOT / "out" / f"{target.stem}.mp4"
-    if out_candidate.is_file():
-        return out_candidate
+    # Check if target is an episode ID
+    ep_candidate = ROOT / "episodes" / target.stem / "final.mp4"
+    if ep_candidate.is_file():
+        return ep_candidate
     return target
 
 
@@ -97,6 +93,25 @@ def main():
         else:
             print("⚠️ Audio report warning.")
 
+    # 4. Storyboard Visual Momentum & Slideshow Risk
+    storyboard_path = video_path.parent / "storyboard.json"
+    if storyboard_path.is_file():
+        print("\n📊 Step 4: Storyboard Visual Momentum & Slideshow Risk Check...")
+        try:
+            from tools.slideshow_risk import analyze_slideshow_risk
+            sb_data = json.loads(storyboard_path.read_text(encoding="utf-8"))
+            risk = analyze_slideshow_risk(sb_data.get("scenes", []))
+            print(f"   Visual Momentum Verdict: {risk['verdict'].upper()} (Score: {risk['score']}/5.0)")
+            for w in risk.get("warnings", []):
+                print(f"   ⚠️ {w}")
+            if risk["verdict"] == "fail":
+                print("❌ High slideshow risk detected.")
+                all_passed = False
+            else:
+                print("✅ Visual momentum meets production standards.")
+        except Exception as e:
+            print(f"   ⚠️ Could not analyze storyboard: {e}")
+
     print("\n" + "=" * 60)
     if all_passed:
         print("🎉 QA SUITE RESULT: PASSED (All objective criteria met)")
@@ -110,4 +125,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-

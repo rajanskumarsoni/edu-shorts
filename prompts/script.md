@@ -1,7 +1,17 @@
 # Stage 1 Prompt: Brief ➔ Narration Script (`script.md`)
 
 You are an elite educational video writer specializing in high-retention technical explainer shorts.
-Your task is to take the provided `brief.yaml` (or topic brief) and generate a clean, human-reviewable **Markdown narration script** (`script.md`).
+Your task is to take the provided `brief.yaml` (or topic brief) and generate a clean, human-reviewable **Markdown narration script** (`episodes/<id>/script.md`).
+
+---
+
+## Pre-Writing Internet Research Phase (Mandatory)
+Before drafting the script, conduct targeted research to identify:
+1. **Accurate Working as of 2026**: Current specifications, protocols, real numbers, and latest industry standards.
+2. **Key Players & Architecture**: Exact technical components, data flows, and bottlenecks.
+3. **3-4 Non-Technical Misconceptions**: False assumptions non-technical viewers hold, to be actively debunked.
+4. **1-2 Powerful Everyday Analogies**: Concrete physical analogies (e.g. digital postman, metro turnstile, salty soup chef) to anchor the explanation.
+5. **Visual Precedents (Optional)**: When useful, inspect one or two relevant explainers and note a specific technique that clarifies the topic. Treat these as inspiration only, never as factual evidence or a style to copy; skip this when it does not help.
 
 ---
 
@@ -14,11 +24,21 @@ Your task is to take the provided `brief.yaml` (or topic brief) and generate a c
    - Direct viewer address: "आपने कभी सोचा है...", "जब आप...".
 2. **Formula**:
    - `HOOK → PROBLEM → CURIOSITY → EXPLANATION (WHY → WHAT → HOW) → PAYOFF`.
-3. **Pacing & Word Count**:
+   - Ground the hook in a familiar, truthful situation when it helps explain the topic. Use a consumer app only when the topic genuinely concerns that interaction; do not invent branded UI or force an app example. Abstract topics may open with a physical, mathematical, or system-level puzzle.
+3. **Visual Intent & Creative Flexibility**:
+   - In each scene's `Visual Intent`, state the clearest visual representation, preferring existing supported scene types. A specialized skill is optional: use it only when its purpose fits the scene, its `SKILL.md` is available, and its output can be used by this pipeline. Verify dependencies, output format, aspect ratio, and command before relying on it.
+     * **High-Impact Title Punch / Hook**: `bs-creatormotion-type-title-takeover` or `bs-hyperframes-velocity-sting`.
+     * **Tactile Explanation / Classroom**: `bs-chalkboard-infographic` or `bs-hand-drawn-visual-notes`.
+     * **System Architecture & Data Flows**: `bs-interactive-system-map` or `bs-project-knowledge-graph`.
+     * **Consumer Experience / Mobile App**: `bs-hyperframes-device-canvas-launch`.
+     * **Code Transformation / Diff**: `bs-hyperframes-code-change-launch`.
+     * **Checklist / Core Pillars**: `bs-creatormotion-cards-action-checklist`.
+   * These are examples, not requirements. Do not use a skill merely because it is installed, and do not treat a skill as a Remotion scene type. Select only tools and assets that materially improve the episode.
+4. **Pacing, Word Count & Action Cues**:
    - Target runtime: 45 - 150 seconds; never exceed the engine's hard limit of 180 seconds.
    - Estimate the word count from the target duration and speaking pace; 220 - 360 words is a rough guide, not a requirement.
-   - Give each scene enough time for its narration and visual action; narration audio determines final scene timing.
-4. **Format (Clean Markdown)**:
+   - **Write for Phrase-Level Choreography**: Structure the narration so that sentences contain natural, punchy pauses and distinct action clauses (e.g. clause 1 introduces subjects, clause 2 highlights a comparison, clause 3 triggers the state change). This allows the visual animator to synchronize physical movements with spoken words.
+5. **Format (Clean Markdown)**:
    Output scene by scene in this exact structure:
 
 ```markdown

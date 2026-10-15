@@ -2,6 +2,23 @@ import { createContext } from "react";
 
 export const ArtDirectionContext = createContext<"editorial" | "cinematic">("editorial");
 
+export interface ThemePalette {
+  name: string;
+  bg: string;
+  fg: string;
+  muted: string;
+  accent: string;
+  secondary: string;
+  cardBg: string;
+  cardBorder: string;
+  gold: string;
+  cyan: string;
+  mint: string;
+  red: string;
+  font: string;
+  mono: string;
+}
+
 export const BG = "#0B1020";
 export const FG = "#F5F7FF";
 export const MUTED = "#9AA3C7";
@@ -27,6 +44,103 @@ export const COLORS = {
   warning: "#F59E0B",
   success: "#10B981",
   accent: "#00F0FF",
+};
+
+/** Curated Design Token Theme Palettes (adapted from OpenMontage playbooks) */
+export const THEMES: Record<string, ThemePalette> = {
+  cyberpunk: {
+    name: "cyberpunk",
+    bg: "#0B1020",
+    fg: "#F5F7FF",
+    muted: "#9AA3C7",
+    accent: "#00F0FF",
+    secondary: "#7928CA",
+    cardBg: "rgba(255,255,255,0.06)",
+    cardBorder: "rgba(255,255,255,0.14)",
+    gold: "#FFC857",
+    cyan: "#00F0FF",
+    mint: "#58D6C2",
+    red: "#FF5555",
+    font: FONT,
+    mono: MONO,
+  },
+  slate: {
+    name: "slate",
+    bg: "#0F172A",
+    fg: "#F8FAFC",
+    muted: "#94A3B8",
+    accent: "#38BDF8",
+    secondary: "#818CF8",
+    cardBg: "rgba(30, 41, 59, 0.7)",
+    cardBorder: "rgba(148, 163, 184, 0.2)",
+    gold: "#FBBF24",
+    cyan: "#38BDF8",
+    mint: "#34D399",
+    red: "#F87171",
+    font: FONT,
+    mono: MONO,
+  },
+  amber: {
+    name: "amber",
+    bg: "#181411",
+    fg: "#FDF8F3",
+    muted: "#A89F91",
+    accent: "#F59E0B",
+    secondary: "#D97706",
+    cardBg: "rgba(255, 255, 255, 0.05)",
+    cardBorder: "rgba(245, 158, 11, 0.2)",
+    gold: "#F59E0B",
+    cyan: "#06B6D4",
+    mint: "#10B981",
+    red: "#EF4444",
+    font: FONT,
+    mono: MONO,
+  },
+  emerald: {
+    name: "emerald",
+    bg: "#061A14",
+    fg: "#ECFDF5",
+    muted: "#6EE7B7",
+    accent: "#10B981",
+    secondary: "#059669",
+    cardBg: "rgba(16, 185, 129, 0.08)",
+    cardBorder: "rgba(52, 211, 153, 0.25)",
+    gold: "#FBBF24",
+    cyan: "#2DD4BF",
+    mint: "#10B981",
+    red: "#F87171",
+    font: FONT,
+    mono: MONO,
+  },
+  whiteboard: {
+    name: "whiteboard",
+    bg: "#F8FAFC",
+    fg: "#0F172A",
+    muted: "#64748B",
+    accent: "#2563EB",
+    secondary: "#4F46E5",
+    cardBg: "rgba(255, 255, 255, 0.85)",
+    cardBorder: "rgba(15, 23, 42, 0.12)",
+    gold: "#D97706",
+    cyan: "#0284C7",
+    mint: "#059669",
+    red: "#DC2626",
+    font: FONT,
+    mono: MONO,
+  },
+};
+
+export const ThemeContext = createContext<ThemePalette>(THEMES.cyberpunk);
+
+/**
+ * Resolves active ThemePalette given an optional theme name and optional accent color override.
+ */
+export const getTheme = (themeName?: string, accentOverride?: string): ThemePalette => {
+  const base = (themeName && THEMES[themeName.toLowerCase()]) || THEMES.cyberpunk;
+  if (accentOverride) {
+    return { ...base, accent: accentOverride };
+  }
+  return base;
 };
 
 export const hexAlpha = (a: number): string =>

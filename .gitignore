@@ -15,10 +15,8 @@ node_modules/
 .remotion/
 
 # Media build artifacts & renders
-media/*
-!media/.gitkeep
-out/*
-!out/.gitkeep
+media/
+out/
 public/*
 !public/.gitkeep
 !public/sfx/

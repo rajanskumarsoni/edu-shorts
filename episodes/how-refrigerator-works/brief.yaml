@@ -1,0 +1,24 @@
+id: "how-refrigerator-works"
+title: "How A Refrigerator Actually Works (Vapor Compression Cycle)"
+target_duration_seconds: 90
+format: "vertical"
+art_direction: "editorial"
+theme: "cyberpunk"
+accent: "#00F0FF"
+
+pedagogy:
+  audience: "Curious 15-year-old viewer who uses a fridge every day"
+  core_question: "How does a refrigerator create freezing cold inside when the room is warm?"
+  core_mechanism: "Vapor compression cycle: closed loop where R-600a refrigerant alternates between liquid and gas to pump heat from inside to outside"
+  key_analogy: "Hand sanitizer / aerosol spray evaporation — when liquid rapidly evaporates into gas, it steals heat, leaving the surface freezing cold"
+  misconceptions_debunked:
+    - "A fridge creates cold air (Cold doesn't exist in physics; cold is just the absence of heat. The fridge is a heat pump!)"
+    - "Cooling is caused by ice or a fan blowing cold air (It is powered by the phase change of refrigerant gas)"
+    - "Leaving the fridge door open will cool the room (It actually heats the room up because the motor exhausts more heat than the inside absorbs!)"
+
+empirical_specs:
+  refrigerant: "R-600a (Isobutane)"
+  compressor_pressure: "1.0 bar -> 6.2 bar (Discharge: ~65°C)"
+  condenser_temp: "65°C -> 40°C (Dumps ~450W heat to kitchen air)"
+  capillary_drop: "6.2 bar -> 1.0 bar (Temperature drops to -25°C)"
+  evaporator_absorption: "-25°C liquid absorbs food heat, cooling food to 3°C, boiling back into vapor"

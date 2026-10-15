@@ -245,7 +245,10 @@ def cmd_inspect(target: Path):
     print(f"File Size:     {size_mb:.2f} MB ({'✅ Optimal (<5 MB)' if size_mb < 5 else '⚠️ Large (>5 MB, may slow down Remotion render)'})")
     print(f"Binary glTF:   {'✅ Valid (glTF magic header present)' if is_valid else '❌ Invalid magic header'}")
     
-    if target.is_relative_to(ROOT / "public"):
+    if target.is_relative_to(ROOT / "episodes"):
+        print(f"Episode Path:  \"model\": \"media/{target.name}\"")
+        print(f"Scene Spec:    {{\"type\": \"three\", \"variant\": \"model_3d\", \"model\": \"media/{target.name}\"}}")
+    elif target.is_relative_to(ROOT / "public"):
         rel_public = target.relative_to(ROOT / "public")
         print(f"Remotion Path: \"model\": \"{rel_public}\"")
         print(f"Scene Spec:    {{\"type\": \"three\", \"variant\": \"model_3d\", \"model\": \"{rel_public}\"}}")
@@ -316,11 +319,17 @@ def main():
     elif args.command == "inspect":
         return cmd_inspect(args.file.expanduser().resolve())
 
-    elif args.command == "download":
+    def resolve_dest(topic: str, fname: str) -> Path:
+        ep_dir = ROOT / "episodes" / topic
+        if topic and ep_dir.exists():
+            return ep_dir / "media" / fname
+        return MODELS_DIR / topic / fname
+
+    if args.command == "download":
         filename = args.name or Path(args.url.split("?")[0]).name
         if not filename.endswith((".glb", ".gltf")):
             filename += ".glb"
-        dest = MODELS_DIR / args.topic / filename
+        dest = resolve_dest(args.topic, filename)
         ok = download_file(args.url, dest)
         if ok:
             cmd_inspect(dest)
@@ -329,7 +338,7 @@ def main():
     elif args.command == "get":
         preset_info = CURATED_PRESETS[args.preset]
         filename = args.name or preset_info["filename"]
-        dest = MODELS_DIR / args.topic / filename
+        dest = resolve_dest(args.topic, filename)
         ok = download_file(preset_info["url"], dest)
         if ok:
             cmd_inspect(dest)
@@ -337,7 +346,7 @@ def main():
 
     elif args.command == "generate":
         filename = args.name or (re.sub(r"[^a-zA-Z0-9_-]", "_", args.prompt)[:30].strip("_").lower() + ".glb")
-        dest = MODELS_DIR / args.topic / filename
+        dest = resolve_dest(args.topic, filename)
 
         tripo_key = os.environ.get("TRIPO_API_KEY")
         meshy_key = os.environ.get("MESHY_API_KEY")

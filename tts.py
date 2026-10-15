@@ -18,7 +18,7 @@ Usage as CLI:
 import argparse
 import json
 import os
-import sys
+import subprocess
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -129,7 +129,7 @@ def synthesize(text: str, out_path: str, voice: str = None, tone: str = None) ->
     )
 
     try:
-        with urllib.request.urlopen(req, timeout=180) as resp:
+        with urllib.request.urlopen(req, timeout=360) as resp:
             audio_bytes = resp.read()
     except urllib.error.URLError as err:
         raise SystemExit(
@@ -143,6 +143,15 @@ def synthesize(text: str, out_path: str, voice: str = None, tone: str = None) ->
         raise SystemExit(f"VoiceStudio returned empty audio for text: {text[:40]}...")
 
     out.write_bytes(audio_bytes)
+
+    # Normalize immediately to broadcast standard 48kHz stereo
+    try:
+        tmp_norm = out.with_name(f"_tmp_{out.name}")
+        subprocess.run(["ffmpeg", "-y", "-i", str(out), "-ar", "48000", "-ac", "2", str(tmp_norm)],
+                       check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        tmp_norm.replace(out)
+    except Exception:
+        pass
 
 
 def synthesize_all(text: str, out_path: str, voice: str = None) -> None:

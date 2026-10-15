@@ -52,9 +52,9 @@ from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-MEDIA_DIR = ROOT / "public" / "media"
+MEDIA_DIR = ROOT / "episodes"
 SFX_DIR = ROOT / "public" / "sfx"
-ICONS_DIR = ROOT / "public" / "icons"
+ICONS_DIR = ROOT / "scratch" / "icons"
 
 USER_AGENT = "EduShortsMediaBot/1.0 (+https://github.com/edushorts/pipeline; contact@edushorts.internal)"
 
@@ -414,7 +414,9 @@ def generate_pollinations_image(
     width: int = 1080,
     height: int = 1920,
     seed: int = None,
-    model: str = "flux"
+    model: str = "flux",
+    nobg: bool = False,
+    bg_mode: str = "white",
 ) -> dict:
     """
     Generates image via Pollinations.ai instant REST URL.
@@ -428,7 +430,7 @@ def generate_pollinations_image(
 
     clean_slug = slugify(prompt)
     if not out_path:
-        target_dir = ROOT / "public" / (topic or "media")
+        target_dir = (ROOT / "episodes" / topic / "media") if topic else (ROOT / "scratch" / "media")
         out_path = target_dir / f"{clean_slug}.jpg"
     else:
         out_path = Path(out_path)
@@ -436,7 +438,17 @@ def generate_pollinations_image(
     out_path.parent.mkdir(parents=True, exist_ok=True)
     download_file(url, out_path)
 
-    rel_path = str(out_path.relative_to(ROOT / "public")) if (ROOT / "public") in out_path.parents else str(out_path)
+    if nobg:
+        try:
+            from tools.bg_remove import remove_background
+            nobg_path = out_path.with_name(f"{out_path.stem}_nobg.png")
+            print(f"  Removing background to create transparent cutout -> {nobg_path.name}...")
+            remove_background(out_path, nobg_path, bg_mode=bg_mode)
+            out_path = nobg_path
+        except Exception as e:
+            print(f"  [Warning] Background removal failed ({e}); retaining original.")
+
+    rel_path = f"media/{out_path.name}"
     return {
         "path": str(out_path),
         "rel_path": rel_path,
@@ -448,13 +460,21 @@ def generate_pollinations_image(
     }
 
 
-def search_image(query: str, out_path: Path = None, topic: str = None, provider: str = "auto", limit: int = 5) -> dict:
+def search_image(
+    query: str,
+    out_path: Path = None,
+    topic: str = None,
+    provider: str = "auto",
+    limit: int = 5,
+    nobg: bool = False,
+    bg_mode: str = "white",
+) -> dict:
     """Finds best matching image across available providers and downloads it."""
     print(f"Searching image for: '{query}' (provider: {provider})...")
     candidates = []
 
     if provider == "pollinations" or provider == "generate":
-        return generate_pollinations_image(query, out_path=out_path, topic=topic)
+        return generate_pollinations_image(query, out_path=out_path, topic=topic, nobg=nobg, bg_mode=bg_mode)
 
     if provider in ("auto", "pexels"):
         candidates.extend(search_pexels_images(query, limit=limit))
@@ -474,7 +494,7 @@ def search_image(query: str, out_path: Path = None, topic: str = None, provider:
     # If no stock photo found anywhere, fallback to instant GenAI via Pollinations!
     if not candidates:
         print(f"  [Fallback] No stock image found online; synthesizing via Pollinations.ai...")
-        return generate_pollinations_image(query, out_path=out_path, topic=topic)
+        return generate_pollinations_image(query, out_path=out_path, topic=topic, nobg=nobg, bg_mode=bg_mode)
 
     selected = candidates[0]
     print(f"  Found: {selected['title']} via {selected['provider']} ({selected.get('license', 'Open')})")
@@ -487,7 +507,7 @@ def search_image(query: str, out_path: Path = None, topic: str = None, provider:
         ext = ".webp"
 
     if not out_path:
-        target_dir = ROOT / "public" / (topic or "media")
+        target_dir = (ROOT / "episodes" / topic / "media") if topic else (ROOT / "scratch" / "media")
         out_path = target_dir / f"{clean_slug}{ext}"
     else:
         out_path = Path(out_path)
@@ -495,7 +515,17 @@ def search_image(query: str, out_path: Path = None, topic: str = None, provider:
     print(f"  Downloading -> {out_path}...")
     download_file(selected["url"], out_path)
 
-    rel_path = str(out_path.relative_to(ROOT / "public")) if (ROOT / "public") in out_path.parents else str(out_path)
+    if nobg:
+        try:
+            from tools.bg_remove import remove_background
+            nobg_path = out_path.with_name(f"{out_path.stem}_nobg.png")
+            print(f"  Removing background to create transparent cutout -> {nobg_path.name}...")
+            remove_background(out_path, nobg_path, bg_mode=bg_mode)
+            out_path = nobg_path
+        except Exception as e:
+            print(f"  [Warning] Background removal failed ({e}); retaining original.")
+
+    rel_path = f"media/{out_path.name}"
     return {
         "path": str(out_path),
         "rel_path": rel_path,
@@ -520,7 +550,7 @@ def search_icon(name: str, out_path: Path = None, topic: str = None, color: str 
     url = f"https://api.iconify.design/{collection}:{clean_name}.svg?color={encoded_color}"
 
     if not out_path:
-        target_dir = ROOT / "public" / (topic or "icons")
+        target_dir = (ROOT / "episodes" / topic / "media") if topic else (ROOT / "scratch" / "icons")
         out_path = target_dir / f"{clean_name}.svg"
     else:
         out_path = Path(out_path)
@@ -529,7 +559,7 @@ def search_icon(name: str, out_path: Path = None, topic: str = None, color: str 
     print(f"Fetching vector icon '{name}' from Iconify ({collection}) -> {out_path}...")
     download_file(url, out_path)
 
-    rel_path = str(out_path.relative_to(ROOT / "public")) if (ROOT / "public") in out_path.parents else str(out_path)
+    rel_path = f"media/{out_path.name}"
     return {
         "path": str(out_path),
         "rel_path": rel_path,
@@ -759,7 +789,7 @@ def search_video(
 
     clean_slug = slugify(query)
     if not out_path:
-        target_dir = ROOT / "public" / (topic or "media")
+        target_dir = (ROOT / "episodes" / topic / "media") if topic else (ROOT / "scratch" / "media")
         out_path = target_dir / f"{clean_slug}.mp4"
     else:
         out_path = Path(out_path)
@@ -786,7 +816,7 @@ def search_video(
     if temp_dest.exists():
         temp_dest.unlink()
 
-    rel_path = str(out_path.relative_to(ROOT / "public")) if (ROOT / "public") in out_path.parents else str(out_path)
+    rel_path = f"media/{out_path.name}"
     return {
         "path": str(out_path),
         "rel_path": rel_path,
@@ -921,10 +951,8 @@ def resolve_spec_assets(spec_path: Path, force: bool = False, dry_run: bool = Fa
     data = json.loads(spec_path.read_text(encoding="utf-8"))
     vid = data.get("id") or spec_path.parent.name
     episode_dir = spec_path.parent if (spec_path.parent / "storyboard.json").exists() else None
-    media_dir = (episode_dir / "media") if episode_dir else (ROOT / "public" / vid)
+    media_dir = (episode_dir / "media") if episode_dir else (ROOT / "episodes" / vid / "media")
     media_dir.mkdir(parents=True, exist_ok=True)
-    pub_dir = ROOT / "public" / vid
-    pub_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"\n=======================================================")
     print(f"Asset Auto-Resolution for Episode: [{vid}]")
@@ -943,7 +971,6 @@ def resolve_spec_assets(spec_path: Path, force: bool = False, dry_run: bool = Fa
             prompt = s["generate_image"]
             slug = slugify(prompt)
             target_file = media_dir / f"{slug}.jpg"
-            pub_mirror = pub_dir / f"{slug}.jpg"
             if target_file.exists() and not force:
                 print(f"[{tag}] Using cached GenAI image: {target_file.name}")
             else:
@@ -952,9 +979,7 @@ def resolve_spec_assets(spec_path: Path, force: bool = False, dry_run: bool = Fa
                 else:
                     try:
                         res = generate_pollinations_image(prompt, out_path=target_file, topic=vid)
-                        if not pub_mirror.exists() and target_file.exists():
-                            shutil.copy(target_file, pub_mirror)
-                        s["image"] = f"{vid}/{target_file.name}"
+                        s["image"] = f"media/{target_file.name}"
                         modified = True
                         if episode_dir:
                             record_attribution(episode_dir, f"media/{target_file.name}", res)
@@ -967,7 +992,6 @@ def resolve_spec_assets(spec_path: Path, force: bool = False, dry_run: bool = Fa
             query = s.get("search_image") or s.get("title") or (s.get("visual", {}).get("objects", ["tech"])[0])
             slug = slugify(query)
             target_file = media_dir / f"{slug}.jpg"
-            pub_mirror = pub_dir / f"{slug}.jpg"
 
             if target_file.exists() and not force:
                 print(f"[{tag}] Using cached image: {target_file.name}")
@@ -978,9 +1002,7 @@ def resolve_spec_assets(spec_path: Path, force: bool = False, dry_run: bool = Fa
                     try:
                         provider = s.get("image_provider", "auto")
                         res = search_image(query, out_path=target_file, topic=vid, provider=provider)
-                        if not pub_mirror.exists() and target_file.exists():
-                            shutil.copy(target_file, pub_mirror)
-                        s["image"] = f"{vid}/{target_file.name}"
+                        s["image"] = f"media/{target_file.name}"
                         modified = True
                         if episode_dir:
                             record_attribution(episode_dir, f"media/{target_file.name}", res)
@@ -993,13 +1015,10 @@ def resolve_spec_assets(spec_path: Path, force: bool = False, dry_run: bool = Fa
             icon_query = s.get("search_icon") or s.get("icon")
             slug = slugify(icon_query)
             target_file = media_dir / f"{slug}.svg"
-            pub_mirror = pub_dir / f"{slug}.svg"
             if not target_file.exists() and not dry_run:
                 try:
                     res = search_icon(icon_query, out_path=target_file, topic=vid)
-                    if not pub_mirror.exists() and target_file.exists():
-                        shutil.copy(target_file, pub_mirror)
-                    s["icon_path"] = f"{vid}/{target_file.name}"
+                    s["icon_path"] = f"media/{target_file.name}"
                     modified = True
                     if episode_dir:
                         record_attribution(episode_dir, f"media/{target_file.name}", res)
@@ -1012,7 +1031,6 @@ def resolve_spec_assets(spec_path: Path, force: bool = False, dry_run: bool = Fa
             query = s.get("search_video") or s.get("title") or "technology network"
             slug = slugify(query)
             target_file = media_dir / f"{slug}.mp4"
-            pub_mirror = pub_dir / f"{slug}.mp4"
 
             if target_file.exists() and not force:
                 print(f"[{tag}] Using cached video: {target_file.name}")
@@ -1023,9 +1041,7 @@ def resolve_spec_assets(spec_path: Path, force: bool = False, dry_run: bool = Fa
                     try:
                         v_provider = s.get("video_provider", "auto")
                         res = search_video(query, out_path=target_file, topic=vid, provider=v_provider)
-                        if not pub_mirror.exists() and target_file.exists():
-                            shutil.copy(target_file, pub_mirror)
-                        s["video"] = f"{vid}/{target_file.name}"
+                        s["video"] = f"media/{target_file.name}"
                         modified = True
                         if episode_dir:
                             record_attribution(episode_dir, f"media/{target_file.name}", res)
@@ -1100,6 +1116,8 @@ def main():
     p_img.add_argument("--topic", help="Topic/episode ID for auto-locating destination")
     p_img.add_argument("--provider", default="auto", choices=["auto", "wikimedia", "openverse", "nasa", "museum", "pexels", "unsplash", "pixabay", "pollinations"])
     p_img.add_argument("--limit", type=int, default=5)
+    p_img.add_argument("--nobg", action="store_true", help="Remove background to create transparent cutout PNG")
+    p_img.add_argument("--bg-mode", choices=["white", "black", "auto"], default="white", help="Background color to remove (default white)")
 
     # generate (GenAI)
     p_gen = subparsers.add_parser("generate", help="Generate AI image via Pollinations.ai")
@@ -1110,6 +1128,8 @@ def main():
     p_gen.add_argument("--height", type=int, default=1920)
     p_gen.add_argument("--seed", type=int, default=None)
     p_gen.add_argument("--model", default="flux", choices=["flux", "turbo"])
+    p_gen.add_argument("--nobg", action="store_true", help="Remove background to create transparent cutout PNG")
+    p_gen.add_argument("--bg-mode", choices=["white", "black", "auto"], default="white", help="Background color to remove (default white)")
 
     # icon
     p_ico = subparsers.add_parser("icon", help="Search and download vector SVG icon")
@@ -1144,11 +1164,11 @@ def main():
 
     if args.command == "image":
         out = Path(args.out) if args.out else None
-        res = search_image(args.query, out_path=out, topic=args.topic, provider=args.provider, limit=args.limit)
+        res = search_image(args.query, out_path=out, topic=args.topic, provider=args.provider, limit=args.limit, nobg=args.nobg, bg_mode=args.bg_mode)
         print(f"SUCCESS: {res['rel_path']} (License: {res.get('license', 'Open')})")
     elif args.command == "generate":
         out = Path(args.out) if args.out else None
-        res = generate_pollinations_image(args.prompt, out_path=out, topic=args.topic, width=args.width, height=args.height, seed=args.seed, model=args.model)
+        res = generate_pollinations_image(args.prompt, out_path=out, topic=args.topic, width=args.width, height=args.height, seed=args.seed, model=args.model, nobg=args.nobg, bg_mode=args.bg_mode)
         print(f"SUCCESS: {res['rel_path']} (License: {res.get('license', 'Open')})")
     elif args.command == "icon":
         out = Path(args.out) if args.out else None

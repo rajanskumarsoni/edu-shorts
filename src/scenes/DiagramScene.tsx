@@ -99,7 +99,7 @@ export const DiagramScene: React.FC<{ scene: SceneSpec; accent: string }> = ({
           width: "100%",
           maxWidth: L.landscape ? 1400 : 960,
           flex: 1,
-          maxHeight: L.landscape ? 700 : 1200,
+          maxHeight: L.landscape ? 700 : 1080,
           background: "rgba(16, 24, 48, 0.72)",
           border: `2px solid ${accent}40`,
           borderRadius: 24,
@@ -154,8 +154,8 @@ export const DiagramScene: React.FC<{ scene: SceneSpec; accent: string }> = ({
         )}
       </div>
 
-      {/* Bottom telemetry or label tags */}
-      {scene.visual && scene.visual.motion_graphics && (
+      {/* Bottom telemetry or label tags (displayed in landscape mode where vertical space permits) */}
+      {L.landscape && scene.visual && scene.visual.motion_graphics && (
         <div
           style={{
             width: "100%",

@@ -21,7 +21,7 @@ The system must prioritize visual quality, emotional storytelling, audience rete
 4. **Bold & Large Equation Typography**:
    - Equation fonts and mathematical formulas must be **BIG, BOLD, and PROMINENT**.
    - Never use small equation fonts that require squinting on phone screens. Scale formulas to fill the safe screen width.
-5. **Default output**: 1080×1920 vertical resolution, 30 FPS, H.264 MP4, AAC audio. Use 1920×1080 landscape only when requested.
+5. **Default output**: 1080×1920 vertical resolution, 30 FPS, H.264 MP4, AAC audio. Output path is strictly `episodes/<id>/final.mp4`. Use 1920×1080 landscape only when requested. Root `out/` directory must NEVER be created.
 6. **All essential functionality** must use open-source libraries or appropriately licensed tools.
 7. **Generate visuals primarily through code**, mathematical models, procedural graphics, simulations, and animation.
 8. **Purposeful Visual Explanations**:
@@ -60,6 +60,8 @@ Before implementation, inspect the actual operating system, CPU architecture, in
   - Map the system architecture, flow, key participants, real numbers, and technical limitations.
   - Identify 3–4 common non-technical misconceptions to actively debunk in the script.
   - Establish 1–2 concrete everyday analogies (e.g. digital postman, LEGO blocks) before drafting scenes.
+  - **Visual Precedents (Optional)**: When useful, inspect a small number of relevant explainers and adapt a specific technique that improves comprehension. Treat them as inspiration, not technical evidence or a style mandate; do not imitate creators or force a trend.
+  - **Field-by-Field JSON & Library Calibration**: Research empirical numbers, exact equations, and authentic metrics for every field in `storyboard.json`, and select the optimal libraries/engines (Remotion, Three.js, ManimCE/manimgx, HTML5 Canvas 2D, D3, KaTeX, Lucide) to best represent the visuals.
 - Map concepts using the 5-stage formula: `HOOK → PROBLEM → CURIOSITY → EXPLANATION → PAYOFF`.
 - **Pedagogical Explanation Sequence**: In the explanation phase, strictly follow **WHY ➔ WHAT ➔ HOW**.
 - **The 15-Year-Old Rule**: Explain so a smart 15-year-old non-technical viewer instantly gets it. Address the viewer with direct "You" language. Zero unexplained jargon.
@@ -67,20 +69,25 @@ Before implementation, inspect the actual operating system, CPU architecture, in
 - Every scene must explain the concept visually rather than merely displaying text.
 - Continuous visual progression: "दर्शक के मन में सवाल" ➔ "वीडियो में क्या होगा".
 
-### PHASE 4: EDITORIAL-FIRST VISUAL DIRECTION
+### PHASE 4: VISUAL FITNESS & EDITORIAL-FIRST DIRECTION
+- **The Visual Fitness Principle**: The best visual is the one that produces the highest comprehension and retention for the specific concept. You have complete flexibility to select, combine, and innovate across visual media (2D vector, 2.5D isometric, 3D WebGL, mathematical animation, interactive UI, data charts, terminal consoles, product showcases, or B-roll video footage).
 - Set root `"art_direction": "editorial"` by default. It uses stable framing, restrained styling, and a subtle grid. Set `"cinematic"` only when the legacy glow, bokeh, camera drift, color grade, and light sweeps improve the explanation.
-- Prefer clean 2D/2.5D motion graphics for flows, comparisons, data, and cause-and-effect. Use 3D when physical scale, depth, or spatial relationships materially improve comprehension.
+- Choose whatever medium makes the concept click with maximum pedagogical clarity (Manim for calculus, neural_network_graph for layers/activations, Three.js for 3D terrain/models, terminal for CLI, screenshot for apps, chart for data).
 - Avoid decorative effects, camera moves, particles, bloom, and sound effects unless they clarify a visual event. Stable holds are valid when they make a diagram easier to read.
 - Do not use generic abstract circles or text-only slides. Each scene must show a relevant object, relationship, mechanism, or state change.
 - **Editorial Typography & Focal Scale Contrast**:
   - **BIG Equation & Metric Fonts**: Equations, formulas, and primary statistics must use large, bold, prominent typography (font size 50–64+ pt equivalent, scaling to 75–85% of screen width). Never render small or hard-to-read formulas.
-  - **Mobile Shorts & Reels Legibility Floor (Hard Rule - Minimum 28px)**:
-    * ZERO text anywhere on screen can ever drop below **28px** on 1080×1920 vertical canvas (human eyes viewing 6-inch mobile screens cannot read sub-28px fonts).
-    * Subtitles/Captions must be **46px - 52px** bold, positioned at `bottom: 280px` to clear the native YouTube Shorts / Instagram Reels UI overlay.
+  - **Mobile Shorts & Reels Legibility Floor & Safe Zones (Hard Rule)**:
+    * **Bottom Safe Zone**: Bottom **350px** (`y > 1570px`) is strictly reserved for Devanagari subtitles/captions. No diagram labels, cards, buttons, or interactive elements may extend into this area.
+    * **Top Safe Zone**: Top **180px** (`y < 180px`) is reserved for header tags, status bar, and progress indicator.
+    * **Maximum Visual Height**: Visual components and interactive diagrams must fit within a maximum height of **960px**, centered vertically.
+    * ZERO text anywhere on screen can ever drop below **28px** on 1080×1920 vertical canvas.
+    * Subtitles/Captions must be **46px - 52px** bold, positioned around `bottom: 280px` to clear the native YouTube Shorts / Instagram Reels UI overlay.
     * Metadata tags and category badges must be at least **28px** (tracked, bold uppercase).
     * Metric keys & secondary labels must be **32px - 36px**.
-    * Primary metrics, telemetry values, and formula variables must be **44px - 56px+**.
+    * Primary metrics, comparison numbers, array elements, and formula variables must be **64px - 76px+ bold** (`#FFFFFF` or neon accent).
     * Scene titles must be **56px - 76px+**.
+  - **Authentic Real-World Hook Grounding**: Ground abstract topics in a truthful, concrete situation when it helps comprehension. Use an app/UI only when the topic genuinely concerns that interaction; a physical, mathematical, or system-level example may be clearer. Do not invent app behavior or brand details to satisfy a hook rule.
   - Pair giant focal elements with clean, ultra-legible tracked uppercase sub-labels (`01 / THE MECHANISM`, `GLOBAL MINIMA REACHED`, `SUB-10MS LATENCY`).
 - **Grounded visual storytelling**:
   - Every scene must anchor its spoken idea with a legible visual: a diagram, physical object, relationship, or visible state change. A vector drawing is valid; 3D is not mandatory.
@@ -193,6 +200,9 @@ To ensure videos are produced exactly according to creator expectations, every J
    - `data_structure`: `title`, `structure` (`"queue"`, `"stack"`, `"buffer"`), `operations`.
    - `quadrant`: `title`, `xAxis`, `yAxis`, `points: [{"name": "...", "x": 8, "y": 9}]`.
    - `outro`: `text` (CTA statement), `icon` (`"sparkles"`, `"thumbs-up"`).
+   - `terminal`: `title`, `tag`, `prompt`, `terminalSteps: [{"kind": "cmd" | "out" | "pause" | "pill", "text": "...", "typeSpeed": 0.035}]`.
+   - `screenshot`: `title`, `tag`, `image`, `screenshotSteps: [{"kind": "cursor_move" | "click_pulse" | "type_into" | "bubble_append" | "highlight_box", "to": [0.5, 0.4]}]`.
+   - `chart`: `title`, `tag`, `chartType: "bar" | "line" | "kpi"`, `chartData: [{"label": "...", "value": 94.2}]`, `unit`.
 
 4. **Gold Standard Reference**:
    - `videos/how-upi-works.json` is a technical architecture reference, not a required 3D style. Match its causal detail while choosing the clearest medium and restraint for each topic.
@@ -218,7 +228,7 @@ To ensure videos are produced exactly according to creator expectations, every J
 - Generate and inspect a phone-sized contact sheet from `episodes/<id>/final.mp4`; save it under `episodes/<id>/media/` and confirm the focal object, state transition, and narration-to-visual match are clear in sampled frames.
 - **Mandatory Object-Quality Gate**:
   * Reject any scene where a principal real-world object is represented only by a generic box/cube, unlabeled primitive shape, flat icon pretending to be a 3D device, abstract wireframe, or text label attached to an unrelated shape.
-  * Real objects must be immediately recognizable without labels. Prioritize recognizable real-world 3D objects first, technical animation second, decorative effects third. (See `prompts/master_production_prompt.md` Section 10).
+  * Real objects must be immediately recognizable without labels. Prioritize recognizable real-world 3D objects first, technical animation second, decorative effects third. (See `prompts/storyboard.md` Section 5).
 
 ### PHASE 11: IMPLEMENTATION AND EXECUTION ORDER
 1. Inspect environment.
@@ -226,17 +236,27 @@ To ensure videos are produced exactly according to creator expectations, every J
 3. Generate storyboard & narration.
 4. Render scenes & Manim clips.
 5. Assemble final video via FFmpeg/Remotion.
-6. QA inspection & verification: Store all QA stills, scene captures, and high-CTR thumbnails into `media/<topic-id>/`.
+6. QA inspection & verification: Store all QA stills, scene captures, and high-CTR thumbnails into `episodes/<topic-id>/media/`.
 7. Deliver final playable MP4.
 8. Publishing is opt-in: use `--upload private|unlisted|public` only when the user explicitly requests upload; otherwise use `--no-upload`.
 
 ### PHASE 12: DELIVERABLES
 Deliver:
-1. Playable MP4 video in `episodes/<topic-id>/final.mp4`.
+1. Playable MP4 video in `episodes/<topic-id>/final.mp4` (NEVER create or output to a root `out/` folder).
 2. Source brief, script, and storyboard in `episodes/<topic-id>/`.
 3. Narration, image assets, thumbnails, preview stills, and QA contact sheets under the episode's `audio/` and `media/` folders.
 4. Publishing metadata in `episodes/<topic-id>/post.md`.
-5. Generated Remotion staging assets in `public/<topic-id>/`; these are build inputs, not canonical episode files.
+5. `public/` is strictly for shared global libraries (`sfx/`, `music/`, `models/`). Generated Remotion staging in `public/<topic-id>/` is ephemeral build-input and auto-pruned upon rendering; never author or commit episode files in `public/` (zero overlapping assets).
 6. QA report and verification results alongside the episode.
+
+### PHASE 13: CONTINUOUS PIPELINE REFINEMENT & FEEDBACK PROTOCOL
+Whenever a human review requests a change, reports an aesthetic issue, or identifies a timing defect:
+1. **Never stop at a local patch or side notes**: A local fix solves one scene; a pipeline update solves all future videos.
+2. **Upstream Root-Cause Classification**:
+   - If the issue was narrative/pedagogical (e.g. hook was too abstract) ➔ Update `prompts/script.md` and `prompts/storyboard.md`.
+   - If the issue was visual/layout (e.g. subtitles collided with diagram) ➔ Update `AGENTS.md` and the Charter directives.
+   - If the issue is mechanically detectable (e.g. consecutive twin scenes, diagram exceeding 960px height) ➔ Add an assertion to `validate.py` or `tools/qa_suite.py`.
+   - If a custom interactive component was engineered (e.g. `AmazonShoppingHook`, `SortingVisualizer`) ➔ Generalize it into a reusable component under `src/scenes/`.
+3. **Execution Contract**: When executing user feedback, the agent must explicitly summarize which pipeline layers were updated to ensure the mistake cannot recur.
 
 Legacy specs in `videos/` remain supported and continue to use `audio/<id>/`, `media/<id>/`, and `out/<id>.mp4`.

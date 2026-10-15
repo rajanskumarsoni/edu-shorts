@@ -14,11 +14,8 @@ Supports:
 import argparse
 import base64
 import json
-import os
-import re
 import shutil
 import subprocess
-import sys
 import tempfile
 import urllib.error
 import urllib.parse
@@ -45,7 +42,7 @@ MERMAID_THEME_VARIABLES = {
 
 def render_mermaid_svg(code: str, theme: dict = None) -> str:
     """Renders Mermaid diagram to SVG string using local mmdc or REST fallback."""
-    code = code.strip()
+    code = code.strip().replace("\\n", "\n")
 
     # 1. Try local mmdc (Mermaid CLI) if installed
     mmdc_bin = shutil.which("mmdc")
@@ -92,7 +89,7 @@ def render_mermaid_svg(code: str, theme: dict = None) -> str:
 
 def render_graphviz_svg(dot_code: str) -> str:
     """Renders Graphviz DOT code to SVG string using local dot CLI or Kroki fallback."""
-    dot_code = dot_code.strip()
+    dot_code = dot_code.strip().replace("\\n", "\n")
 
     # 1. Try local dot CLI
     dot_bin = shutil.which("dot") or "/opt/homebrew/bin/dot"

@@ -8,8 +8,10 @@ Your job is to rigorously evaluate the rendered video output against objective t
 ## Automated QA Checklist
 Run the unified QA suite first:
 ```bash
-python3 tools/qa_suite.py out/<video>.mp4
+python3 tools/qa_suite.py episodes/<id>/final.mp4
 ```
+*(Note: Videos are rendered strictly to `episodes/<id>/final.mp4`. Never create or expect video files in a root `out/` folder.)*
+
 Verify:
 - [ ] **Duration**: <= 180s (hard pipeline limit).
 - [ ] **Resolution**: 1080x1920 (vertical) or 1920x1080 (landscape).
@@ -23,7 +25,7 @@ Verify:
 ## Visual Perception Checklist (Contact Sheet Inspection)
 Generate and inspect the contact sheet:
 ```bash
-python3 tools/contact_sheet.py out/<video>.mp4 --interval 6
+python3 tools/contact_sheet.py episodes/<id>/final.mp4 --interval 6
 ```
 Inspect sampled frames:
 1. **Typography & Readability**:

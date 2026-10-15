@@ -1,7 +1,7 @@
 import React from "react";
-import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import type { SceneSpec } from "../types";
-import { MUTED, resolveSceneTag } from "../theme";
+import { resolveSceneTag } from "../theme";
 import { useLayout } from "../layout";
 import { RevealText } from "../Reveal";
 import { MotionGraphic } from "../MotionGraphic";

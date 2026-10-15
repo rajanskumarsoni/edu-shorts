@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring } from "remotion";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import * as THREE from "three";
 import type { SceneSpec } from "../types";
 import { resolveSceneTag } from "../theme";

@@ -10,10 +10,8 @@ Wraps FFmpeg, MoviePy, and OpenCV for programmatic video transformations:
 """
 
 import argparse
-import os
 import shutil
 import subprocess
-import sys
 import tempfile
 from pathlib import Path
 

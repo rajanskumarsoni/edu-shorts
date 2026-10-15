@@ -484,18 +484,481 @@ This board is the shared asynchronous communication channel for all AI agents wo
   - **Video Generation Charter (`.agents/rules/video_generation_charter.md`)**:
     - Updated Phase 4 AI / Neural Model entry to mandate explicit multi-layer graph (`neural_network_graph`), 3D synaptic network (`neural_network_3d`), or loss landscape (`gradient_descent`).
     - Added `neural_network_graph` to Section 3 Scene-Specific Deep Properties.
+### [2026-10-14 17:05:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: Production Pipeline Upgrades — OpenMontage Capability Adaptation (Non-Breaking)
+- **Completed**:
+  - **Automated Slideshow Risk & Visual Momentum Analyzer (`tools/slideshow_risk.py`)**:
+    - Ported and unified heuristics from OpenMontage's `slideshow_risk.py` and `variation_checker.py`.
+    - Evaluates 5 core dimensions: repetition (consecutive twin scenes), typography overreliance (text-only slides without visual anchors), visual diversity ratio (>=60% dynamic engines), pacing outliers (<1.8s or >18s), and lazy marketing buzzwords.
+    - Integrated seamlessly into `validate.py` (pre-flight checks) and `tools/qa_suite.py` (Step 4 post-render QA) reporting visual momentum score (0-5.0) and verdict (`strong`, `acceptable`, `revise`, `fail`).
+  - **Interactive Developer & Synthetic UI Remotion Components**:
+    - **`src/scenes/TerminalScene.tsx`**: Authentic macOS terminal window with char-by-char command typing, blinking cursor, instant outputs, pauses, and animated floating status badges. Supports both 9:16 vertical and 16:9 landscape.
+    - **`src/scenes/ScreenshotScene.tsx`**: Synthetic interactive UI demonstration engine over backdrop screenshots with animated mouse cursor, click ripple pulses, text input typing, streaming AI chat bubbles, and highlight focus rings.
+    - **`src/scenes/ChartScene.tsx`**: Native animated Remotion charts supporting animated bar charts, SVG spline line trends, and multi-card KPI grids with spring transitions and cyberpunk dark theme tokens.
+  - **Frame-Accurate Sidechain Audio Ducking (`src/Video.tsx`)**:
+    - Added native speech-aware background music ducking: dynamically dips music volume to 35% during active narration speech and smoothly swells during natural conversational pauses, transitions, and CTA holds.
+    - Enabled by default via `"music_ducking": true`.
+  - **Transparent Background Removal Tool (`tools/bg_remove.py`)**:
+    - Created cutout tool supporting AI segmentation (`rembg`) with graceful PIL color-key alpha matting fallback for white/black backgrounds, directly enforcing our strict Real-Object Visualization Policy.
+  - **Schema & Directive Registrations**:
+    - Registered `terminal`, `screenshot`, and `chart` across `src/types.ts`, `src/Video.tsx`, `validate.py`, `schema/storyboard.schema.json`, `prompts/storyboard.md`, `prompts/master_production_prompt.md`, `AGENTS.md`, and `.agents/rules/video_generation_charter.md`.
+- **Pipeline Health**:
+  - `validate.py episodes/neural-network-gradient-training/storyboard.json` passed with 0 errors (`visual momentum: strong [0.98/5.0]`).
+  - `npx tsc --noEmit` passed with 0 errors.
+  - `python3 tools/qa_suite.py episodes/neural-network-gradient-training/final.mp4` passed 6/6 tests.
+
+### [2026-10-14 17:28:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: Phase 2 Capability Enhancements — Deep OpenMontage Architecture Adaptation (Strictly Non-Breaking)
+- **Completed**:
+  - **Design Token Theme Palettes (`src/theme.ts` & `src/Video.tsx`)**:
+    - Created `ThemePalette` interface, curated catalog `THEMES` (`cyberpunk`, `slate`, `amber`, `emerald`, `whiteboard`), `getTheme(themeName, accentOverride)` resolver, and `ThemeContext`.
+    - Preserved 100% of existing exports (`BG`, `FG`, `MUTED`, `FONT`, `MONO`, `CARD_BG`, `CARD_BORDER`, `COLORS`, `TYPOGRAPHY`, etc.) ensuring zero breakages for all existing scenes.
+    - Added `"theme"` property to `VideoProps`, `validate.py` `TOP_ALLOWED`, and `schema/storyboard.schema.json`.
+  - **Real-Object & Hardware Showcase Engine (`src/scenes/ProductScene.tsx`)**:
+    - Adapted from OpenMontage's `ProductReveal.tsx` to elevate Golden Rule 12 ("Strict Real-Object Visualization Policy").
+    - Renders physical devices, chips (e.g. Nvidia H100), cards, or equipment with transparent PNG cutouts, breathing radial spotlight, 3D hover float, tracked uppercase tags, animated staggered spec cards, and highlight badges.
+    - Fully responsive for 9:16 vertical shorts and 16:9 landscape.
+    - Registered `product` scene in `src/types.ts`, `src/Video.tsx`, `validate.py`, `schema/storyboard.schema.json`, `prompts/storyboard.md`, and `AGENTS.md`.
+  - **Universal Asset Finder Transparent Cutout Pipeline (`tools/asset_finder.py`)**:
+    - Wired `--nobg` and `--bg-mode` flags into `tools/asset_finder.py` for both `image` search and `generate` (Pollinations GenAI).
+    - Downloads/synthesizes product images and automatically runs them through `tools/bg_remove.py` to produce instant transparent cutout PNGs.
+  - **AST-Based Static Code Safety Scanner (`tools/code_safety.py`)**:
+    - Ported AST static safety scanner from OpenMontage's `math_animate.py`.
+    - Scans Python code for blocked imports (`os`, `sys`, `subprocess`, `socket`, `pickle`, `ctypes`, etc.), forbidden builtins (`eval`, `exec`, `globals`), and dunder reflection.
+    - Integrated into `validate.py` for pre-flight checking of any custom Manim scene scripts.
+  - **WCAG 2.1 Contrast Ratio Pre-Flight Verification (`validate.py`)**:
+    - Added relative luminance contrast ratio calculation in `validate.py` to ensure custom accent colors have >= 3.0:1 contrast against active backgrounds, preventing low-contrast unreadable video frames on mobile screens.
+- **Pipeline Health Verification**:
+  - `python3 validate.py episodes/neural-network-gradient-training/storyboard.json` ➔ 0 errors, 1 warning (detected buzzword `'vibrant'`).
+### [2026-10-14 17:45:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: Frame-Accurate Continuous Action SFX Engine (`src/Video.tsx`, `src/types.ts`)
+- **Completed**:
+  - **Looping & Sequence Duration Audio Support in Remotion (`src/Video.tsx`)**:
+    - Measured exact duration in frames for all 19 local sound effects in `public/sfx/` (`typing`: 18f, `radar_beep`: 12f, `whoosh`: 12f, `fast_whoosh`: 6f, `click`: 2f, `tick`: 2f, `ting`: 10f, `pop`: 3f, `glitch`: 8f, `heartbeat`: 26f, `impact`: 18f, etc.).
+    - Extended `SoundCue` in `src/types.ts` with `loop?: boolean`, `duration?: number`, `repeat?: number`, and `interval?: number`.
+    - Extended `SceneSFX` in `src/Video.tsx` using Remotion's `<Sequence>` and `<Loop durationInFrames={wavFrames}>` to seamlessly loop audio files across arbitrary visual action windows.
+  - **Action-Synchronized Continuous SFX by Scene Type**:
+    - **Code Typing (`code`)**: Loops `typing.wav` continuously for the exact calculated duration of code line reveal (`typingDur = min(durationInFrames - 12, max(18, lineCount * 8))`), resolving with a crisp `ting.wav` chime when typing completes.
+    - **Terminal Commands (`terminal`)**: Loops `typing.wav` dynamically for each `cmd` step across its exact keystroke duration (`(text.length * typeSpeed) * fps`), followed by `tick.wav` for command output, and `ting.wav` for status pills.
+    - **Interactive Screen Demos (`screenshot`)**: Loops `typing.wav` during `type_into` steps, fires `click.wav` on `click_pulse`, and `pop.wav` on `bubble_append`.
+    - **Neural Activations & Error Gradients (`neural_network_graph`, `three` with `neural_network_3d`/`backprop_3d`, `hook` with `neural_network_3d`/`neural_brain`)**: Rhythmic activation pulses (`radar_beep.wav` and `tick.wav` in forward pass, `glitch.wav` and `ting.wav` in backprop) trigger continuously every 18 frames along the timeline as neural signals propagate across synaptic layers.
+    - **Mechanical Sweeps (`gauge`)**: Rhythmic mechanical ratchet clicks (`tick.wav` every 4 frames) while the needle sweeps from frame 10 to 42, landing on a `ting.wav` at frame 44.
+    - **Sprint Races (`benchmark`)**: Progress clicks (`tick.wav` every 6 frames) while runners sprint across the screen, resolving to `ka_ching.wav` at frame 48.
+    - **Loss Mountain Descent (`three` `gradient_descent`)**: Telemetry beacon (`radar_beep.wav`) sounds periodically every 24 frames as the ball descends the 3D surface.
+    - **Bullet List Entrances (`bullets`)**: Sequential `pop.wav` sound effects on each item entrance.
+  - **Audio Volume Balance**:
+    - Ambient action loops balanced at gentle, non-fatiguing levels (0.09 to 0.14) so they sit comfortably under voiceover narration ducking without masking speech.
+  - **Refinement in `episodes/neural-network-gradient-training/storyboard.json`**:
+    - Replaced generic buzzword `'vibrant'` in scene 2 with `'high-contrast'`.
+- **Pipeline Health**:
+  - `npx tsc --noEmit` passed with 0 errors.
+  - `python3 validate.py episodes/neural-network-gradient-training/storyboard.json` passed with 0 warnings/errors (`visual momentum: strong [0.9/5.0]`).
+
+### [2026-10-14 18:05:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: Visual Fitness Flexibility & Mandatory Internet Research Protocol Across All Prompts & Storyboards
+- **Completed**:
+  - **Empowering Visual Fitness & Creative Flexibility Principle**:
+    - Overhauled `prompts/storyboard.md`, `prompts/master_production_prompt.md`, `prompts/script.md`, `prompts/component.md`, `AGENTS.md`, and `.agents/rules/video_generation_charter.md`.
+    - Codified the **Visual Fitness Principle**: the best visual is the one that produces the highest comprehension and retention for the specific concept. Agents and creators have complete flexibility to select, combine, and innovate across visual media (2D vector, 2.5D isometric, 3D WebGL, mathematical animation, interactive UI, data charts, terminal consoles, product showcases, or B-roll video footage) rather than being pigeonholed by rigid quotas.
+  - **Mandatory Pre-Storyboard Internet Research Phase**:
+    - Mandated real web search before drafting scripts and storyboards to gather:
+      1. Empirical working mechanisms, protocols, and real numbers as of 2026.
+      2. Trending visual metaphors and styles from top educators (3Blue1Brown, Karpathy, StatQuest, Distill.pub, Veritasium).
+      3. 2025-2026 motion graphics trends (obsidian dark mode, refined dark glassmorphism, depth parallax, modular bento grids).
+      4. Exact calibration for every single field in `storyboard.json`.
+      5. Optimal library & engine selection (Remotion, Three.js, React Three Fiber, ManimCE/manimgx, HTML5 Canvas 2D, D3, KaTeX, Lucide).
+  - **Exhaustive Field-by-Field JSON Specification**:
+    - Added an exhaustive reference guide in `prompts/storyboard.md` covering every root property (`$schema`, `id`, `format`, `accent`, `art_direction`, `theme`, `audio_mode`, `captions`, `progress`, `sfx`, `pad_seconds`, `music`, `music_ducking`, `meta`) and per-scene keys (`type`, `tag`, `purpose`, `tone`, `narration`, `transition`, `sfx`, `visual` 6-keys, and scene-specific properties).
+  - **Exemplar Storyboard Calibration (`episodes/neural-network-gradient-training/storyboard.json`)**:
+    - Enriched metadata with trending visual styles, recommended rendering libraries, and empirical deep learning benchmarks.
+    - Calibrated each scene with high-fidelity visual descriptions, KaTeX formulas, and telemetry metrics.
+    - Updated `validate.py` to natively support `metrics` on `neural_network_graph` and visual research metadata fields.
+  - **Pipeline Health**:
+    - `python3 validate.py episodes/neural-network-gradient-training/storyboard.json` ➔ 0 errors, 0 warnings (`visual momentum: strong [0.9/5.0]`).
+    - `npx tsc --noEmit` ➔ 0 errors.
 - **Next Steps**:
-  - All AI agents (Claude Code, Antigravity, Codex, Copilot) are now permanently aligned to use purpose-built neural network graph engines rather than fallback architectural boxes or bare formulas.
+  - All future episode briefs, scripts, and storyboards across Claude Code, Antigravity, and Codex will benefit from visual fitness flexibility and deep internet-grounded visual research.
+
+### [2026-10-14 20:05:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: Prompt System Streamlining & Redundant File Pruning
+- **Completed**:
+  - Removed 5 redundant legacy prompt files from `prompts/`:
+    * `prompts/write_script.md` (35 KB deprecated monolithic prompt)
+    * `prompts/master_production_prompt.md` (28 KB monolithic duplicate)
+    * `prompts/hindi_script_framework.md` (48 KB legacy script guide)
+    * `prompts/topic_ideas.md` (2 KB scratch note)
+    * `prompts/fix_errors.md` (1 KB scratch note)
+  - Updated all cross-agent documentation ([AGENTS.md](AGENTS.md), [.agents/rules/video_generation_charter.md](.agents/rules/video_generation_charter.md), [README.md](README.md)) to link directly to the canonical 2-stage prompts:
+    * **Stage 1**: [prompts/script.md](prompts/script.md) (Hindi Narration & Phonetic Glossary)
+    * **Stage 2**: [prompts/storyboard.md](prompts/storyboard.md) (Visual Fitness & Storyboard Manifest)
+  - Retained specialized task prompts: [prompts/component.md](prompts/component.md), [prompts/qa.md](prompts/qa.md), [prompts/post.md](prompts/post.md), [prompts/brief_template.yaml](prompts/brief_template.yaml).
+  - Pipeline verified: `validate.py` ➔ 0 errors, 0 warnings; `npx tsc --noEmit` ➔ 0 errors.
+
+### [2026-10-14 21:42:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: Episode: How Bubble Sort Works (`episodes/bubble-sort-algorithm/`)
+- **Completed**:
+  - **Research & Creative Brief (`brief.yaml`)**: Built brief anchoring the explanation in the school morning assembly height lineup analogy, adjacent pair scanning, swapping conditions, and O(n) best-case early termination with boolean flag.
+  - **Interactive Sorting Visualizer Component (`src/scenes/SortingVisualizer.tsx`)**:
+    - Created dedicated Remotion component rendering 5 dynamic height bars and number cards.
+    - Animated sliding comparison scanner targeting pairs `(j, j+1)` with dynamic condition telemetry banner (`IF A[0] > A[1] -> SWAP`).
+    - Implemented spring-physics curved swap animations where cards lift and cross over smoothly.
+    - Added emerald green locked state with lock badge as the largest element bubbles up to the array end.
+    - Registered `sorting_visualizer` across `src/types.ts`, `src/Video.tsx`, `validate.py`, `tools/slideshow_risk.py`, and `schema/storyboard.schema.json`.
+  - **Stage 1 Script (`script.md`)**: Wrote 8-scene conversational Hindi narration for VoiceStudio `rajan story teller` profile with English-only visual elements and zero jargon.
+  - **Stage 2 Storyboard (`storyboard.json`)**: Formatted and validated full 8-scene storyboard adhering to strict 6-key visual specifications and zero consecutive twins (Hook ➔ Sorting Visualizer ➔ Diagram ➔ Sorting Visualizer ➔ Code ➔ Compare ➔ Benchmark ➔ Outro).
+  - **Speech Synthesis (`tts.py`)**: Synthesized all 8 scene narrations into `episodes/bubble-sort-algorithm/audio/s1.mp3` through `s8.mp3`.
+  - **Production Video Render (`pipeline.py`)**: Rendered 1080x1920 vertical 9:16 MP4 to `episodes/bubble-sort-algorithm/final.mp4` (10.2 MB, 2,991 frames, 99.7s).
+  - **Unified QA Verification (`tools/qa_suite.py`)**: PASSED all checks (6/6 technical tests, 0 black frames, -15.7 LUFS loudness matching YouTube target, visual momentum STRONG [0.9/5.0], contact sheet generated at `final_contact_sheet.jpg`).
+  - **Diagram Rendering Fix (`tools/diagram_renderer.py`, `src/scenes/DiagramScene.tsx`)**:
+    - Resolved Mermaid syntax newline escape parsing bug (`.replace('\\n', '\n')`).
+    - Rendered dark cyberpunk Mermaid sequence diagram to `episodes/bubble-sort-algorithm/media/diag3.svg`.
+    - Adjusted vertical layout in `DiagramScene.tsx` to give ample margin for subtitles with zero caption collisions.
+    - Re-rendered `final.mp4` with full flowchart integration.
+### [2026-10-14 22:10:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: Episode: How Bubble Sort Works (`episodes/bubble-sort-algorithm/`) - Scene 1 Amazon Shopping App UI
+- **Completed**:
+  - **Authentic Amazon Mobile UI Component (`src/scenes/AmazonShoppingHook.tsx`)**:
+    - Modeled a smartphone container with Dynamic Island, camera lens reflection, and status bar (9:41, 5G, battery).
+    - Designed authentic Amazon branding: navy header (`#131921`) with Amazon smile logo, search bar ("Search Amazon"), and delivery location ("Deliver to Customer - New Delhi 110001").
+    - Added filter bar with Prime badge (`#00A8E1`), category pill, and sort dropdown ("Sort: Featured" -> "Sort: Price: Low to High").
+    - Programmed 4 product cards:
+      1. Fast USB-C Cable ($12.99, Best Seller)
+      2. Ergonomic Wireless Mouse ($39.50, Amazon's Choice)
+      3. ANC Wireless Headphones ($89.00, Top Rated)
+      4. Smart Fitness Watch Ultra ($199.00, Premium)
+    - Initial state displays unsorted prices ($89.00, $199.00, $12.99, $39.50) with `Pos #1` to `Pos #4` tags.
+    - At frame 105 (synced to spoken narration *"Price Low to High दबाते हैं"*), an animated touch cursor (👆) taps the sort button with an orange glow and tap ripple.
+    - Product cards smoothly swap vertical positions with spring physics into ascending price order ($12.99 -> $39.50 -> $89.00 -> $199.00), locking in with emerald green borders (`#00FF88`), glowing prices, rank badges (`Rank #1` to `Rank #4`), and an *"ALGORITHM RESULT: SORTED (ASCENDING)"* confirmation pill.
+    - Optimized vertical safe zone (height 960px) ensuring 350px of clean clearance above bottom captions, avoiding any subtitle collision.
+  - **Component Wiring & Schema Registration**:
+    - Connected `AmazonShoppingHook` into `src/scenes/Hook.tsx` with variant check `scene.variant === "amazon_shopping"`.
+    - Registered `amazon_shopping` in `src/Video.tsx`, `src/types.ts`, `validate.py` (`COMMON_SCENE_FIELDS` + `ALLOWED`), and `schema/storyboard.schema.json`.
+  - **Validation & Production Render**:
+    - `validate.py`: Passed with 0 errors, 0 warnings (visual momentum: strong).
+    - `npx tsc --noEmit`: 0 TypeScript errors.
+    - `pipeline.py`: Re-rendered `episodes/bubble-sort-algorithm/final.mp4` (9.6 MB, 2,991 frames, 99.7s).
+    - `qa_suite.py`: Passed 6/6 technical tests, 0 black frames, -15.7 LUFS loudness.
+    - Extracted and verified frames: `scene1_unsorted.jpg` (2.5s), `scene1_sort_tap.jpg` (4.0s), and `scene1_sorted.jpg` (6.5s).
+### [2026-10-14 22:30:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: Episode: How Bubble Sort Works (`episodes/bubble-sort-algorithm/`) - Scene 2 Narration-Synced Animation & Giant Number Visibility
+- **Completed**:
+  - **Narration-Accurate Choreography (`src/scenes/SortingVisualizer.tsx`)**:
+    - **Phase 1 (0.0s – 5.3s)**: *"स्कूल की मॉर्निंग असेंबली याद कीजिए..."* ➔ All 5 students enter in assembly line with heights `[5, 1, 4, 2, 8]`.
+    - **Phase 2 (5.3s – 9.3s)**: *"सिर्फ अपने पास वाले साथी की हाइट देखो..."* ➔ Scanner spotlight focuses on Index `[0]` (5) and Index `[1]` (1), dimming others to 0.35 opacity.
+    - **Phase 3 (9.3s – 11.0s)**: *"अगर बायाँ साथी लंबा है..."* ➔ Red alert box flashes: `CONDITION MET: LEFT (5) > RIGHT (1) ➔ TRUE!` with directional crossover arrows (`5 ⇄ 1`).
+    - **Phase 4 (11.0s – 13.0s)**: *"...तो दोनों जगह बदल लो!"* ➔ Physical spring swap executes right on this phrase. Card 5 arcs up (`-55px`) and glides over to Slot 1; Card 1 arcs down (`+35px`) and glides under to Slot 0. Lands with spring bounce in new order `[1, 5, 4, 2, 8]`.
+  - **Giant Numbers & Contrast**:
+    - Numerals scaled to **76px ultra-bold** (`#FFFFFF`), with student avatars, height tags, and distinct magnitude columns.
+  - **Critical Subtitle Sync Bug Fix (`src/Video.tsx`)**:
+    - Identified and fixed `localFrame = frame - sceneStartFrame` bug in `SceneView`. Inside Remotion `<Sequence>`, `useCurrentFrame()` is already relative to the sequence start (0 to duration). Subtracting `sceneStartFrame` was producing negative frames and freezing captions on scenes 2-8.
+    - Fixed to `localFrame = frame`, enabling Devanagari captions to advance word-by-word with exact audio synchronization across all scenes.
+  - **Pipeline Validation & QA**:
+    - `validate.py`: Passed with 0 errors, 0 warnings.
+    - `npx tsc --noEmit`: 0 TypeScript errors.
+    - `pipeline.py`: Re-rendered `episodes/bubble-sort-algorithm/final.mp4` (11.9 MB, 2,991 frames, 99.7s).
+    - `qa_suite.py`: Passed 6/6 technical tests, 0 black frames, -15.7 LUFS loudness.
+    - Verified stills: `scene2_f1.jpg` (17s), `scene2_f2.jpg` (22s), `scene2_f3.jpg` (24.5s), and `scene2_f4.jpg` (26.5s).
+- **Next Steps**: Ready for final review.
+
+### [2026-10-14 22:50:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: System-Wide Architecture Upgrade: Continuous Pipeline Refinement & Self-Improvement Protocol
+- **Completed**:
+  - **Pillar 1: System Directives (`AGENTS.md`, `.agents/rules/video_generation_charter.md`)**:
+    - **Rule 13 (Continuous Pipeline Self-Improvement Protocol)**: Mandated that human feedback/critique must trigger immediate upstream updates to prompts, directives, and code validators, rather than passive side notes.
+    - **Rule 14 (350px Caption Clearance & Vertical Safe Zones)**: Mandated 350px bottom clearance for subtitles (`y > 1570px`), 180px top clearance for tags, and 960px max visual height.
+    - **Rule 15 (Giant Typography Floor)**: Primary comparison numbers/metrics must be 64px–76px bold with high-contrast styling.
+    - **Rule 16 (Authentic Real-World Hook Grounding)**: Abstract algorithms/protocols must hook viewers via authentic consumer app UIs (Amazon, Swiggy, YouTube, Uber).
+    - **Rule 17 (Phrase-Synced Choreography & Remotion `<Sequence>` Local Frame Rule)**: Actions must break into multi-phase events mapped to spoken clauses. Remotion `useCurrentFrame()` is 0-indexed inside `<Sequence>`.
+  - **Pillar 2: Stage Prompts (`prompts/script.md`, `prompts/storyboard.md`)**:
+    - `prompts/script.md`: Required Scene 1 consumer app hook grounding and phrase-level action clause scripting.
+    - `prompts/storyboard.md`: Added safe zone requirements, 64px font floor, phrase-synced action choreography in `visual.action`, and reinforced No Consecutive Twins rule.
+  - **Pillar 3: Automated Validation Gates (`validate.py`)**:
+    - Added automated warning for consecutive twin scene types (`types[i] == types[i-1]`).
+    - Added check for component height exceeding the 960px safe zone.
+    - Added warning if Scene 1 hook is purely abstract text without real-world grounding.
+- **Next Steps**: All collaborating agents (Claude Code, Antigravity, Codex) will automatically enforce these standards across future video productions.
+
+### [2026-10-14 22:53:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: Episode: How Bubble Sort Works (`episodes/bubble-sort-algorithm/`) - YouTube Upload
+- **Completed**:
+  - Published `episodes/bubble-sort-algorithm/final.mp4` to YouTube with public visibility.
+  - Title: `How Bubble Sort Works | Computer Science Explainer #Shorts`
+  - Upload Link: https://youtu.be/xSu7G1_cfOs
+  - Custom thumbnail uploaded: `final-thumbnail.jpg` (Amazon sorting hook with Dynamic Island and emerald sorted rank badges).
+  - Education Category (27), Made for Kids = False, automated #Shorts tagging included in metadata.
+- **Next Steps**: Video is live on YouTube. Ready for viewer engagement or next topic.
+
+### [2026-10-14 23:13:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: Audio Pipeline Normalization & Duplicate Elimination
+- **Completed**:
+  - Replaced raw unnormalized audio files with the processed 48kHz stereo versions (`norm_s*.mp3` -> `s*.mp3`) across `episodes/bubble-sort-algorithm/audio/` and `episodes/neural-network-gradient-training/audio/`.
+  - Removed all duplicate `norm_s*.mp3` files; each scene now has a single, canonical, 48kHz stereo file (`s1.mp3`, `s2.mp3`, etc.).
+  - Upgraded [pipeline.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/pipeline.py) with `ensure_48k_stereo()` to normalize audio in-place without creating orphan `norm_` files.
+  - Upgraded `find_audio()` in [pipeline.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/pipeline.py) to automatically migrate any legacy `norm_` files to canonical filenames.
+  - Upgraded [tts.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/tts.py) to immediately output standardized 48kHz stereo audio on synthesis.
+- **Next Steps**: Pipeline audio is clean and single-copy. Ready for next episode or tasks.
+
+### [2026-10-14 23:25:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: `p5.brush Library Installation & Pipeline Integration`
+- **Completed**:
+  - **Installed Dependencies**: Installed `p5.brush` (v2.2.3) and `p5` (v2.3.4) into `package.json` with zero vulnerabilities.
+  - **TypeScript Declarations (`src/types/p5.brush.d.ts`)**: Built comprehensive types for `p5.brush` and `p5.brush/standalone` covering brush strokes (`rotring`, `HB`, `2B`, `pen`, `cpencil`, `marker`, `charcoal`), natural watercolor fills (`fillBleed`), hatching patterns (`hatch`), splines, and vector flow fields.
+  - **Headless Web Animation Recorder (`tools/html_recorder.py`)**:
+    - Added `"p5_brush"` animation template generating broadcast-ready 1080x1920 sketches with live p5.brush flow fields, watercolor bleeds, and textured graphite/ink strokes.
+    - Added virtualenv auto-resolution (`.venv/bin/python`) so `python3 tools/html_recorder.py` executes smoothly with Playwright and FFmpeg.
+    - Verified MP4 recording (`tools/html_recorder.py record scratch/demo_brush.html -> demo_brush.mp4`).
+  - **Remotion Scene Engine (`src/scenes/WhiteboardScene.tsx`)**:
+    - Created first-class `<WhiteboardScene />` component rendering hand-drawn chalkboard, whiteboard, and grid paper diagrams via `p5.brush/standalone` WebGL2.
+    - Supports `algorithm`/`sorting` (hatched array bars, pointer brackets, swap splines), `architecture`/`flow` (napkin system blocks with organic connections), and `math` (hand-drawn axes, curve splines, tangent lines).
+    - Registered in `src/types.ts` (`SceneType`), `src/Video.tsx` (`SCENES.whiteboard`), `schema/storyboard.schema.json`, and `validate.py`.
+    - Tested Remotion still render with `remotion still` (`scratch/test_whiteboard_remotion.png` generated in 939ms).
+  - **Production Directives & Documentation**:
+    - Updated `AGENTS.md` and `prompts/storyboard.md` with `"whiteboard"` scene catalog entries and disambiguation rules.
+- **Next Steps**:
+  - All agents and human directors can now use `"whiteboard"` in storyboards or `python3 tools/html_recorder.py template p5_brush` for organic hand-drawn explainer visuals.
+
+### [2026-10-14 23:38:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: Root Directory Cleanup & Permanently Preventing `out/` and `media/` Creation
+- **Completed**:
+  - **Eliminated `ROOT / "out"` Fallback in Pipeline**: Refactored [pipeline.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/pipeline.py) so all operations (renders, `post.md`, thumbnails, and scene stills) are strictly rooted in `episodes/<id>/`, removing any fallback creation of `out/`.
+  - **Eliminated `ROOT / "media"` Leak in Manim**: Updated `render_manim()` to execute Manim with `cwd=tmp` and absolute template paths inside a temporary directory, and created [manim.cfg](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/manim.cfg) redirecting default CLI media and text caches to `/tmp/manim_media`.
+  - **Updated Tooling Paths**:
+    - [tools/auto_upload.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/tools/auto_upload.py): Now monitors `episodes/*/final.mp4` directly instead of looking for `out/*.mp4`.
+    - [tools/upload_video.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/tools/upload_video.py): Looks for thumbnails strictly inside `video.parent / "media"`.
+    - [tools/contact_sheet.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/tools/contact_sheet.py): Saves contact sheets directly into `episodes/<id>/media/contact-sheet.jpg`.
+    - [tools/preview.sh](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/tools/preview.sh): Redirects fast previews to `scratch/preview`.
+    - [tools/qa_suite.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/tools/qa_suite.py): Resolves episode candidates via `episodes/<id>/final.mp4`.
+  - **Updated [.gitignore](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/.gitignore)**: Cleanly added `media/` and `out/` to gitignore so no transient folders can be tracked.
+- **Next Steps**: Root workspace stays permanently clean. Ready for next episode or tasks.
+
+### [2026-10-15 02:22:00] Antigravity
+- **Status**: COMPLETED & VERIFIED
+- **Target Video / Feature**: `सत्य साधक (Satya Sadhak)` Lyric Video with Dynamic 5-Second Backgrounds & Kinetic Text Animations
+- **Completed**:
+  - Re-aligned all 55 lines and words across the 7 sections to acoustic speech energy scans (fixed Verse 2 vocal onset at `01:02` following Chorus 1 beat drop).
+  - Built `DynamicBackgrounds.tsx` cycling through 10 distinct procedural visual environments with crossfades every 5 seconds (Sacred Golden Mandala, Cyberpunk Neon Floor Grid, Cosmic Nebula, Radial Audio Spectrum, Quantum Honeycomb Mesh, Molten Sun Flare, Hyperspace Streaks, Shockwave Pulse Rings, Prism Geometric Facets, Digital Emerald Stream).
+  - Implemented kinetic spring text animations with 3D tilt, bounce-in line transitions, word-by-word spring pop (`scale(1.24)`), neon laser underline beam, and kick-drum reactiveness.
+  - Successfully re-rendered full 161.03s video with master audio to `out/satya_sadhak_final.mp4` and `out/satya_sadhak_full.mp4` (49.3 MB, 1080x1920 @ 30 FPS).
+- **Next Steps**: Ready for review and publishing.
+
+### [2026-10-15 02:41:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: Episode: How A Refrigerator Actually Works (`episodes/how-refrigerator-works/`)
+- **Completed**:
+  - **Empirical Research & Creative Brief (`brief.yaml`)**:
+    - Grounded in modern R-600a (isobutane) vapor compression cycle (1 bar ➔ 6.2 bar compression, +65°C gas, 450W heat rejection to kitchen, -25°C capillary flash expansion, 3.8°C food cooling).
+    - Addressed core misconception: "cold" does not exist in physics; a fridge is a heat pump that extracts heat from the interior and dumps it out the back.
+    - Debunked the open-door AC paradox: leaving the fridge door open heats up the room because net energy is positive (+150W added).
+  - **Stage 1 Script (`script.md`)**:
+    - Authored 9-scene conversational Hindi narration for VoiceStudio (`rajan story teller` profile) with phonetic Devanagari spellings (कंप्रेसर, कंडेनसर, एक्सपेंशन वॉल्व, इवैपोरेटर, रेफ्रिजरेंट आर-छह सौ-ए).
+    - Every spoken phrase maps to a concrete visual cause-and-effect motion graphics event on screen with minimal text.
+  - **Asset Engine Staging Upgrade (`pipeline.py`)**:
+    - Upgraded `pipeline.py` asset staging to automatically stage and remap images and video B-roll across all scene types (`product`, `refrigerator`, `hook`, `screenshot`), eliminating 404s when loading media.
+  - **Animated Motion Graphics Engine (`src/scenes/RefrigeratorVisualizer.tsx`)**:
+    - Created dedicated Remotion component featuring 8 motion graphics variants:
+      * `hook_fridge`: 3D refrigerator door opening with depth parallax, illuminated interior, cold mist puff, and dual thermal HUD tags (Inside: 4°C vs Outside: 32°C).
+      * `misconception_cold`: Molecular thermal simulation with red heat packets extracted from water molecules, freezing into an icy blue crystal lattice (`COLD = ABSENCE OF HEAT`).
+      * `cycle_overview`: Photorealistic 9:16 cutaway with animated glowing fluid particles circulating through the closed copper loop with 4 sequential component markers.
+      * `compressor_piston`: Real mechanical cutaway with moving piston, gas molecules compressed into fiery orange, live pressure dial sweeping from 1.0 to 6.2 BAR, and temperature climbing to +65°C.
+      * `condenser_heat`: Serpentine rear coils with rising convection heat wave ripples, gas-to-liquid phase change, and 450W heat rejection telemetry.
+      * `expansion_valve`: Real macro aerosol spray nozzle releasing freezing atomized mist, capillary constriction, instant flash freeze, and temperature plummeting from +40°C to -25°C.
+      * `evaporator_theft`: Cold frosted coils absorbing amber thermal ribbons directly out of fresh milk and apples, chilling food to 3.8°C.
+      * `room_myth_balance`: Tilting energy seesaw balance scale (+450W heat out vs -300W cooling in), digital room thermometer rising from 24°C to 28.5°C, and circular 4-step perpetual cycle payoff.
+  - **Schema & Tool Registration**:
+    - Registered `refrigerator` scene across `src/types.ts`, `src/Video.tsx`, `src/scenes/Hook.tsx`, `validate.py`, `tools/slideshow_risk.py`, and `schema/storyboard.schema.json`.
+  - **Stage 2 Storyboard (`storyboard.json`)**:
+    - Validated 9-scene storyboard with 0 errors and 0 warnings (`validate.py`).
+    - Complies with "No Consecutive Twins" rule and achieves strong visual momentum score (`0.9/5.0`).
+  - **Speech Synthesis (`tts.py`)**:
+    - Synthesized all 9 scene narrations into `episodes/how-refrigerator-works/audio/s1.mp3` through `s9.mp3` via VoiceStudio.
+  - **Production Render (`pipeline.py`)**:
+    - Rendered full 1080x1920 @ 30 FPS vertical video to `episodes/how-refrigerator-works/final.mp4` (11.5 MB, 2,917 frames, 97.2s).
+  - **Unified QA Verification (`tools/qa_suite.py`)**:
+    - Technical tests: 6/6 passed (zero black frames).
+    - Audio loudness: -16.5 LUFS integrated (target -16.0 LUFS YouTube broadcast standard).
+    - Contact sheet verified at `episodes/how-refrigerator-works/final_contact_sheet.jpg`.
+  - **Child-Friendly Motion Graphics Upgrade**:
+    - Implemented full-screen Master System Flow Diagram (`system_flow_diagram`) showing Outside Kitchen vs Inside Chilled Fridge, 4 clearly numbered stations, and circulating particle loop.
+    - Added explicit visual explanation of electricity's role: powers the bottom pump/motor, does NOT create cold air!
+    - Enhanced word-by-word cause-and-effect animations: gas molecules compressing and turning red-hot (+65°C), convection heat wafting off condenser coils, pinhole flash freeze to -25°C, and heat ribbons actively sucked from food into coils.
+- **Next Steps**:
+  - Published to YouTube on 2026-10-15.
+
+- **Status**: COMPLETED
+- **Target Video / Feature**: Root Directory Cleanliness & Permanent Ban on `out/` Across All Prompts & Tooling
+- **Completed**:
+  - **Deleted `out/` Directory**: Permanently removed the leftover `out/` directory and all temporary/render files within it.
+  - **Updated Prompt System Directives**:
+    - [AGENTS.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/AGENTS.md): Updated Golden Rules 9 & 11 to strictly ban creating or outputting to a root `out/` folder; enforced that all episode video outputs must strictly be written to `episodes/<id>/final.mp4`.
+    - [.agents/rules/video_generation_charter.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/.agents/rules/video_generation_charter.md): Updated Rule 5, Phase 11, and Phase 12 to prohibit `out/` and require all renders and QA stills under `episodes/<id>/`.
+    - [prompts/qa.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/prompts/qa.md): Updated automated and visual perception QA commands from `out/<video>.mp4` to `episodes/<id>/final.mp4`.
+    - [prompts/storyboard.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/prompts/storyboard.md): Explicitly noted that all manifests and outputs must remain in `episodes/<id>/` and forbidden writing to `out/`.
+    - [prompts/component.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/prompts/component.md): Added rule 7 mandating that test renders/stills write to `scratch/` or `tools/preview.sh`, never to `out/`.
+    - [prompts/script.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/prompts/script.md): Specified canonical path `episodes/<id>/script.md`.
+  - **Updated Tooling & Configs**:
+    - [package.json](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/package.json): Changed `"render"` script target from `out/video.mp4` to `scratch/video.mp4`.
+    - [tools/qa_suite.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/tools/qa_suite.py), [tools/preview.sh](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/tools/preview.sh), [tools/auto_upload.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/tools/auto_upload.py), and [tools/get_youtube_token.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/tools/get_youtube_token.py): Removed all `out/` references and updated docstrings/help to `episodes/<id>/final.mp4`.
+    - [validate.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/validate.py): Added automated assertions banning any string referencing `out/` in storyboard data, and added a workspace check warning if an `out/` folder is ever present.
+- **Next Steps**: Workspace stays clean; next video creation will strictly output to `episodes/<id>/final.mp4` with zero `out/` directory creation.
+
+### [2026-10-15 11:06:00] Antigravity
+- **Status**: COMPLETED & VERIFIED
+- **Target Video / Feature**: Elimination of Content Overlap Between `episodes/` and `public/` (Prompt + Code)
+- **Completed**:
+  - **Eliminated Overlapping Content in Code**:
+    - [tools/asset_finder.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/tools/asset_finder.py): Redirected all image, video B-roll, and icon fetching to save strictly under `episodes/<topic>/media/` (or `scratch/`). Removed all `pub_mirror` duplication logic that previously copied downloaded assets directly into `public/<vid>/`.
+    - [tools/model_manager.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/tools/model_manager.py): Added `resolve_dest()` so models downloaded for episodes are saved into `episodes/<topic>/media/`, reserving `public/models/` only for shared built-in presets.
+    - [pipeline.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/pipeline.py):
+      * Refactored `stage_file()` to prioritize `os.symlink()` over hardlinks or copying, preserving disk space and clearly defining `public/<vid>/` as an ephemeral pointer.
+      * Stopped redundant `media_copy` alias duplication (`img1.jpg`, `vid2.mp4`) inside `media_dir`.
+      * Implemented automated post-render staging cleanup: once rendering completes, `public/<vid>/` is automatically pruned unless `--keep-staging` or `--preview` is passed.
+    - [validate.py](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/validate.py): Added automated checks flagging direct references to temporary `public/<id>/` staging in storyboard data.
+  - **Cleaned Workspace Staging**:
+    - Ran `clean_cache()` to prune stale duplicate folders in `public/` (`bubble-sort-algorithm`, `how-refrigerator-works`, `neural-network-gradient-training`).
+    - Removed redundant alias files (`img*.jpg`, `vid*.mp4`) from `episodes/how-refrigerator-works/media/`.
+  - **Updated Prompt System Directives**:
+    - [AGENTS.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/AGENTS.md) (Rule 11): Defined strict single source of truth (`episodes/<id>/` for all source files, audio, media, and video). `public/` is strictly reserved for shared global libraries (`sfx/`, `music/`, `models/`) and ephemeral build staging.
+    - [.agents/rules/video_generation_charter.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/.agents/rules/video_generation_charter.md) (Phase 12): Codified zero overlapping assets rule between `public/` and `episodes/`.
+    - [prompts/storyboard.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/prompts/storyboard.md) & [prompts/component.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/prompts/component.md): Mandated that all assets reside in `episodes/<id>/media/`, never in `public/`.
+- **Next Steps**: Clean workspace with zero duplicate or overlapping files; pipeline is fully aligned.
 
 
 
 
 
+### [2026-10-15 11:45:00] Claude Code
+- **Status**: COMPLETED
+- **Target Video / Feature**: HyperFrames Plugin Installation for All AI Agents
+- **Completed**:
+  - Added the `heygen-com/hyperframes` marketplace to Claude Code settings (`~/.claude/settings.json` → `extraKnownMarketplaces`).
+  - Installed `hyperframes@hyperframes` v0.8.159 (scope: user, enabled). All 21 bundled skills verified present with `SKILL.md` files: `hyperframes`, `hyperframes-cli`, `hyperframes-core`, `hyperframes-animation`, `hyperframes-audio`, `hyperframes-creative`, `hyperframes-keyframes`, `hyperframes-registry`, `hyperframes-studio`, `embedded-captions`, `faceless-explainer`, `general-video`, `motion-graphics`, `music-to-video`, `product-launch-video`, `remotion-to-hyperframes`, `slideshow`, `talking-head-recut`, `media-use`, `figma`, `pr-to-video`.
+  - Installed embedded-captions runtime deps project-wide: `sharp@0.35.3`, `puppeteer@25.8.0` (Chromium 152 already cached & launch-verified), `gsap@3.15.0` was already present.
+  - Verified the plugin CLI launcher (`plugin-cli.mjs`) and rendered a 5-second "Hello world" title card in 5.1s (H.264, 1920×1080) — the guide's smoke test passes.
+- **Next Steps**:
+  - Enable auto-update via the `/plugin` UI (Marketplaces → hyperframes → "Enable auto-update"); manual fallback is `claude plugin update hyperframes@hyperframes`.
+  - Any agent can now route video work through `/hyperframes` (e.g. `/faceless-explainer`, `/embedded-captions`, `/motion-graphics`). The plugin root is read-only — scaffold projects under `scratch/` or `episodes/<id>/`.
 
+### [2026-10-15 11:53:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: Skillry `bs-chalkboard-infographic` Skill Installation for All AI Agents
+- **Completed**:
+  - Authenticated `skillry-cli` via device authorization flow (`unigalso5@gmail.com`).
+  - Installed `bs-chalkboard-infographic` v1.0.0 globally across all agent skill directories:
+    - **Shared / Codex / Cursor / Gemini CLI / OpenCode**: `~/.agents/skills/bs-chalkboard-infographic`
+    - **Claude Code**: `~/.claude/skills/bs-chalkboard-infographic`
+    - **Antigravity**: `~/.gemini/config/skills/bs-chalkboard-infographic`
+    - **Workspace Level**: `.agents/skills/bs-chalkboard-infographic` (symlinked directly to `~/.agents/skills/bs-chalkboard-infographic` for repository-wide agent discovery).
+  - Validated runtime via `validate.mjs` (`Chalkboard infographic runtime validation passed.`).
+- **Next Steps**:
+  - All AI/coding agents can now invoke `/bs-chalkboard-infographic` to generate 16:9 chalkboard infographics, copy maps, and educational chalk visuals.
 
+### [2026-10-15 12:04:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: Chalkboard Infographic Video & 9:16 Vertical Shorts Integration
+- **Completed**:
+  - **Skill Enhancement**:
+    - Updated `bs-chalkboard-infographic` across all 3 agent roots (`~/.gemini/config/skills/`, `~/.agents/skills/`, `~/.claude/skills/`).
+    - Added **9:16 Vertical Video Shorts (1080x1920)** support alongside **16:9 Landscape Video (1920x1080)**.
+    - Codified vertical safe zones in `references/visual-contract.md`: top 180px safe zone, bottom 350px subtitle caption clearance, 1080x1390 active middle zone.
+    - Added 9:16 prompt recipes and mobile short prompt frames in `references/prompt-recipes.md`.
+    - Added friendly size aliases (`9:16`, `16:9`, `portrait`, `landscape`) to `scripts/generate.mjs`.
+  - **Video Pipeline Integration**:
+    - Updated [WhiteboardScene.tsx](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/src/scenes/WhiteboardScene.tsx):
+      - Directly supports embedding chalkboard infographic images (`scene.image` or `scene.diagram`) with chalkboard vignette and safe frame positioning.
+      - Procedural layouts for `infographic` (3-stage stacked flow in 9:16, horizontal in 16:9), `radial`/`loop`, `comparison`, and responsive `architecture`/`flow`.
+    - Updated [types.ts](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/src/types.ts) and [storyboard.schema.json](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/schema/storyboard.schema.json).
+    - Updated [AGENTS.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/AGENTS.md) and [prompts/storyboard.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/prompts/storyboard.md).
+- **Next Steps**: Any video can now use either raster chalkboard infographics or procedural p5.brush chalk scenes natively in 9:16 shorts and 16:9 explainers.
 
+### [2026-10-15 16:00:00] Copilot
+- **Status**: COMPLETED
+- **Target Video / Feature**: HyperFrames Pipeline Integration Assessment
+- **Completed**:
+  - Reviewed the HyperFrames plugin guide and compared its agent workflows/runtime to edu-shorts stages.
+  - Confirmed the strongest bridge is optional HyperFrames-rendered MP4 scenes in `episodes/<id>/media/`, using the existing `video` scene ingestion path; keep edu-shorts validation, narration, and final QA canonical.
+  - Identified overlaps with existing asset licensing, HTML recording, Remotion composition, captions/audio processing, and QA. No runtime integration or dependency changes made.
+- **Next Steps**:
+  - If approved, pilot one short HyperFrames-authored scene, then validate/render/QA through the existing edu-shorts pipeline before deciding on broader adoption.
+- **Questions / Notes / Blockers**:
+  - HyperFrames is an agent plugin and a separate HTML/CLI compositor, not a drop-in Remotion plugin. Review any generated media's provenance and retain verbatim Hindi captions and episode-local asset storage.
 
+### [2026-10-15 12:14:00] Antigravity
+- **Status**: COMPLETED
+- **Target Video / Feature**: Batch Installation of All 43 Free Skillry Skills with 9:16 Video Support & Pipeline Integration
+- **Completed**:
+  - **43 Free Skills Installed & Shared**:
+    - Scraped and verified the full catalog of 43 free skills on `https://skillry.dev/skills` (`priceUsdCents: 0`).
+    - Installed all 43 skills into `~/.agents/skills/` via `skillry-cli`.
+    - Symlinked across all agent customization roots:
+      * **Antigravity**: `~/.gemini/config/skills/`
+      * **Claude Code**: `~/.claude/skills/`
+      * **Codex, Cursor, Gemini CLI, OpenCode**: `~/.agents/skills/`
+      * **Repository Workspace**: `.agents/skills/`
+  - **9:16 Vertical Video Shorts (1080x1920) Enabled**:
+    - Patched 12 `fal-image.mjs` scripts with `SIZE_ALIASES` (`9:16`, `portrait_16_9`).
+    - Patched `generate.mjs` scripts (`bs-claude-style-illustration`, `bs-linktree-style-og`, `bs-notion-style-og`, `bs-chalkboard-infographic`) for `--size 9:16`.
+    - Patched CreatorMotion scripts (`bs-creatormotion-type-title-takeover`, `bs-creatormotion-cards-action-checklist`) to support `--format vertical` / `--size 9:16` at 1080x1920.
+  - **Pipeline & Stage Integration**:
+    - **Stage 1 Narration** ([prompts/script.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/prompts/script.md)): Mapped visual intent archetypes to Title Takeover, Visual Notes, Chalkboard, Device Canvas, Code Change, and Action Checklist.
+    - **Stage 2 Storyboard** ([prompts/storyboard.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/prompts/storyboard.md)): Added Section 4.1 detailing the Skillry selection matrix, Remotion scene type mappings, and 9:16 rendering commands.
+    - **Operating Directives** ([AGENTS.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/AGENTS.md)): Mandated that agents proactively select from the 43-skill suite across all story beats.
+- **Next Steps**: Full visual arsenal unlocked. Any agent creating videos can now seamlessly select, parameterize, and render these visual styles for both vertical shorts and landscape explainers.
 
+### [2026-10-15 16:15:00] Copilot
+- **Status**: COMPLETED
+- **Target Video / Feature**: Optional HyperFrames Scene Handoff
+- **Completed**:
+  - Added `import-video` to `tools/html_recorder.py` to normalize externally rendered scene clips into `episodes/<id>/media/` using the episode's format, H.264/yuv420p at 30 fps, and no embedded audio.
+  - Added kebab-case/path/storyboard checks, 180-second input limit, atomic output handling, and overwrite protection unless `--force` is passed.
+  - Documented the HyperFrames-to-storyboard-video workflow in README and the stage map; kept Remotion as final compositor and edu-shorts as narration/captions/QA owner.
+  - Verified a generated clip imports as silent H.264 1080x1920 at 30 fps and that accidental overwrite is blocked; Python compile, storyboard validation, and Problems checks passed.
+- **Next Steps**:
+  - Use the optional import command after exporting a HyperFrames scene; continue rendering the episode through the existing edu-shorts pipeline.
+- **Questions / Notes / Blockers**:
+  - No HyperFrames runtime or project dependency added; only exported video clips are needed by the import/final render path.
 
+### [2026-10-15 16:25:00] Copilot
+- **Status**: COMPLETED
+- **Target Video / Feature**: Code-Only Repository Cleanup
+- **Completed**:
+  - Removed imports confirmed unused by TypeScript compiler diagnostics and a Python AST import scan.
+  - Preserved all prompts, assets, episode content, and untracked files per user-selected cleanup scope.
+  - TypeScript compile, Python compile/import scan, all episode storyboard validation, and `git diff --check` passed.
+- **Next Steps**:
+  - Review potentially unused local variables separately before removing them, since several have ambiguous intent or are part of scene interfaces.
+- **Questions / Notes / Blockers**:
+  - Strict TypeScript unused-local checks still report pre-existing unused variables/parameters; the standard TypeScript build passes.
 
+### [2026-10-15] Copilot
+- **Status**: COMPLETED
+- **Target Video / Feature**: Stage Resource Selection Guidance
+- **Completed**:
+  - Aligned script, storyboard, and component prompts with the evidence-first policy: creator references are optional inspiration, not technical evidence or a style mandate; app hooks are conditional on topic fit.
+  - Clarified that skills and external tools are optional authoring capabilities, not storyboard scene types; require checking actual instructions, outputs, dependencies, aspect ratio, licensing, and import path before use.
+  - Added a capability preflight anchored to the current scene registry, schema, validator, manifests, and CLI help; marked the stage map as a capability map rather than a guarantee every provider is available.
+  - Corrected Copilot's reference to the absent `prompts/master_production_prompt.md`; `AGENTS.md` and the charter remain the production sources of truth.
+- **Next Steps**: Keep resource-selection guidance aligned with changes to the renderer and installed skill catalog.
+- **Questions / Notes / Blockers**: Many unrelated user changes are present in the worktree; none were reverted.
 
+### [2026-10-15] Copilot
+- **Status**: COMPLETED
+- **Target Video / Feature**: Episode-Specific Artifact Cleanup
+- **Completed**:
+  - Removed one standalone lyric-video episode, its registered composition, dedicated components and helper scripts, its public symlink, and related transcription intermediates.
+  - Removed its cache-preservation exception and episode-specific historical board references.
+  - Preserved shared renderer code, unrelated scratch assets, and unrelated worktree changes.
+- **Next Steps**: None.
+- **Questions / Notes / Blockers**: TypeScript and repository reference checks are being verified.

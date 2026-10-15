@@ -64,11 +64,12 @@ def main() -> int:
     rows = math.ceil(total_samples / columns)
 
     video_id = video.stem
-    output = (
-        args.output.expanduser().resolve()
-        if args.output
-        else ROOT / "media" / video_id / "qa" / "contact-sheet.jpg"
-    )
+    if args.output:
+        output = args.output.expanduser().resolve()
+    elif (video.parent / "media").is_dir() or video.name == "final.mp4":
+        output = video.parent / "media" / "contact-sheet.jpg"
+    else:
+        output = ROOT / "episodes" / video_id / "media" / "contact-sheet.jpg"
     output.parent.mkdir(parents=True, exist_ok=True)
     
     # Build ffmpeg filter for sampling

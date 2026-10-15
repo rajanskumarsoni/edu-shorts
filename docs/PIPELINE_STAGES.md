@@ -1,6 +1,6 @@
 # Educational Video Production Pipeline: Stage-by-Stage Integration Architecture
 
-This architecture integrates code-driven video generation, animation, asset acquisition, and generative AI tools into a multi-stage production pipeline designed for LLM agents (Claude Code, Antigravity, Codex) and human directors.
+This document maps possible capabilities to production stages; it does not guarantee that every provider, package, credential, or CLI is installed or available in a given checkout. Before using an option, verify its implementation, dependencies, credentials, and command help. Select only resources that improve the current video; do not force every tool or skill into every episode. Remotion's registered scene types and the episode pipeline remain the supported final assembly path.
 
 "Agent-accessible" means every tool has a CLI, Python/JS library, REST API, or MCP server, enabling an AI agent to execute it without UI clicks.
 
@@ -91,7 +91,7 @@ This architecture integrates code-driven video generation, animation, asset acqu
 ---
 
 ### Stage 3: Headless Web Animation (Playwright + FFmpeg)
-- **Role**: Records standalone HTML5, Canvas, p5.js, D3.js, GSAP, and anime.js visualizations into broadcast MP4 video clips.
+- **Role**: Records standalone HTML5, Canvas, p5.js, D3.js, GSAP, and anime.js visualizations into broadcast MP4 video clips. HyperFrames may be used by an agent as an optional HTML-first authoring/rendering workflow; it is an asset producer, not a replacement for the edu-shorts compositor.
 - **CLI Entrypoint**: `python3 tools/html_recorder.py` (or `npm run record-html`)
 - **How it works**:
   - Playwright Chromium runs headless at 1080x1920 or 1920x1080.
@@ -102,6 +102,10 @@ This architecture integrates code-driven video generation, animation, asset acqu
     `python3 tools/html_recorder.py template d3 --out force.html`
   - Record to clip:
     `python3 tools/html_recorder.py record anim.html --duration 6.0 --out clip.mp4`
+  - Import a HyperFrames export as a silent, episode-local scene asset:
+    `python3 tools/html_recorder.py import-video /path/to/export.mp4 --episode <id> --name scene-03`
+    The command reads the episode format, normalizes to H.264/yuv420p at 30 FPS, strips audio, and
+    writes to `episodes/<id>/media/`. Reference that file from a storyboard `"type": "video"` scene.
 
 ---
 
@@ -134,6 +138,9 @@ This architecture integrates code-driven video generation, animation, asset acqu
 - **Primary Compositor**: **Remotion** (React / TypeScript).
   - Component-driven visual system with 24 scene types.
   - Renders to MP4 via Chromium WebGL hardware acceleration (`npx remotion render`).
+  - Remotion remains the canonical episode compositor. HyperFrames-authored clips enter as
+    episode-local video scene assets; edu-shorts owns narration timing, captions, final audio mix,
+    and delivery QA.
 - **Low-Level Editing Suite (`tools/video_editor.py`)**:
   - **16:9 to 9:16 Verticalize**: Takes any landscape video and creates an Instagram/Shorts 9:16 video with a blurred background fill and sharp centered foreground.
     `python3 tools/video_editor.py verticalize landscape.mp4 --out vertical.mp4`

@@ -11,7 +11,6 @@ import argparse
 import os
 import shutil
 import subprocess
-import sys
 import tempfile
 from pathlib import Path
 
@@ -61,7 +60,6 @@ def convert_model_to_glb(input_file: Path, output_file: Path, blender_bin: Path 
 
     py_script = f"""
 import bpy
-import sys
 
 # Clear existing objects
 bpy.ops.wm.read_factory_settings(use_empty=True)

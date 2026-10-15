@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
+import { useCurrentFrame, useVideoConfig } from "remotion";
 import * as THREE from "three";
 
 /**

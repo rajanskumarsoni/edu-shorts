@@ -18,8 +18,8 @@ This repository is designed for multiple AI systems to collaborate without confl
 All of them must follow the same source-of-truth policy:
 1. Read this file first: `AGENTS.md`.
 2. Read the engineering charter: `.agents/rules/video_generation_charter.md`.
-3. Read the canonical master prompt: `prompts/master_production_prompt.md`.
-4. Read the task-specific prompt in `prompts/` when the workflow requires script/storyboard/QA stages.
+3. Read the stage prompts: `prompts/script.md` (Stage 1 Narration) and `prompts/storyboard.md` (Stage 2 Storyboard Manifest).
+4. Read the task-specific guidelines in `prompts/` when the workflow requires QA or component creation.
 5. If a system supports platform-native instruction files, keep them aligned with this policy instead of inventing a different creative standard.
 
 The rule is: one production standard, many agents.
@@ -44,12 +44,14 @@ codex exec "review the changes in src/ and write findings to .agents/BOARD.md"
 - ChatGPT extension: No direct agent-to-agent hook; human references or pastes `BOARD.md` entries.
 - Antigravity: Coordinates natively through the shared files and `.agents/BOARD.md`.
 
-## Mandatory Pre-Writing Phase: Deep Research (Non-Negotiable)
-Before drafting a single scene or writing JSON, you MUST conduct deep technical research:
-1. **Accurate Working as of 2026**: Verify current specifications, protocols, real numbers, and latest industry standards using web search.
-2. **Key Players & Architecture**: Identify exact technical components, data flows, and real-world bottlenecks.
-3. **3-4 Non-Technical Misconceptions**: Identify false assumptions non-technical people hold about this topic, and plan how to actively debunk them in the script.
-4. **1-2 Powerful Everyday Analogies**: Select concrete, intuitive physical analogies (e.g. digital postman, LEGO blocks) *before* writing. Stick to 1 consistent analogy per core concept.
+## Research & Evidence Before Production
+Before writing factual narration or storyboard claims:
+1. Check current primary sources (standards, official technical documentation, original research) for claims that can change; use secondary sources to explain or cross-check them.
+2. Verify only the architecture, numbers, equations, and limitations that the proposed story actually uses. Do not add metrics or technical detail just to fill storyboard fields.
+3. Choose a familiar example or analogy only when it clarifies the mechanism without distorting it. A recognizable app UI is appropriate when the topic is about that kind of interaction; otherwise use a truthful everyday, physical, or system-level situation.
+4. Visual references from educators or software products are optional inspiration, not evidence of technical claims or a style mandate. Adapt a useful visual idea; do not imitate a creator or force a current design trend.
+5. Record source URLs and the specific claims they support in the episode brief or `meta.research_sources`. Mark assumptions and uncertain details instead of presenting them as facts.
+6. Select only tools and libraries that are present and supported in this repository or explicitly available in the current environment. Check the implementation, package manifests, CLI help, credentials, and the relevant skill instructions before relying on them. Prefer the simplest existing renderer that explains the scene; do not install or invoke tools merely for variety.
 
 ## Golden Rules
 1. **Max Video Duration**: 3 minutes (180 seconds).
@@ -63,9 +65,9 @@ Before drafting a single scene or writing JSON, you MUST conduct deep technical 
    - Explanatory Sequence: Always explain **WHY first, then WHAT, then HOW**.
    - Personal "You" language: Address the viewer directly ("आपने कभी सोचा है...", "जब आप...").
    - The 15-Year-Old Rule: Zero unexplained jargon. If a technical term must be used, define it instantly via physical metaphor.
-5. **Editorial-first visual direction (3D when it helps)**:
-   - **No decorative abstraction or text-only slides**: Every scene must explain an object, relationship, mechanism, or state change. Use a clear diagram or purposeful object, not generic circles or bare text cards.
-   - **Choose the simplest useful visual medium**: Prefer editorial 2D/2.5D diagrams for flows, comparisons, data, and cause/effect. Use 3D when physical scale, depth, or spatial relationships improve comprehension; never require a 3D scene for every narrated entity.
+5. **Visual Fitness & Editorial-First Direction (Creative Flexibility)**:
+   - **The Visual Fitness Principle**: The best visual is the one that produces the highest comprehension and retention for the specific concept. You have complete flexibility to select, combine, and innovate across visual media (2D vector, 2.5D isometric, 3D WebGL, mathematical animation, interactive UI, data charts, terminal consoles, product showcases, or B-roll video footage).
+   - **No decorative abstraction or text-only slides**: Every scene must explain an object, relationship, mechanism, or state change. Use a clear diagram, purposeful object, or grounded visual model—never generic circles or bare text cards.
    - Default to root `"art_direction": "editorial"`: stable geometry, deliberate whitespace, concise English labels, restrained grid, and no global camera drift, bokeh, grade, grain, or light sweeps. `"cinematic"` opts into the legacy global effects.
    - Use the registered physical variants when 3D is the clearest choice:
      * Smartphone / Mobile ➔ 3D Smartphone with screen glow (`upi_hook_3d`, `phone_layers_3d`)
@@ -100,6 +102,7 @@ Before drafting a single scene or writing JSON, you MUST conduct deep technical 
      * **3D Saturation Limit**: Maximum **3 3D scenes** per 90-second short. 3D works best when punctuated by crisp editorial 2D diagrams.
      * **Engine Disambiguation**: Use `diagram` (Mermaid) for chronological handshakes/state machines; `architecture` for static systems; `neural_network_graph` for forward pass activations and backprop error flows; `stat` for a single bold number; `gauge` for values jumping A to B; `bento` for telemetry tiles; and `benchmark` for speed races. (See full matrix in `prompts/storyboard.md`).
    - **BIG Equation & Metric Fonts**: Equations, formulas, and primary statistics must be large, bold, and prominent (scaled to 75–85% screen width), paired with clean tracked uppercase sub-tags.
+   - **Optional Visual Skills**: The workspace exposes specialized skills for different tasks, but many are for websites, decks, illustrations, or other deliverables—not video scenes. Use a skill only when its stated purpose fits the episode and its instructions are available; read its `SKILL.md` and verify its output format, dependencies, and aspect-ratio support. A skill is an asset-authoring workflow, not automatically a storyboard scene type. Inspect its output and import/normalize rendered clips into the episode before use. Never assume every skill supports 9:16 or is needed.
    - Motion and transitions must clarify the sequence; do not force a beat animation, camera move, particle, or glow when a stable hold communicates better.
    - Keep a coherent palette and type hierarchy; prioritize high contrast, whitespace, and focused English labels over decorative atmosphere.
 6. **Sound Design & Procedural Audio FX (19-Sound Local Library)**:
@@ -114,11 +117,13 @@ Before drafting a single scene or writing JSON, you MUST conduct deep technical 
      * `loop`: `false` (seamless looping for shorts)
      * `music`: `"audio/Warm Focus.wav"` or `null`
      * `music_volume`: `0.08` (background music volume, 0.01 to 0.15)
+     * `music_ducking`: `true` (enables speech-aware sidechain audio ducking to 35% during narration)
      * `art_direction`: `"editorial"` (default restrained treatment) or `"cinematic"` (legacy global glow, bokeh, camera drift, grade, and light sweeps).
+     * `theme`: `"cyberpunk"` (default neon cyan/purple dark), `"slate"` (tech blue-gray), `"amber"` (editorial warm bronze), `"emerald"` (scientific mint), or `"whiteboard"` (clean high-contrast light mode).
      * `accent`: `"#00F0FF"` (primary glowing neon accent color)
      * `format`: `"vertical"` (1080x1920, default) or `"landscape"` (1920x1080, only when requested)
-      * `audio_mode`: `"scenes"` (one audio file per scene, recommended for exact timing) or `"single"`
-      * `meta`: Metadata object (`title`, `description`, `hashtags`, `facts_to_verify`, `misconceptions`, `analogy`).
+     * `audio_mode`: `"scenes"` (one audio file per scene, recommended for exact timing) or `"single"`
+     * `meta`: Metadata object (`title`, `description`, `hashtags`, `facts_to_verify`, `misconceptions`, `analogy`).
    - **Universal Per-Scene Properties & 10 Storyboard Dimensions**:
      * `tag`: Tracked uppercase step identifier (e.g. `"01 / THE 2-SECOND MIRACLE"`).
      * `purpose`: What the viewer must understand / pedagogical takeaway ("दर्शक के मन में सवाल" ➔ "सीख").
@@ -152,12 +157,21 @@ Before drafting a single scene or writing JSON, you MUST conduct deep technical 
      * `callout`: `category` (`"Golden Rule"`, `"Pro Tip"`, `"Warning"`), `title`, `text`, `subtext`.
      * `manim`: `title`, `manim` with `{"template": "Equations", "lines": ["..."]}`, `{"template": "Graph", "fn": "...", "x_range": [...], "y_range": [...]}`, or `{"template": "Flow", "items": [...]}`.
      * `outro`: `text`, `icon`, CTA message.
+     * `terminal`: `title`, `tag`, `prompt`, `terminalSteps: [{"kind": "cmd" | "out" | "pause" | "pill", "text": "...", "typeSpeed": 0.035}]`.
+     * `screenshot`: `title`, `tag`, `image`, `screenshotSteps: [{"kind": "cursor_move" | "click_pulse" | "type_into" | "bubble_append" | "highlight_box", "to": [0.5, 0.4]}]`.
+     * `product`: `title`, `tag`, `image` (transparent cutout), `specs: [{"label": "...", "value": "..."}]`, `highlight`, `price`, `tagline`. Real-object showcase with floating motion and radial spotlight.
+     * `whiteboard`: `title`, `tag`, `image` (optional path to a high-res chalkboard infographic asset, e.g. from `bs-chalkboard-infographic`), `whiteboardType: "algorithm" | "sorting" | "architecture" | "tree" | "math" | "flow" | "infographic" | "radial" | "comparison" | "loop"`, `whiteboardTheme: "chalkboard" | "whiteboard" | "grid"`, `brushName: "rotring" | "HB" | "2B" | "marker"`, `equation`, `whiteboardData: [{"value": 64, "highlight": false}]`. Tactile organic hand-drawn sketching and chalkboard infographics with full 9:16 vertical shorts and 16:9 landscape video responsiveness.
 8. **Gold Standard Reference**:
    - `episodes/how-upi-works/storyboard.json` is a technical architecture reference, not a requirement to copy its 3D treatment. Future videos should match its causal detail while choosing the clearest medium and restraint for each topic.
-9. **Execution & Publishing**: Never stop after writing code. Always validate with `python3 validate.py <spec>`, render with `python3 pipeline.py <spec> --no-upload`, inspect output, run QA, and deliver a complete playable MP4 file. Upload only when the user explicitly requests it, using `--upload private|unlisted|public`. Always review `episodes/<id>/ATTRIBUTIONS.md` for copyright/CC-BY attribution compliance.
+9. **Execution & Publishing**: Never stop after writing code. Always validate with `python3 validate.py <spec>`, render with `python3 pipeline.py <spec> --no-upload`, inspect output, run QA, and deliver a complete playable MP4 file at `episodes/<id>/final.mp4`. Upload only when the user explicitly requests it, using `--upload private|unlisted|public`. Always review `episodes/<id>/ATTRIBUTIONS.md` for copyright/CC-BY attribution compliance. Never output to a root `out/` folder.
 10. **Environment**: Utilize standard Python virtual environment in `.venv/bin` and system Homebrew tools (`/opt/homebrew/bin` for Node/npx, FFmpeg, Python 3.11).
-11. **Episode Asset Storage & Organization**:
-    - For the episode workflow, store narration in `episodes/<id>/audio/`, and generated/captured images (thumbnails, scene stills, contact sheets) in `episodes/<id>/media/`. Remotion's zero-copy staged assets are dynamically linked into `public/<id>/`.
+11. **Strict Single Source of Truth (`episodes/<id>/` vs `public/`) & Strict Ban on Root `out/`**:
+    - **Single Source of Truth**: `episodes/<id>/` is the **ONLY** canonical directory for episode content. All narration speech files must reside in `episodes/<id>/audio/`, all media (images, B-roll video clips, SVG diagrams, 3D models, thumbnails, contact sheets) in `episodes/<id>/media/`, and rendered video in `episodes/<id>/final.mp4`.
+    - **`public/` is Strictly for Shared Assets and Ephemeral Build Staging**:
+      * *Permanent shared libraries*: `public/sfx/` (sound library), `public/music/` (shared tracks), and `public/models/` (shared 3D primitives like `cube.glb`).
+      * *Ephemeral build staging*: `public/<id>/` is temporary staging created dynamically by `pipeline.py` via symlinks during rendering and automatically pruned upon completion.
+      * **NO OVERLAPPING ASSETS**: Agents must NEVER manually save, download, author, or commit episode assets directly into `public/`. Tools (`tools/asset_finder.py`, `tools/model_manager.py`) must write exclusively to `episodes/<id>/media/`.
+    - **NEVER create or use a root `out/` folder.** All final video renders belong in `episodes/<id>/final.mp4` and transient scratch tests belong in `scratch/`.
 12. **Strict Real-Object Visualization Policy — No Placeholder Geometry (Mandatory)**:
     - **Core Rule**: Every real-world object must be represented by a recognizable, detailed visual representation of that actual object. **Do not represent real objects using generic boxes, cubes, cylinders, spheres, wireframe shapes, or bare text labels.** The audience must recognize the object immediately even without labels.
     - **Approved Real-Object Media Options (Use Whatever Best Suits the Medium)**:
@@ -172,7 +186,28 @@ Before drafting a single scene or writing JSON, you MUST conduct deep technical 
       4. **Blender / Lottie / Procedural Shaders**: Use Blender converted assets or detailed procedural Three.js meshes when photorealism or physical kinematics are required.
     - **Labels Do Not Compensate for Missing Detail**: Do not use a rectangular box labeled "LAPTOP" as a laptop or a cube labeled "PHONE" as a smartphone.
     - **Real Objects Remain Visible During Technical Explanations**: When explaining radio waves, packets, protocols, or network traffic, real physical devices must remain visible; abstract elements must layer around them rather than replace them.
-    - **Mandatory Object-Quality Gate**: A scene fails QA if a principal object is represented by a generic box/cube, unlabeled primitive, flat geometric placeholder, or bare text label attached to an unrelated shape. (See `prompts/master_production_prompt.md` Section 10).
+    - **Mandatory Object-Quality Gate**: A scene fails QA if a principal object is represented by a generic box/cube, unlabeled primitive, flat geometric placeholder, or bare text label attached to an unrelated shape. (See `prompts/storyboard.md` Section 5).
+13. **Continuous Pipeline Self-Improvement Protocol (Mandatory)**:
+    - **No Passive Notes**: Whenever a human review requests a revision or points out an aesthetic, timing, or layout defect in a video, agents MUST NOT only fix the isolated scene or leave a passive note in a log.
+    - **Update the Pipeline Itself**: The agent who fixes the defect MUST trace its root cause and proactively update:
+      1. **Prompts (`prompts/script.md` or `prompts/storyboard.md`)**: If the defect was a narrative, pacing, or storyboard specification gap.
+      2. **Agent Directives (`AGENTS.md` & `.agents/rules/video_generation_charter.md`)**: If the defect was a visual hierarchy, safe zone, or styling rule.
+      3. **Automated Validators (`validate.py` & `tools/qa_suite.py`)**: Add a physical assertion or lint rule so future videos are automatically blocked from repeating the error.
+      4. **Component Core (`src/scenes/`)**: Generalize one-off fixes into reusable component templates.
+14. **Vertical Safe Zones & 350px Caption Clearance (Zero Collision Rule)**:
+    - On a 1080x1920 vertical canvas:
+      * **Bottom Safe Zone**: The bottom **350px** (`y > 1570px`) is strictly reserved for Devanagari subtitles/captions. No diagram labels, cards, buttons, or interactive graphics may extend into this zone.
+      * **Top Safe Zone**: The top **180px** (`y < 180px`) is reserved for header tags, status bar, and progress indicator.
+      * **Maximum Visual Height**: Visual components and interactive diagrams must fit within a maximum height of **960px**, centered vertically between `y = 200px` and `y = 1550px`.
+15. **Giant Focal Numerals & High-Contrast Typography**:
+    - Primary comparison values, algorithmic elements, array items, and key metrics must be styled with high contrast and a minimum font size of **64px–76px bold** (`#FFFFFF` or neon accent on dark obsidian). Never use small muted pills for the core subject of an explanation.
+    - Zero text anywhere on screen can drop below **28px** on a 1080x1920 mobile viewport.
+16. **Authentic Real-World Hook Grounding**:
+    - Ground abstract topics in a concrete situation the audience can recognize. Use a real app/UI only when the topic genuinely concerns that interaction; otherwise choose a relevant physical-world or system-level example. Do not invent app behavior or brand details merely to satisfy a hook rule.
+    - Real UI components must model realistic physical details (smartphone viewport, dynamic island, search bar, status bar, real branding, and animated touch cursor with tap ripple).
+17. **Phrase-Synced Action Choreography & Remotion Sequence Rule**:
+    - Scene animations must not be generic continuous linear drifts or unsynced loops. Actions must be broken into distinct phases synchronized with spoken audio clauses/cues (e.g. Phase 1 Enter -> Phase 2 Spotlight -> Phase 3 Condition/Alert -> Phase 4 Execution/Swap).
+    - **Remotion Sequence Scope**: Inside a Remotion `<Sequence>`, `useCurrentFrame()` is ALREADY 0-indexed to the scene start (0 to scene duration). NEVER subtract `sceneStartFrame`, as doing so produces negative frame counts and freezes caption progression.
 
 ## Workflow & QA Commands
 - **Asset Acquisition & Licensing**:
@@ -204,8 +239,11 @@ Before declaring any video complete:
 - [ ] Audio-video sync tight (< 0.5s tolerance)
 - [ ] Black frames < 2% of total duration
 - [ ] Zero text overflow, clipping, or sub-28px fonts on mobile
+- [ ] Safe Zone clearance verified: 350px bottom clearance for subtitles with zero diagram/UI collisions
+- [ ] Giant typography verified: primary numbers/metrics are 64px–76px bold
+- [ ] Phrase-synced choreography: scene action triggers on exact spoken narration cues
 - [ ] Audio loudness normalized around -16 LUFS
-- [ ] Visual momentum on beat with no static text-only slides
+- [ ] Visual momentum on beat with no static text-only slides or consecutive twin scene types
 - [ ] Contact sheet visual inspection passed
 
 Full architectural details: See [.agents/rules/video_generation_charter.md](.agents/rules/video_generation_charter.md).

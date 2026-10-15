@@ -130,10 +130,11 @@ def upload_youtube(video, title, description, privacy):
     print(f"YouTube upload complete: https://youtu.be/{video_id} (visibility: {privacy})")
 
     thumb_candidates = [
-        ROOT / "media" / video.stem / f"{video.stem}-thumbnail.jpg",
-        ROOT / "media" / video.stem / "thumbnail.jpg",
+        video.parent / "media" / f"{video.parent.name}-thumbnail.jpg",
+        video.parent / "media" / f"{video.stem}-thumbnail.jpg",
+        video.parent / "media" / "final-thumbnail.jpg",
+        video.parent / "media" / "thumbnail.jpg",
         video.parent / f"{video.stem}-thumbnail.jpg",
-        ROOT / "out" / f"{video.stem}-thumbnail.jpg",
     ]
     thumb_path = next((p for p in thumb_candidates if p.is_file()), None)
     if thumb_path:
@@ -228,11 +229,18 @@ def main():
     if not video.is_file() or video.suffix.lower() != ".mp4":
         parser.error(f"video must be an existing MP4 file: {video}")
 
-    spec_path = ROOT / "videos" / f"{video.stem}.json"
     metadata = {}
-    if spec_path.is_file():
-        spec = json.loads(spec_path.read_text(encoding="utf-8"))
-        metadata = spec.get("meta", {})
+    candidates = [
+        video.parent / "storyboard.json",
+        video.parent / f"{video.parent.name}.json",
+        ROOT / "videos" / f"{video.stem}.json",
+    ]
+    for spec_path in candidates:
+        if spec_path.is_file():
+            spec = json.loads(spec_path.read_text(encoding="utf-8"))
+            metadata = spec.get("meta", {})
+            if metadata:
+                break
     title = args.title or metadata.get("title") or video.stem.replace("-", " ").title()
     hashtags = metadata.get("hashtags", [])
     hashtag_text = " ".join("#" + tag.lstrip("#") for tag in hashtags)

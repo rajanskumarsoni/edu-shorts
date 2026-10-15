@@ -1,14 +1,12 @@
 import React from "react";
 import {
   AbsoluteFill,
-  interpolate,
   spring,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
 import type { SceneSpec } from "../types";
 import { useLayout } from "../layout";
-import { RevealText } from "../Reveal";
 import { FONT } from "../theme";
 import { MotionGraphic } from "../MotionGraphic";
 import { ThreeDCalloutAlert } from "./ThreeDCalloutAlert";

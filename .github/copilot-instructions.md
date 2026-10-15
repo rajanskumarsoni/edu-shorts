@@ -5,7 +5,7 @@ This repo is a collaborative multi-agent educational video production pipeline. 
 ## Canonical instructions
 - Read `AGENTS.md` first.
 - Read `.agents/rules/video_generation_charter.md` before writing script, storyboard, or animation code.
-- Read `prompts/master_production_prompt.md` as the master production instruction for this repo.
+- Use `AGENTS.md` and `.agents/rules/video_generation_charter.md` as the production source of truth; `prompts/master_production_prompt.md` is not present in this checkout.
 - Use the task prompt in `prompts/` for the current stage (`script`, `storyboard`, `qa`, etc.) when the workflow calls for it.
 - Do not invent a different visual or storytelling standard from one agent to another.
 

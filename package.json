@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "studio": "remotion studio src/index.ts",
-    "render": "remotion render src/index.ts Video out/video.mp4",
+    "render": "remotion render src/index.ts Video scratch/video.mp4",
     "validate": "python3 validate.py",
     "voice": "python3 tts.py",
     "pipeline": "python3 pipeline.py",
@@ -31,6 +31,8 @@
     "gsap": "^3.15.0",
     "lucide-react": "^1.54.0",
     "matter-js": "^0.20.0",
+    "p5": "^2.3.4",
+    "p5.brush": "^2.2.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "remotion": "^4.0.0",
@@ -38,6 +40,8 @@
   },
   "devDependencies": {
     "@types/react": "^18.3.0",
+    "puppeteer": "25.8.0",
+    "sharp": "0.35.3",
     "typescript": "^5.4.0"
   }
 }

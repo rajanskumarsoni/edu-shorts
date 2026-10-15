@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>p5.brush Standalone Test</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0B1020;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #canvas-container {
+      width: 1080px;
+      height: 1920px;
+      position: relative;
+    }
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+      border-radius: 24px;
+      box-shadow: 0 0 60px rgba(0, 240, 255, 0.25);
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.3.4/lib/p5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5.brush@2.2.3/dist/p5.brush.js"></script>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  <script>
+    function setup() {
+      const cnv = createCanvas(1080, 1920, WEBGL);
+      cnv.parent('canvas-container');
+      background('#0B1020');
+
+      brush.scaleBrushes(3.5);
+
+      // Watercolor background wash
+      brush.fill('#00F0FF', 40);
+      brush.fillBleed(0.2);
+      brush.noStroke();
+      brush.circle(0, -300, 450);
+
+      brush.fill('#A855F7', 35);
+      brush.circle(0, 200, 500);
+
+      // Technical hatching box
+      brush.set('rotring', '#00F0FF', 1.2);
+      brush.noFill();
+      brush.hatch(14, 45);
+      brush.rect(-350, -100, 700, 300);
+
+      // Hand-drawn sketch lines
+      brush.noHatch();
+      brush.set('HB', '#FFFFFF', 1.8);
+      brush.line(-400, 400, 400, 400);
+
+      brush.set('2B', '#FFB800', 2.0);
+      brush.spline([
+        [-400, 600],
+        [-200, 500],
+        [0, 650],
+        [200, 550],
+        [400, 700]
+      ]);
+
+      // Signal ready
+      window.__BRUSH_READY__ = true;
+    }
+  </script>
+</body>
+</html>

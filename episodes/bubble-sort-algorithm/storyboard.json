@@ -1,0 +1,303 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "bubble-sort-algorithm",
+  "format": "vertical",
+  "art_direction": "editorial",
+  "theme": "cyberpunk",
+  "accent": "#00F0FF",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "pad_seconds": 0.28,
+  "music": null,
+  "music_volume": 0.06,
+  "music_ducking": true,
+  "meta": {
+    "title": "How Bubble Sort Algorithm Works | Computer Science Explainer",
+    "description": "Learn how the Bubble Sort algorithm works through the intuitive school assembly lineup analogy. Watch adjacent pairs compare, swap, and bubble the largest element to the end in O(n^2) worst case and O(n) best case.",
+    "hashtags": [
+      "#ComputerScience",
+      "#Algorithms",
+      "#Coding",
+      "#Python",
+      "#DataStructures"
+    ],
+    "facts_to_verify": [
+      "Standard Bubble Sort worst and average time complexity is O(n^2)",
+      "Optimized Bubble Sort best time complexity with swapped flag is O(n)",
+      "Space complexity is O(1) in-place auxiliary memory",
+      "Total comparisons in full unoptimized pass is n * (n - 1) / 2"
+    ],
+    "misconceptions": [
+      "Bubble Sort is always O(n^2) (debunked: best case is O(n) with swapped flag)",
+      "Elements float randomly like water bubbles (debunked: strictly deterministic adjacent swapping)"
+    ],
+    "analogy": "School morning assembly lineup: students comparing heights with their immediate neighbor and swapping until everyone is in order"
+  },
+  "scenes": [
+    {
+      "type": "hook",
+      "variant": "amazon_shopping",
+      "tag": "01 / THE SORTING PUZZLE",
+      "title": "HOW COMPUTERS SORT DATA",
+      "text": "HOW BUBBLE SORT WORKS",
+      "sortTriggerFrame": 105,
+      "purpose": "Hook the viewer with the everyday experience of sorting products by price on the Amazon mobile app.",
+      "tone": "[Curious, high energy]",
+      "narration": "जब आप ऑनलाइन शॉपिंग करते हैं और 'Price Low to High' दबाते हैं, तो आपका फोन सेकंड के सौवें हिस्से में हजारों प्रोडक्ट्स को सही क्रम में कैसे सजा देता है? कंप्यूटर साइंस का सबसे पहला और जादुई तरीका है—बबल सॉर्ट!",
+      "transition": "zoom_through",
+      "sfx": "fast_whoosh",
+      "visual": {
+        "start": "Realistic smartphone displaying the Amazon shopping app with an authentic navy and orange interface and unsorted items ($89, $199, $12.99, $39.50).",
+        "objects": [
+          "Smartphone with Dynamic Island and status bar",
+          "Amazon navigation header with search bar and delivery address",
+          "4 Amazon product cards (USB Cable, Mouse, Headphones, Watch)",
+          "Filter bar with Prime badge and animated Price Low to High sort button"
+        ],
+        "action": "At frame 105, a finger taps 'Sort: Price: Low to High', triggering an animated ripple; the 4 product cards smoothly swap and reorder with spring physics from unsorted into ascending price order ($12.99 -> $39.50 -> $89.00 -> $199.00), locking with an emerald green glow and Rank badges.",
+        "camera": "Stable front-facing smartphone presentation with pristine subtitle clearance below.",
+        "motion_graphics": [
+          "HOW COMPUTERS SORT DATA header banner",
+          "Live algorithm status pill: RAW ITEMS -> ALGORITHM RESULT: SORTED (ASCENDING)",
+          "Rank #1 to #4 ascending order badges"
+        ],
+        "end": "Sorted Amazon products lock into place, transitioning seamlessly into the school assembly bubble sort visualizer."
+      }
+    },
+    {
+      "type": "sorting_visualizer",
+      "mode": "compare_pair",
+      "tag": "02 / THE ASSEMBLY LINEUP",
+      "title": "SCHOOL MORNING ASSEMBLY",
+      "purpose": "Ground the abstract algorithm in the concrete physical analogy of students comparing heights in school assembly, showing the exact adjacent pair comparison and lateral swap motion.",
+      "tone": "[Explaining mechanism, warm]",
+      "narration": "स्कूल की मॉर्निंग असेंबली याद कीजिए। मान लीजिए पाँच स्टूडेंट्स बिना किसी क्रम के खड़े हैं। बबल सॉर्ट का सीधा नियम है—सिर्फ अपने पास वाले साथी की हाइट देखो। अगर बायाँ साथी लंबा है, तो दोनों जगह बदल लो!",
+      "transition": "match_cut",
+      "sfx": [
+        { "sound": "whoosh", "frame": 160 },
+        { "sound": "pop", "frame": 280 },
+        { "sound": "fast_whoosh", "frame": 330 }
+      ],
+      "visual": {
+        "start": "Five students in school morning assembly stand in disordered line with heights and giant numerals [5, 1, 4, 2, 8] on dark cyan glass cards.",
+        "objects": [
+          "5 student height cards with avatars and large 76px numerals",
+          "Glowing amber scanner bracket framing adjacent pair A[0] and A[1]",
+          "Dynamic height comparison beam and directional swap arrows"
+        ],
+        "action": "At frame 160, scanner spotlight isolates 5 and 1 while others dim. At frame 280, condition 5 > 1 flashes TRUE (Left partner is taller!). At frame 330, right as the narrator says 'दोनों जगह बदल लो!', the two cards physically lift and cross over laterally, swapping positions into [1, 5, 4, 2, 8] with green confirmation.",
+        "camera": "Stable vertical diagram framing with ample subtitle clearance below the arena.",
+        "motion_graphics": [
+          "RULE: INSPECT IMMEDIATE NEIGHBOR status pill",
+          "5 > 1 (SWAP REQUIRED) condition alert",
+          "Directional swap crossover arrows",
+          "SWAP COMPLETE: [1, 5, 4, 2, 8] confirmation"
+        ],
+        "end": "Cards rest in ordered sequence [1, 5, 4, 2, 8] with 1 at front, transitioning seamlessly into the algorithm flowchart."
+      }
+    },
+    {
+      "type": "diagram",
+      "tag": "03 / THE STEP-BY-STEP SWAP",
+      "title": "THE 3-STEP ALGORITHM FLOW",
+      "diagram": "episodes/bubble-sort-algorithm/media/diag3.svg",
+      "mermaid": "graph TD; A[\"Compare Neighbors A[j] & A[j+1]\"] --> B{\"Is Left > Right?\"}; B -- \"Yes\" --> C[\"Swap Positions\"]; B -- \"No\" --> D[\"Keep Order\"]; C --> E[\"Advance j = j + 1\"]; D --> E; E --> F{\"End of Pass?\"}; F -- \"Yes\" --> G[\"Lock Max Element at End\"];",
+      "purpose": "Show the exact deterministic 3-step decision flow of the algorithm in a structured sequence diagram.",
+      "tone": "[Analytical, structured]",
+      "narration": "यह पूरा खेल तीन स्टेप्स पर चलता है। पहले पड़ोसियों की तुलना करो। अगर पहला नंबर बड़ा है, तो स्वैप करो। फिर एक कदम आगे बढ़ो। लाइन के अंत में पहुँचते ही सबसे बड़ा नंबर सही जगह पहुँच जाता है!",
+      "transition": "zoom_through",
+      "sfx": "tick",
+      "visual": {
+        "start": "Dark cyberpunk flowchart appears with neon cyan nodes and directional laser connectors.",
+        "objects": [
+          "Decision diamond node: Is Left > Right?",
+          "Action box: Swap Elements",
+          "Termination node: Lock Max at End",
+          "Animated laser scanline traveling down the branches"
+        ],
+        "action": "A glowing pulse originates at Compare Neighbors, travels through the Yes branch, executes Swap, advances index j, and reaches the Lock Max termination condition.",
+        "camera": "Crisp centered diagram framing with vertical flowchart alignment.",
+        "motion_graphics": [
+          "STEP 1: COMPARE -> STEP 2: SWAP -> STEP 3: ADVANCE labels",
+          "COMPUTATIONAL LOGIC header"
+        ],
+        "end": "Flowchart dissolves forward into the full Pass 1 bubbling execution."
+      }
+    },
+    {
+      "type": "sorting_visualizer",
+      "mode": "pass_one",
+      "tag": "04 / BUBBLING TO THE TOP",
+      "title": "BUBBLING TO FINAL POSITION",
+      "purpose": "Demonstrate why the algorithm is called 'Bubble' Sort: the largest unsorted element bubbles to the end and locks in permanently.",
+      "tone": "[Excited, revealing]",
+      "narration": "जैसे पानी में हवा का बुलबुला ऊपर तैरता है, ठीक वैसे ही हर पास में सबसे बड़ा नंबर तैरते-तैरते ए-रे के आखिरी कोने में लॉक हो जाता है। और सबसे खूबसूरत बात? अगले राउंड में आपको उस आखिरी नंबर को दोबारा छूना भी नहीं पड़ता!",
+      "transition": "match_cut",
+      "sfx": "ding",
+      "visual": {
+        "start": "The array enters Pass 1 with 5 bubbling rightward across indices 1, 2, and 3.",
+        "objects": [
+          "5 cards progressing through sequential comparisons",
+          "Gold scanner frame advancing across pairs",
+          "Emerald green lock aura at index 4"
+        ],
+        "action": "5 compares with 4 and swaps, then compares with 2 and swaps. Finally 5 compares with 8. Because 5 <= 8, no swap occurs. 8 is recognized as the maximum and locks into place with an emerald green glow and locked badge.",
+        "camera": "Stable vertical framing with focal zoom on the locked element at index 4.",
+        "motion_graphics": [
+          "ELEMENT 8 LOCKED (MAX) banner",
+          "UNSORTED ARENA SHRUNK TO [0..3] notification",
+          "Outer Loop: Pass 1 Complete"
+        ],
+        "end": "Index 4 shines with emerald locked border while unsorted elements dim slightly in anticipation of Pass 2."
+      }
+    },
+    {
+      "type": "code",
+      "tag": "05 / THE NESTED LOOP LOGIC",
+      "title": "PYTHON IMPLEMENTATION",
+      "language": "python",
+      "filename": "bubble_sort.py",
+      "lines": [
+        "def bubble_sort(arr):",
+        "    n = len(arr)",
+        "    for i in range(n):",
+        "        for j in range(0, n - i - 1):",
+        "            if arr[j] > arr[j + 1]:",
+        "                arr[j], arr[j + 1] = arr[j + 1], arr[j]",
+        "    return arr"
+      ],
+      "highlight": [4, 5, 6],
+      "purpose": "Show the elegant, concise 6-line nested loop implementation in Python that realizes the mental model.",
+      "tone": "[Clear, instructional]",
+      "narration": "कोड में यह सिर्फ दो नेस्टेड लूप्स का खेल है। बाहरी लूप तय करता है कि कितने पासेस होंगे, और अंदरूनी लूप हर बार एक छोटी होती रेंज में पड़ोसियों की तुलना करके स्वैप करता जाता है।",
+      "transition": "zoom_through",
+      "sfx": "typing",
+      "visual": {
+        "start": "14-inch dark macOS terminal window enters with frosted glass backdrop, window control pills, and syntax highlighting.",
+        "objects": [
+          "macOS terminal-styled IDE code card",
+          "Line numbers 1 through 7",
+          "Cyan active line highlight over nested for loop and swap condition"
+        ],
+        "action": "Lines 4, 5, and 6 illuminate with cyan and gold background glow, highlighting the inner comparison loop and Python tuple swap idiom.",
+        "camera": "Centrally framed developer code view with high contrast typography.",
+        "motion_graphics": [
+          "OUTER LOOP: PASSES (0..n) badge",
+          "INNER LOOP: ACTIVE ZONE (0..n-i-1) badge",
+          "TIME COMPLEXITY: O(n²) indicator"
+        ],
+        "end": "IDE window zooms into the loop boundary as we transition to the smart optimization."
+      }
+    },
+    {
+      "type": "compare",
+      "tag": "06 / THE O(N) SMART TRICK",
+      "title": "STANDARD VS OPTIMIZED",
+      "left": {
+        "heading": "STANDARD BUBBLE",
+        "items": [
+          "Runs all passes",
+          "Always O(n²) comparisons",
+          "Wastes CPU cycles"
+        ]
+      },
+      "right": {
+        "heading": "WITH SWAPPED FLAG",
+        "items": [
+          "Tracks swapped flag",
+          "Breaks on 0 swaps",
+          "Best Case is O(n)"
+        ]
+      },
+      "purpose": "Debunk the misconception that Bubble Sort is always slow, revealing the O(n) best-case early-exit optimization.",
+      "tone": "[Intriguing, revealing]",
+      "narration": "क्या बबल सॉर्ट हमेशा धीमा होता है? बिल्कुल नहीं! अगर हम सिर्फ एक बूलियन फ़्लैग जोड़ दें, और एक भी स्वैप न हो, तो सिस्टम समझ जाता है कि लिस्ट सॉर्टेड है—और काम तुरंत ओ-एन टाइम में खत्म हो जाता है!",
+      "transition": "whip_pan",
+      "sfx": "ka_ching",
+      "visual": {
+        "start": "Two contrasting analytical cards appear side-by-side with dark glassmorphic styling.",
+        "objects": [
+          "Left coral red card: Standard Bubble Sort (O(n²))",
+          "Right emerald cyan card: Smart Optimized Bubble Sort (O(n))",
+          "Center vs lightning divider"
+        ],
+        "action": "The right card illuminates with emerald glowing badges as the swapped = False early exit condition is highlighted.",
+        "camera": "Centrally focused comparative framing.",
+        "motion_graphics": [
+          "BEST CASE: O(n) bold metric banner",
+          "SWAPPED == FALSE -> EARLY EXIT badge"
+        ],
+        "end": "The comparison slides into a speed race benchmark between Bubble Sort and QuickSort."
+      }
+    },
+    {
+      "type": "benchmark",
+      "tag": "07 / REAL-WORLD BENCHMARK",
+      "title": "OPERATIONS ON 1,000 ITEMS",
+      "unit": " ops",
+      "runners": [
+        {
+          "name": "QuickSort (O(n log n))",
+          "value": 10000,
+          "status": "Winner",
+          "color": "#00F0FF"
+        },
+        {
+          "name": "Bubble Sort (O(n²))",
+          "value": 500000,
+          "status": "50x Slower",
+          "color": "#FF5555"
+        }
+      ],
+      "purpose": "Explain why enterprise production engines use QuickSort/Timsort instead of Bubble Sort for large scale.",
+      "tone": "[Curious, high energy]",
+      "narration": "पर बड़े डेटा पर कहानी बदल जाती है। एक हज़ार नंबरों के लिए बबल सॉर्ट को पाँच लाख बार तुलना करनी पड़ती है, जबकि क्विक-सॉर्ट यही काम सिर्फ दस हज़ार स्टेप्स में पूरा कर देता है!",
+      "transition": "zoom_through",
+      "sfx": "impact",
+      "visual": {
+        "start": "High-stakes benchmark racing dashboard appears with dark obsidian tracks and glowing status labels.",
+        "objects": [
+          "QuickSort animated progress bar sprinting across track",
+          "Bubble Sort bar advancing sluggishly",
+          "Winner trophy badge at top finish line"
+        ],
+        "action": "QuickSort races to 10,000 ops in 12 frames and flashes cyan Winner badge. Bubble Sort requires 500,000 operations, stretching the red bar across the screen.",
+        "camera": "High-energy telemetry view with spring bar expansion.",
+        "motion_graphics": [
+          "50X EFFICIENCY GAP callout",
+          "O(n log n) vs O(n²) mathematical complexity tags"
+        ],
+        "end": "Benchmark resolves with QuickSort holding first place, transitioning to outro."
+      }
+    },
+    {
+      "type": "outro",
+      "tag": "08 / THE ALGORITHMIC FOUNDATION",
+      "title": "THE ALGORITHMIC FOUNDATION",
+      "text": "MASTER THE FOUNDATIONS",
+      "icon": "brain",
+      "purpose": "Summarize the educational value of Bubble Sort as the gateway to algorithmic thinking and deliver a punchy CTA.",
+      "tone": "[Inspiring, upbeat]",
+      "narration": "बबल सॉर्ट भले ही सबसे तेज़ न हो, लेकिन कंप्यूटर को सोचना सिखाने की शुरुआत यहीं से होती है। ऐसे ही कंप्यूटर साइंस के गहरे कॉन्सेप्ट आसानी से समझने के लिए अभी फ़ॉलो कीजिए!",
+      "transition": "dissolve",
+      "sfx": "sparkle",
+      "visual": {
+        "start": "Luminous golden badge with brain icon floats in the center with radial glow and particle field.",
+        "objects": [
+          "Golden holographic brain medal",
+          "Summary card: FOUNDATION OF COMPUTER SCIENCE",
+          "Glowing Follow/Subscribe button pill with pulsing ring"
+        ],
+        "action": "The brain icon pulses gently while the takeaway card animates up and particle sparkles drift through the background.",
+        "camera": "Centrally anchored cinematic outro framing.",
+        "motion_graphics": [
+          "MASTER THE FOUNDATIONS uppercase header",
+          "FOLLOW FOR MORE CS SHORTS button"
+        ],
+        "end": "Smooth fade hold on channel branding and subscribe call-to-action."
+      }
+    }
+  ]
+}

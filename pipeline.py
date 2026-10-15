@@ -52,9 +52,9 @@ SILENCE_CONFIDENCE = 1.4  # chosen boundary pauses must be this much longer than
 
 # ----------------------------------------------------------------- staging helpers
 def stage_file(src: Path, dst: Path) -> None:
-    """Stage a file to a destination using zero-copy hardlinks when possible.
-    Preserves disk space by reusing the source inode. Falls back to symlinks
-    or copying if hardlinking fails (e.g. cross-filesystem boundary)."""
+    """Stage a file to a destination using zero-copy symlinks when possible.
+    Preserves disk space and cleanly reflects that public/ is ephemeral build staging.
+    Falls back to hardlinks or copying if symlinking fails."""
     src = Path(src).resolve()
     dst = Path(dst)
     dst.parent.mkdir(parents=True, exist_ok=True)
@@ -73,13 +73,13 @@ def stage_file(src: Path, dst: Path) -> None:
             pass
 
     try:
-        os.link(src, dst)
+        os.symlink(src, dst)
         return
     except OSError:
         pass
 
     try:
-        os.symlink(src, dst)
+        os.link(src, dst)
         return
     except OSError:
         pass
@@ -159,9 +159,36 @@ def measure_speech_end(path: Path, threshold_db: float = -50.0, min_silence: flo
 
 
 
+def ensure_48k_stereo(path: Path) -> Path:
+    """Ensure audio is 48kHz stereo to avoid playback speed artifacts, normalizing in-place."""
+    if not path or not path.exists() or path.suffix.lower() not in ('.mp3', '.wav'):
+        return path
+    try:
+        cmd = ["ffprobe", "-v", "error", "-select_streams", "a:0",
+               "-show_entries", "stream=sample_rate,channels", "-of", "csv=p=0", str(path)]
+        out = subprocess.check_output(cmd, text=True).strip().split(",")
+        if len(out) == 2 and out[0] == "48000" and out[1] == "2":
+            return path
+    except Exception:
+        pass
+    tmp_path = path.with_name(f"_tmp_{path.name}")
+    try:
+        subprocess.run(["ffmpeg", "-y", "-i", str(path), "-ar", "48000", "-ac", "2", str(tmp_path)],
+                       check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        tmp_path.replace(path)
+    finally:
+        if tmp_path.exists():
+            tmp_path.unlink()
+    return path
+
+
 def find_audio(folder: Path, stem: str):
     for ext in AUDIO_EXTS:
         p = folder / f"{stem}{ext}"
+        legacy_norm = folder / f"norm_{stem}{ext}"
+        if legacy_norm.exists():
+            legacy_norm.replace(p)
+            return p
         if p.exists():
             return p
     return None
@@ -392,13 +419,14 @@ def render_manim(spec: dict, duration: float, accent: str, out_mp4: Path,
     params = {**spec, "duration": duration, "accent": accent, "format": fmt}
     env = {**os.environ, "SCENE_PARAMS": json.dumps(params)}
     file = spec.get("file", "manim_templates/templates.py")
+    template_path = str((ROOT / file).resolve())
     cls = spec.get("template", "Equations")
     py_bin = str(ROOT / ".venv/bin/python3") if (ROOT / ".venv/bin/python3").exists() else sys.executable
     with tempfile.TemporaryDirectory() as tmp:
         cmd = [py_bin, "-m", "manim", "render", "-r", f"{size[0]},{size[1]}",
                "--fps", str(FPS), "--format", "mp4", "--disable_caching",
-               "--media_dir", tmp, "-o", "clip", file, cls]
-        subprocess.run(cmd, check=True, env=env, cwd=ROOT)
+               "--media_dir", tmp, "-o", "clip", template_path, cls]
+        subprocess.run(cmd, check=True, env=env, cwd=tmp)
         found = list(Path(tmp).rglob("clip.mp4"))
         if not found:
             raise RuntimeError("Manim finished but no clip.mp4 was found")
@@ -490,12 +518,10 @@ def build(spec_path: str, args):
     if mode not in ("single", "scenes"):
         raise SystemExit(f'audio_mode must be "single" or "scenes", got {mode!r}')
 
-    if episode_dir:
-        audio_dir = episode_dir / "audio"
-        media_dir = episode_dir / "media"
-    else:
-        audio_dir = ROOT / "audio" / vid
-        media_dir = ROOT / "media" / vid
+    if not episode_dir:
+        episode_dir = ROOT / "episodes" / vid
+    audio_dir = episode_dir / "audio"
+    media_dir = episode_dir / "media"
     pub = ROOT / "public" / vid
 
     if args.export_text:
@@ -522,10 +548,7 @@ def build(spec_path: str, args):
             if narration:
                 src = get_scene_audio(narration, audio_dir, n, tone=s.get("tone"))
                 # Ensure audio is 48kHz stereo to avoid playback speed artifacts
-                if src and src.suffix.lower() in ('.mp3', '.wav'):
-                    norm_path = src.with_name(f"norm_{src.name}")
-                    subprocess.run(["ffmpeg", "-y", "-i", str(src), "-ar", "48000", "-ac", "2", str(norm_path)], check=True)
-                    src = norm_path
+                src = ensure_48k_stereo(src)
                 total_dur, speech_end = measure_speech_end(src)
                 # Generate word-level timings for millisecond-precise caption sync
                 s["wordTimings"] = generate_word_timings(src, narration)
@@ -552,7 +575,7 @@ def build(spec_path: str, args):
                 raise SystemExit(f'Scene {n} has no narration. In single-audio mode every scene needs '
                                  f'narration text (or set "audio_mode": "scenes").')
             texts.append(t)
-        src = get_single_audio(texts, audio_dir, args.separator)
+        src = ensure_48k_stereo(get_single_audio(texts, audio_dir, args.separator))
         total_audio = audio_duration(src)
         bounds, how = find_boundaries(src, texts, audio_dir, args, total_audio)
         print(f"Narration: {src.name} ({fmt_time(total_audio)}); scene starts found by {how}")
@@ -592,21 +615,29 @@ def build(spec_path: str, args):
             stage_file(src_scene, dst)
             scene["audio"] = f"{vid}/{dst.name}"
         scene["durationInFrames"] = frames
-        if s["type"] == "image":
+        if s.get("image"):
             img = ROOT / s["image"]
             if not img.exists():
                 img = media_dir / Path(s["image"]).name
             if not img.exists():
                 img = ROOT / "images" / Path(s["image"]).name
             if not img.exists():
+                img = pub / Path(s["image"]).name
+            if not img.exists():
                 raise SystemExit(f"Scene {n}: image not found: {s['image']}")
+            # If source image is outside media_dir, persist it once into media_dir
+            try:
+                if not img.resolve().is_relative_to(media_dir.resolve()):
+                    persisted = media_dir / img.name
+                    if not persisted.exists():
+                        shutil.copy2(img, persisted)
+                    img = persisted
+            except ValueError:
+                pass
             dst = pub / f"img{n}{img.suffix.lower()}"
             stage_file(img, dst)
-            media_copy = media_dir / dst.name
-            if not media_copy.exists():
-                stage_file(img, media_copy)
             scene["image"] = f"{vid}/{dst.name}"
-        if s["type"] == "video":
+        if s.get("video"):
             vpath = ROOT / s["video"]
             if not vpath.exists():
                 vpath = media_dir / Path(s["video"]).name
@@ -614,11 +645,16 @@ def build(spec_path: str, args):
                 vpath = pub / Path(s["video"]).name
             if not vpath.exists():
                 raise SystemExit(f"Scene {n}: video not found: {s['video']}")
+            try:
+                if not vpath.resolve().is_relative_to(media_dir.resolve()):
+                    persisted = media_dir / vpath.name
+                    if not persisted.exists():
+                        shutil.copy2(vpath, persisted)
+                    vpath = persisted
+            except ValueError:
+                pass
             dst = pub / f"vid{n}{vpath.suffix.lower()}"
             stage_file(vpath, dst)
-            media_copy = media_dir / dst.name
-            if not media_copy.exists():
-                stage_file(vpath, media_copy)
             scene["video"] = f"{vid}/{dst.name}"
         if s["type"] == "manim":
             clip = pub / f"s{n}.mp4"
@@ -661,9 +697,6 @@ def build(spec_path: str, args):
             if diag_file and diag_file.exists():
                 dst = pub / f"diag{n}{diag_file.suffix.lower()}"
                 stage_file(diag_file, dst)
-                media_copy = media_dir / dst.name
-                if not media_copy.exists():
-                    stage_file(diag_file, media_copy)
                 scene["diagram"] = f"{vid}/{dst.name}"
             elif not s.get("diagram") and not s.get("image"):
                 print(f"  Warning: Scene {n} (diagram) has no rendered diagram file.")
@@ -676,18 +709,19 @@ def build(spec_path: str, args):
                 model_src = ROOT / "public" / s["model"]
             if not model_src.exists():
                 raise SystemExit(f"Scene {n}: 3D model not found: {s['model']}")
-            # Stage to public/<vid>/models/ preserving subdirectory structure
-            model_rel = Path(s["model"])
-            dst = pub / model_rel
+            try:
+                if not model_src.resolve().is_relative_to(media_dir.resolve()) and not model_src.resolve().is_relative_to((ROOT / "public" / "models").resolve()):
+                    persisted = media_dir / model_src.name
+                    if not persisted.exists():
+                        shutil.copy2(model_src, persisted)
+                    model_src = persisted
+            except ValueError:
+                pass
+            model_rel = Path(s["model"]).name
+            dst = pub / "models" / model_rel
             dst.parent.mkdir(parents=True, exist_ok=True)
             stage_file(model_src, dst)
-            # Also stage to media_dir for persistence
-            media_copy = media_dir / model_rel
-            media_copy.parent.mkdir(parents=True, exist_ok=True)
-            if not media_copy.exists():
-                stage_file(model_src, media_copy)
-            # Update scene with public path for staticFile()
-            scene["model"] = f"{vid}/{model_rel}"
+            scene["model"] = f"{vid}/models/{model_rel}"
         scenes_out.append(scene)
 
     manifest = {
@@ -737,13 +771,8 @@ def build(spec_path: str, args):
         if ver:
             parts.append("FACTS TO VERIFY BEFORE PUBLISHING:\n" + "\n".join("- " + v for v in ver) + "\n")
         if parts:
-            if episode_dir:
-                (episode_dir / "post.md").write_text("\n".join(parts), encoding="utf-8")
-                print(f"Upload text written: {episode_dir / 'post.md'}")
-            else:
-                (ROOT / "out").mkdir(exist_ok=True)
-                print(f"Upload text written: out/{vid}-upload.txt")
-                (ROOT / "out" / f"{vid}-upload.txt").write_text("\n".join(parts), encoding="utf-8")
+            (episode_dir / "post.md").write_text("\n".join(parts), encoding="utf-8")
+            print(f"Upload text written: {episode_dir / 'post.md'}")
 
     npx = shutil.which("npx") or "/opt/homebrew/bin/npx" or "npx"
     ffmpeg = shutil.which("ffmpeg") or "/opt/homebrew/bin/ffmpeg" or "ffmpeg"
@@ -755,9 +784,6 @@ def build(spec_path: str, args):
                      f"--props=public/{vid}/manifest.json", "--frame=20"]
         print(f"Rendering high-CTR thumbnail still (1080x1920)...")
         subprocess.run(thumb_cmd, check=True, cwd=ROOT)
-        if not episode_dir:
-            (ROOT / "out").mkdir(exist_ok=True)
-            stage_file(thumb_media, ROOT / "out" / f"{vid}-thumbnail.jpg")
         print(f"Thumbnail ready -> {thumb_media}")
         return
 
@@ -783,10 +809,7 @@ def build(spec_path: str, args):
         print(f"Preview: npx remotion studio src/index.ts --props=public/{vid}/manifest.json")
         return
 
-    if episode_dir:
-        out = episode_dir / "final.mp4"
-    else:
-        out = ROOT / "out" / f"{vid}.mp4"
+    out = episode_dir / "final.mp4"
     out.parent.mkdir(parents=True, exist_ok=True)
 
     # Auto-generate thumbnail alongside video in media/<vid>/
@@ -794,8 +817,6 @@ def build(spec_path: str, args):
                  f"--props=public/{vid}/manifest.json", "--frame=20"]
     try:
         subprocess.run(thumb_cmd, check=True, cwd=ROOT)
-        if not episode_dir:
-            stage_file(thumb_media, ROOT / "out" / f"{vid}-thumbnail.jpg")
         print(f"  Cover thumbnail generated -> {thumb_media}")
     except Exception:
         pass
@@ -831,6 +852,12 @@ def build(spec_path: str, args):
 
     print(f"Done -> {out}")
 
+    # Auto-prune temporary episode staging in public/ so no redundant duplicates remain
+    if not getattr(args, "keep_staging", False) and not getattr(args, "preview", False) and not getattr(args, "no_render", False):
+        if pub.exists():
+            shutil.rmtree(pub, ignore_errors=True)
+            print(f"Pruned temporary build staging in public/{vid}/ (canonical assets stay in episodes/{vid}/)")
+
     if not args.no_upload and args.upload:
         print(f"\n[AUTO-UPLOAD] Video is ready! Uploading to YouTube as {args.upload}...")
         auto_script = ROOT / "tools" / "auto_upload.py"
@@ -844,6 +871,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("specs", nargs="*", default=[], help="one or more JSON files (globs ok)")
     ap.add_argument("--clean-cache", action="store_true", help="Prune temporary episode staging directories in public/")
+    ap.add_argument("--keep-staging", action="store_true", help="Keep temporary episode staging directory in public/ after rendering")
     ap.add_argument("--export-text", action="store_true")
     ap.add_argument("--no-render", action="store_true")
     ap.add_argument("--preview", action="store_true", help="Fast 360p draft render for rapid visual iteration")

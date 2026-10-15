@@ -1,0 +1,207 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "how-refrigerator-works",
+  "format": "vertical",
+  "accent": "#00F0FF",
+  "art_direction": "editorial",
+  "theme": "cyberpunk",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "pad_seconds": 0.2,
+  "music": null,
+  "music_volume": 0.05,
+  "music_ducking": true,
+  "meta": {
+    "title": "How A Refrigerator Actually Works | The Vapor Compression Cycle Explained",
+    "description": "Ever wondered how your refrigerator stays icy cold in 35°C heat? It doesn't create cold — cold doesn't exist in physics! Here is how the 4-step vapor compression cycle and R-600a refrigerant steal heat from your food and dump it into your kitchen.",
+    "hashtags": ["#Science", "#Physics", "#HowItWorks", "#Engineering", "#Shorts", "#Refrigerator"],
+    "misconceptions": [
+      "A refrigerator creates cold air (Cold is simply the absence of heat)",
+      "Cooling is done by electricity directly (Electricity only runs the motor pump; cooling comes from phase change of gas)",
+      "Leaving the fridge door open will cool down the room (The compressor exhausts more heat than the inside can absorb)"
+    ],
+    "analogy": "Hand sanitizer or aerosol spray rapidly evaporating on your skin, stealing thermal energy and leaving it freezing cold"
+  },
+  "scenes": [
+    {
+      "type": "hook",
+      "variant": "hook_fridge",
+      "tag": "01 / THE MYSTERY OF COLD",
+      "title": "WHY IS A FRIDGE COLD?",
+      "text": "WHY IS A FRIDGE COLD?",
+      "purpose": "Hook the viewer with the mystery of cold food and question the role of electricity",
+      "tone": "[Curious, engaging]",
+      "narration": "आपने कभी सोचा है कि भरी गर्मी में भी... फ्रिज के अंदर की बोतलें और सेब हमेशा बर्फ जैसे ठंडे कैसे रहते हैं? क्या बिजली अंदर ठंडक बनाती है? बिल्कुल नहीं!",
+      "transition": "zoom_through",
+      "sfx": "whoosh",
+      "image": "episodes/how-refrigerator-works/media/open_refrigerator_with_food.jpg",
+      "visual": {
+        "start": "Wide angle view of double-door refrigerator standing inside ambient 32°C kitchen",
+        "objects": ["Double door refrigerator", "Chilled milk bottles and fresh apples", "Power cord with electricity pulse"],
+        "action": "Refrigerator door swings open in 3D perspective, revealing cold mist drifting out. An animated yellow lightning power cord shows electricity feeds only the bottom motor, not cold air inside",
+        "camera": "Subtle push-in toward the open interior with depth-of-field blur on background",
+        "motion_graphics": ["Tag: INSIDE: 4°C vs OUTSIDE: 32°C", "Banner: ELECTRICITY POWERS THE PUMP (NOT COLD AIR!)"],
+        "end": "Camera focuses down toward the closed loop piping system"
+      }
+    },
+    {
+      "type": "refrigerator",
+      "variant": "misconception_cold",
+      "tag": "02 / THE LAWS OF PHYSICS",
+      "title": "COLD DOES NOT EXIST",
+      "purpose": "Explain that cold is not created, only heat is removed; use hand sanitizer evaporation analogy",
+      "tone": "[Eye-opening, authoritative]",
+      "narration": "फिजिक्स का नियम है: ठंडक बनाई नहीं जा सकती, सिर्फ गर्मी को बाहर निकाला जाता है! जैसे हाथ पर सैनिटाइजर लगाते ही उड़ते वक्त हाथ ठंडा लगता है—फ्रिज भी बिल्कुल यही करता है।",
+      "transition": "dissolve",
+      "sfx": "impact",
+      "visual": {
+        "start": "Hand with glistening liquid sanitizer droplet resting on skin surface",
+        "objects": ["Human skin surface", "Liquid sanitizer droplet", "Red heat packets", "Icy blue crystal lattice"],
+        "action": "Droplet rapidly evaporates into gas bubbles. Red heat energy particles fly off into the air, leaving behind an icy blue skin surface chilling from 37°C down to 18°C",
+        "camera": "Macro inspection angle tracking the evaporating droplet",
+        "motion_graphics": ["Red stamp: MYTH: FRIDGE MAKES COLD ➔ FALSE!", "Banner: COLD = STEALING HEAT!"],
+        "end": "Evaporating vapor connects into the copper tube of the refrigeration cycle"
+      }
+    },
+    {
+      "type": "refrigerator",
+      "variant": "system_flow_diagram",
+      "tag": "03 / MASTER FLOW DIAGRAM",
+      "title": "THE 4-STEP SYSTEM FLOW",
+      "purpose": "Show the complete 4-station system flow diagram so a 10-year-old child understands how all parts connect",
+      "tone": "[Clear, structural]",
+      "narration": "यह पूरा सिस्टम सिर्फ चार स्टेशनों का एक बंद कॉपर लूप है! और इसमें लगातार बहती है एक जादुई गैस—रेफ्रिजरेंट आर-छह सौ-ए!",
+      "transition": "whip_pan",
+      "sfx": "fast_whoosh",
+      "visual": {
+        "start": "Full-screen system flow diagram divided into Outside Kitchen and Inside Chilled Fridge",
+        "objects": ["Station 1: Compressor (Electric Pump)", "Station 2: Condenser (Heat Dump)", "Station 3: Expansion Valve (Pinhole)", "Station 4: Evaporator (Food Coils)"],
+        "action": "Continuous animated particle stream circulates through the copper loop, shifting colors from red-hot compressed gas to warm liquid to icy cyan mist to blue vapor",
+        "camera": "Stable front-facing framing of the complete 1080x1920 flow schematic",
+        "motion_graphics": ["Four numbered glowing stations pulse along the loop", "Flow line: CONTINUOUS CLOSED LOOP: PUMP ➔ DUMP ➔ FREEZE ➔ ABSORB"],
+        "end": "Camera zooms down into Station 1: The Compressor"
+      }
+    },
+    {
+      "type": "refrigerator",
+      "variant": "compressor_piston",
+      "tag": "04 / STEP 1: COMPRESSION",
+      "title": "THE ELECTRIC PUMP",
+      "purpose": "Show how electricity drives the motor to squeeze gas molecules like a bicycle pump, spiking pressure and heat",
+      "tone": "[Energetic, mechanical]",
+      "narration": "स्टेशन एक: कंप्रेसर। बिजली सिर्फ इस नीचे लगे मोटर को चलाती है! जो गैस को साइकिल पंप की तरह जोर से दबाता है। प्रेशर एक से छह बार कूदता है, और गैस खौलती हुई पैंसठ डिग्री तक लाल-गर्म हो जाती है!",
+      "transition": "zoom_through",
+      "sfx": "bass_drop",
+      "image": "episodes/how-refrigerator-works/media/compressor_cutaway.jpg",
+      "visual": {
+        "start": "Mechanical cutaway of compressor cylinder, piston, and electric motor",
+        "objects": ["Electric power cord with sparks", "Steel reciprocating piston", "Cylinder bore", "Intake and discharge reed valves"],
+        "action": "Electric cable feeds sparks into motor. Piston strokes upward vigorously, squeezing loose blue gas molecules into a dense fiery red-orange cloud discharging through valve",
+        "camera": "Macro mechanical inspection angle tilted slightly upward",
+        "motion_graphics": ["Electricity badge: 230V ELECTRICITY POWERS MOTOR!", "Pressure meter: 1.0 BAR ➔ 6.2 BAR", "Temperature badge: +20°C ➔ +65°C"],
+        "end": "Red hot gas stream shoots out into the discharge line towards the back coils"
+      }
+    },
+    {
+      "type": "refrigerator",
+      "variant": "condenser_heat",
+      "tag": "05 / STEP 2: HEAT DUMP",
+      "title": "RELEASING HEAT TO ROOM",
+      "purpose": "Show hot gas dumping heat into the kitchen room air through back coils, condensing into liquid",
+      "tone": "[Informative, observant]",
+      "narration": "स्टेशन दो: कंडेनसर। फ्रिज के पीछे वाली इन मुड़ी हुई पाइपों में यह खौलती गैस अपनी सारी गर्मी कमरे की हवा में फेंक देती है! और खुद ठंडी होकर लिक्विड बन जाती है।",
+      "transition": "dissolve",
+      "sfx": "whoosh",
+      "image": "episodes/how-refrigerator-works/media/condenser_coils.jpg",
+      "visual": {
+        "start": "Rear serpentine copper condenser coils glowing warm orange against obsidian backdrop",
+        "objects": ["Serpentine condenser tubes", "Rising convection heat ripples", "Glistening liquid droplets"],
+        "action": "Glowing convection heat waves visibly ripple off the coils upward into the kitchen room air. Inside the glass tube, hot gas particles slow down and coalesce into liquid droplets",
+        "camera": "Stable geometric framing across the serpentine tube grid",
+        "motion_graphics": ["Convection heat wave markers rising into room", "Metric: HEAT DUMPED TO ROOM: ~450 WATTS", "Phase change badge: CONDENSES INTO LIQUID!"],
+        "end": "Warm liquid exits the condenser and heads towards the expansion valve"
+      }
+    },
+    {
+      "type": "refrigerator",
+      "variant": "expansion_valve",
+      "tag": "06 / STEP 3: PRESSURE DROP",
+      "title": "FLASH FREEZING TO -25°C",
+      "purpose": "Explain how the capillary pinhole causes an instant pressure drop and flash freezing to -25°C like a spray can",
+      "tone": "[Dramatic, revelatory]",
+      "narration": "स्टेशन तीन: एक्सपेंशन वॉल्व—असली जादू! जैसे डिओडरेंट दबाते ही स्प्रे बर्फ जैसा ठंडा निकलता है, वैसे ही यह पतली पिनहोल ट्यूब से निकलते ही तापमान सीधा गिरकर माइनस पच्चीस डिग्री पर जम जाता है!",
+      "transition": "zoom_through",
+      "sfx": "impact",
+      "image": "episodes/how-refrigerator-works/media/aerosol_spray.jpg",
+      "visual": {
+        "start": "Macro capture of aerosol deodorant spray nozzle releasing freezing atomized mist",
+        "objects": ["Capillary pinhole constriction", "Expanding freezing mist", "Frost crystal corona"],
+        "action": "High-pressure warm liquid squeezes through tiny pinhole constriction and bursts into wide chamber, atomizing into freezing mist as cyan frost crystals bloom and temperature plummets to -25°C",
+        "camera": "Extreme macro close-up on nozzle aperture and expanding ice droplets",
+        "motion_graphics": ["Analogy badge: LIKE SPRAYING A DEODORANT CAN!", "Pressure meter: 6.0 BAR ➔ 1.0 BAR", "Digital temperature counter: +40°C ➔ -25°C"],
+        "end": "Freezing liquid flows into the internal evaporator tubing inside the fridge"
+      }
+    },
+    {
+      "type": "refrigerator",
+      "variant": "evaporator_theft",
+      "tag": "07 / STEP 4: HEAT THEFT",
+      "title": "STEALING FOOD HEAT",
+      "purpose": "Show how the freezing liquid absorbs heat from milk and apples, chilling the food while boiling back to vapor",
+      "tone": "[Fascinating, clear]",
+      "narration": "स्टेशन चार: इवैपोरेटर। अब यह माइनस पच्चीस डिग्री का बर्फीला लिक्विड आपके दूध और सेब की सारी गर्मी चुरा लेता है! खाना ठंडा हो जाता है, और लिक्विड उबलकर फिर गैस बन जाता है।",
+      "transition": "whip_pan",
+      "sfx": "fast_whoosh",
+      "image": "episodes/how-refrigerator-works/media/open_refrigerator_with_food.jpg",
+      "visual": {
+        "start": "Inside the fridge compartment, fresh milk bottle and crisp apples sitting on glass shelf",
+        "objects": ["Milk bottle (🥛)", "Red apple (🍎)", "Frosted cyan coils (-25°C)", "Glowing amber heat ribbons"],
+        "action": "Glowing amber heat ribbons actively stream out of the warm milk and apple and are sucked into the frosted coils. Food cools down to 3.8°C with cold sparkles as liquid boils into vapor bubbles",
+        "camera": "Close-up on food items and frosted coils wrapped around shelves",
+        "motion_graphics": ["Heat theft flow: ⚡ HEAT IN ➔ ❄️", "Food temperature counter: +24°C ➔ +3.8°C", "Coil status: LIQUID BOILS INTO VAPOR!"],
+        "end": "Vapor exits the evaporator and loops back into the suction port of the compressor"
+      }
+    },
+    {
+      "type": "refrigerator",
+      "variant": "room_myth_balance",
+      "tag": "08 / OPEN DOOR PARADOX",
+      "title": "DOES OPEN DOOR COOL ROOM?",
+      "purpose": "Debunk the open-door AC myth using energy balance",
+      "tone": "[Punchy, playful]",
+      "narration": "तो क्या फ्रिज का दरवाजा खुला छोड़ने से कमरा ठंडा होगा? बिल्कुल नहीं! क्योंकि पीछे से निकलने वाली गर्मी, आगे की ठंडक से कहीं ज्यादा होती है! कमरा और गर्म हो जाएगा।",
+      "transition": "dissolve",
+      "sfx": "impact",
+      "visual": {
+        "start": "Mechanical seesaw energy balance scale comparing front cooling vs rear heating",
+        "objects": ["Energy balance seesaw", "Left pan: -300W cooling", "Right pan: +450W heating", "Digital room thermometer"],
+        "action": "Seesaw tilts heavily towards the red heating side (+450W). Digital room thermometer climbs from 24°C to 28.5°C with flashing alert",
+        "camera": "Stable centered framing on the tilting energy balance scale",
+        "motion_graphics": ["Alert box: NET ENERGY: +150W ADDED ➔ ROOM HEATS UP!", "Thermometer readout: +28.5°C"],
+        "end": "Scale settles and transitions into the final perpetual cycle lock"
+      }
+    },
+    {
+      "type": "outro",
+      "tag": "09 / THE TAKEAWAY",
+      "title": "THE 4-STEP CYCLE",
+      "purpose": "Summarize the 4-step loop with clear icons and prompt the viewer to follow",
+      "tone": "[Punchy, CTA]",
+      "narration": "बिजली से कंप्रेसर, फिर कंडेनसर, वॉल्व और इवैपोरेटर! अगली बार ठंडा पानी पिएं तो इस चार-स्टेप साइकिल को याद रखें। साइंस के लिए फॉलो जरूर करें!",
+      "transition": "zoom_through",
+      "sfx": "ding",
+      "icon": "zap",
+      "text": "SCIENCE MADE SIMPLE • FOLLOW FOR REAL SCIENCE",
+      "visual": {
+        "start": "Four big circular station icons arranged in a balanced grid",
+        "objects": ["⚡ 1. COMPRESS (Electric Pump)", "♨️ 2. CONDENSE (Dumps Heat Out)", "❄️ 3. EXPAND (-25°C Freeze)", "🍎 4. EVAPORATE (Steals Food Heat)"],
+        "action": "The 4 stations illuminate in sequence with glowing checkmarks, followed by an emerald follow button pulsing with sparkles",
+        "camera": "Slow cinematic push-in to central payoff emblem",
+        "motion_graphics": ["4-Step Grid: COMPRESS ➔ CONDENSE ➔ EXPAND ➔ EVAPORATE", "Neon Follow Button: SCIENCE MADE SIMPLE • FOLLOW FOR MORE!"],
+        "end": "Final freeze frame on the glowing loop emblem"
+      }
+    }
+  ]
+}
