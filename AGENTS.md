@@ -169,7 +169,7 @@ Before writing factual narration or storyboard claims:
     - **Single Source of Truth**: `episodes/<id>/` is the **ONLY** canonical directory for episode content. All narration speech files must reside in `episodes/<id>/audio/`, all media (images, B-roll video clips, SVG diagrams, 3D models, thumbnails, contact sheets) in `episodes/<id>/media/`, and rendered video in `episodes/<id>/final.mp4`.
     - **`public/` is Strictly for Shared Assets and Ephemeral Build Staging**:
       * *Permanent shared libraries*: `public/sfx/` (sound library), `public/music/` (shared tracks), and `public/models/` (shared 3D primitives like `cube.glb`).
-      * *Ephemeral build staging*: `public/<id>/` is temporary staging created dynamically by `pipeline.py` via symlinks during rendering and automatically pruned upon completion.
+      * *Ephemeral build staging*: `public/<id>/` is temporary staging created dynamically by `pipeline.py` via zero-copy hardlinks where possible, with symlink/copy fallbacks, and automatically pruned upon completion.
       * **NO OVERLAPPING ASSETS**: Agents must NEVER manually save, download, author, or commit episode assets directly into `public/`. Tools (`tools/asset_finder.py`, `tools/model_manager.py`) must write exclusively to `episodes/<id>/media/`.
     - **NEVER create or use a root `out/` folder.** All final video renders belong in `episodes/<id>/final.mp4` and transient scratch tests belong in `scratch/`.
 12. **Strict Real-Object Visualization Policy — No Placeholder Geometry (Mandatory)**:

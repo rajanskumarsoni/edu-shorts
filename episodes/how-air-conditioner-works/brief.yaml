@@ -1,0 +1,42 @@
+id: "how-air-conditioner-works"
+topic: "How a split air conditioner moves heat"
+title: "How Does an Air Conditioner Work?"
+target_duration_seconds: 90
+format: "vertical"
+art_direction: "editorial"
+theme: "slate"
+accent: "#F97316"
+
+pedagogy:
+  audience: "Curious 15-year-old viewer who has used a room air conditioner"
+  core_question: "How can an AC cool a room without bringing cold air from outside?"
+  core_mechanism: "A split AC circulates refrigerant through an indoor evaporator, compressor, outdoor condenser, and expansion device to move heat from the room outdoors."
+  analogy: "A continuous heat shuttle: the refrigerant picks up heat inside, carries it through pipes, and releases it outside."
+  misconceptions:
+    - "An AC cools by drawing outdoor air into the room; a typical split AC recirculates indoor air across its indoor coil."
+    - "A fan and an AC do the same thing; a fan moves air, while the AC's refrigerant loop transfers heat outdoors."
+    - "The AC creates cold; it removes heat from indoor air and rejects that heat outside."
+
+verified_mechanism:
+  - "The indoor evaporator absorbs heat from room air as low-pressure refrigerant evaporates."
+  - "The compressor uses electrical work to raise refrigerant pressure and temperature."
+  - "The outdoor condenser releases heat to outdoor air and condenses refrigerant."
+  - "The expansion device reduces refrigerant pressure before it returns to the indoor coil."
+  - "The indoor and outdoor fans move air across their respective heat exchangers; they do not move the refrigerant heat by themselves."
+
+research_sources:
+  - url: "https://www.engr.siu.edu/staff1/weston/thermo/Refrigeration/VCRefrigeration.html"
+    supports: "Southern Illinois University thermodynamics course reference and vapor-compression cycle diagrams."
+  - url: "https://en.wikipedia.org/wiki/Vapor-compression_refrigeration"
+    supports: "Cross-check of the compressor, condenser, expansion device, and evaporator sequence; secondary reference only."
+  - url: "https://en.wikipedia.org/wiki/Air_conditioning"
+    supports: "Cross-check that air conditioning removes heat and that split systems use indoor and outdoor heat exchangers."
+
+research_limits:
+  - "DOE and manufacturer pages were unavailable or could not be extracted in this environment; the script therefore avoids brand-specific behavior, refrigerant names, temperatures, pressures, and efficiency claims."
+
+visual_plan:
+  - "Show a recognizable wall-mounted indoor unit and detailed outdoor condenser cabinet, connected by refrigerant pipes."
+  - "Keep room-air flow visually distinct from refrigerant flow."
+  - "Use warm orange for heat and hot refrigerant, cyan for cooled air and low-temperature refrigerant, and gold for liquid refrigerant."
+  - "Use no external images or models; the explanatory visuals are original procedural vector artwork."

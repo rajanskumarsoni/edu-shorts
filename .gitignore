@@ -38,3 +38,18 @@ images/
 audio/*/*.txt
 !audio/*/timings.txt
 
+# Episode-specific generated artifacts; keep briefs, scripts, storyboards, and provenance tracked.
+episodes/*/audio/
+episodes/*/media/
+!episodes/templates/media/
+!episodes/templates/media/**
+episodes/*/final*.mp4
+episodes/*/final_audio_qa.json
+episodes/*/final_contact_sheet.*
+episodes/*/*-thumbnail.*
+episodes/*/thumbnail.*
+episodes/.uploaded_manifest.json
+
+# Transient renders, QA frames, and experiments are not source assets.
+scratch/
+

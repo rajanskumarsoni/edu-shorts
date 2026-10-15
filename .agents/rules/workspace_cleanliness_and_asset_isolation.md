@@ -37,7 +37,7 @@ This repository enforces strict physical directory boundaries across all AI agen
    - `public/models/`: Shared universal 3D primitive models (e.g. `cube.glb`).
    - `public/.gitkeep`.
 2. **Ephemeral Build Staging (`public/<id>/`)**:
-   - `public/<id>/` is temporary runtime scaffolding dynamically created by `pipeline.py` using zero-copy symlinks during rendering to allow Remotion's Chromium browser to access assets via `staticFile()`.
+   - `public/<id>/` is temporary runtime scaffolding created by `pipeline.py` using zero-copy hardlinks where possible (with symlink/copy fallbacks) so Remotion's bundle can access assets via `staticFile()`.
    - **NO OVERLAPPING ASSETS**: Agents must NEVER manually create, save, download, author, or commit episode assets in `public/<id>/`.
    - All tools (`tools/asset_finder.py`, `tools/model_manager.py`) MUST write exclusively to `episodes/<id>/media/`.
    - When rendering completes, `pipeline.py` automatically prunes `public/<id>/` to prevent redundant or duplicate content on disk.

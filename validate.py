@@ -63,6 +63,7 @@ ALLOWED = {
     "amazon_shopping": {"type", "title", "tag", "text", "sortTriggerFrame", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "whiteboard": {"type", "title", "tag", "whiteboardType", "whiteboardTheme", "brushName", "paper", "strokes", "whiteboardData", "equation", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "refrigerator": {"type", "title", "tag", "variant", "image", "video", "metrics", "specs", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "air_conditioner": {"type", "title", "tag", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
 }
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp", ".svg")
 VIDEO_EXTS = (".mp4", ".mov", ".webm")
@@ -443,7 +444,7 @@ def validate_data(data, root=ROOT):
             cinematic_types = {"three", "manim", "architecture", "code", "image", "video",
                                "compare", "gauge", "timeline", "bento", "benchmark",
                                "hierarchy", "data_structure", "inspector", "quadrant",
-                               "concentric", "seat_booking", "neural_network_graph", "sorting_visualizer", "refrigerator"}
+                               "concentric", "seat_booking", "neural_network_graph", "sorting_visualizer", "refrigerator", "air_conditioner"}
             is_cinematic = t in cinematic_types
             if is_cinematic:
                 required_visual_fields = {
@@ -762,11 +763,13 @@ def validate_data(data, root=ROOT):
                 rep.warn(where, "title is over 8 words")
 
     types = [s.get("type") for s in scenes if isinstance(s, dict)]
-    if types and types[0] not in ("hook", "interview"):
+    if types and types[0] not in ("hook", "interview") and not (
+        types[0] == "air_conditioner" and scenes[0].get("variant") == "split_hook"
+    ):
         rep.warn("scenes", "first scene should be a hook or an interview prompt")
     if types and types[-1] not in ("outro", "interview"):
         rep.warn("scenes", "last scene should be an outro or recap")
-    if not any(t in types for t in ("manim", "three", "architecture", "code", "gauge", "bento", "benchmark", "hierarchy", "data_structure", "inspector", "quadrant", "concentric", "seat_booking", "neural_network_graph", "interview", "terminal", "screenshot", "chart", "product", "sorting_visualizer", "refrigerator")):
+    if not any(t in types for t in ("manim", "three", "architecture", "code", "gauge", "bento", "benchmark", "hierarchy", "data_structure", "inspector", "quadrant", "concentric", "seat_booking", "neural_network_graph", "interview", "terminal", "screenshot", "chart", "product", "sorting_visualizer", "refrigerator", "air_conditioner")):
         rep.warn("scenes", "no animated visual explanation (manim, three, architecture, code, gauge, bento, benchmark...); at least one is recommended")
 
     # No Consecutive Twins rule: Never use the exact same scene type and variant twice in a row

@@ -52,15 +52,13 @@ SILENCE_CONFIDENCE = 1.4  # chosen boundary pauses must be this much longer than
 
 # ----------------------------------------------------------------- staging helpers
 def stage_file(src: Path, dst: Path) -> None:
-    """Stage a file to a destination using zero-copy symlinks when possible.
-    Preserves disk space and cleanly reflects that public/ is ephemeral build staging.
-    Falls back to hardlinks or copying if symlinking fails."""
+    """Stage a file as a bundle-visible hardlink, with symlink/copy fallbacks."""
     src = Path(src).resolve()
     dst = Path(dst)
     dst.parent.mkdir(parents=True, exist_ok=True)
     if dst.is_symlink() or dst.exists():
         try:
-            if dst.exists() and dst.samefile(src):
+            if dst.exists() and not dst.is_symlink() and dst.samefile(src):
                 return
         except OSError:
             pass
@@ -73,13 +71,13 @@ def stage_file(src: Path, dst: Path) -> None:
             pass
 
     try:
-        os.symlink(src, dst)
+        os.link(src, dst)
         return
     except OSError:
         pass
 
     try:
-        os.link(src, dst)
+        os.symlink(src, dst)
         return
     except OSError:
         pass

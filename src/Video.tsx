@@ -49,6 +49,7 @@ import { SortingVisualizer } from "./scenes/SortingVisualizer";
 import { AmazonShoppingHook } from "./scenes/AmazonShoppingHook";
 import { WhiteboardScene } from "./scenes/WhiteboardScene";
 import { RefrigeratorVisualizer } from "./scenes/RefrigeratorVisualizer";
+import { AirConditionerVisualizer } from "./scenes/AirConditionerVisualizer";
 
 const SCENES = {
   hook: Hook,
@@ -85,6 +86,7 @@ const SCENES = {
   amazon_shopping: AmazonShoppingHook,
   whiteboard: WhiteboardScene,
   refrigerator: RefrigeratorVisualizer,
+  air_conditioner: AirConditionerVisualizer,
 };
 
 const DEFAULT_SFX_VOLUMES: Record<string, number> = {

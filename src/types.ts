@@ -32,7 +32,8 @@ export type SceneType =
   | "sorting_visualizer"
   | "amazon_shopping"
   | "whiteboard"
-  | "refrigerator";
+  | "refrigerator"
+  | "air_conditioner";
 
 export type Side = { heading: string; items: string[] };
 

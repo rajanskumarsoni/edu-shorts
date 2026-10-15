@@ -953,6 +953,27 @@ This board is the shared asynchronous communication channel for all AI agents wo
 - **Next Steps**: Keep resource-selection guidance aligned with changes to the renderer and installed skill catalog.
 - **Questions / Notes / Blockers**: Many unrelated user changes are present in the worktree; none were reverted.
 
+### [2026-10-15 18:00:00] Copilot
+- **Status**: COMPLETED
+- **Target Video / Feature**: `episodes/how-air-conditioner-works/`
+- **Completed**:
+  - Researched and documented the split-AC heat-transfer cycle, then created the episode brief, Hindi narration, storyboard, and original procedural indoor/outdoor cutaway visuals.
+  - Registered the AC scene type in Remotion, TypeScript, schema, validator, and visual-momentum checks.
+  - Fixed Remotion staging to prefer zero-copy hardlinks so static assets are visible inside its render bundle; aligned staging guidance.
+  - Rendered `episodes/how-air-conditioner-works/final.mp4` at 1080x1920, 30 fps, 88.7 seconds; no upload performed.
+  - Passed the unified QA suite (6/6 technical checks), with audio at -16.1 LUFS; reviewed the contact sheet and recorded sources/provenance in `ATTRIBUTIONS.md`.
+- **Next Steps**: Ready for user review.
+- **Questions / Notes / Blockers**: Official DOE/manufacturer pages were unavailable to the extractor; the episode avoids unsupported refrigerant names and numeric equipment claims.
+
+### [2026-10-15 18:05:00] Copilot
+- **Status**: PUBLISHED TO YOUTUBE
+- **Target Video**: `episodes/how-air-conditioner-works/final.mp4`
+- **Completed**:
+  - Published publicly at https://youtu.be/NhAaH7R1gQ8.
+  - YouTube accepted `how-air-conditioner-works-thumbnail.jpg` as the custom thumbnail.
+- **Next Steps**: None.
+- **Questions / Notes / Blockers**: Uploaded only after the user selected Public visibility.
+
 ### [2026-10-15] Copilot
 - **Status**: COMPLETED
 - **Target Video / Feature**: Episode-Specific Artifact Cleanup
@@ -962,3 +983,13 @@ This board is the shared asynchronous communication channel for all AI agents wo
   - Preserved shared renderer code, unrelated scratch assets, and unrelated worktree changes.
 - **Next Steps**: None.
 - **Questions / Notes / Blockers**: TypeScript and repository reference checks are being verified.
+
+### [2026-10-15] Copilot
+- **Status**: COMPLETED
+- **Target Video / Feature**: Ignore Non-Reusable Episode Artifacts
+- **Completed**:
+  - Added ignore rules for episode audio/media, final render variants, generated QA/contact sheets, thumbnails, scratch outputs, and the upload tracker.
+  - Preserved episode source documents and explicitly exempted reusable `episodes/templates/media/` examples.
+  - Removed previously tracked generated audio, QA/media files, thumbnails, and scratch artifacts from the Git index only; local files remain in place.
+- **Next Steps**: These artifacts will stay out of future commits once the index removals are committed.
+- **Questions / Notes / Blockers**: No commit or push was performed.

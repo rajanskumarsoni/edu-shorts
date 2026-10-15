@@ -1,0 +1,193 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "how-air-conditioner-works",
+  "format": "vertical",
+  "accent": "#F97316",
+  "art_direction": "editorial",
+  "theme": "slate",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "pad_seconds": 0.18,
+  "music": null,
+  "music_volume": 0.05,
+  "music_ducking": true,
+  "meta": {
+    "title": "How Does an Air Conditioner Work? The Heat-Transfer Loop",
+    "description": "A split AC does not bring cold air from outside. Follow the refrigerant as it absorbs heat indoors, carries it through the system, and releases it outdoors.",
+    "hashtags": ["#AirConditioner", "#HowItWorks", "#Physics", "#HVAC", "#Shorts"],
+    "facts_to_verify": [
+      "A split AC uses an indoor evaporator and an outdoor condenser connected by refrigerant piping.",
+      "The compressor raises refrigerant pressure and temperature; the expansion device lowers pressure before the refrigerant returns indoors."
+    ],
+    "misconceptions": [
+      "A typical split AC draws outdoor air into the room.",
+      "A fan alone removes heat from the room.",
+      "An AC creates cold instead of transferring heat."
+    ],
+    "analogy": "A continuous heat shuttle: refrigerant picks up heat indoors and releases it outdoors.",
+    "analogy": "A continuous heat shuttle: refrigerant picks up heat indoors and releases it outdoors."
+  },
+  "scenes": [
+    {
+      "type": "air_conditioner",
+      "variant": "split_hook",
+      "tag": "01 / THE COOLING MYSTERY",
+      "title": "WHERE DOES THE HEAT GO?",
+      "purpose": "Introduce the mystery and establish the indoor/outdoor heat path.",
+      "tone": "[Curious, conversational]",
+      "narration": "गर्मी की रात में एसी चलाते ही कमरे में ठंडी हवा आने लगती है। लेकिन क्या एसी बाहर की हवा अंदर खींचता है? स्प्लिट एसी का असली काम है कमरे की गर्मी को बाहर भेजना।",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "visual": {
+        "start": "A recognizable wall-mounted indoor unit and outdoor condenser sit on opposite sides of one wall.",
+        "objects": ["Wall-mounted split AC indoor unit with discharge vane and visible evaporator coil", "Outdoor condenser cabinet with fan grille and finned coil", "Connecting refrigerant pipes", "Room and outdoor air paths"],
+        "action": "Warm heat markers leave the room air, enter the indoor coil, travel through the refrigerant pipes, and emerge as warm outdoor exhaust.",
+        "camera": "Stable vertical cutaway showing the room above and outdoor unit below.",
+        "motion_graphics": ["ROOM HEAT → OUTDOORS", "REFRIGERANT LOOP"],
+        "end": "The room-air path remains visible as the view focuses on the difference between a fan and an AC."
+      }
+    },
+    {
+      "type": "compare",
+      "tag": "02 / FAN VS AC",
+      "title": "FAN OR AIR CONDITIONER?",
+      "purpose": "Separate the sensation of a fan from the AC's heat-transfer mechanism.",
+      "tone": "[Clear, corrective]",
+      "narration": "पंखा हवा चलाता है, जिससे पसीना जल्दी सूखकर आपको ठंडक महसूस होती है। मगर कमरे की गर्मी वहीं रहती है। एसी हवा चलाने के साथ-साथ गर्मी को कमरे से बाहर ट्रांसफर करता है।",
+      "left": {"heading": "FAN", "items": ["Circulates room air", "Helps sweat evaporate", "Heat stays indoors"]},
+      "right": {"heading": "SPLIT AC", "items": ["Carries room heat outdoors", "Uses a refrigerant loop", "Cools recirculated air"]},
+      "transition": "match_cut",
+      "visual": {
+        "start": "Two distinct airflow paths appear, one from a fan and one passing through an AC coil.",
+        "objects": ["Room fan with circulating air arrows", "Indoor AC coil", "Heat markers", "Outdoor condenser icon"],
+        "action": "The fan arrows loop within the room; the AC path crosses its coil and continues through pipes to the outdoor unit.",
+        "camera": "Stable side-by-side comparison with large headings and short labels.",
+        "motion_graphics": ["FAN: AIR CIRCULATION", "AC: HEAT TRANSFER"],
+        "end": "The AC coil fills the frame as the refrigerant path becomes visible."
+      }
+    },
+    {
+      "type": "air_conditioner",
+      "variant": "indoor_evaporator",
+      "tag": "03 / HEAT LEAVES THE ROOM",
+      "title": "THE INDOOR COIL ABSORBS HEAT",
+      "purpose": "Show the indoor fan, evaporator coil, and refrigerant evaporation as room air cools.",
+      "tone": "[Explanatory]",
+      "narration": "इनडोर यूनिट का फैन कमरे की हवा को ठंडी कॉइल पर बहाता है। कॉइल के अंदर कम दबाव वाला रेफ्रिजरेंट हवा से गर्मी लेता है। गर्मी मिलते ही वह तरल से गैस बनता है, और हवा ठंडी होकर कमरे में लौटती है।",
+      "transition": "dissolve",
+      "sfx": "fast_whoosh",
+      "visual": {
+        "start": "A cutaway of the indoor unit shows its cross-flow blower and finned evaporator coil.",
+        "objects": ["Wall-mounted indoor AC casing and discharge vane", "Cross-flow blower", "Finned evaporator coil", "Room-air stream", "Refrigerant changing from liquid to vapor"],
+        "action": "Orange room-air markers cross the coil and transfer heat into cyan refrigerant markers; cooler air exits the discharge vane.",
+        "camera": "Stable close view centered on the indoor coil and airflow.",
+        "motion_graphics": ["EVAPORATOR", "HEAT IN → REFRIGERANT", "COOLER AIR → ROOM"],
+        "end": "The low-pressure vapor follows the pipe toward the outdoor compressor."
+      }
+    },
+    {
+      "type": "diagram",
+      "tag": "04 / THE FOUR-STAGE LOOP",
+      "title": "ONE CLOSED REFRIGERANT LOOP",
+      "purpose": "Orient the viewer to all four components before detailing the outdoor stages.",
+      "tone": "[Structural, easy to follow]",
+      "narration": "अब यह गैस पाइप से बाहर वाली यूनिट तक जाती है। वहाँ कंप्रेसर उसे दबाता है। दबाव और तापमान बढ़ने से रेफ्रिजरेंट बाहर की गर्म हवा से भी ज्यादा गर्म हो सकता है।",
+      "type": "architecture",
+      "nodes": ["Indoor evaporator", "Compressor", "Outdoor condenser", "Expansion device", "Back to evaporator"],
+      "activeNode": 1,
+      "direction": "vertical",
+      "transition": "match_cut",
+      "sfx": "tick",
+      "visual": {
+        "start": "A clean four-node flow diagram appears with the indoor and outdoor halves separated by a wall line.",
+        "objects": ["Indoor evaporator node", "Compressor node", "Outdoor condenser node", "Expansion device node", "Directional refrigerant lines"],
+        "action": "The low-pressure vapor path highlights into the compressor; the following high-pressure, hot-vapor path points to the outdoor condenser.",
+        "camera": "Stable diagram framing with a clear left-to-right loop.",
+        "motion_graphics": ["EVAPORATOR → COMPRESSOR → CONDENSER → EXPANSION", "INDOORS → OUTDOORS"],
+        "end": "The compressor and outdoor condenser nodes expand into the outdoor unit cutaway."
+      }
+    },
+    {
+      "type": "air_conditioner",
+      "variant": "outdoor_compressor",
+      "tag": "05 / HEAT DUMPS OUTSIDE",
+      "title": "THE OUTDOOR UNIT REJECTS HEAT",
+      "purpose": "Show compression, outdoor heat rejection, and refrigerant condensation.",
+      "tone": "[Revealing]",
+      "narration": "आउटडोर यूनिट की कॉइल में यह गर्म गैस अपनी गर्मी बाहर की हवा को देती है। बाहर का फैन उस गर्मी को दूर उड़ाता है। गर्मी निकलते ही रेफ्रिजरेंट फिर तरल बनने लगता है।",
+      "transition": "dissolve",
+      "sfx": "impact",
+      "visual": {
+        "start": "The outdoor cabinet opens into a detailed view of its fan, condenser fins, and compressor shell.",
+        "objects": ["Outdoor condenser cabinet with protective grille", "Axial fan", "Finned condenser coil", "Hermetic compressor canister", "Hot refrigerant vapor and liquid line"],
+        "action": "The compressor raises the vapor's pressure and temperature; the condenser coil releases heat to outdoor airflow and the refrigerant condenses.",
+        "camera": "Stable three-quarter cutaway, with the fan, coil, and compressor individually legible.",
+        "motion_graphics": ["COMPRESSOR: PRESSURE + TEMPERATURE UP", "CONDENSER: HEAT OUT", "WARM EXHAUST AIR"],
+        "end": "The liquid line leaves the condenser and approaches the expansion device."
+      }
+    },
+    {
+      "type": "whiteboard",
+      "tag": "06 / PRESSURE DROPS",
+      "title": "THE METERING VALVE RESETS THE LOOP",
+      "purpose": "Explain why a pressure drop prepares refrigerant to absorb indoor heat again.",
+      "tone": "[Precise, simple]",
+      "narration": "फिर तरल रेफ्रिजरेंट एक छोटे एक्सपैंशन वॉल्व से गुजरता है। वहाँ उसका दबाव अचानक घटता है, और वह ठंडा होकर इनडोर कॉइल की तरफ लौटता है।",
+      "type": "architecture",
+      "nodes": ["High-pressure liquid", "Metering valve", "Cold mixture to evaporator"],
+      "activeNode": 1,
+      "direction": "vertical",
+      "transition": "match_cut",
+      "sfx": "click",
+      "visual": {
+        "start": "A hand-drawn pipe narrows through a metering valve, separating the high-pressure liquid side from the low-pressure return side.",
+        "objects": ["Liquid refrigerant line", "Metering valve", "Low-pressure liquid-vapor mixture", "Arrow returning toward the indoor coil"],
+        "action": "The liquid passes the restriction; pressure falls and a small portion flashes into vapor, leaving a colder mixture for the evaporator.",
+        "camera": "Stable close-up diagram with the valve at center and state labels on either side.",
+        "motion_graphics": ["PRESSURE ↓", "TEMPERATURE ↓", "BACK TO EVAPORATOR"],
+        "end": "The return arrow curves back toward the indoor coil, completing the loop."
+      }
+    },
+    {
+      "type": "air_conditioner",
+      "variant": "cycle_payoff",
+      "tag": "07 / THE LOOP REPEATS",
+      "title": "THE THERMOSTAT KEEPS THE BALANCE",
+      "purpose": "Connect the loop to room temperature control and show the cycle repeating.",
+      "tone": "[Satisfying, explanatory]",
+      "narration": "अब यह ठंडा रेफ्रिजरेंट कमरे की हवा से फिर गर्मी उठाता है, और पूरा चक्र दोहराता रहता है। थर्मोस्टैट कमरे का तापमान देखकर कंप्रेसर को चलाता, धीमा करता या रोकता है।",
+      "transition": "match_cut",
+      "sfx": "ting",
+      "visual": {
+        "start": "The indoor and outdoor units return together with the completed refrigerant loop and a room thermostat indicator.",
+        "objects": ["Indoor evaporator and cross-flow blower", "Outdoor condenser and compressor", "Closed refrigerant pipe loop", "Room temperature sensor and setpoint indicator"],
+        "action": "Heat markers circulate from the room to the outdoor exhaust; the thermostat indicator settles at its target while the controller modulates the compressor state.",
+        "camera": "Stable full-system composition that mirrors the opening frame.",
+        "motion_graphics": ["CLOSED LOOP", "ROOM SETPOINT", "HEAT MOVES OUT"],
+        "end": "The split system holds in a balanced state, ready for the final takeaway."
+      }
+    },
+    {
+      "type": "outro",
+      "tag": "08 / COLD IS HEAT MOVED",
+      "title": "AC MOVES HEAT OUTSIDE",
+      "text": "AC MOVES HEAT OUTSIDE",
+      "icon": "wind",
+      "purpose": "Resolve the opening question with the correct heat-transfer model.",
+      "tone": "[Confident payoff]",
+      "narration": "तो एसी ठंड कहीं से लाता नहीं। वह कमरे की गर्मी उठाकर बाहर छोड़ता है। इनडोर यूनिट गर्मी लेती है, आउटडोर यूनिट उसे छोड़ती है, और रेफ्रिजरेंट दोनों के बीच लगातार घूमता है।",
+      "transition": "dissolve",
+      "sfx": "ding",
+      "visual": {
+        "start": "Return to the opening split view with one continuous heat arrow joining the indoor and outdoor units.",
+        "objects": ["Recognizable split AC indoor unit", "Outdoor condenser with warm-air exhaust", "One continuous refrigerant loop", "Large heat-transfer arrow"],
+        "action": "The final heat arrow completes its path from the room coil to the outdoor coil; all decorative movement settles into a clear static takeaway.",
+        "camera": "Stable wide framing matching the opening composition.",
+        "motion_graphics": ["NO COLD CREATED", "HEAT TRANSFERRED OUT"],
+        "end": "The indoor/outdoor pair remains visible with the completed loop held on screen."
+      }
+    }
+  ]
+}
