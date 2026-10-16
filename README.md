@@ -114,24 +114,20 @@ render time; only its exported clip is needed for the import and final edu-short
 
 ```
 edu-shorts/
-  pipeline.py            main command: script + audio -> mp4
-  validate.py            checks your script for mistakes (also runs automatically)
-  make_test_audio.py     makes placeholder audio so you can try the pipeline
-  tts.py                 optional: plug in your TTS model to automate the narration audio
-  episodes/<id>/         canonical source, narration, media, metadata, and final render
-  videos/                legacy standalone storyboard JSON files
-  public/<id>/           generated Remotion staging assets; do not author source files here
-  audio/<id>/            legacy narration input for specs in videos/
-  media/<id>/            legacy images and QA stills for specs in videos/
-  out/                   legacy renders and generated upload metadata
-  manim_templates/       Manim animation templates (Equations, Graph, Flow) + your own
-  src/                   Remotion (React) code: scenes, look, effects
-  prompts/               shared production prompts and templates
+  pipeline.py            main rendering command: Remotion + FFmpeg -> final.mp4
+  validate.py            checks storyboard against rules (runs automatically)
+  tts.py                 synthesizes narration audio via local VoiceStudio
+  episodes/<id>/         canonical single source of truth: script.md, storyboard.json, audio/, media/, final.mp4
+  episodes/templates/    reference templates (demo-all-scenes.json, etc.)
+  tools/                 production tools: generate_video.py, asset_finder.py, qa_suite.py, upload_video.py
+  public/                shared assets (sfx/, music/, models/) + ephemeral build staging
+  manim_templates/       Manim animation templates (Equations, Graph, Flow)
+  src/                   Remotion (React) code: scene visualizers, styling, theme
+  prompts/               stage prompts: script.md, storyboard.md, fast_script_template.md
   package.json, requirements.txt, tsconfig.json, remotion.config.ts   setup files
 ```
 
-For new work, use `episodes/<id>/`. The detailed walkthrough and command examples below document
-the still-supported legacy `videos/` workflow; existing files are not moved or rewritten.
+All episode production is housed strictly under `episodes/<id>/`. Ephemeral build staging in `public/<id>/` is automatically managed and pruned by the pipeline.
 
 ---
 
@@ -203,33 +199,30 @@ This needs internet once, then it is cached.
 
 ---
 
-## 5. First test run (no TTS needed)
+## 5. First test run
 
-Do this once to confirm everything is installed correctly. It uses the example script
-`videos/pythagoras.json` and **placeholder audio** (a quiet test hum, no voice).
+Do this once to confirm everything is installed correctly. It validates an existing episode storyboard:
 
-1. Validate the script:
-   ```
-   python validate.py videos/pythagoras.json
+1. Validate an existing episode script:
+   ```bash
+   python3 validate.py episodes/linear-search/storyboard.json
    ```
    Expected: a line starting with `OK`.
-2. Make the placeholder narration:
-   ```
-   python make_test_audio.py videos/pythagoras.json
-   ```
-   This creates `audio/pythagoras/narration.wav`: a hum for each scene with a pause between scenes,
-   like a real narration.
-3. Build the video:
-   ```
-   python pipeline.py videos/pythagoras.json
-   ```
-   You will see: validation, a list of where each scene starts, `Total length: ...`,
-   each scene, "rendering Manim", then Remotion's frame progress. The first run is slowest.
-4. Open `out/pythagoras.mp4`. You should see animated scenes (with the test hum as sound).
-5. **Delete the test audio** before making the real version: delete the folder `audio/pythagoras`.
 
-Want to see every scene type? Repeat steps 1-5 with `videos/demo-all-scenes.json`
-(it uses the placeholder picture `images/sample.jpg`, a quote, a comparison and a flow diagram; no LaTeX needed).
+2. Render a fast preview (360p draft):
+   ```bash
+   python3 pipeline.py episodes/linear-search/storyboard.json --preview --no-upload
+   ```
+
+3. Run QA verification on the output:
+   ```bash
+   python3 tools/qa_suite.py episodes/linear-search/final.mp4
+   ```
+
+Want to test 1-command end-to-end production?
+```bash
+python3 tools/generate_video.py episodes/<id>/script.md --preview
+```
 
 If any step fails, see [Troubleshooting](#14-troubleshooting).
 
@@ -982,25 +975,33 @@ Note: Manim scenes have their own background treatment; the global cinematic eff
 | Voice and visuals out of sync | Make sure each `sN.wav` matches that scene's narration, then re-run. |
 | Wrong voice for one scene | Replace that `sN.wav` and re-run. |
 | Equation does not look right | Check LaTeX syntax; keep lines short; max 3 lines. |
-| Nothing in `out/` | Read the last error in the terminal; run `python validate.py videos/<id>.json`. |
+| Rendered MP4 not created | Read the last error in the terminal; run `python3 validate.py episodes/<id>/storyboard.json`. |
 
 ---
 
-## 15. Legacy command cheat sheet (`videos/` workflow)
+## 15. Command cheat sheet (`episodes/` workflow)
 
-```
-python validate.py videos/x.json                 check a script
-python pipeline.py videos/x.json --export-text   write narration_text.txt for your TTS
-python make_test_audio.py videos/x.json          placeholder audio (testing only)
-python pipeline.py videos/x.json --align whisper use speech recognition to find scene starts
-python pipeline.py videos/x.json --export-text --separator "<pause tag>"   pause marker between scenes
-python pipeline.py videos/x.json                 build out/x.mp4
-python pipeline.py videos/x.json --no-render     prepare only (for preview)
-npx remotion studio src/index.ts --props=public/x/manifest.json   preview in browser
-python pipeline.py videos/x.json --scale 2       double resolution (slower)
-npx remotion render src/index.ts Video out/test.mp4 --props=public/x/manifest.json --frames=0-299   time a 10-second test render
-python pipeline.py videos/*.json                 batch
-python pipeline.py videos/x.json --skip-validate skip the checker (not recommended)
+```bash
+# 1-Command Token-Efficient Pipeline (Script -> Storyboard -> Voice -> Render -> QA)
+python3 tools/generate_video.py episodes/<id>/script.md
+
+# Fast Visual Preview (Prepares storyboard & assets, launches Remotion Studio)
+python3 tools/generate_video.py episodes/<id>/script.md --preview
+
+# Compile script to storyboard only
+python3 tools/generate_video.py episodes/<id>/script.md --compile-only
+
+# Validate storyboard schema and timing
+python3 validate.py episodes/<id>/storyboard.json
+
+# Core rendering pipeline
+python3 pipeline.py episodes/<id>/storyboard.json --no-upload
+
+# Automated QA video verification
+python3 tools/qa_suite.py episodes/<id>/final.mp4
+
+# Preview in browser via Remotion Studio
+npx remotion studio src/index.ts --props=episodes/<id>/storyboard.json
 ```
 
 ---

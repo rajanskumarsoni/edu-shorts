@@ -21,7 +21,7 @@ if [[ -z "$VIDEO_INPUT" ]]; then
     echo "  fast:  Low-res 360p640 for quick iteration (default)"
     echo "  full:  Full quality 1080x1920 for final export"
     echo "  Examples:"
-    echo "    $0 fast videos/how-web-requests.json"
+    echo "    $0 fast episodes/linear-search/storyboard.json"
     echo "    $0 full episodes/<id>/final.mp4 scratch/preview"
     exit 1
 fi

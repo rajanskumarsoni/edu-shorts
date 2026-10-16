@@ -248,6 +248,21 @@
           "type": "string",
           "description": "Automated 3D model query or AI generation prompt."
         },
+        "particles": {
+          "type": ["string", "boolean"],
+          "enum": ["sparkles", "fireflies", "mist", "light-rays", true, false],
+          "description": "Procedural 2D particle overlay effect across the scene."
+        },
+        "particleCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "description": "Number of particles to generate."
+        },
+        "particleColor": {
+          "type": "string",
+          "description": "Custom color tint for particles (defaults to scene accent color)."
+        },
         "visual": {
           "$ref": "#/definitions/StoryboardVisual"
         }
@@ -293,8 +308,11 @@
             "sorting_visualizer",
             "amazon_shopping",
             "whiteboard",
-            "refrigerator"
-            ,"air_conditioner"
+            "refrigerator",
+            "air_conditioner",
+            "linear_search_visualizer",
+            "tesla_roadster_visualizer",
+            "depth_parallax"
           ]
         }
       },
@@ -647,6 +665,22 @@
               "equation": { "type": "string" },
               "whiteboardData": { "type": "array" },
               "strokes": { "type": "array" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "depth_parallax" } } },
+          "then": {
+            "properties": {
+              "title": { "type": "string" },
+              "tag": { "type": "string" },
+              "image": { "type": "string" },
+              "depthMap": { "type": "string" },
+              "intensity": { "type": "number" },
+              "movement": {
+                "type": "string",
+                "enum": ["dolly_in", "dolly_out", "pan_horizontal", "orbit", "breathe"]
+              }
             }
           }
         }

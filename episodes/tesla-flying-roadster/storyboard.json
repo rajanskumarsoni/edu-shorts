@@ -1,0 +1,214 @@
+{
+  "id": "tesla-flying-roadster",
+  "format": "vertical",
+  "art_direction": "editorial",
+  "theme": "cyberpunk",
+  "accent": "#00F0FF",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "loop": false,
+  "audio_mode": "scenes",
+  "music": null,
+  "music_volume": 0.08,
+  "music_ducking": true,
+  "meta": {
+    "title": "Can Elon Musk's Tesla Roadster Really Fly? 🚀 (SpaceX Rocket Science Explained)",
+    "description": "Elon Musk stunned the world by unveiling the new Tesla Roadster with the SpaceX package that can 'fly' and hit 0-60 mph in 0.81 seconds! Here is the actual rocket physics behind how cold-gas thrusters work, the 10,000 PSI COPV air tank, and what is realistically possible.",
+    "hashtags": ["#Tesla", "#Roadster", "#ElonMusk", "#SpaceX", "#Engineering", "#ScienceShorts", "#PhysicsExplained"],
+    "facts_to_verify": [
+      "COPV tank rating ~10,000 PSI replacing rear seats",
+      "10 directional cold gas thrusters with de Laval supersonic nozzles",
+      "0-60 mph claim of 0.81 seconds bypassing tire friction cap",
+      "Downward thrusters enabling short hover hops and 2G downforce"
+    ],
+    "misconceptions": [
+      "The car burns rocket fuel or uses jet turbines",
+      "The car can fly continuously across cities like a plane"
+    ],
+    "analogy": "Releasing an inflated balloon: compressed gas expanding at supersonic speed pushes the car with thousands of pounds of instant reactive thrust."
+  },
+  "scenes": [
+    {
+      "type": "video",
+      "title": "THE FLYING ROADSTER",
+      "tag": "01 / THE UNVEIL",
+      "video": "media/elon_unveil.mp4",
+      "narration": "ई-लॉन मस्क ने आखिरकार वो कार दिखा दी जो सिर्फ ज़मीन पर नहीं दौड़ती, बल्कि हवा में उड़ सकती है — न्यू टेस्ला रोड्स्टर!",
+      "tone": "[Energetic, awe-inspired]",
+      "sfx": "impact",
+      "visual": {
+        "start": "Stage lights reveal Elon Musk standing before the crowd at SpaceX test facility.",
+        "objects": ["Elon Musk", "Roadster Stage Backdrop", "Crowd Telemetry"],
+        "action": "Elon Musk announces the new Tesla Roadster with rocket thruster flight capability.",
+        "camera": "Dynamic front-center framing on stage broadcast.",
+        "motion_graphics": ["01 / THE UNVEIL", "TESLA ROADSTER SPACEX PACKAGE"],
+        "end": "Crowd cheers as the camera transitions to acceleration performance specs."
+      }
+    },
+    {
+      "type": "gauge",
+      "title": "0-60 MPH IN 0.81 SECONDS",
+      "tag": "02 / BREAKING PHYSICS",
+      "startValue": 2.0,
+      "endValue": 0.81,
+      "unit": "s",
+      "badge": "WORLD RECORD ACCELERATION",
+      "status": "SUCCESS",
+      "narration": "कंपनी का दावा है कि ये कार सिर्फ ज़ीरो पॉइंट आठ सेकंड में सौ की स्पीड पकड़ सकती है, जो दुनिया की किसी भी सुपरकार से दोगुनी तेज़ है!",
+      "tone": "[Intense, dramatic]",
+      "sfx": "ka_ching",
+      "visual": {
+        "start": "High-tech circular telemetry speedometer initialized at standard 2.0s supercar benchmark.",
+        "objects": ["Circular Dial Gauge", "0.81s Neon Value Card", "World Record Indicator"],
+        "action": "Gauge needle sweeps violently counter-clockwise to 0.81 seconds with glowing cyan aura.",
+        "camera": "Locked telemetry HUD framing with subtle breathing zoom.",
+        "motion_graphics": ["02 / BREAKING PHYSICS", "0-60 MPH: 0.81s", "2x FASTER THAN FORMULA 1"],
+        "end": "Speedometer locks at 0.81s before cutting to real flight stunt test footage."
+      }
+    },
+    {
+      "type": "video",
+      "title": "THE FLIGHT DEMONSTRATION",
+      "tag": "03 / THE FLIGHT STUNT",
+      "video": "media/flight_stunt.mp4",
+      "narration": "लेकिन बिना पंखों और बिना जेट इंजन के, ये भारी-भरकम कार हवा में छलांग कैसे लगा रही है? इसके पीछे छुपा है स्पेस-एक्स का असली रॉकेट साइंस!",
+      "tone": "[Curious, questioning]",
+      "sfx": "fast_whoosh",
+      "visual": {
+        "start": "Night test facility showing the Roadster approaching a massive curved vertical ramp.",
+        "objects": ["Tesla Roadster Test Vehicle", "Curved Launch Ramp", "Supersonic Thruster Vapor Plume"],
+        "action": "The car launches into the air, thrusters fire supersonic gas, and it touches down in vapor clouds.",
+        "camera": "Tracking wide angle capturing vehicle mid-air trajectory and ground landing.",
+        "motion_graphics": ["03 / THE FLIGHT STUNT", "REAL TEST FOOTAGE", "SPACEX MCGREGOR FACILITY"],
+        "end": "Dense white vapor cloud billows across the runway as we cut to the internal vehicle schematic."
+      }
+    },
+    {
+      "type": "tesla_roadster_visualizer",
+      "title": "10,000 PSI COPV ROCKET TANK",
+      "tag": "04 / ROCKET IN THE BACK SEAT",
+      "variant": "cutaway",
+      "narration": "कार की पिछली दो सीटों को हटाकर वहाँ एक सी-ओ-पी-वी एयर टैंक लगाया गया है, जिसमें दस हज़ार पी-एस-आई के भारी दबाव पर हवा भरी होती है!",
+      "tone": "[Explanatory, revealing]",
+      "sfx": "radar_beep",
+      "visual": {
+        "start": "Aerodynamic red Tesla Roadster wireframe appears with transparent interior cutaway.",
+        "objects": ["Skateboard Battery Chassis", "Removed Rear Seats", "10,000 PSI COPV Tank", "10 Cold Gas Thrusters"],
+        "action": "Rear passenger seats vanish and a glowing carbon-fiber cylindrical pressure vessel takes their place with animated gas conduits.",
+        "camera": "Stable technical schematic cross-section with glowing component callouts.",
+        "motion_graphics": ["04 / ROCKET IN THE BACK SEAT", "COPV TANK: 10,000 PSI", "10x COLD GAS THRUSTERS"],
+        "end": "High-pressure gas pulses from the tank toward the rear and underbody nozzles."
+      }
+    },
+    {
+      "type": "compare",
+      "title": "TIRE GRIP VS ROCKET THRUST",
+      "tag": "05 / OVERCOMING TIRE FRICTION",
+      "left": {
+        "heading": "STANDARD SUPERCAR",
+        "items": [
+          "Tire Grip Limit (μ·N)",
+          "Capped at ~1.7s 0-60",
+          "Zero Vertical Lift"
+        ]
+      },
+      "right": {
+        "heading": "ROADSTER + SPACEX",
+        "items": [
+          "Rocket Thrust (ṁ·vₑ)",
+          "0-60 in 0.81 Seconds",
+          "Enables Short Hover Hops"
+        ]
+      },
+      "narration": "जैसे गुब्बारे से हवा छूटने पर वो भागता है, वैसे ही दस कोल्ड गैस थ्रस्टर्स से सुपरसोनिक स्पीड में गैस निकलती है, जो टायर के घर्षण की सीमा को तोड़ देती है!",
+      "tone": "[Insightful, educational]",
+      "sfx": "ding",
+      "visual": {
+        "start": "Split compare table displaying conventional sports car friction limits on left.",
+        "objects": ["Tire Friction Equation Card", "Rocket Momentum Equation Card", "Comparison Badges"],
+        "action": "Right side illuminates with neon cyan showing F = m_dot * v_e breaking tire grip limits.",
+        "camera": "Balanced split-column editorial presentation.",
+        "motion_graphics": ["05 / OVERCOMING TIRE FRICTION", "NEWTON'S 3RD LAW", "F = ṁ · vₑ"],
+        "end": "Both cards highlight key physics takeaways before advancing to practical possibilities."
+      }
+    },
+    {
+      "type": "bento",
+      "title": "CAPABILITIES & REALITY CHECK",
+      "tag": "06 / POSSIBILITIES & LIMITS",
+      "bentoItems": [
+        {
+          "title": "SHORT HOPS & HOVER",
+          "value": "1 - 2 METERS",
+          "badge": "OBSTACLE CLEARANCE",
+          "span": 2
+        },
+        {
+          "title": "DOWNFORCE SUCTION",
+          "value": "2.0G+ CORNERING",
+          "badge": "INVERTED DRIVING",
+          "span": 1
+        },
+        {
+          "title": "BURST DURATION",
+          "value": "5 - 10 SECONDS",
+          "badge": "GAS DEPLETION",
+          "span": 1
+        },
+        {
+          "title": "REFILL METHOD",
+          "value": "BATTERY COMPRESSOR",
+          "badge": "NOT AN AIRPLANE",
+          "span": 2
+        }
+      ],
+      "narration": "इससे ये कार गड्ढों के ऊपर उड़ सकती है और असंभव मोड़ों पर मुड़ सकती है। लेकिन गैस खत्म होते ही इसे दोबारा भरने में वक्त लगता है, इसलिए ये प्लेन नहीं है!",
+      "tone": "[Balanced, scientific]",
+      "sfx": "sparkle",
+      "visual": {
+        "start": "Four-tile bento telemetry dashboard loads with glowing aerospace borders.",
+        "objects": ["Short Hops Tile", "2G Suction Tile", "Burst Duration Tile", "Refill Compressor Tile"],
+        "action": "Tiles stagger into place showing both the mind-blowing superpowers and the real engineering limits.",
+        "camera": "Direct flat layout with staggered card reveal animations.",
+        "motion_graphics": ["06 / POSSIBILITIES & LIMITS", "1-2M HOVER", "2G+ SUCTION", "NOT AN AIRPLANE"],
+        "end": "Dashboard completes overview and seamlessly transitions into the cinematic highway run."
+      }
+    },
+    {
+      "type": "video",
+      "title": "THE FUTURE OF HYPERCARS",
+      "tag": "07 / THE FUTURE OF SPEED",
+      "video": "media/official_drive.mp4",
+      "narration": "कार और रॉकेट का ये संगम भविष्य की ड्राइविंग को हमेशा के लिए बदल सकता है!",
+      "tone": "[Visionary, cinematic]",
+      "sfx": "fast_whoosh",
+      "visual": {
+        "start": "Cinematic 1080p camera tracks close to the rear bumper of the red Tesla Roadster.",
+        "objects": ["Red Tesla Roadster", "Desert Highway", "Rear Rocket Thruster Bay"],
+        "action": "The Roadster accelerates with jaw-dropping velocity into the horizon.",
+        "camera": "Low-angle dynamic tracking shot following high-speed launch.",
+        "motion_graphics": ["07 / THE FUTURE OF SPEED", "AEROSPACE + AUTOMOTIVE", "NEXT-GEN ROADSTER"],
+        "end": "Vehicle speeds into the distance as the outro payoff card takes over."
+      }
+    },
+    {
+      "type": "outro",
+      "title": "THE FUTURE IS ROCKET-POWERED",
+      "tag": "08 / THE PAYOFF",
+      "text": "WOULD YOU RIDE IN A FLYING TESLA?",
+      "icon": "zap",
+      "narration": "क्या आप इस उड़ने वाली रॉकेट कार की सवारी करना चाहेंगे? कमेंट्स में बताइए और साइंस के ऐसे ही रहस्यों के लिए सब्सक्राइब कीजिए!",
+      "tone": "[Warm, engaging CTA]",
+      "sfx": "ding",
+      "visual": {
+        "start": "Dark cyberpunk payoff screen with glowing neon rings and lightning bolt icon.",
+        "objects": ["Neon Lightning Emblem", "Audience Question Banner", "Channel Subscribe Rings"],
+        "action": "Icon pulses with energy as the subscribe call-to-action radiates outwards.",
+        "camera": "Centered hero graphic framing with energetic pulsing scale.",
+        "motion_graphics": ["08 / THE PAYOFF", "COMMENT BELOW", "SUBSCRIBE FOR MORE"],
+        "end": "Final frame settles smoothly ready for seamless short loop."
+      }
+    }
+  ]
+}

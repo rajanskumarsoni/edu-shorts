@@ -34,11 +34,11 @@ export const VideoScene: React.FC<{ scene: SceneSpec; accent: string }> = ({
           }}
         />
       )}
-      {/* Dark gradient overlay so captions and text remain readable */}
+      {/* Dark gradient overlay so captions at bottom and titles at top remain readable */}
       <AbsoluteFill
         style={{
           background:
-            "linear-gradient(to top, rgba(5,8,20,0.92) 0%, rgba(5,8,20,0.25) 50%, rgba(5,8,20,0.45) 100%)",
+            "linear-gradient(to bottom, rgba(5,8,20,0.85) 0%, rgba(5,8,20,0.15) 35%, rgba(5,8,20,0.2) 65%, rgba(5,8,20,0.88) 100%)",
         }}
       />
       {/* Cinematic inset vignette */}
@@ -52,9 +52,9 @@ export const VideoScene: React.FC<{ scene: SceneSpec; accent: string }> = ({
       {scene.title && (
         <AbsoluteFill
           style={{
-            justifyContent: "flex-end",
+            justifyContent: "flex-start",
             alignItems: "flex-start",
-            padding: `0 ${L.padX}px ${L.padBottom}px`,
+            padding: `${L.padTop}px ${L.padX}px 0`,
           }}
         >
           {scene.tag && (
@@ -86,10 +86,11 @@ export const VideoScene: React.FC<{ scene: SceneSpec; accent: string }> = ({
             align="left"
             delay={8}
             style={{
-              fontSize: L.landscape ? 64 : 84,
+              fontSize: L.landscape ? 48 : 56,
               fontWeight: 900,
-              lineHeight: 1.08,
-              textShadow: "0 8px 40px rgba(0,0,0,0.85)",
+              lineHeight: 1.1,
+              letterSpacing: "-0.02em",
+              textShadow: "0 6px 30px rgba(0,0,0,0.9)",
             }}
           />
         </AbsoluteFill>

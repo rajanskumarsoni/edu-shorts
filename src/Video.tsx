@@ -50,6 +50,10 @@ import { AmazonShoppingHook } from "./scenes/AmazonShoppingHook";
 import { WhiteboardScene } from "./scenes/WhiteboardScene";
 import { RefrigeratorVisualizer } from "./scenes/RefrigeratorVisualizer";
 import { AirConditionerVisualizer } from "./scenes/AirConditionerVisualizer";
+import { LinearSearchVisualizer } from "./scenes/LinearSearchVisualizer";
+import { TeslaRoadsterVisualizer } from "./scenes/TeslaRoadsterVisualizer";
+import { DepthParallaxScene } from "./scenes/DepthParallaxBackground";
+import { ParticleOverlay } from "./scenes/ParticleOverlay";
 
 const SCENES = {
   hook: Hook,
@@ -87,6 +91,9 @@ const SCENES = {
   whiteboard: WhiteboardScene,
   refrigerator: RefrigeratorVisualizer,
   air_conditioner: AirConditionerVisualizer,
+  linear_search_visualizer: LinearSearchVisualizer,
+  tesla_roadster_visualizer: TeslaRoadsterVisualizer,
+  depth_parallax: DepthParallaxScene,
 };
 
 const DEFAULT_SFX_VOLUMES: Record<string, number> = {
@@ -468,6 +475,7 @@ const SceneView: React.FC<{
     scene.type === "image" ||
     scene.type === "video" ||
     scene.type === "three" ||
+    scene.type === "depth_parallax" ||
     Boolean(scene.variant && scene.variant.includes("3d")) ||
     Boolean(scene.graphic && scene.graphic.includes("3d")) ||
     (scene.type === "hook" && (scene.icon === "smartphone" || scene.icon === "brain" || Boolean(scene.text && /upi|qr|payment/i.test(scene.text)))) ||
@@ -493,6 +501,13 @@ const SceneView: React.FC<{
           <Content scene={scene} accent={accent} />
         </AbsoluteFill>
       </ArtDirectionContext.Provider>
+      {scene.particles && (
+        <ParticleOverlay
+          type={typeof scene.particles === "string" ? scene.particles : "sparkles"}
+          count={scene.particleCount ?? 24}
+          color={scene.particleColor || accent}
+        />
+      )}
       <VisualBeatOverlay beats={scene.beats} accent={accent} artDirection={sceneArtDirection} localFrame={localFrame} sceneDuration={durationInFrames} />
       {sceneArtDirection === "cinematic" && <LightSweep />}
       {captions && scene.narration && (

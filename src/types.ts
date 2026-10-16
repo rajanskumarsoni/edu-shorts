@@ -33,7 +33,10 @@ export type SceneType =
   | "amazon_shopping"
   | "whiteboard"
   | "refrigerator"
-  | "air_conditioner";
+  | "air_conditioner"
+  | "linear_search_visualizer"
+  | "tesla_roadster_visualizer"
+  | "depth_parallax";
 
 export type Side = { heading: string; items: string[] };
 
@@ -266,6 +269,14 @@ export type SceneSpec = {
     startFrame?: number;
     duration?: number;
   }>;
+  // depth_parallax scene
+  depthMap?: string;
+  intensity?: number;
+  movement?: "dolly_in" | "dolly_out" | "pan_horizontal" | "orbit" | "breathe" | string;
+  // particles overlay
+  particles?: "sparkles" | "fireflies" | "mist" | "light-rays" | boolean;
+  particleCount?: number;
+  particleColor?: string;
   narration?: string;
   // sound fx: pick any sound from the local library (e.g. "ka_ching", "impact", "glitch", "pop", "typing") or timed cues
   sfx?: SceneSfxSpec;

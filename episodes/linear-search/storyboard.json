@@ -1,0 +1,313 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "linear-search",
+  "format": "vertical",
+  "art_direction": "editorial",
+  "theme": "cyberpunk",
+  "accent": "#00F0FF",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "pad_seconds": 0.28,
+  "music": null,
+  "meta": {
+    "title": "How Linear Search Algorithm Works | Computer Science Explainer",
+    "description": "Learn how the Linear Search algorithm works through an intuitive classroom attendance register analogy. Watch sequential element-by-element inspection, early exit on match, and O(n) worst-case vs O(1) best-case time complexity.",
+    "hashtags": [
+      "#ComputerScience",
+      "#Algorithms",
+      "#Coding",
+      "#LinearSearch",
+      "#DataStructures"
+    ],
+    "facts_to_verify": [
+      "Linear Search inspects elements sequentially one by one starting at index 0",
+      "Best-case time complexity is O(1) when the target is at the first index",
+      "Worst-case time complexity is O(n) when the target is at the end or absent",
+      "Space complexity is O(1) auxiliary memory (in-place)"
+    ],
+    "misconceptions": [
+      "Linear search is always slow and useless (debunk: optimal for small lists, unsorted data, and hardware caches)"
+    ],
+    "analogy": "Classroom attendance register: scanning row-by-row from top to bottom until the name is found or the list ends"
+  },
+  "scenes": [
+    {
+      "type": "linear_search_visualizer",
+      "variant": "intro",
+      "tag": "01 / THE NAME ON THE REGISTER",
+      "title": "FIND MIRA IN THE REGISTER",
+      "searchItems": [
+        "KABIR",
+        "ZOYA",
+        "AMAN",
+        "MIRA",
+        "DEV"
+      ],
+      "searchTarget": "MIRA",
+      "purpose": "Ground the abstract linear search problem in an everyday classroom attendance register.",
+      "tone": "[Curious, conversational]",
+      "narration": "शिक्षक के पास कक्षा का एक रजिस्टर है। नाम किसी खास क्रम में नहीं हैं। उन्हें मीरा का नाम ढूँढना है। कंप्यूटर कहाँ से शुरू करेगा?",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "visual": {
+        "start": "Authentic ruled classroom attendance register sheet settles into the vertical frame with binding ring holes and red margin rule.",
+        "objects": [
+          "Ruled attendance register card",
+          "5 unsorted student names: KABIR, ZOYA, AMAN, MIRA, DEV",
+          "Search target HUD: MIRA",
+          "Animated downward action direction pointer"
+        ],
+        "action": "The register opens; target badge displays MIRA; scanning pointer locks onto row 1 (index 0) with a glowing downward action direction arrow indicating the sequential scan path.",
+        "camera": "Stable front-facing vertical diagram framing with ample subtitle clearance below.",
+        "motion_graphics": [
+          "CLASS ATTENDANCE REGISTER header",
+          "TARGET: MIRA badge",
+          "ACTION DIRECTION: SEQUENTIAL FORWARD SCAN (i++) banner"
+        ],
+        "end": "Pointer settles at Index 0 ready for the first comparison."
+      }
+    },
+    {
+      "type": "timeline",
+      "tag": "02 / ONE ENTRY AT A TIME",
+      "title": "CHECK · ADVANCE · STOP",
+      "steps": [
+        "Start at first entry (i = 0)",
+        "Compare current name with target",
+        "Mismatch: advance one row (i++)",
+        "Match or end: stop search"
+      ],
+      "activeStep": 0,
+      "purpose": "State the exact control flow of linear search before the animated register walkthrough.",
+      "tone": "[Clear, direct]",
+      "narration": "Linear Search का नियम सीधा है। पहली entry से शुरू करो। नाम को target से मिलाओ। Match नहीं? अगली entry पर जाओ। Match मिले या list खत्म हो—तभी रुक जाओ।",
+      "transition": "match_cut",
+      "sfx": "click",
+      "visual": {
+        "start": "Four structured sequential execution steps arranged in a clean vertical track matching the register downward reading direction.",
+        "objects": [
+          "Vertical execution spine with 4 glowing milestone nodes",
+          "Directional step arrows",
+          "Branching termination node"
+        ],
+        "action": "A cyan laser pulse travels downward through Start, Compare, and Advance, illustrating the single-direction decision loop before branching to Match/End.",
+        "camera": "Stable centered timeline framing with generous margins.",
+        "motion_graphics": [
+          "STEP 1 TO 4 EXECUTION PIPELINE",
+          "RULE: SEQUENTIAL SCAN WITHOUT SKIPPING"
+        ],
+        "end": "Step path resolves into the register for the active demonstration."
+      }
+    },
+    {
+      "type": "linear_search_visualizer",
+      "variant": "found",
+      "tag": "03 / FOLLOW THE POINTER",
+      "title": "MIRA IS ENTRY FOUR",
+      "searchItems": [
+        "KABIR",
+        "ZOYA",
+        "AMAN",
+        "MIRA",
+        "DEV"
+      ],
+      "searchTarget": "MIRA",
+      "purpose": "Demonstrate the exact word-synchronized step-by-step linear search with early termination when the target is found.",
+      "tone": "[Explaining mechanism, synchronized]",
+      "narration": "पहले कबीर—मीरा नहीं। अगली लाइन, ज़ोया—नहीं। फिर अमन—नहीं। अब मीरा—मिल गई! यहीं रुकते हैं; देव को जाँचने की ज़रूरत नहीं।",
+      "transition": "match_cut",
+      "sfx": [
+        {
+          "sound": "tick",
+          "frame": 10
+        },
+        {
+          "sound": "tick",
+          "frame": 45
+        },
+        {
+          "sound": "tick",
+          "frame": 75
+        },
+        {
+          "sound": "ding",
+          "frame": 100
+        },
+        {
+          "sound": "thud",
+          "frame": 130
+        }
+      ],
+      "visual": {
+        "start": "Attendance register active with pointer positioned at Index 0 (KABIR).",
+        "objects": [
+          "Ruled attendance register rows",
+          "Active pointer scanner with downward directional chevrons",
+          "Red mismatch badges",
+          "Emerald green match halo",
+          "Red early exit stop barrier"
+        ],
+        "action": "Pointer inspects KABIR (NO MATCH ❌), glides down along action vector to ZOYA (NO MATCH ❌), glides to AMAN (NO MATCH ❌), then locks onto MIRA (MATCH FOUND! ✅) with an emerald aura. A red STOP barrier drops immediately below MIRA, leaving DEV completely grayed out and skipped.",
+        "camera": "Stable centered framing focused on the active row progression.",
+        "motion_graphics": [
+          "ACTION DIRECTION: MOVE DOWN ⬇️ i++",
+          "MATCH CONFIRMED: INDEX 3",
+          "STOP: EARLY TERMINATION (DEV SKIPPED)"
+        ],
+        "end": "Search terminates at index 3 with 4 comparisons recorded, transitioning to the complexity analysis."
+      }
+    },
+    {
+      "type": "stat",
+      "tag": "04 / THE WORST CASE",
+      "title": "WORST CASE COMPLEXITY",
+      "value": "O(N)",
+      "label": "MAXIMUM COMPARISONS: N CHECKS",
+      "icon": "clock",
+      "purpose": "Explain why Linear Search worst-case time complexity scales linearly with list size N.",
+      "tone": "[Analytical, informative]",
+      "narration": "अगर नाम आख़िरी पंक्ति पर हो, या मिले ही नहीं, तो हर entry देखनी पड़ सकती है। N entries वाली list में worst case N checks तक जा सकता है।",
+      "transition": "zoom_through",
+      "sfx": "impact",
+      "visual": {
+        "start": "Bold editorial stat display centered on the frame with large glowing cyan typography.",
+        "objects": [
+          "Huge O(N) complexity numeral",
+          "Best Case O(1) vs Worst Case O(N) telemetry meters",
+          "Linear growth slope graph indicator"
+        ],
+        "action": "O(N) punches in with an impact slam; comparison meters contrast Best Case (1 check at start) against Worst Case (all N checks needed).",
+        "camera": "Stable macro typography presentation.",
+        "motion_graphics": [
+          "O(N) BIG-O NOTATION",
+          "BEST CASE: O(1) · WORST CASE: O(N)"
+        ],
+        "end": "Meters lock into peak value, setting up the absent-target demonstration."
+      }
+    },
+    {
+      "type": "linear_search_visualizer",
+      "variant": "not_found",
+      "tag": "05 / REACH THE END",
+      "title": "NISHA IS NOT ON THIS LIST",
+      "searchItems": [
+        "KABIR",
+        "ZOYA",
+        "AMAN",
+        "MIRA",
+        "DEV"
+      ],
+      "searchTarget": "NISHA",
+      "purpose": "Demonstrate the worst-case scenario where an item is not present, requiring an exhaustive search through every single entry.",
+      "tone": "[Rapid, energetic demonstration]",
+      "narration": "अब निशा को खोजो। कबीर? नहीं। ज़ोया? नहीं। अमन? नहीं। मीरा? नहीं। देव? नहीं। पूरी list जाँच ली—निशा यहाँ नहीं है।",
+      "transition": "match_cut",
+      "sfx": [
+        {
+          "sound": "tick",
+          "frame": 40
+        },
+        {
+          "sound": "tick",
+          "frame": 58
+        },
+        {
+          "sound": "tick",
+          "frame": 76
+        },
+        {
+          "sound": "tick",
+          "frame": 94
+        },
+        {
+          "sound": "tick",
+          "frame": 112
+        },
+        {
+          "sound": "glitch",
+          "frame": 135
+        }
+      ],
+      "visual": {
+        "start": "Register resets with target badge updating to NISHA in high-contrast coral red.",
+        "objects": [
+          "Ruled attendance register rows",
+          "Rapid downward scanning reticle",
+          "5 red mismatch badges",
+          "Dashed boundary warning barrier at bottom"
+        ],
+        "action": "In rapid cadence matching the spoken words, pointer checks Kabir (❌), Zoya (❌), Aman (❌), Mira (❌), Dev (❌), then shoots past the bottom into a dashed boundary alert: ALL 5 ITEMS CHECKED ➔ RETURN -1 (NOT FOUND).",
+        "camera": "Stable vertical register view with bottom boundary expansion.",
+        "motion_graphics": [
+          "5 / 5 CHECKS PERFORMED",
+          "BOUNDARY REACHED: i == N",
+          "RESULT: RETURN -1 (NOT FOUND)"
+        ],
+        "end": "All 5 rows marked mismatch, confirming the exhaustive linear worst-case search."
+      }
+    },
+    {
+      "type": "diagram",
+      "tag": "06 / FOUND OR NOT FOUND",
+      "title": "WHEN DOES THE SEARCH STOP?",
+      "diagram": "episodes/linear-search/media/diag6.svg",
+      "mermaid": "graph TD; START[\"Check current entry\"] --> MATCH{\"Target matches?\"}; MATCH -- \"YES\" --> FOUND[\"Found · Stop\"]; MATCH -- \"NO\" --> MORE{\"More entries?\"}; MORE -- \"YES\" --> NEXT[\"Advance one row\"]; NEXT --> START; MORE -- \"NO\" --> MISSING[\"Not found · Stop\"];",
+      "purpose": "Synthesize the two possible termination conditions of Linear Search into a clear structural flowchart.",
+      "tone": "[Structured, takeaway]",
+      "narration": "मीरा चौथी entry पर मिल गई, इसलिए आख़िरी नाम देखना नहीं पड़ा। निशा नहीं मिली, इसलिए पूरी list जाँची। हर बार वही तरीका—एक-एक entry, उसी क्रम में।",
+      "transition": "zoom_through",
+      "sfx": "tick",
+      "visual": {
+        "start": "Dark cyberpunk sequence flowchart appears with glowing neon decision diamonds and directional laser connectors.",
+        "objects": [
+          "Check current entry node",
+          "Target matches decision diamond",
+          "Found Stop exit node",
+          "More entries decision diamond",
+          "Advance row loopback connector",
+          "Not found Stop exit node"
+        ],
+        "action": "Animated laser scanline traces the two distinct termination pathways: the short YES branch (early exit upon match) and the longer loop cycle terminating in Not Found.",
+        "camera": "Stable diagram framing centered on the decision branches.",
+        "motion_graphics": [
+          "TWO TERMINATION CONDITIONS",
+          "1. EARLY EXIT ON MATCH",
+          "2. EXHAUSTIVE EXIT AT END"
+        ],
+        "end": "Both paths resolve to stop states, leading into the algorithmic payoff."
+      }
+    },
+    {
+      "type": "outro",
+      "tag": "07 / THE SIMPLE RULE",
+      "title": "CHECK · ADVANCE · STOP",
+      "text": "LINEAR SEARCH COMPLETED",
+      "icon": "sparkles",
+      "purpose": "Deliver the clear memorable takeaway of Linear Search and invite viewers to explore more computer science concepts.",
+      "tone": "[Inspiring, upbeat]",
+      "narration": "बस यही Linear Search है: एक entry देखो, target से मिलाओ, और फैसला करो—आगे बढ़ना है या रुकना। कंप्यूटर की search भी रोज़मर्रा के ऐसे ही सीधे कदमों से शुरू होती है।",
+      "transition": "dissolve",
+      "sfx": "ding",
+      "visual": {
+        "start": "Structured outro card framed in dark navy with cyan accent borders, geometric check icons, and channel subscribe CTA.",
+        "objects": [
+          "Summary card with 3 key CS takeaways",
+          "Time: Best O(1) · Worst O(N) badge",
+          "Space: O(1) In-Place badge",
+          "Channel subscribe CTA button"
+        ],
+        "action": "The core principles lock in with glowing gold checkmarks; CTA pulse activates as the narration concludes.",
+        "camera": "Stable cinematic hero outro presentation.",
+        "motion_graphics": [
+          "CHECK · ADVANCE · STOP",
+          "TIME COMPLEXITY: O(1) to O(N)",
+          "SPACE COMPLEXITY: O(1) IN-PLACE",
+          "FOLLOW FOR COMPUTER SCIENCE VISUALS"
+        ],
+        "end": "Holds on clean branded frame with zero audio clipping."
+      }
+    }
+  ]
+}

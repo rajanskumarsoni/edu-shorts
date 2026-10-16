@@ -1,0 +1,47 @@
+id: "tesla-flying-roadster"
+topic: "How Elon Musk's Tesla Roadster SpaceX Package with Cold Gas Thrusters works"
+title: "Can Elon Musk's Tesla Roadster Really Fly?"
+target_duration_seconds: 75
+format: "vertical"
+art_direction: "editorial"
+theme: "cyberpunk"
+accent: "#00F0FF"
+
+pedagogy:
+  audience: "Curious 15-year-old viewer fascinated by cars, rockets, and physics"
+  core_question: "How can a street car fly and hit 0-60 mph in 0.81 seconds without airplane wings?"
+  core_mechanism: "The Tesla Roadster SpaceX package replaces rear passenger seats with a 10,000 PSI composite pressure vessel (COPV) powering 10 cold-gas rocket thrusters that fire supersonic air jets via Newton's 3rd law (F = m_dot * v_e)."
+  analogy: "Like releasing an inflated balloon: compressed gas rushing out of a supersonic nozzle pushes the car in the opposite direction with thousands of pounds of instant rocket force."
+  misconceptions:
+    - "The car uses jet engines with fire and fuel; it uses cold gas thrusters firing pure compressed air or nitrogen without combustion."
+    - "It can fly across the city like an airplane; it can only execute short hops, hover briefly (~1-2 meters), and generate extreme ground-effect downforce."
+    - "Cars can accelerate infinitely just with more motor power; normal cars are capped by rubber tire grip on asphalt, whereas rocket thrusters bypass tire traction entirely."
+
+verified_mechanism:
+  - "The rear seats are replaced by a Composite Overwrapped Pressure Vessel (COPV) rated at ~10,000 PSI (~700 bar)."
+  - "10 cold gas thrusters are positioned seamlessly around the body (rear license plate, underbody floor, front fascia, side quarters)."
+  - "High-pressure gas expands through supersonic de Laval nozzles, reaching exhaust speeds above 1,000 m/s (Mach 3)."
+  - "Newton's 3rd Law (F = m_dot * v_e) generates pure reaction force independent of tire traction, yielding 0-60 mph in ~0.81 seconds."
+  - "Downward thrusters provide vertical lift for short levitation hops or inverted track driving via 2G+ downforce suction."
+  - "An onboard high-pressure electric compressor repumps the tank from the 200 kWh traction battery when depleted."
+
+research_sources:
+  - url: "https://www.youtube.com/watch?v=_iRhJ1JBRrg"
+    supports: "7NEWS broadcast: Elon Musk unveils flying Tesla Roadster demo at SpaceX McGregor test facility, 0-60 in under 1s, 2G suction downforce, ramp flight stunt."
+  - url: "https://www.youtube.com/watch?v=tw4jkyfY4HE"
+    supports: "Official Tesla Roadster reveal: vehicle exterior, acceleration run, and rear thruster packaging location."
+  - url: "https://en.wikipedia.org/wiki/Cold_gas_thruster"
+    supports: "SpaceX cold gas thruster physics, composite overwrapped pressure vessel (COPV), and supersonic de Laval nozzle expansion."
+
+research_limits:
+  - "Production target stated by Elon Musk is 2028; real-world street legality and civilian safety approvals for 10,000 PSI air release remain under regulatory development."
+
+visual_plan:
+  - "Scene 1: Real YouTube launch clip of Elon Musk on stage unveiling the flying Tesla Roadster."
+  - "Scene 2: Telemetry gauge showing the 0-60 mph metric sweeping down to 0.81s."
+  - "Scene 3: Real demonstration footage of the Roadster launching off the ramp and firing cold-gas thrusters in mid-air."
+  - "Scene 4: Detailed cutaway visualizer showing the removed rear seats, glowing 10,000 PSI COPV tank, and 10 cold-gas thruster nozzles."
+  - "Scene 5: Physics breakdown comparing tire friction limits (F = mu * N) against rocket thrust (F = m_dot * v_e)."
+  - "Scene 6: Bento grid detailing capabilities and physical limits (short hops, 2G suction, tank repump time, safety noise)."
+  - "Scene 7: Real cinematic launch footage of the red Roadster accelerating down the highway."
+  - "Scene 8: Outro payoff and channel subscribe call-to-action."

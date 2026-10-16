@@ -52,4 +52,5 @@ episodes/.uploaded_manifest.json
 
 # Transient renders, QA frames, and experiments are not source assets.
 scratch/
+.browser_profiles/
 

@@ -857,11 +857,11 @@ def build(spec_path: str, args):
             print(f"Pruned temporary build staging in public/{vid}/ (canonical assets stay in episodes/{vid}/)")
 
     if not args.no_upload and args.upload:
-        print(f"\n[AUTO-UPLOAD] Video is ready! Uploading to YouTube as {args.upload}...")
+        print(f"\n[AUTO-UPLOAD] Video is ready! Uploading to {args.upload_platform.upper()} as {args.upload}...")
         auto_script = ROOT / "tools" / "auto_upload.py"
         if not auto_script.exists():
             auto_script = ROOT / "scripts" / "auto_upload.py"
-        subprocess.run([sys.executable, str(auto_script), str(out), "--privacy", args.upload],
+        subprocess.run([sys.executable, str(auto_script), str(out), "--privacy", args.upload, "--platform", args.upload_platform],
                        check=True, cwd=ROOT)
 
 
@@ -878,7 +878,9 @@ def main():
     ap.add_argument("--skip-validate", action="store_true")
     ap.add_argument("--upload", nargs="?", const="public", default=None, choices=["public", "private", "unlisted"],
                     help="Upload after rendering; bare --upload means public (default: do not upload)")
-    ap.add_argument("--no-upload", action="store_true", help="Skip uploading to YouTube")
+    ap.add_argument("--upload-platform", choices=["youtube", "telegram", "instagram", "facebook", "twitter", "linkedin", "threads", "both", "all"],
+                    default="youtube", help="Target platform(s) for upload (default: youtube)")
+    ap.add_argument("--no-upload", action="store_true", help="Skip uploading after rendering")
     ap.add_argument("--align", choices=["auto", "silence", "whisper", "manual"], default="auto",
                     help="single-audio mode: how scene starts are found (default auto)")
     ap.add_argument("--silence-db", type=float, default=-35.0, help="loudness below this counts as silence")

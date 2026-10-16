@@ -32,7 +32,7 @@ This project is collaboratively engineered across multiple AI agents:
 - **ChatGPT**: Strategist & Human-in-the-Loop Advisor (consulted via copy-paste to and from `.agents/BOARD.md`).
 
 ### The Golden Rule of Coordination
-> **Before starting, read `.agents/BOARD.md`. When you finish, append a dated entry: who you are, what you did, what's next, and any questions for the other agents.**
+> **Before starting, read the active focus and recent entries in `.agents/BOARD.md` (historical logs older than 48h are archived in `.agents/BOARD_ARCHIVE.md` to conserve context tokens). When you finish, append a dated entry: who you are, what you did, what's next, and any questions for the other agents.**
 
 ### Orchestrator Workflow (Claude Code ➔ Codex)
 Claude Code acts as the orchestrator since it can run terminal commands directly:
@@ -163,7 +163,12 @@ Before writing factual narration or storyboard claims:
      * `whiteboard`: `title`, `tag`, `image` (optional path to a high-res chalkboard infographic asset, e.g. from `bs-chalkboard-infographic`), `whiteboardType: "algorithm" | "sorting" | "architecture" | "tree" | "math" | "flow" | "infographic" | "radial" | "comparison" | "loop"`, `whiteboardTheme: "chalkboard" | "whiteboard" | "grid"`, `brushName: "rotring" | "HB" | "2B" | "marker"`, `equation`, `whiteboardData: [{"value": 64, "highlight": false}]`. Tactile organic hand-drawn sketching and chalkboard infographics with full 9:16 vertical shorts and 16:9 landscape video responsiveness.
 8. **Gold Standard Reference**:
    - `episodes/how-upi-works/storyboard.json` is a technical architecture reference, not a requirement to copy its 3D treatment. Future videos should match its causal detail while choosing the clearest medium and restraint for each topic.
-9. **Execution & Publishing**: Never stop after writing code. Always validate with `python3 validate.py <spec>`, render with `python3 pipeline.py <spec> --no-upload`, inspect output, run QA, and deliver a complete playable MP4 file at `episodes/<id>/final.mp4`. Upload only when the user explicitly requests it, using `--upload private|unlisted|public`. Always review `episodes/<id>/ATTRIBUTIONS.md` for copyright/CC-BY attribution compliance. Never output to a root `out/` folder.
+9. **Token-Efficient Execution & Publishing**:
+   - To achieve a **98%+ reduction in LLM tokens** while preserving maximum visual and audio quality:
+     * **Write `script.md` ONLY**: Authors write concise Hindi narration + visual intent in `episodes/<id>/script.md` (~500 tokens). DO NOT manually write 400-line JSON storyboards in chat context.
+     * **Run the 1-Command Engine**: Execute `python3 tools/generate_video.py episodes/<id>/script.md`. This automatically compiles the storyboard with rich 6-key visuals, validates schema, resolves assets, synthesizes VoiceStudio voiceovers, renders Remotion MP4, and runs QA verification in ONE turn.
+     * For fast visual checks: use `python3 tools/generate_video.py episodes/<id>/script.md --preview`.
+     * Never output to a root `out/` folder; deliver complete playable MP4 file at `episodes/<id>/final.mp4`. Upload only when the user explicitly requests it, using `--upload private|unlisted|public`. Always review `episodes/<id>/ATTRIBUTIONS.md` for copyright/CC-BY attribution compliance.
 10. **Environment**: Utilize standard Python virtual environment in `.venv/bin` and system Homebrew tools (`/opt/homebrew/bin` for Node/npx, FFmpeg, Python 3.11).
 11. **Strict Single Source of Truth (`episodes/<id>/` vs `public/`) & Strict Ban on Root `out/`**:
     - **Single Source of Truth**: `episodes/<id>/` is the **ONLY** canonical directory for episode content. All narration speech files must reside in `episodes/<id>/audio/`, all media (images, B-roll video clips, SVG diagrams, 3D models, thumbnails, contact sheets) in `episodes/<id>/media/`, and rendered video in `episodes/<id>/final.mp4`.

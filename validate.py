@@ -26,7 +26,7 @@ COMMON_SCENE_FIELDS = {
     "purpose", "transition", "camera", "action", "objects", "tag", "tone",
     "beats", "journeyStep", "search_image", "generate_image", "search_video",
     "search_sfx", "search_model", "search_icon", "icon_path", "image_provider", "video_provider",
-    "variant", "sortTriggerFrame"
+    "variant", "sortTriggerFrame", "particles", "particleCount", "particleColor"
 }
 ALLOWED = {
     "hook": {"type", "text", "title", "image", "narration", "seconds"} | COMMON_SCENE_FIELDS,
@@ -64,6 +64,9 @@ ALLOWED = {
     "whiteboard": {"type", "title", "tag", "whiteboardType", "whiteboardTheme", "brushName", "paper", "strokes", "whiteboardData", "equation", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "refrigerator": {"type", "title", "tag", "variant", "image", "video", "metrics", "specs", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "air_conditioner": {"type", "title", "tag", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "linear_search_visualizer": {"type", "title", "tag", "variant", "searchItems", "searchTarget", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "tesla_roadster_visualizer": {"type", "title", "tag", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "depth_parallax": {"type", "title", "tag", "image", "depthMap", "intensity", "movement", "narration", "seconds"} | COMMON_SCENE_FIELDS,
 }
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp", ".svg")
 VIDEO_EXTS = (".mp4", ".mov", ".webm")
@@ -444,7 +447,7 @@ def validate_data(data, root=ROOT):
             cinematic_types = {"three", "manim", "architecture", "code", "image", "video",
                                "compare", "gauge", "timeline", "bento", "benchmark",
                                "hierarchy", "data_structure", "inspector", "quadrant",
-                               "concentric", "seat_booking", "neural_network_graph", "sorting_visualizer", "refrigerator", "air_conditioner"}
+                               "concentric", "seat_booking", "neural_network_graph", "sorting_visualizer", "refrigerator", "air_conditioner", "linear_search_visualizer", "tesla_roadster_visualizer", "depth_parallax"}
             is_cinematic = t in cinematic_types
             if is_cinematic:
                 required_visual_fields = {
@@ -763,13 +766,15 @@ def validate_data(data, root=ROOT):
                 rep.warn(where, "title is over 8 words")
 
     types = [s.get("type") for s in scenes if isinstance(s, dict)]
-    if types and types[0] not in ("hook", "interview") and not (
+    if types and types[0] not in ("hook", "interview", "video") and not (
         types[0] == "air_conditioner" and scenes[0].get("variant") == "split_hook"
+    ) and not (
+        types[0] == "linear_search_visualizer" and scenes[0].get("variant") == "intro"
     ):
-        rep.warn("scenes", "first scene should be a hook or an interview prompt")
+        rep.warn("scenes", "first scene should be a hook, video, or an interview prompt")
     if types and types[-1] not in ("outro", "interview"):
         rep.warn("scenes", "last scene should be an outro or recap")
-    if not any(t in types for t in ("manim", "three", "architecture", "code", "gauge", "bento", "benchmark", "hierarchy", "data_structure", "inspector", "quadrant", "concentric", "seat_booking", "neural_network_graph", "interview", "terminal", "screenshot", "chart", "product", "sorting_visualizer", "refrigerator", "air_conditioner")):
+    if not any(t in types for t in ("manim", "three", "architecture", "code", "gauge", "bento", "benchmark", "hierarchy", "data_structure", "inspector", "quadrant", "concentric", "seat_booking", "neural_network_graph", "interview", "terminal", "screenshot", "chart", "product", "sorting_visualizer", "refrigerator", "air_conditioner", "linear_search_visualizer", "tesla_roadster_visualizer", "depth_parallax")):
         rep.warn("scenes", "no animated visual explanation (manim, three, architecture, code, gauge, bento, benchmark...); at least one is recommended")
 
     # No Consecutive Twins rule: Never use the exact same scene type and variant twice in a row

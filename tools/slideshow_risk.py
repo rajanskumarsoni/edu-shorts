@@ -38,7 +38,8 @@ DYNAMIC_VISUAL_TYPES = {
     "three", "manim", "architecture", "diagram", "video", "chart",
     "terminal", "screenshot", "gauge", "benchmark", "bento", "hierarchy",
     "data_structure", "neural_network_graph", "seat_booking", "hook",
-    "sorting_visualizer", "product", "refrigerator", "air_conditioner"
+    "sorting_visualizer", "product", "refrigerator", "air_conditioner",
+    "linear_search_visualizer", "tesla_roadster_visualizer", "depth_parallax"
 }
 
 

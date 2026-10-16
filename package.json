@@ -18,7 +18,9 @@
     "record-html": "python3 tools/html_recorder.py",
     "edit-video": "python3 tools/video_editor.py",
     "blender": "python3 tools/blender_render.py",
-    "manimgx": ".tools/manimgx-env/bin/manimgx",
+    "make-video": "python3 tools/generate_video.py",
+    "generate": "python3 tools/generate_video.py",
+    "compile": "python3 tools/compile_script_to_storyboard.py",
     "post": "python3 tools/upload_video.py"
   },
   "dependencies": {

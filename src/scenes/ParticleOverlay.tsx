@@ -7,8 +7,8 @@ import {
 } from "remotion";
 
 /**
- * Deterministic pseudo-random based on seed index.
- * Produces the identical value every frame for the same seed — essential for Remotion frame reproducibility.
+ * Deterministic pseudo-random generator based on seed index.
+ * Produces identical values on every frame for a given seed — critical for Remotion frame reproducibility.
  */
 function seededRandom(seed: number): number {
   const x = Math.sin(seed * 12.9898 + seed * 78.233) * 43758.5453;
@@ -33,13 +33,13 @@ export const ParticleOverlay: React.FC<ParticleOverlayProps> = ({
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
-  const globalFadeIn = interpolate(frame, [0, fps * 0.5], [0, 1], {
+  const globalFadeIn = interpolate(frame, [0, fps * 0.4], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
   const globalFadeOut = interpolate(
     frame,
-    [durationInFrames - fps * 0.4, durationInFrames],
+    [Math.max(0, durationInFrames - fps * 0.35), durationInFrames],
     [1, 0],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
@@ -47,7 +47,7 @@ export const ParticleOverlay: React.FC<ParticleOverlayProps> = ({
 
   if (type === "fireflies") {
     return (
-      <AbsoluteFill style={{ pointerEvents: "none" }}>
+      <AbsoluteFill style={{ pointerEvents: "none", zIndex: 5 }}>
         {Array.from({ length: count }, (_, i) => {
           const baseX = seededRandom(i * 7 + 1) * 90 + 5;
           const baseY = seededRandom(i * 13 + 2) * 80 + 10;
@@ -85,7 +85,7 @@ export const ParticleOverlay: React.FC<ParticleOverlayProps> = ({
 
   if (type === "sparkles") {
     return (
-      <AbsoluteFill style={{ pointerEvents: "none" }}>
+      <AbsoluteFill style={{ pointerEvents: "none", zIndex: 5 }}>
         {Array.from({ length: count }, (_, i) => {
           const x = seededRandom(i * 9 + 1) * 90 + 5;
           const y = seededRandom(i * 17 + 3) * 85 + 5;
@@ -123,13 +123,14 @@ export const ParticleOverlay: React.FC<ParticleOverlayProps> = ({
     );
   }
 
-  // Fallback subtle mist
+  // Fallback subtle atmospheric mist
   return (
     <AbsoluteFill
       style={{
         pointerEvents: "none",
-        background: `radial-gradient(circle at 50% 50%, ${color}15 0%, transparent 70%)`,
+        background: `radial-gradient(circle at 50% 50%, ${color}18 0%, transparent 70%)`,
         opacity: masterAlpha * 0.7,
+        zIndex: 5,
       }}
     />
   );

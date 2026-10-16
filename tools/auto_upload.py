@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""Automated Uploader: Publishes rendered videos to YouTube Shorts
-with automatic #Shorts tagging, tracker logging, and error handling.
+"""Automated Uploader: Publishes rendered videos across platforms
+with automatic deduplication, tracker logging, and error handling.
+Only newly rendered videos from this point onwards are uploaded.
 
-Standard Usage (Method 1 - Direct Pipeline Flag):
-  python3 pipeline.py videos/<topic>.json --upload            # Render & auto-upload (public)
-  python3 pipeline.py videos/<topic>.json --upload private    # Render & auto-upload (private)
+Standard Usage (Direct Pipeline Flag):
+  python3 pipeline.py episodes/<id>/storyboard.json --upload public --upload-platform telegram
 
 Standalone Usage:
-  python3 tools/auto_upload.py episodes/<id>/final.mp4 --privacy public
+  python3 tools/auto_upload.py episodes/<id>/final.mp4 --platform telegram
+  python3 tools/auto_upload.py --watch --platform telegram     # Watch for newly rendered videos onwards
 """
 
 import argparse
@@ -18,23 +19,12 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from tools.upload_video import is_already_uploaded, load_manifest, record_upload
+
 EPISODES_DIR = ROOT / "episodes"
 UPLOAD_SCRIPT = ROOT / "tools" / "upload_video.py"
-TRACKER_FILE = EPISODES_DIR / ".uploaded_manifest.json"
-
-
-def load_tracker():
-    if TRACKER_FILE.is_file():
-        try:
-            return set(json.loads(TRACKER_FILE.read_text(encoding="utf-8")))
-        except Exception:
-            return set()
-    return set()
-
-
-def save_tracker(tracker):
-    EPISODES_DIR.mkdir(exist_ok=True)
-    TRACKER_FILE.write_text(json.dumps(sorted(list(tracker)), indent=2), encoding="utf-8")
 
 
 def is_file_ready(path: Path, wait_seconds: float = 3.0) -> bool:
@@ -52,8 +42,8 @@ def is_file_ready(path: Path, wait_seconds: float = 3.0) -> bool:
         return False
 
 
-def upload_video(video_path: Path, privacy: str = "public") -> bool:
-    print(f"\n[AUTO-UPLOAD] Initiating YouTube upload for: {video_path.name}")
+def upload_video(video_path: Path, privacy: str = "public", platform: str = "youtube", force: bool = False) -> bool:
+    print(f"\n[AUTO-UPLOAD] Initiating upload for: {video_path.name} (target: {platform.upper()})")
     stem = video_path.stem
     spec_path = ROOT / "videos" / f"{stem}.json"
     
@@ -75,44 +65,56 @@ def upload_video(video_path: Path, privacy: str = "public") -> bool:
         sys.executable,
         str(UPLOAD_SCRIPT),
         str(video_path),
-        "--platform", "youtube",
+        "--platform", platform,
         "--privacy", privacy,
         "--publish"
     ]
+    if force:
+        cmd.append("--force")
     if title:
         cmd.extend(["--title", title])
 
     try:
         subprocess.run(cmd, check=True, cwd=ROOT)
-        print(f"[AUTO-UPLOAD] Successfully published {video_path.name} to YouTube!")
+        print(f"[AUTO-UPLOAD] Successfully published {video_path.name} to {platform.upper()}!")
         return True
     except subprocess.CalledProcessError as e:
         print(f"[AUTO-UPLOAD] Upload failed for {video_path.name}: {e}", file=sys.stderr)
         return False
 
 
-def watch_directory(privacy: str, interval: float = 4.0):
+def watch_directory(privacy: str, platform: str = "youtube", interval: float = 4.0, force: bool = False, all_pending: bool = False):
     print("=" * 60)
     print(f"  Watching {EPISODES_DIR} for newly rendered final.mp4 videos...")
-    print(f"  Target: YouTube Shorts | Visibility: {privacy}")
+    print(f"  Target Platform: {platform.upper()} | Visibility: {privacy}")
+    print(f"  Mode: {'ALL PENDING VIDEOS' if all_pending else 'ONLY NEW VIDEOS ONWARDS'}")
     print(f"  Check interval: {interval}s (Press Ctrl+C to stop)")
     print("=" * 60)
 
-    uploaded = load_tracker()
+    start_time = 0.0 if all_pending else time.time()
 
     while True:
         try:
             mp4_files = sorted(EPISODES_DIR.glob("*/final.mp4"))
             for mp4 in mp4_files:
-                rel_name = f"{mp4.parent.name}/{mp4.name}"
-                if rel_name in uploaded:
+                # 1. Skip if already uploaded to target platform in manifest
+                if not force and is_already_uploaded(mp4, platform):
                     continue
-                print(f"[AUTO-UPLOAD] New video detected: {rel_name}. Checking render completion...")
+
+                # 2. Only consider videos modified/rendered on or after startup time
+                try:
+                    mtime = mp4.stat().st_mtime
+                    if not force and mtime < start_time:
+                        continue
+                except OSError:
+                    continue
+
+                rel_name = f"{mp4.parent.name}/{mp4.name}"
+                print(f"[AUTO-UPLOAD] Newly rendered video detected: {rel_name}. Checking completion...")
                 if is_file_ready(mp4):
-                    success = upload_video(mp4, privacy)
+                    success = upload_video(mp4, privacy, platform=platform, force=force)
                     if success:
-                        uploaded.add(rel_name)
-                        save_tracker(uploaded)
+                        print(f"✅ [AUTO-UPLOAD] {rel_name} published successfully!")
                 else:
                     print(f"[AUTO-UPLOAD] {rel_name} is still rendering/writing. Waiting...")
             time.sleep(interval)
@@ -121,34 +123,36 @@ def watch_directory(privacy: str, interval: float = 4.0):
             break
 
 
-def wait_and_upload(video_path: Path, privacy: str, timeout: float = 1800):
+def wait_and_upload(video_path: Path, privacy: str, platform: str = "youtube", timeout: float = 1800, force: bool = False):
     print(f"[AUTO-UPLOAD] Waiting for {video_path.name} to become available (timeout: {timeout/60:.0f}m)...")
     start = time.time()
     while time.time() - start < timeout:
         if video_path.is_file() and is_file_ready(video_path):
-            success = upload_video(video_path, privacy)
-            if success:
-                tracker = load_tracker()
-                tracker.add(video_path.name)
-                save_tracker(tracker)
-            return success
+            if not force and is_already_uploaded(video_path, platform):
+                print(f"[AUTO-UPLOAD] {video_path.name} was already published to {platform.upper()}. Skipping.")
+                return True
+            return upload_video(video_path, privacy, platform=platform, force=force)
         time.sleep(4)
     print(f"[AUTO-UPLOAD] Timed out waiting for {video_path.name} to be rendered.", file=sys.stderr)
     return False
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("video", nargs="?", type=Path, help="Specific video to upload (optional)")
-    parser.add_argument("--watch", action="store_true", help="Continuously watch episodes/ for new videos")
+    parser.add_argument("--watch", action="store_true", help="Continuously watch episodes/ for new videos rendered onwards")
+    parser.add_argument("--all-pending", action="store_true", help="When watching, also process any older unuploaded videos")
     parser.add_argument("--wait", action="store_true", help="Wait if video file does not exist yet")
+    parser.add_argument("--platform", choices=("youtube", "telegram", "instagram", "facebook", "twitter", "linkedin", "threads", "both", "all"),
+                        default="youtube", help="Target platform(s) to publish video (default: youtube)")
     parser.add_argument("--privacy", choices=("public", "private", "unlisted"), default="public",
                         help="YouTube upload privacy (default: public)")
+    parser.add_argument("--force", action="store_true", help="Force upload even if already marked as uploaded in manifest")
     parser.add_argument("--timeout", type=float, default=1800, help="Max wait time in seconds (default: 30m)")
     args = parser.parse_args()
 
     if args.watch:
-        watch_directory(args.privacy)
+        watch_directory(args.privacy, platform=args.platform, force=args.force, all_pending=args.all_pending)
         return 0
 
     if not args.video:
@@ -157,20 +161,19 @@ def main():
     target_video = (ROOT / args.video).resolve() if not args.video.is_absolute() else args.video.resolve()
 
     if args.wait or not target_video.exists():
-        success = wait_and_upload(target_video, args.privacy, args.timeout)
+        success = wait_and_upload(target_video, args.privacy, platform=args.platform, timeout=args.timeout, force=args.force)
         return 0 if success else 1
 
     if not is_file_ready(target_video, wait_seconds=1.0):
         print(f"File {target_video} is incomplete or currently being written.", file=sys.stderr)
         return 1
 
-    success = upload_video(target_video, args.privacy)
-    if success:
-        tracker = load_tracker()
-        tracker.add(target_video.name)
-        save_tracker(tracker)
+    if not args.force and is_already_uploaded(target_video, args.platform):
+        print(f"⏭️  [AUTO-UPLOAD] {target_video.parent.name} is already uploaded to {args.platform.upper()}. Skipping.")
         return 0
-    return 1
+
+    success = upload_video(target_video, args.privacy, platform=args.platform, force=args.force)
+    return 0 if success else 1
 
 
 if __name__ == "__main__":
