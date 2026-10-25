@@ -20,6 +20,22 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+
+def _ensure_project_venv():
+    venv_py = ROOT / ".venv" / "bin" / "python3"
+    if not venv_py.is_file():
+        return
+    try:
+        import playwright
+    except ImportError:
+        if Path(sys.executable).resolve() != venv_py.resolve():
+            import subprocess
+            res = subprocess.run([str(venv_py)] + sys.argv, cwd=str(ROOT))
+            sys.exit(res.returncode)
+
+
+_ensure_project_venv()
+
 PROFILE_DIR = ROOT / ".browser_profiles" / "instagram"
 MANIFEST_FILE = ROOT / "episodes" / ".uploaded_manifest.json"
 
@@ -63,22 +79,48 @@ def format_instagram_caption(video: Path, custom_text: str = None) -> str:
     return f"{title}\n\n{body}\n\n{hashtag_str}".strip()
 
 
+def sync_cookies_from_threads(context):
+    threads_dir = ROOT / ".browser_profiles" / "threads"
+    if not threads_dir.is_dir():
+        return
+    try:
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as p:
+            ctx_threads = p.chromium.launch_persistent_context(
+                user_data_dir=str(threads_dir),
+                headless=True,
+            )
+            ig_cookies = [c for c in ctx_threads.cookies() if "instagram.com" in c.get("domain", "")]
+            ctx_threads.close()
+            if ig_cookies:
+                context.add_cookies(ig_cookies)
+                print(f"🔄 Synced {len(ig_cookies)} Instagram authentication cookies from Threads session.")
+    except Exception as e:
+        pass
+
+
 def is_logged_in(page) -> bool:
     try:
+        if "/accounts/login" in page.url or "/accounts/emailsignup" in page.url:
+            return False
+        # Check explicit logged-out indicators
+        if page.locator('input[name="username"]').first.is_visible(timeout=1000):
+            return False
+        if page.locator('a:has-text("Create new account")').first.is_visible(timeout=1000):
+            return False
+            
         selectors = [
             'svg[aria-label="New post"]',
             'svg[aria-label="Create"]',
             'svg[aria-label="Home"]',
             'a[href*="/direct/inbox/"]',
-            'span:has-text("Create")',
-            'a:has-text("Create")',
+            'svg[aria-label="Search"]',
+            'svg[aria-label="Explore"]',
+            'svg[aria-label="Reels"]',
         ]
         for sel in selectors:
             if page.locator(sel).first.is_visible(timeout=1500):
                 return True
-        if "/accounts/login" not in page.url and "/" == page.url.rstrip("/").split("instagram.com")[-1]:
-            # On home feed
-            return True
     except Exception:
         pass
     return False
@@ -124,14 +166,20 @@ def upload_to_instagram_free(video: Path, caption: str = None, headless: bool = 
     with sync_playwright() as p:
         context = p.chromium.launch_persistent_context(
             user_data_dir=str(PROFILE_DIR),
+            channel="msedge",
             headless=headless,
             viewport={"width": 1280, "height": 850},
             args=["--disable-blink-features=AutomationControlled"],
         )
 
+        # Check existing cookies or sync from threads if needed
+        existing_ig_cookies = [c for c in context.cookies() if "instagram.com" in c.get("domain", "") and c.get("name") == "sessionid"]
+        if not existing_ig_cookies:
+            sync_cookies_from_threads(context)
+
         page = context.pages[0] if context.pages else context.new_page()
 
-        print("\n🌐 Navigating to https://www.instagram.com/...")
+        print("\n🌐 Navigating to https://www.instagram.com/ with Microsoft Edge...")
         page.goto("https://www.instagram.com/", timeout=60000, wait_until="domcontentloaded")
         page.wait_for_timeout(3500)
 
@@ -145,6 +193,12 @@ def upload_to_instagram_free(video: Path, caption: str = None, headless: bool = 
 
         # Step 1: Ensure Logged In
         if not is_logged_in(page):
+            # Try syncing cookies one more time
+            sync_cookies_from_threads(context)
+            page.reload(wait_until="domcontentloaded")
+            page.wait_for_timeout(3000)
+
+        if not is_logged_in(page):
             if headless:
                 context.close()
                 raise RuntimeError("Not logged into Instagram. Please run with visible browser once: .venv/bin/python tools/instagram_free_upload.py --login-only")
@@ -155,18 +209,66 @@ def upload_to_instagram_free(video: Path, caption: str = None, headless: bool = 
                 context.close()
                 raise TimeoutError("Login timed out. Please run again and complete login.")
 
+        # Step 1b: STRICT Brand Verification - Rajan का ADDA Only
+        profile_links = [a.get_attribute("href") or "" for a in page.locator('a[href*="/"]').all() if a.get_attribute("href")]
+        is_rajan = any("rajan.ka.adda" in h.lower() or "rajan_ka_adda" in h.lower() for h in profile_links)
+        if not is_rajan:
+            body_text = page.locator("nav, header, aside").all_inner_texts()
+            is_rajan = any("rajan" in t.lower() and "adda" in t.lower() for t in body_text)
+
+        # If not initially on rajan.ka.adda, automatically switch
+        if not is_rajan:
+            try:
+                print("   Switching active Instagram account to @rajan.ka.adda...")
+                more = page.locator('svg[aria-label="Settings"], svg[aria-label="More"], a:has(span:has-text("More"))').first
+                if more.is_visible(timeout=3000):
+                    more.click()
+                    page.wait_for_timeout(1500)
+                    switch = page.locator('span:has-text("Switch accounts")').first
+                    if switch.is_visible(timeout=3000):
+                        switch.click()
+                        page.wait_for_timeout(2000)
+                        rajan_elem = page.locator('span:has-text("rajan.ka.adda"), div:has-text("rajan.ka.adda")').last
+                        if rajan_elem.is_visible(timeout=3000):
+                            rajan_elem.click()
+                            page.wait_for_timeout(5000)
+                            profile_links = [a.get_attribute("href") or "" for a in page.locator('a[href*="/"]').all() if a.get_attribute("href")]
+                            is_rajan = any("rajan.ka.adda" in h.lower() or "rajan_ka_adda" in h.lower() for h in profile_links)
+            except Exception:
+                pass
+
+        if not is_rajan:
+            context.close()
+            raise RuntimeError("STRICT POLICY VIOLATION: Current Instagram account is NOT 'rajan.ka.adda' / 'rajan_ka_adda'. Upload aborted.")
+        print("✅ Verified official brand account: Rajan का ADDA (@rajan.ka.adda)")
+
         # Step 2: Click "Create" Button
         print("🎬 Opening Instagram Create modal...")
-        create_btn = page.locator('svg[aria-label="New post"], svg[aria-label="Create"], span:has-text("Create"), a:has-text("Create")').first
+        create_btn = page.locator('a:has(span:has-text("Create")), svg[aria-label="New post"], svg[aria-label="Create"], a[aria-label="New post"]').first
         create_btn.wait_for(state="visible", timeout=15000)
         create_btn.click()
         page.wait_for_timeout(2000)
 
+        # In modern Instagram, clicking Create reveals a "Post" option in a popover
+        try:
+            post_sub_link = page.get_by_role("link", name="Post Post")
+            if post_sub_link.is_visible(timeout=2000):
+                post_sub_link.click()
+                page.wait_for_timeout(2500)
+            else:
+                post_sub_btn = page.locator('div[role="menu"] a, span:has-text("Post")').first
+                if post_sub_btn.is_visible(timeout=2000):
+                    post_sub_btn.click()
+                    page.wait_for_timeout(2500)
+        except Exception:
+            pass
+
         # Step 3: Attach Video File
         print(f"📤 Attaching video file: {video.name}...")
         file_input = page.locator('input[type="file"]').first
+        file_input.wait_for(state="attached", timeout=15000)
         file_input.set_input_files(str(video))
-        page.wait_for_timeout(4000)
+        page.wait_for_timeout(5000)
 
         # Handle aspect ratio / crop step
         # By default, Instagram vertical videos (9:16) can trigger an aspect ratio prompt
@@ -183,25 +285,43 @@ def upload_to_instagram_free(video: Path, caption: str = None, headless: bool = 
         except Exception:
             pass
 
+        # Handle any "Video posts are now shared as reels" or "OK" modals
+        try:
+            ok_btn = page.locator('button:has-text("OK"), div[role="button"]:has-text("OK")').first
+            if ok_btn.is_visible(timeout=3000):
+                ok_btn.click()
+                page.wait_for_timeout(1000)
+        except Exception:
+            pass
+
         # Step 4: Click Next (Crop screen -> Cover/Trim screen)
         print("➡️  Advancing to edit/cover screen...")
         next_btn = page.locator('div[role="button"]:has-text("Next"), button:has-text("Next")').first
         next_btn.wait_for(state="visible", timeout=20000)
-        next_btn.click()
+        try:
+            next_btn.evaluate("el => el.click()")
+        except Exception:
+            next_btn.click(force=True)
         page.wait_for_timeout(3000)
 
         # Step 5: Click Next (Cover screen -> Caption screen)
         print("➡️  Advancing to caption screen...")
         next_btn2 = page.locator('div[role="button"]:has-text("Next"), button:has-text("Next")').first
         next_btn2.wait_for(state="visible", timeout=20000)
-        next_btn2.click()
+        try:
+            next_btn2.evaluate("el => el.click()")
+        except Exception:
+            next_btn2.click(force=True)
         page.wait_for_timeout(3000)
 
         # Step 6: Enter Caption
         print("📝 Entering Reel caption & hashtags...")
         caption_area = page.locator('div[aria-label="Write a caption..."], div[contenteditable="true"][role="textbox"]').first
         caption_area.wait_for(state="visible", timeout=20000)
-        caption_area.click()
+        try:
+            caption_area.click(force=True)
+        except Exception:
+            caption_area.focus()
         page.wait_for_timeout(500)
         page.keyboard.insert_text(caption_text)
         page.wait_for_timeout(2000)
@@ -234,24 +354,45 @@ def upload_to_instagram_free(video: Path, caption: str = None, headless: bool = 
             print("   ...still uploading/transcoding on Instagram...")
 
         if not shared_confirmed:
-            print("⚠️ Upload confirmation banner not detected; waiting 10s buffer...")
-            page.wait_for_timeout(10000)
+            # Take screenshot of whatever modal/error is visible
+            Path("scratch").mkdir(exist_ok=True)
+            page.screenshot(path="scratch/instagram_share_timeout.png")
+            raise RuntimeError("Instagram upload confirmation banner not detected within 5 minutes. Check scratch/instagram_share_timeout.png")
+
+        print("✅ Reel upload confirmed by Instagram!")
+        page.wait_for_timeout(5000)
 
         # Step 9: Capture Latest Reel URL
-        post_url = "https://www.instagram.com/reels/"
+        # Read manifest to avoid grabbing previous episode URL
+        prev_ig_url = None
         try:
-            # Navigate to profile to locate newly published reel
-            profile_btn = page.locator('a[href*="/reels/"], span:has-text("Profile"), a[href*="/profile/"]').first
-            if profile_btn.is_visible(timeout=4000):
-                profile_btn.click()
-                page.wait_for_timeout(4000)
-                reel_link = page.locator('a[href*="/reel/"]').first
-                if reel_link.is_visible(timeout=5000):
-                    href = reel_link.get_attribute("href")
-                    if href:
-                        post_url = f"https://www.instagram.com{href}" if href.startswith("/") else href
+            if MANIFEST_FILE.is_file():
+                mf = json.loads(MANIFEST_FILE.read_text(encoding="utf-8"))
+                for ep_key, ep_data in mf.items():
+                    if isinstance(ep_data, dict) and "instagram" in ep_data and ep_data["instagram"]:
+                        prev_ig_url = ep_data["instagram"]
         except Exception:
             pass
+
+        post_url = None
+        for attempt in range(1, 5):
+            try:
+                page.goto("https://www.instagram.com/rajan.ka.adda/reels/", timeout=30000, wait_until="domcontentloaded")
+                page.wait_for_timeout(4000)
+                reel_links = [a.get_attribute("href") for a in page.locator('a[href*="/reel/"]').all() if a.get_attribute("href")]
+                for rlink in reel_links:
+                    full_link = f"https://www.instagram.com{rlink}" if rlink.startswith("/") else rlink
+                    if full_link != prev_ig_url and "reels" not in full_link.split("/reel/")[0]:
+                        post_url = full_link
+                        break
+                if post_url:
+                    break
+            except Exception as e:
+                print(f"   Retry {attempt} locating new reel on profile: {e}")
+            page.wait_for_timeout(5000)
+
+        if not post_url:
+            post_url = "https://www.instagram.com/rajan.ka.adda/reels/"
 
         print("\n" + "=" * 65)
         print("🎉 SUCCESS! Reel published to Instagram ($0.00 Free):")
@@ -291,6 +432,7 @@ def main():
         with sync_playwright() as p:
             context = p.chromium.launch_persistent_context(
                 user_data_dir=str(PROFILE_DIR),
+                channel="msedge",
                 headless=False,
                 viewport={"width": 1280, "height": 850},
             )

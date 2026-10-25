@@ -30,12 +30,16 @@ VALID_SCENE_TYPES = {
     "data_structure", "inspector", "quadrant", "concentric", "seat_booking",
     "neural_network_graph", "interview", "terminal", "screenshot", "chart",
     "product", "sorting_visualizer", "amazon_shopping", "whiteboard",
-    "refrigerator", "air_conditioner", "linear_search_visualizer",
-    "tesla_roadster_visualizer", "depth_parallax"
+    "refrigerator", "air_conditioner", "linear_search_visualizer", "binary_search_visualizer",
+    "tesla_roadster_visualizer", "pacman_enzyme_visualizer", "quick_commerce", "depth_parallax",
+    "google_maps_visualizer", "google_maps", "aadhaar_visualizer", "aadhaar",
+    "tower_of_hanoi", "tower_of_hanoi_visualizer",
+    "emudhra", "emudhra_visualizer"
 }
 
 SCENE_DEFAULT_SFX = {
     "hook": "whoosh",
+    "quick_commerce": "radar_beep",
     "stat": "impact",
     "gauge": "bass_drop",
     "benchmark": "radar_beep",
@@ -51,12 +55,17 @@ SCENE_DEFAULT_SFX = {
     "whiteboard": "pop",
     "callout": "glitch",
     "video": "whoosh",
+    "linear_search_visualizer": "fast_whoosh",
+    "binary_search_visualizer": "fast_whoosh",
+    "tower_of_hanoi": "fast_whoosh",
+    "tower_of_hanoi_visualizer": "fast_whoosh",
     "outro": "ding",
     "default": "whoosh"
 }
 
 SCENE_DEFAULT_ICONS = {
     "hook": "smartphone",
+    "quick_commerce": "truck",
     "stat": "activity",
     "gauge": "gauge",
     "depth_parallax": "layers",
@@ -74,6 +83,10 @@ SCENE_DEFAULT_ICONS = {
     "data_structure": "layers",
     "callout": "alert-circle",
     "video": "film",
+    "linear_search_visualizer": "search",
+    "binary_search_visualizer": "split",
+    "tower_of_hanoi": "layers",
+    "tower_of_hanoi_visualizer": "layers",
     "outro": "sparkles",
     "default": "zap"
 }
@@ -94,6 +107,15 @@ def parse_loose_data(text: str):
         return ast.literal_eval(text)
     except Exception:
         pass
+    return text
+
+
+def clean_equation_str(text: str) -> str:
+    text = text.strip()
+    if (text.startswith('"') and text.endswith('"')) or (text.startswith("'") and text.endswith("'")):
+        text = text[1:-1].strip()
+    # Unescape double backslashes before commands
+    text = re.sub(r'\\\\([a-zA-Z])', r'\\\1', text)
     return text
 
 
@@ -263,6 +285,15 @@ def generate_visual_storyboard(scene_type: str, action_desc: str, title: str) ->
             "motion_graphics": [f"01 / {title.upper()}", "DEPTH TELEMETRY"],
             "end": "Parallax movement completes smoothly, establishing focal depth."
         }
+    elif scene_type == "quick_commerce":
+        return {
+            "start": "High-tech quick commerce logistics stage materializing with telemetry HUD.",
+            "objects": objects or ["3D Smartphone Terminal", "Dark Store Floor Grid", "Electric Delivery Scooter"],
+            "action": action or "Dynamic logistics mechanism animates with real-time countdown telemetry.",
+            "camera": "Stable technical isometric or UI framing with high visual contrast.",
+            "motion_graphics": [f"{title.upper()}", "HYPERLOCAL LOGISTICS ENGINE"],
+            "end": "Action locks into place with verified delivery SLA confirmation."
+        }
     else:
         return {
             "start": f"High-contrast editorial layout establishing {title}.",
@@ -413,6 +444,35 @@ def parse_scene_block(block: str, index: int, total: int, fallback_title: str) -
         "visual": visual_dict
     }
 
+    # Viral retention directives: pattern_interrupt, emphasis_words, hook_strength, payoff_type
+    pat_m = re.search(r'(?:^|\n)-?\s*\*\*Pattern\s*Interrupt\*\*:\s*([^\n]+)', block, re.I)
+    pattern_interrupt = pat_m.group(1).strip().lower() if pat_m else None
+    if not pattern_interrupt:
+        if index == 0:
+            pattern_interrupt = "zoom_punch"
+        elif scene_type in ("callout", "stat") or re.search(r'crash|error|leak|hack|danger|threat|fail', narration, re.I):
+            pattern_interrupt = "shake"
+        elif index % 3 == 0 and index > 0 and index < total - 1:
+            pattern_interrupt = "color_flash"
+
+    emp_m = re.search(r'(?:^|\n)-?\s*\*\*Emphasis\s*Words\*\*:\s*([^\n]+)', block, re.I)
+    if emp_m:
+        parsed_emp = parse_loose_data(emp_m.group(1).strip())
+        emphasis_words = parsed_emp if isinstance(parsed_emp, list) else [w.strip() for w in emp_m.group(1).split(",") if w.strip()]
+    else:
+        # Auto-extract numbers, percentages, metrics, and currency from narration for kinetic caption pop
+        emp_matches = re.findall(r'\b\d+(?:\.\d+)?(?:%|ms|km/h|s|x|GB|TB|MB|M|K)?\b|₹[\d,]+|\$[\d,]+|लाख|करोड़', narration)
+        emphasis_words = list(dict.fromkeys(emp_matches))[:6]
+
+    if pattern_interrupt:
+        scene["pattern_interrupt"] = pattern_interrupt
+    if emphasis_words:
+        scene["emphasis_words"] = emphasis_words
+    if index == 0:
+        scene["hook_strength"] = 9.5
+    if index == total - 1:
+        scene["payoff_type"] = "loop_setup"
+
     # Parse Type-Specific Properties
     if scene_type == "hook":
         text_m = re.search(r'(?:^|\n)-?\s*\*\*Text\*\*:\s*([^\n]+)', block, re.I)
@@ -493,25 +553,48 @@ def parse_scene_block(block: str, index: int, total: int, fallback_title: str) -
         mode_m = re.search(r'(?:^|\n)-?\s*\*\*Mode\*\*:\s*([^\n]+)', block, re.I)
         eq_m = re.search(r'(?:^|\n)-?\s*\*\*Equation\*\*:\s*([^\n]+)', block, re.I)
         scene["mode"] = mode_m.group(1).strip().lower() if mode_m else "forward"
-        scene["equation"] = eq_m.group(1).strip() if eq_m else "z = Wx + b \\rightarrow a = \\sigma(z)"
+        scene["equation"] = clean_equation_str(eq_m.group(1)) if eq_m else "z = Wx + b \\rightarrow a = \\sigma(z)"
 
     elif scene_type == "whiteboard":
         wb_type_m = re.search(r'(?:^|\n)-?\s*\*\*WhiteboardType\*\*:\s*([^\n]+)', block, re.I)
         wb_theme_m = re.search(r'(?:^|\n)-?\s*\*\*WhiteboardTheme\*\*:\s*([^\n]+)', block, re.I)
         brush_m = re.search(r'(?:^|\n)-?\s*\*\*BrushName\*\*:\s*([^\n]+)', block, re.I)
+        nodes_m = re.search(r'(?:^|\n)-?\s*\*\*Nodes\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
         scene["whiteboardType"] = wb_type_m.group(1).strip() if wb_type_m else "algorithm"
         scene["whiteboardTheme"] = wb_theme_m.group(1).strip() if wb_theme_m else "chalkboard"
         scene["brushName"] = brush_m.group(1).strip() if brush_m else "rotring"
+        if nodes_m:
+            parsed_nodes = parse_loose_data(nodes_m.group(1).strip())
+            if isinstance(parsed_nodes, list):
+                scene["nodes"] = parsed_nodes
 
     elif scene_type == "three":
         var_m = re.search(r'(?:^|\n)-?\s*\*\*Variant\*\*:\s*([^\n]+)', block, re.I)
         eq_m = re.search(r'(?:^|\n)-?\s*\*\*Equation\*\*:\s*([^\n]+)', block, re.I)
         model_m = re.search(r'(?:^|\n)-?\s*\*\*Model\*\*:\s*([^\n]+)', block, re.I)
+        metrics_m = re.search(r'(?:^|\n)-?\s*\*\*Metrics\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
         scene["variant"] = var_m.group(1).strip() if var_m else "smartphone_3d"
         if eq_m:
-            scene["equation"] = eq_m.group(1).strip()
+            scene["equation"] = clean_equation_str(eq_m.group(1))
         if model_m:
             scene["model"] = model_m.group(1).strip()
+        if metrics_m:
+            parsed_metrics = parse_loose_data(metrics_m.group(1).strip())
+            if isinstance(parsed_metrics, dict):
+                scene["metrics"] = parsed_metrics
+
+    elif scene_type == "hierarchy":
+        layers_m = re.search(r'(?:^|\n)-?\s*\*\*Layers\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
+        if layers_m:
+            parsed_layers = parse_loose_data(layers_m.group(1).strip())
+            if isinstance(parsed_layers, list):
+                scene["layers"] = parsed_layers
+        if "layers" not in scene:
+            scene["layers"] = [
+                {"name": "Level 1: Expressways & Highways", "spec": "Cross-Country Fast Arteries", "active": True},
+                {"name": "Level 2: Arterials & State Routes", "spec": "Inter-City Connecting Corridors", "active": True},
+                {"name": "Level 3: Local Streets & Alleys", "spec": "High-Density Residential Mesh", "active": True}
+            ]
 
     elif scene_type == "benchmark":
         run_m = re.search(r'(?:^|\n)-?\s*\*\*Runners\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
@@ -552,7 +635,7 @@ def parse_scene_block(block: str, index: int, total: int, fallback_title: str) -
             ]
 
     elif scene_type == "bento":
-        bento_m = re.search(r'(?:^|\n)-?\s*\*\*BentoItems\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
+        bento_m = re.search(r'(?:^|\n)-?\s*\*\*Bento\s*Items?\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
         if bento_m:
             parsed_bento = parse_loose_data(bento_m.group(1).strip())
             if isinstance(parsed_bento, list):
@@ -588,6 +671,33 @@ def parse_scene_block(block: str, index: int, total: int, fallback_title: str) -
             else:
                 scene["search_video"] = v_val
 
+    elif scene_type in ("image", "hook", "product", "screenshot", "whiteboard", "amazon_shopping"):
+        img_m = re.search(r'(?:^|\n)-?\s*\*\*(?:Image|Search Image|Generate Image)\*\*:\s*([^\n]+)', block, re.I)
+        if img_m:
+            i_val = img_m.group(1).strip().strip('"').strip("'")
+            if i_val.endswith((".jpg", ".jpeg", ".png", ".webp", ".svg")):
+                scene["image"] = i_val
+            elif "generate image" in block.lower():
+                scene["generate_image"] = i_val
+            else:
+                scene["search_image"] = i_val
+        if scene_type == "product":
+            price_m = re.search(r'(?:^|\n)-?\s*\*\*Price\*\*:\s*([^\n]+)', block, re.I)
+            if price_m:
+                scene["price"] = price_m.group(1).strip().strip('"').strip("'")
+            hl_m = re.search(r'(?:^|\n)-?\s*\*\*Highlight\*\*:\s*([^\n]+)', block, re.I)
+            if hl_m:
+                scene["highlight"] = hl_m.group(1).strip().strip('"').strip("'")
+            tagl_m = re.search(r'(?:^|\n)-?\s*\*\*Tagline\*\*:\s*([^\n]+)', block, re.I)
+            if tagl_m:
+                scene["tagline"] = tagl_m.group(1).strip().strip('"').strip("'")
+            specs_m = re.search(r'(?:^|\n)-?\s*\*\*Specs\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
+            if specs_m:
+                parsed_specs = parse_loose_data(specs_m.group(1).strip())
+                if isinstance(parsed_specs, (list, dict)):
+                    scene["specs"] = parsed_specs
+
+
     elif scene_type == "timeline":
         steps_m = re.search(r'(?:^|\n)-?\s*\*\*Steps\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
         if steps_m:
@@ -614,7 +724,7 @@ def parse_scene_block(block: str, index: int, total: int, fallback_title: str) -
             scene["movement"] = mov_m.group(1).strip().strip('"').strip("'")
 
     # Custom domain visualizers (linear search, air conditioner, etc.)
-    for custom_key in ["searchItems", "searchTarget", "variant", "array", "specs"]:
+    for custom_key in ["searchItems", "searchTarget", "variant", "array", "specs", "overlay"]:
         ck_m = re.search(rf'(?:^|\n)-?\s*\*\*{custom_key.replace("_", " ").title()}\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
         if ck_m:
             scene[custom_key] = parse_loose_data(ck_m.group(1).strip())

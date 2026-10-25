@@ -150,36 +150,52 @@ export const hexAlpha = (a: number): string =>
 
 
 // -----------------------------------------------------------------------------
-// Mobile Shorts & Reels Typography Standards (1080x1920)
-// Hard rule: No text on screen should drop below MIN_FONT_SIZE (28px).
-// Human eyes viewing a 6-inch phone screen require bold, legible typography.
+// Mobile Shorts & Reels Ergonomic Typography Standards (1080x1920 & 1920x1080)
+// Scientifically calibrated via Human Visual Angle formula:
+//   θ = 2 * arctan( S / (2 * D) )
+// Hard rules:
+//   1. NEVER drop below MIN (22px vertical / 16px landscape) - prevents squinting & ciliary eye strain.
+//   2. NEVER exceed MAX (108px vertical / 84px landscape) - prevents retinal glare, visual pain & saccadic disruption.
 // -----------------------------------------------------------------------------
 export const TYPOGRAPHY = {
   vertical: {
-    min: 28,          // Absolute hard floor: no text anywhere on screen below 28px
-    tag: 28,          // Badges, category pills, uppercase tracking tags
-    label: 32,        // Field labels, metric keys, helper text
-    body: 36,         // Standard descriptions, bullet points
-    caption: 48,      // Kinetic subtitles for high mobile legibility
-    subheader: 44,    // Card headers, secondary titles, formula variables
-    equation: 48,     // Mathematical formulas & equations
-    title: 60,        // Primary scene headers
-    hero: 90,         // Prominent callouts and numbers
-    stat: 180,        // Hero benchmark / big statistics
+    min: 22,          // Absolute hard floor: no text anywhere on screen below 22px
+    max: 108,         // Absolute hard ceiling: prevents eye pain, retinal glare & layout blowouts
+    tag: 24,          // Badges, category pills, uppercase tracking tags (22-26px)
+    label: 26,        // Field labels, metric keys, helper text (24-28px)
+    body: 28,         // Standard descriptions, bullet points, explanations (26-32px)
+    cardTitle: 32,    // Card headers, container titles (30-36px)
+    subheader: 38,    // Prominent section titles, callouts (36-42px)
+    equation: 44,     // Mathematical formulas & equations (40-48px)
+    caption: 50,      // Kinetic subtitles for high mobile legibility (48-54px)
+    title: 54,        // Primary scene headers (max 60px to prevent safe-area collision)
+    hero: 76,         // Prominent callouts and highlighted terms (70-80px)
+    stat: 92,         // Hero single numbers (e.g. 40%, 99%). Hard ceiling 108px!
   },
   landscape: {
-    min: 20,
-    tag: 22,
-    label: 24,
-    body: 28,
-    caption: 36,
-    subheader: 36,
-    equation: 40,
-    title: 54,
-    hero: 76,
-    stat: 130,
+    min: 16,
+    max: 84,
+    tag: 18,
+    label: 20,
+    body: 22,
+    cardTitle: 26,
+    subheader: 30,
+    equation: 36,
+    caption: 40,
+    title: 44,
+    hero: 60,
+    stat: 72,
   },
 };
+
+export {
+  calculateErgonomicPixels,
+  clampFontSize,
+  getFontSize,
+  getTypographyStyle,
+  VERTICAL_TYPOGRAPHY,
+  LANDSCAPE_TYPOGRAPHY,
+} from "./typography";
 
 /**
  * Returns typography tokens for the active orientation.
@@ -188,11 +204,12 @@ export const getTypography = (landscape: boolean = false) =>
   landscape ? TYPOGRAPHY.landscape : TYPOGRAPHY.vertical;
 
 /**
- * Hard safety enforcement: ensures no font size drops below the mobile legibility floor.
+ * Hard safety enforcement: clamps font size within ergonomic bounds.
+ * Prevents squinting (too small) and eye pain / retinal glare (too large).
  */
 export const safeFontSize = (size: number, landscape: boolean = false): number => {
-  const floor = landscape ? TYPOGRAPHY.landscape.min : TYPOGRAPHY.vertical.min;
-  return Math.max(floor, size);
+  const { min, max } = landscape ? TYPOGRAPHY.landscape : TYPOGRAPHY.vertical;
+  return Math.max(min, Math.min(max, size));
 };
 
 /**

@@ -1,0 +1,475 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "bee-wearable-ai",
+  "format": "vertical",
+  "art_direction": "editorial",
+  "theme": "slate",
+  "accent": "#00F0FF",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "pad_seconds": 0.28,
+  "music": null,
+  "meta": {
+    "title": "How Bee Wearable AI Works | Complete Tech Explainer",
+    "description": "Learn how Bee Wearable AI works under the hood — from dual-beamforming audio processing to real-time memory graphs and zero-knowledge encryption.",
+    "hashtags": [
+      "#Technology",
+      "#ComputerScience",
+      "#Engineering",
+      "#SystemDesign",
+      "#TechShorts"
+    ],
+    "facts_to_verify": [
+      "How Bee Wearable AI Works operates via distributed synchronized state machines."
+    ],
+    "misconceptions": [],
+    "analogy": ""
+  },
+  "scenes": [
+    {
+      "type": "video",
+      "tag": "01 / WEARABLE AI COMPUTER",
+      "title": "BEE: YOUR PERSONAL WEARABLE AI",
+      "purpose": "Explain the mechanism and takeaway of BEE: YOUR PERSONAL WEARABLE AI.",
+      "tone": "[Curious, futuristic]",
+      "narration": "क्या आपने सोचा है कि अगर आपका दिमाग दिन भर की हर बात और मीटिंग को बिना भूले याद रख सके? मिलिए बी-ई-ई से — दुनिया का पहला वियरेबल ए-आई कंप्यूटर!",
+      "transition": "zoom_through",
+      "sfx": "whoosh",
+      "icon": "film",
+      "visual": {
+        "start": "High-contrast editorial layout establishing BEE: YOUR PERSONAL WEARABLE AI.",
+        "objects": [
+          "Real-World Commercial Footage Of User Wa"
+        ],
+        "action": "Real-world commercial footage of user walking in city wearing Bee Frontier as on-screen text introduces the wearable personal AI",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "BEE: YOUR PERSONAL WEARABLE AI",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "video": "media/clip_intro_looped.mp4"
+    },
+    {
+      "type": "product",
+      "tag": "02 / PHYSICAL ARCHITECTURE",
+      "title": "BEE FRONTIER HARDWARE",
+      "purpose": "Explain the mechanism and takeaway of BEE FRONTIER HARDWARE.",
+      "tone": "[Detailed, tactile]",
+      "narration": "ये छोटा पेबल गैजेट कलाई पर या शर्ट पर मैग्नेटिक क्लिप से लग जाता है। इसमें हैं डुअल बीमफॉर्मिंग माइक्रोफोन्स, एक्शन बटन, और यूएसबी-सी चार्जिंग!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing BEE FRONTIER HARDWARE.",
+        "objects": [
+          "Hero Floating Pebble Device",
+          "Rotating Spotlight",
+          "Highlighting Dual Beamforming Microphone Ports",
+          "Tactile Action Button"
+        ],
+        "action": "Hero floating pebble device with rotating spotlight, highlighting dual beamforming microphone ports, tactile action button, and magnetic clothing clip",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "BEE FRONTIER HARDWARE",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "image": "media/bee_frontier_black.png",
+      "price": "$74.99",
+      "highlight": "MODULAR CLIP & WRIST",
+      "tagline": "Lightweight pebble wearable AI",
+      "specs": [
+        {
+          "label": "Form Factor",
+          "value": "Modular Pebble"
+        },
+        {
+          "label": "Battery Life",
+          "value": "7+ Days Continuous"
+        },
+        {
+          "label": "Microphones",
+          "value": "Dual Beamforming"
+        },
+        {
+          "label": "Protection",
+          "value": "IP67 Water Resistant"
+        }
+      ]
+    },
+    {
+      "type": "whiteboard",
+      "tag": "03 / TACTILE ACOUSTIC ENGINE",
+      "title": "HOW SPEECH BECOMES MEMORY",
+      "purpose": "Explain the mechanism and takeaway of HOW SPEECH BECOMES MEMORY.",
+      "tone": "[Educational, scientific]",
+      "narration": "बातचीत के दौरान इसका ऑन-डिवाइस ऑडियो प्रोसेसर बैकग्राउंड शोर हटाकर आपकी स्पीच को रियल-टाइम टेक्स्ट और समरी में बदल देता है!",
+      "transition": "match_cut",
+      "sfx": "pop",
+      "icon": "edit-3",
+      "visual": {
+        "start": "Clean textured drafting surface with subtle architectural grid lines.",
+        "objects": [
+          "Filtering Background Room Noise"
+        ],
+        "action": "Organic hand-drawn chalk sketching acoustic speech soundwaves, filtering background room noise, and converting audio phonemes into structured memory nodes",
+        "camera": "Stable overhead drafting perspective.",
+        "motion_graphics": [
+          "CHALKBOARD INFOGRAPHIC",
+          "KEY TAKEAWAY ANNOTATION"
+        ],
+        "end": "Drawing completes with tactile chalk texture and clear visual contrast."
+      },
+      "whiteboardType": "flow",
+      "whiteboardTheme": "chalkboard",
+      "brushName": "2B",
+      "nodes": [
+        "DUAL MIC INPUT",
+        "DSP NOISE FILTER",
+        "SPEECH-TO-TEXT",
+        "AI MEMORY GRAPH"
+      ]
+    },
+    {
+      "type": "video",
+      "tag": "04 / HARDWARE COLORWAYS",
+      "title": "BLACK · LILAC · MOSS",
+      "purpose": "Explain the mechanism and takeaway of BLACK · LILAC · MOSS.",
+      "tone": "[Stylish, premium]",
+      "narration": "बी-ई-ई ब्लैक, लिलाक और मॉस कलर्स में आता है। इसका मल्टी-कलर एल-ई-डी बताता है कि रिकॉर्डिंग ऑन है या म्यूट — फुल प्राइवेसी कंट्रोल!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "film",
+      "visual": {
+        "start": "High-contrast editorial layout establishing BLACK · LILAC · MOSS.",
+        "objects": [
+          "Lilac",
+          "Moss Finishes"
+        ],
+        "action": "3D animated device rotating through Black, Lilac, and Moss finishes with glowing multi-color LED indicator at the center",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "BLACK · LILAC · MOSS",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "video": "media/clip_3d_colors_looped.mp4"
+    },
+    {
+      "type": "bento",
+      "tag": "05 / HARDWARE BENCHMARKS",
+      "title": "BEE FRONTIER SPECIFICATIONS",
+      "purpose": "Explain the mechanism and takeaway of BEE FRONTIER SPECIFICATIONS.",
+      "tone": "[Impactful, authoritative]",
+      "narration": "जहाँ स्मार्टवॉचेस एक दिन में डिस्चार्ज होती हैं, बी-ई-ई पूरे सात दिन चलती है! यह चालीस से ज्यादा भाषाएं समझता है और वाटरप्रूफ है।",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing BEE FRONTIER SPECIFICATIONS.",
+        "objects": [
+          "High-Tech Telemetry Bento Grid",
+          "40 Language Support",
+          "Ip67 Waterproof Certification",
+          "4.8 App Store Rating"
+        ],
+        "action": "High-tech telemetry bento grid with glowing neon tiles showcasing 7-day battery life, 40+ language support, IP67 waterproof certification, and 4.8 App Store rating",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "BEE FRONTIER SPECIFICATIONS",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "bentoItems": [
+        {
+          "title": "7+ Days Battery",
+          "value": "168 Hours",
+          "span": 2,
+          "badge": "Extreme Longevity"
+        },
+        {
+          "title": "40+ Languages",
+          "value": "Global Speech",
+          "span": 1,
+          "badge": "Universal"
+        },
+        {
+          "title": "IP67 Ingress",
+          "value": "Waterproof",
+          "span": 1,
+          "badge": "Rugged"
+        },
+        {
+          "title": "App Store Rating",
+          "value": "4.8 / 5.0",
+          "span": 2,
+          "badge": "Verified Reviews"
+        }
+      ]
+    },
+    {
+      "type": "three",
+      "tag": "06 / HYBRID AI PIPELINE",
+      "title": "ON-DEVICE VS CLOUD INTELLIGENCE",
+      "purpose": "Explain the mechanism and takeaway of ON-DEVICE VS CLOUD INTELLIGENCE.",
+      "tone": "[High-tech, architectural]",
+      "narration": "बी-ई-ई में हाइब्रिड ए-आई है। बेसिक स्पीच डिटेक्शन लोकल चिप पर होता है, और डीप कॉन्टेक्स्ट समरी सिक्योर क्लाउड न्यूरल नेटवर्क पर प्रोसेस होती है!",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "cube",
+      "visual": {
+        "start": "Dark 3D spatial coordinate grid with directional volumetric lighting.",
+        "objects": [
+          "3D Synaptic Neural Network",
+          "Secure Cloud Large Language Model"
+        ],
+        "action": "3D synaptic neural network with glowing data packets pulsing between local on-device low-power chip and secure cloud large language model",
+        "camera": "Motivated tracking camera orbiting the focal 3D model.",
+        "motion_graphics": [
+          "3D SPATIAL TELEMETRY",
+          "ON-DEVICE VS CLOUD INTELLIGENCE"
+        ],
+        "end": "Model locks into informative angle for seamless scene cut."
+      },
+      "variant": "neural_network_3d",
+      "equation": "\"\\\\text{Speech}(t) \\\\xrightarrow{\\\\text{Local Filter}} \\\\mathbf{x}_{embed} \\\\xrightarrow{\\\\text{Cloud LLM}} \\\\text{Summary}\""
+    },
+    {
+      "type": "video",
+      "tag": "07 / NATURAL LANGUAGE SEARCH",
+      "title": "AI CONVERSATION RETRIEVAL",
+      "purpose": "Explain the mechanism and takeaway of AI CONVERSATION RETRIEVAL.",
+      "tone": "[Practical, exciting]",
+      "narration": "शाम को बी-ई-ई ऐप खोलते ही पूरी बातचीत बुलेट पॉइंट्स और टू-डू लिस्ट में मिल जाती है। बस पूछिए: 'आज क्या टास्क मिला था?' और जवाब हाज़िर!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "film",
+      "visual": {
+        "start": "High-contrast editorial layout establishing AI CONVERSATION RETRIEVAL.",
+        "objects": [
+          "Getting Instant Bulleted Action Items",
+          "Reminders"
+        ],
+        "action": "Real smartphone capture of user querying the Bee app for conversational context and getting instant bulleted action items and reminders",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "AI CONVERSATION RETRIEVAL",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "video": "media/clip_ai_search_looped.mp4"
+    },
+    {
+      "type": "compare",
+      "tag": "08 / FRONTIER VS ECLIPSE",
+      "title": "CHOOSE HOW BEE FITS YOU",
+      "purpose": "Explain the mechanism and takeaway of CHOOSE HOW BEE FITS YOU.",
+      "tone": "[Comparative, informative]",
+      "narration": "दो मॉडल्स हैं: बी-ई-ई फ्रंटियर इन-पर्सन बातचीत रिकॉर्ड करता है, और नया बी-ई-ई एक्लिप्स फोन कॉल्स के दोनों साइड्स भी कैप्चर करेगा!",
+      "transition": "match_cut",
+      "sfx": "click",
+      "icon": "git-compare",
+      "visual": {
+        "start": "Split comparison stage materializing with contrasting left and right panels.",
+        "objects": [
+          "Split Comparison Layout Contrasting The "
+        ],
+        "action": "Split comparison layout contrasting the released Bee Frontier wearable with the upcoming Bee Eclipse ambient phone-call processor",
+        "camera": "Stable centered split-screen framing with generous subtitle margins.",
+        "motion_graphics": [
+          "SIDE-BY-SIDE ARCHITECTURAL COMPARISON",
+          "STATUS INDICATORS"
+        ],
+        "end": "Comparison holds with clear visual superiority established."
+      },
+      "left": {
+        "heading": "BEE FRONTIER ($74.99)",
+        "items": [
+          "In-person meetings",
+          "Wristband and clip",
+          "7-day battery life"
+        ]
+      },
+      "right": {
+        "heading": "BEE ECLIPSE (COMING",
+        "items": [
+          "Two-way call recording",
+          "360-degree ambient audio",
+          "Desktop enterprise sync"
+        ]
+      }
+    },
+    {
+      "type": "amazon_shopping",
+      "tag": "09 / AMAZON STORE INTEGRATION",
+      "title": "COMMERCE VIA CONVERSATION",
+      "purpose": "Explain the mechanism and takeaway of COMMERCE VIA CONVERSATION.",
+      "tone": "[Commercial, seamless]",
+      "narration": "यह सीधे अमेज़न से जुड़ा है। बातचीत में किसी किताब का ज़िक्र होते ही बी-ई-ई उसे आपकी अमेज़न शॉपिंग लिस्ट में जोड़ सकता है!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing COMMERCE VIA CONVERSATION.",
+        "objects": [
+          "Interactive Smartphone Screen",
+          "Amazon Shopping App",
+          "Bee Frontier Listed At 74.99",
+          "Amazon Prime Badge"
+        ],
+        "action": "Interactive smartphone screen showing Amazon Shopping app with Bee Frontier listed at $74.99 with Amazon Prime badge and one-click buying",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "COMMERCE VIA CONVERSATION",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "image": "media/bee_frontier_black.png"
+    },
+    {
+      "type": "three",
+      "tag": "10 / PRIME FULFILLMENT",
+      "title": "AUTOMATED 3D DISTRIBUTION STORE",
+      "purpose": "Explain the mechanism and takeaway of AUTOMATED 3D DISTRIBUTION STORE.",
+      "tone": "[Industrial, impressive]",
+      "narration": "अमेज़न प्राइम फुलफिलमेंट से यह डिवाइस ऑटोमेटेड वेयरहाउस और डार्क स्टोर्स से चौबीस घंटे में सीधे आपके घर डिलीवर हो जाता है!",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "cube",
+      "visual": {
+        "start": "Dark 3D spatial coordinate grid with directional volumetric lighting.",
+        "objects": [
+          "3D Industrial Distribution Store Warehouse",
+          "Illuminated Shelving Matrix",
+          "Sorting Conveyor Belts",
+          "Automated Packing Dispatch"
+        ],
+        "action": "3D industrial distribution store warehouse with illuminated shelving matrix, sorting conveyor belts, and automated packing dispatch",
+        "camera": "Motivated tracking camera orbiting the focal 3D model.",
+        "motion_graphics": [
+          "3D SPATIAL TELEMETRY",
+          "AUTOMATED 3D DISTRIBUTION STORE"
+        ],
+        "end": "Model locks into informative angle for seamless scene cut."
+      },
+      "variant": "dark_store_3d"
+    },
+    {
+      "type": "video",
+      "tag": "11 / DIGITAL WORKFLOW SYNC",
+      "title": "BEE PRO ECOSYSTEM WORKFLOW",
+      "purpose": "Explain the mechanism and takeaway of BEE PRO ECOSYSTEM WORKFLOW.",
+      "tone": "[Interconnected, smart]",
+      "narration": "बी-ई-ई प्रो के साथ यह जीमेल में फॉलो-अप ड्राफ्ट करता है, कैलेंडर में इवेंट्स जोड़ता है, और एलेक्सा पर वॉइस इनसाइट्स सुनाता है!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "film",
+      "visual": {
+        "start": "High-contrast editorial layout establishing BEE PRO ECOSYSTEM WORKFLOW.",
+        "objects": [
+          "Gmail Follow-Up Drafting",
+          "Calendar Synchronization"
+        ],
+        "action": "High-definition app interface screen video demonstrating real-time AI summary extraction, Gmail follow-up drafting, and calendar synchronization",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "BEE PRO ECOSYSTEM WORKFLOW",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "video": "media/clip_app_summary_looped.mp4"
+    },
+    {
+      "type": "three",
+      "tag": "12 / CONFIDENTIAL BY DESIGN",
+      "title": "END-TO-END DATA ENCRYPTION",
+      "purpose": "Explain the mechanism and takeaway of END-TO-END DATA ENCRYPTION.",
+      "tone": "[Reassuring, secure]",
+      "narration": "क्या बातचीत सेफ है? बी-ई-ई कॉन्फिडेंशियल बाई डिज़ाइन है — एंड-टू-एंड एन्क्रिप्शन, ज़ीरो ऐड ट्रैकिंग, और सिंगल टैप पॉज़ कंट्रोल!",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "cube",
+      "visual": {
+        "start": "Dark 3D spatial coordinate grid with directional volumetric lighting.",
+        "objects": [
+          "3D Concentric Titanium Rings Locking Tog"
+        ],
+        "action": "3D concentric titanium rings locking together around an encrypted key, creating an impenetrable zero-knowledge security vault",
+        "camera": "Motivated tracking camera orbiting the focal 3D model.",
+        "motion_graphics": [
+          "3D SPATIAL TELEMETRY",
+          "END-TO-END DATA ENCRYPTION"
+        ],
+        "end": "Model locks into informative angle for seamless scene cut."
+      },
+      "variant": "concentric_security_3d",
+      "equation": "\"\\\\text{Audio} \\\\oplus K_{\\\\text{user}} \\\\implies \\\\text{Zero-Knowledge Vault}\""
+    },
+    {
+      "type": "gauge",
+      "tag": "13 / COGNITIVE RECALL GAIN",
+      "title": "MEMORY RETENTION AMPLIFIER",
+      "purpose": "Explain the mechanism and takeaway of MEMORY RETENTION AMPLIFIER.",
+      "tone": "[Scientific, triumphant]",
+      "narration": "इंसान एक हफ्ते में अस्सी प्रतिशत बातें भूल जाता है। बी-ई-ई आपकी मेमोरी रिटेंशन को पंचानवे प्रतिशत तक पहुँचा देता है!",
+      "transition": "match_cut",
+      "sfx": "bass_drop",
+      "icon": "gauge",
+      "visual": {
+        "start": "Circular or linear precision gauge calibrated at baseline zero.",
+        "objects": [
+          "Green Status Lock"
+        ],
+        "action": "Circular glowing telemetry gauge surging upward from 20% natural human recall to 95% AI-assisted memory retention with green status lock",
+        "camera": "Stable centered technical HUD framing.",
+        "motion_graphics": [
+          "TELEMETRY SWEEP",
+          "REAL-TIME STATUS BADGE"
+        ],
+        "end": "Gauge locks at final threshold with verified status confirmation."
+      },
+      "value": 98.4,
+      "unit": "%",
+      "startValue": 20.0,
+      "endValue": 95.0
+    },
+    {
+      "type": "outro",
+      "tag": "14 / SUMMARY & CTA",
+      "title": "REMEMBER WHAT MATTERS",
+      "purpose": "Explain the mechanism and takeaway of REMEMBER WHAT MATTERS.",
+      "tone": "[Inspiring, call to action]",
+      "narration": "स्क्रीन भूलकर खुलकर जिएँ — याद रखने का काम बी-ई-ई करेगा! फ्यूचरिस्टिक टेक के लिए राजन का अड्डा को आज ही फॉलो करें!",
+      "transition": "match_cut",
+      "sfx": "ding",
+      "icon": "sparkles",
+      "visual": {
+        "start": "Structured takeaway card framed in dark navy with cyan accent borders.",
+        "objects": [
+          "Branded Outro Card",
+          "Titanium Border",
+          "Glowing Badges For 7-Day Battery",
+          "40 Languages"
+        ],
+        "action": "Branded outro card with titanium border and glowing badges for 7-Day Battery, 40+ Languages, On-Device Privacy, and $74.99 price",
+        "camera": "Stable cinematic hero outro presentation.",
+        "motion_graphics": [
+          "CHECK · ADVANCE · PAYOFF",
+          "FOLLOW FOR TECH EXPLAINERS"
+        ],
+        "end": "Holds on clean branded frame with zero audio clipping."
+      },
+      "text": "Wearable AI Pebble with 7-Day Battery"
+    }
+  ]
+}

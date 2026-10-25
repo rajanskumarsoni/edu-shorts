@@ -1,8 +1,10 @@
 import React from "react";
 import {
   AbsoluteFill,
+  Img,
   interpolate,
   spring,
+  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
@@ -18,6 +20,7 @@ interface Product {
   rating: number;
   reviews: string;
   icon: string;
+  image?: string;
   badge?: string;
   initialIndex: number;
   sortedIndex: number;
@@ -35,64 +38,123 @@ export const AmazonShoppingHook: React.FC<{
   const tag = scene.tag || "01 / THE SORTING PUZZLE";
   const title = scene.title || scene.text || "HOW COMPUTERS SORT DATA";
 
-  // 4 Curated Amazon Products
-  const products: Product[] = [
-    {
-      id: "p1",
-      name: "Fast USB-C Cable (6ft, Braided)",
-      price: 12.99,
-      rating: 4.8,
-      reviews: "34k",
-      icon: "🔌",
-      badge: "Best Seller",
-      initialIndex: 2,
-      sortedIndex: 0,
-    },
-    {
-      id: "p2",
-      name: "Ergonomic Wireless Mouse",
-      price: 39.50,
-      rating: 4.6,
-      reviews: "18k",
-      icon: "🖱️",
-      badge: "Amazon's Choice",
-      initialIndex: 3,
-      sortedIndex: 1,
-    },
-    {
-      id: "p3",
-      name: "ANC Wireless Headphones",
-      price: 89.00,
-      rating: 4.7,
-      reviews: "52k",
-      icon: "🎧",
-      badge: "Top Rated",
-      initialIndex: 0,
-      sortedIndex: 2,
-    },
-    {
-      id: "p4",
-      name: "Smart Fitness Watch Ultra",
-      price: 199.00,
-      rating: 4.9,
-      reviews: "12k",
-      icon: "⌚",
-      badge: "Premium",
-      initialIndex: 1,
-      sortedIndex: 3,
-    },
-  ];
+  // Check if scene is for commerce / Bee Wearable AI voice shopping
+  const isCommerce =
+    /commerce|conversation|bee|cart|spoken|retail/i.test(scene.title || "") ||
+    /commerce|conversation|bee|cart|spoken|retail/i.test(scene.tag || "") ||
+    scene.variant === "commerce";
+
+  const heroImage = scene.image
+    ? (scene.image.startsWith("http") ? scene.image : staticFile(scene.image))
+    : staticFile("bee-wearable-ai/bee_frontier_black.png");
+
+  // Curated Amazon Products (dynamic for sorting algorithm vs voice commerce)
+  const products: Product[] = isCommerce
+    ? [
+        {
+          id: "p1",
+          name: "Bee Frontier Wearable AI Pebble",
+          price: 74.99,
+          rating: 4.8,
+          reviews: "2.4k",
+          icon: "🐝",
+          image: heroImage,
+          badge: "Prime 1-Day",
+          initialIndex: 0,
+          sortedIndex: 0,
+        },
+        {
+          id: "p2",
+          name: "Deep Work — Cal Newport",
+          price: 18.50,
+          rating: 4.9,
+          reviews: "48k",
+          icon: "📚",
+          badge: "Added via Voice",
+          initialIndex: 1,
+          sortedIndex: 1,
+        },
+        {
+          id: "p3",
+          name: "Atomic Habits — James Clear",
+          price: 14.99,
+          rating: 4.9,
+          reviews: "120k",
+          icon: "📖",
+          badge: "Mentioned in Call",
+          initialIndex: 2,
+          sortedIndex: 2,
+        },
+        {
+          id: "p4",
+          name: "Magnetic Clothing Clip & Puck",
+          price: 19.99,
+          rating: 4.7,
+          reviews: "8k",
+          icon: "⚡",
+          badge: "Official Accessory",
+          initialIndex: 3,
+          sortedIndex: 3,
+        },
+      ]
+    : [
+        {
+          id: "p1",
+          name: "Fast USB-C Cable (6ft, Braided)",
+          price: 12.99,
+          rating: 4.8,
+          reviews: "34k",
+          icon: "🔌",
+          badge: "Best Seller",
+          initialIndex: 2,
+          sortedIndex: 0,
+        },
+        {
+          id: "p2",
+          name: "Ergonomic Wireless Mouse",
+          price: 39.50,
+          rating: 4.6,
+          reviews: "18k",
+          icon: "🖱️",
+          badge: "Amazon's Choice",
+          initialIndex: 3,
+          sortedIndex: 1,
+        },
+        {
+          id: "p3",
+          name: "ANC Wireless Headphones",
+          price: 89.00,
+          rating: 4.7,
+          reviews: "52k",
+          icon: "🎧",
+          badge: "Top Rated",
+          initialIndex: 0,
+          sortedIndex: 2,
+        },
+        {
+          id: "p4",
+          name: "Smart Fitness Watch Ultra",
+          price: 199.00,
+          rating: 4.9,
+          reviews: "12k",
+          icon: "⌚",
+          badge: "Premium",
+          initialIndex: 1,
+          sortedIndex: 3,
+        },
+      ];
 
   // Timing breakdown:
-  // f: 0 - 95: Phone enters, displays unsorted items [$89, $199, $12.99, $39.50]
-  // f: 95 - 125: Finger cursor taps "Price: Low to High" dropdown
-  // f: 125 - 165: Cards smoothly swap into sorted order [$12.99, $39.50, $89, $199]
-  // f: 165+: Final sorted state locks with green confirmation
+  // f: 0 - 95: Phone enters, displays items
+  // f: 95 - 125: Finger cursor taps action button / dropdown
+  // f: 125 - 165: Items lock or sort into verified state
+  // f: 165+: Final state locks with confirmation
 
   const sortTriggerFrame = typeof scene.sortTriggerFrame === "number" ? scene.sortTriggerFrame : 100;
   const isSorted = frame >= sortTriggerFrame + 18;
 
   // Spring animation for sorting swap
+
   const swapSpring = spring({
     frame: frame - sortTriggerFrame,
     fps,
@@ -316,7 +378,7 @@ export const AmazonShoppingHook: React.FC<{
                   fontWeight: 500,
                 }}
               >
-                Search Amazon
+                {isCommerce ? "Bee Wearable AI & Voice Cart" : "Search Amazon"}
               </span>
             </div>
           </div>
@@ -372,7 +434,7 @@ export const AmazonShoppingHook: React.FC<{
                 borderRadius: 14,
               }}
             >
-              Electronics
+              {isCommerce ? "Voice Commerce" : "Electronics"}
             </div>
           </div>
 
@@ -393,8 +455,8 @@ export const AmazonShoppingHook: React.FC<{
               position: "relative",
             }}
           >
-            <span>Sort:</span>
-            <span>{frame >= sortTriggerFrame ? "Price: Low to High" : "Featured"}</span>
+            <span>{isCommerce ? "Cart:" : "Sort:"}</span>
+            <span>{isCommerce ? "Auto-Captured via Voice" : (frame >= sortTriggerFrame ? "Price: Low to High" : "Featured")}</span>
             <span>▼</span>
 
             {/* Click Pulse Ripple */}
@@ -433,7 +495,7 @@ export const AmazonShoppingHook: React.FC<{
           </div>
         </div>
 
-        {/* Live Algorithm Status Notification */}
+        {/* Live Algorithm / Voice Status Notification */}
         <div
           style={{
             backgroundColor: isSorted ? "rgba(0, 255, 136, 0.15)" : "rgba(255, 153, 0, 0.15)",
@@ -455,7 +517,9 @@ export const AmazonShoppingHook: React.FC<{
                 letterSpacing: "0.06em",
               }}
             >
-              {isSorted ? "ALGORITHM RESULT: SORTED (ASCENDING)" : "RAW ITEMS: UNSORTED PRICES"}
+              {isCommerce
+                ? (isSorted ? "VOICE CART SYNC: 1-CLICK BUY READY" : "SPEECH CAPTURED: 2 BOOKS DETECTED")
+                : (isSorted ? "ALGORITHM RESULT: SORTED (ASCENDING)" : "RAW ITEMS: UNSORTED PRICES")}
             </span>
           </div>
 
@@ -466,7 +530,7 @@ export const AmazonShoppingHook: React.FC<{
               color: "#9AA3C7",
             }}
           >
-            {isSorted ? "O(n log n) / Bubble" : "Random Order"}
+            {isCommerce ? "Bee Pro Sync" : (isSorted ? "O(n log n) / Bubble" : "Random Order")}
           </div>
         </div>
 
@@ -521,34 +585,48 @@ export const AmazonShoppingHook: React.FC<{
                 {/* Product Thumbnail / Icon */}
                 <div
                   style={{
-                    width: isLandscape ? 56 : 74,
-                    height: isLandscape ? 56 : 74,
+                    width: isLandscape ? 56 : 78,
+                    height: isLandscape ? 56 : 78,
                     backgroundColor: "#0F1420",
                     borderRadius: 12,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: isLandscape ? 28 : 38,
+                    fontSize: isLandscape ? 28 : 40,
                     border: "1px solid rgba(255,255,255,0.06)",
                     flexShrink: 0,
+                    overflow: "hidden",
                   }}
                 >
-                  {prod.icon}
+                  {prod.image ? (
+                    <Img
+                      src={prod.image.startsWith("http") || prod.image.startsWith("/") ? prod.image : staticFile(prod.image)}
+                      style={{
+                        width: "88%",
+                        height: "88%",
+                        objectFit: "contain",
+                      }}
+                    />
+                  ) : (
+                    prod.icon
+                  )}
                 </div>
 
                 {/* Product Metadata Info */}
-                <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 4 }}>
+                <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 5 }}>
                   {prod.badge && (
                     <div
                       style={{
-                        backgroundColor: "#E47911",
-                        color: "#FFFFFF",
-                        fontSize: isLandscape ? 9 : 11,
-                        fontWeight: 700,
-                        padding: "2px 6px",
-                        borderRadius: 3,
+                        backgroundColor: isCommerce ? "#00F0FF22" : "#E47911",
+                        color: isCommerce ? "#00F0FF" : "#FFFFFF",
+                        border: isCommerce ? "1px solid #00F0FF55" : "none",
+                        fontSize: isLandscape ? 11 : 14,
+                        fontWeight: 800,
+                        padding: "2px 8px",
+                        borderRadius: 4,
                         alignSelf: "flex-start",
                         textTransform: "uppercase",
+                        letterSpacing: "0.04em",
                       }}
                     >
                       {prod.badge}
@@ -559,8 +637,8 @@ export const AmazonShoppingHook: React.FC<{
                   <div
                     style={{
                       fontFamily: FONT,
-                      fontSize: isLandscape ? 13 : 16,
-                      fontWeight: 700,
+                      fontSize: isLandscape ? 15 : 20,
+                      fontWeight: 800,
                       color: "#FFFFFF",
                       whiteSpace: "nowrap",
                       overflow: "hidden",

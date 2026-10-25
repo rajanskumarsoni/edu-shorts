@@ -311,6 +311,39 @@ def search_museum_images(query: str, limit: int = 5) -> list:
         return []
 
 
+def search_polyhaven_assets(query: str, asset_type: str = "textures", limit: int = 5) -> list:
+    """Search Poly Haven for 100% CC0 public domain textures, HDRIs, and models."""
+    url = f"https://api.polyhaven.com/assets?type={asset_type}"
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    try:
+        with urllib.request.urlopen(req, timeout=12) as response:
+            data = json.loads(response.read().decode("utf-8"))
+            results = []
+            q_lower = query.lower()
+            for asset_id, info in data.items():
+                name = info.get("name", "").lower()
+                tags = [t.lower() for t in info.get("tags", [])]
+                cats = [c.lower() for c in info.get("categories", [])]
+                if q_lower in name or any(q_lower in t for t in tags) or any(q_lower in c for c in cats):
+                    thumb_url = f"https://cdn.polyhaven.com/asset_img/primary/{asset_id}.png?width=1024"
+                    results.append({
+                        "title": f"Poly Haven: {info.get('name', asset_id)}",
+                        "url": thumb_url,
+                        "orig_url": f"https://polyhaven.com/a/{asset_id}",
+                        "mime": "image/png",
+                        "provider": "polyhaven",
+                        "license": "CC0 Public Domain",
+                        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+                        "author": ", ".join(info.get("authors", {}).keys()) or "Poly Haven Community",
+                    })
+                    if len(results) >= limit:
+                        break
+            return results
+    except Exception as e:
+        print(f"  [Poly Haven Warning] {e}")
+        return []
+
+
 def search_pexels_images(query: str, limit: int = 5, orientation: str = "portrait") -> list:
     """Search Pexels API if PEXELS_API_KEY is available."""
     api_key = os.environ.get("PEXELS_API_KEY")
@@ -488,6 +521,8 @@ def search_image(
         candidates.extend(search_openverse_images(query, limit=limit))
     if provider in ("auto", "museum") and not candidates:
         candidates.extend(search_museum_images(query, limit=limit))
+    if provider in ("auto", "polyhaven") and not candidates:
+        candidates.extend(search_polyhaven_assets(query, limit=limit))
     if provider in ("auto", "wikimedia") or not candidates:
         candidates.extend(search_wikimedia_images(query, limit=limit))
 
@@ -1066,29 +1101,57 @@ def resolve_spec_assets(spec_path: Path, force: bool = False, dry_run: bool = Fa
                     print(f"  [{tag}] Error resolving SFX: {e}")
 
         # 6. 3D Model Resolution (Hook to model_manager.py)
-        if s.get("search_model") or (stype == "three" and s.get("variant") == "model_3d" and not s.get("model")):
+        model_url = s.get("model", "")
+        if isinstance(model_url, str) and (model_url.startswith("http://") or model_url.startswith("https://") or "sketchfab.com" in model_url):
+            if dry_run:
+                print(f"[{tag}] WOULD auto-download 3D model from URL: '{model_url}'")
+            else:
+                try:
+                    model_mgr = ROOT / "tools" / "model_manager.py"
+                    cmd = [sys.executable, str(model_mgr), "download", model_url, "--topic", vid]
+                    sub_proc = subprocess.run(cmd, capture_output=True, text=True)
+                    if sub_proc.returncode == 0:
+                        slug_match = re.search(r"/3d-models/([a-zA-Z0-9_-]+)-[0-9a-fA-F]{32}", model_url)
+                        if slug_match:
+                            final_name = slug_match.group(1).replace("-", "_") + ".glb"
+                        else:
+                            final_name = Path(model_url.split("?")[0]).name
+                            if not final_name.endswith((".glb", ".gltf")):
+                                final_name += ".glb"
+                        s["model"] = f"media/{final_name}"
+                        modified = True
+                        print(f"  [{tag}] Auto-downloaded 3D model -> {s['model']}")
+                    else:
+                        print(f"  [{tag}] 3D model download output: {sub_proc.stdout.strip() or sub_proc.stderr.strip()}")
+                except Exception as e:
+                    print(f"  [{tag}] Error auto-downloading 3D model: {e}")
+
+        elif s.get("search_model") or (stype == "three" and s.get("variant") == "model_3d" and not s.get("model")):
             query = s.get("search_model") or s.get("title") or "tech object"
             slug = slugify(query)
-            model_target = ROOT / "public" / "models" / vid / f"{slug}.glb"
-            if model_target.exists() and not force:
-                print(f"[{tag}] Using cached 3D model: {model_target.name}")
+            target_file = (episode_dir / "media" / f"{slug}.glb") if episode_dir else (ROOT / "public" / "models" / vid / f"{slug}.glb")
+            if target_file.exists() and not force:
+                print(f"[{tag}] Using cached 3D model: {target_file.name}")
+                s["model"] = f"media/{target_file.name}"
+                modified = True
             else:
                 if dry_run:
                     print(f"[{tag}] WOULD fetch/generate 3D model: '{query}'")
                 else:
                     try:
                         model_mgr = ROOT / "tools" / "model_manager.py"
-                        cmd = [sys.executable, str(model_mgr), "get", slug, "--topic", vid]
+                        presets = ["smartphone", "credit_card", "server_rack", "shipping_container", "laptop", "duck", "cube"]
+                        preset_match = next((p for p in presets if p in slug or slug in p), None)
+                        if preset_match:
+                            cmd = [sys.executable, str(model_mgr), "get", preset_match, "--topic", vid, "--name", f"{slug}.glb"]
+                        elif os.environ.get("TRIPO_API_KEY"):
+                            cmd = [sys.executable, str(model_mgr), "generate", query, "--topic", vid, "--name", f"{slug}.glb"]
+                        else:
+                            cmd = [sys.executable, str(model_mgr), "get", "cube", "--topic", vid, "--name", f"{slug}.glb"]
                         sub_proc = subprocess.run(cmd, capture_output=True, text=True)
-                        if sub_proc.returncode == 0 and model_target.exists():
-                            s["model"] = f"models/{vid}/{model_target.name}"
+                        if sub_proc.returncode == 0 and target_file.exists():
+                            s["model"] = f"media/{target_file.name}"
                             modified = True
-                            if episode_dir:
-                                record_attribution(episode_dir, f"models/{vid}/{model_target.name}", {
-                                    "title": f"3D Model: {slug}",
-                                    "provider": "open_source_gltf",
-                                    "license": "CC0 / Khronos Sample License",
-                                })
                             print(f"  [{tag}] Resolved 3D model -> {s['model']}")
                     except Exception as e:
                         print(f"  [{tag}] Error resolving 3D model: {e}")
@@ -1114,7 +1177,7 @@ def main():
     p_img.add_argument("query", help="Search query")
     p_img.add_argument("--out", help="Target output file path")
     p_img.add_argument("--topic", help="Topic/episode ID for auto-locating destination")
-    p_img.add_argument("--provider", default="auto", choices=["auto", "wikimedia", "openverse", "nasa", "museum", "pexels", "unsplash", "pixabay", "pollinations"])
+    p_img.add_argument("--provider", default="auto", choices=["auto", "wikimedia", "openverse", "nasa", "museum", "polyhaven", "pexels", "unsplash", "pixabay", "pollinations"])
     p_img.add_argument("--limit", type=int, default=5)
     p_img.add_argument("--nobg", action="store_true", help="Remove background to create transparent cutout PNG")
     p_img.add_argument("--bg-mode", choices=["white", "black", "auto"], default="white", help="Background color to remove (default white)")

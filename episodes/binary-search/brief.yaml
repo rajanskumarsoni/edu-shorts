@@ -1,0 +1,23 @@
+id: "binary-search"
+topic: "How Binary Search Algorithm Works & Everyday Uses (बाइनरी सर्च एल्गोरिदम)"
+audience: "Computer science students, beginner coders, curious tech learners"
+hook_angle: "When looking for a word in a 1,000-page dictionary or guessing a number from 1 to 100, why does nobody search page by page?"
+analogy: "Opening a dictionary directly in the middle (Page 500) and cutting out half the book at every single step"
+format: "vertical"
+accent: "#00F0FF"
+art_direction: "editorial"
+theme: "cyberpunk"
+key_points:
+  - "The Prerequisite: Data must be sorted in ascending order (A-Z / 0-9)"
+  - "Divide & Conquer: Computes Mid = (Low + High) / 2 and eliminates 50% search space in 1 check"
+  - "Logarithmic scaling: O(log2 N) vs Linear Search O(N)"
+  - "10 Lakh items found in only 20 checks; 100 Crore items in only 30 checks"
+  - "Day-to-day life applications: Phone contact scrolling, Database B-Trees in UPI and banking, Git Bisect bug hunting, Auto-suggest"
+misconceptions:
+  - "Binary search works on any list (debunk: strictly requires sorted data)"
+  - "Linear search is useless (debunk: linear search is required for unsorted or small dynamic lists)"
+facts_to_verify:
+  - "Best case time complexity: O(1) when target is at the midpoint"
+  - "Worst case time complexity: O(log2 N)"
+  - "Space complexity: O(1) iterative"
+cta: "Subscribe to Rajan का ADDA for intuitive visual computer science and tech breakdowns"

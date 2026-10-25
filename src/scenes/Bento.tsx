@@ -8,7 +8,7 @@ import {
 import type { BentoItem, SceneSpec } from "../types";
 import { useLayout } from "../layout";
 import { RevealText } from "../Reveal";
-import { FONT } from "../theme";
+import { FONT, resolveSceneTag } from "../theme";
 import { MotionGraphic } from "../MotionGraphic";
 
 export const Bento: React.FC<{ scene: SceneSpec; accent: string }> = ({
@@ -51,7 +51,7 @@ export const Bento: React.FC<{ scene: SceneSpec; accent: string }> = ({
               opacity: 0.9,
             }}
           >
-            {"// FEATURE MATRIX"}
+            {resolveSceneTag(scene, "// FEATURE MATRIX")}
           </div>
           <RevealText
             text={scene.title}

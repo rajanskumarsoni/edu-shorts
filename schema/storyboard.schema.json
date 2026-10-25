@@ -263,6 +263,31 @@
           "type": "string",
           "description": "Custom color tint for particles (defaults to scene accent color)."
         },
+        "hook_strength": {
+          "type": "number",
+          "minimum": 1.0,
+          "maximum": 10.0,
+          "description": "Retention score (1-10) measuring thumb-stop tension in initial 3 seconds."
+        },
+        "payoff_type": {
+          "type": "string",
+          "enum": ["loop_setup", "curiosity_reveal", "metric_shock", "mechanism_clarity", "actionable_tip"],
+          "description": "Type of retention payoff delivered in the scene."
+        },
+        "pattern_interrupt": {
+          "type": "string",
+          "enum": ["zoom_punch", "color_flash", "shake", "glitch", "spotlight", "none"],
+          "description": "Micro visual interrupt resetting viewer attention."
+        },
+        "emphasis_words": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Specific keywords highlighted with vibrant neon pop in captions."
+        },
+        "cta_reason": {
+          "type": "string",
+          "description": "Specific motivation to save or share rather than generic follow prompt."
+        },
         "visual": {
           "$ref": "#/definitions/StoryboardVisual"
         }
@@ -311,8 +336,11 @@
             "refrigerator",
             "air_conditioner",
             "linear_search_visualizer",
+            "binary_search_visualizer",
             "tesla_roadster_visualizer",
-            "depth_parallax"
+            "depth_parallax",
+            "tower_of_hanoi",
+            "tower_of_hanoi_visualizer"
           ]
         }
       },

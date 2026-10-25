@@ -117,10 +117,16 @@ This document maps possible capabilities to production stages; it does not guara
      - Poly Haven & ambientCG (CC0 textures, HDRIs, and models).
      - Kenney & OpenGameArt (CC0 tech assets).
      - Curated tech models via `python3 tools/model_manager.py get <smartphone|server_rack|shipping_container|credit_card|laptop> --topic <id>`.
-  3. **Headless Blender + `bpy`** (`tools/blender_render.py`):
-     - Converts CAD formats (.obj, .fbx, .stl) to binary `.glb` for Three.js:
-       `python3 tools/blender_render.py convert model.obj --out public/models/topic/model.glb`
-     - Headless batch rendering of `.blend` scene files to MP4 or PNG sequences.
+  3. **Blender 5.x Engine & MCP Runner Bridge** (`tools/blender_render.py`):
+     - **Dual Execution**: Live interactive socket (`localhost:9876` via Blender MCP Runner / Addon) for real-time viewport manipulation, plus automated headless CLI fallback (`blender -b`).
+     - **CAD & Mesh Converter**: Auto-converts CAD formats (.obj, .fbx, .stl, .dae, .blend) to centered, normalized, binary `.glb` for Three.js:
+       `python3 tools/blender_render.py convert model.obj --out episodes/<topic>/media/model.glb`
+       `python3 tools/model_manager.py convert model.fbx --topic <id>`
+     - **Photorealistic Video Rendering**: Headless/live rendering of `.blend` scene files to 1080x1920 MP4 video B-roll via Cycles / EEVEE Next:
+       `python3 tools/blender_render.py render scene.blend --out episodes/<topic>/media/clip.mp4 --start 1 --end 90`
+     - **Live Viewport Inspection & Screenshot**:
+       `python3 tools/blender_render.py screenshot --out episodes/<topic>/media/viewport.png`
+     - **Stdio MCP Server**: Registered in `.agents/mcp_servers.json` (`python3 tools/blender_render.py --mcp`) for direct AI agent tool calling (`blender_status`, `blender_execute_python`, `blender_convert_model`, `blender_render_animation`).
 
 ---
 

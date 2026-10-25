@@ -1,0 +1,396 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "nvidia-microducks",
+  "format": "vertical",
+  "art_direction": "editorial",
+  "theme": "slate",
+  "accent": "#00F0FF",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "pad_seconds": 0.28,
+  "music": null,
+  "meta": {
+    "title": "How NVIDIA Microducks Work 🤖 $399 AI Robot Explained!",
+    "description": "When NVIDIA CEO Jensen Huang knelt down on the GTC Berlin stage to summon four tiny 10-inch robot ducks, the tech world was stunned! Meet Microduck — the $399 open-source bipedal AI robot developed by Pollen Robotics & Hugging Face, trained with NVIDIA Isaac Sim.",
+    "hashtags": [
+      "#NVIDIA",
+      "#Microducks",
+      "#Robotics",
+      "#PhysicalAI",
+      "#IsaacSim",
+      "#HuggingFace",
+      "#TechShorts",
+      "#AI"
+    ],
+    "facts_to_verify": [
+      "How NVIDIA Microducks Work operates via distributed synchronized state machines."
+    ],
+    "misconceptions": [],
+    "analogy": ""
+  },
+  "scenes": [
+    {
+      "type": "video",
+      "tag": "01 / GTC BERLIN REVELATION",
+      "title": "JENSEN HUANG & THE MICRODUCKS",
+      "purpose": "Explain the mechanism and takeaway of JENSEN HUANG & THE MICRODUCKS.",
+      "tone": "[Astonished, thrilling, storytelling]",
+      "narration": "बर्लिन के जी-टी-सी स्टेज पर जब जेन्सन हुआंग ने झुककर इन नन्हे रोबोट्स को चलने का इशारा किया, तो पूरा हॉल हैरान रह गया! मिलिए एन-वि-डि-या के 'माइक्रोडक्स' से — दस इंच के नन्हे रोबोट्स, जिन्होंने फिजिकल ए-आई की दुनिया बदल दी है!",
+      "transition": "zoom_through",
+      "sfx": "whoosh",
+      "icon": "film",
+      "visual": {
+        "start": "High-contrast editorial layout establishing JENSEN HUANG & THE MICRODUCKS.",
+        "objects": [
+          "Real Stage Footage From Nvidia Gtc Berli"
+        ],
+        "action": "Real stage footage from NVIDIA GTC Berlin where CEO Jensen Huang kneels down on stage as four tiny robot ducks waddle towards him under stage spotlights",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "JENSEN HUANG & THE MICRODUCKS",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "video": "media/clip_hook_stage_looped.mp4"
+    },
+    {
+      "type": "stat",
+      "tag": "02 / THE BIPEDAL CHALLENGE",
+      "title": "WHY TWO LEGS ARE HARD",
+      "purpose": "Explain the mechanism and takeaway of WHY TWO LEGS ARE HARD.",
+      "tone": "[Intriguing, problem-defining]",
+      "narration": "आपने कभी सोचा है कि रोबोट्स के लिए दो पैरों पर चलना इतना मुश्किल क्यों होता है? क्योंकि इंसान के हल्के धक्के से भी वो गिर जाते हैं। बैलेंस साधने के लिए हर सेकंड सौ बार मोटर्स को एडजस्ट करना पड़ता है!",
+      "transition": "match_cut",
+      "sfx": "impact",
+      "icon": "activity",
+      "visual": {
+        "start": "Bold editorial stat display centered on the frame with glowing cyan typography.",
+        "objects": [
+          "Kinetic Telemetry Stat Showcasing 100 Hz"
+        ],
+        "action": "Kinetic telemetry stat showcasing 100 Hz balance frequency, contrasting human instinctive walking against the massive kinematic mathematics of bipedal robotics",
+        "camera": "Stable macro typography presentation.",
+        "motion_graphics": [
+          "WHY TWO LEGS ARE HARD",
+          "BIG-O METRIC TELEMETRY"
+        ],
+        "end": "Metric settles at peak value, locking into state."
+      },
+      "value": "100 Hz",
+      "label": "REAL-TIME BALANCE CORRECTIONS PER SECOND"
+    },
+    {
+      "type": "video",
+      "tag": "03 / AUTONOMOUS RECOVERY",
+      "title": "FALLING AND RISING INSTANTLY",
+      "purpose": "Explain the mechanism and takeaway of FALLING AND RISING INSTANTLY.",
+      "tone": "[Excited, amazed]",
+      "narration": "लेकिन यह माइक्रोडक? ज़मीन पर गिरते ही अपने पैरों को मोड़कर खुद खड़ा हो जाता है! बिना किसी इंसानी मदद के। पर सवाल यह है कि इस नन्हे खिलौने ने इतना गज़ब का बैलेंस सीखा कैसे?",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "film",
+      "visual": {
+        "start": "High-contrast editorial layout establishing FALLING AND RISING INSTANTLY.",
+        "objects": [
+          "Stumbling Into A Dramatic Fall"
+        ],
+        "action": "Real-world footage of the Microduck waddling across a carpet, stumbling into a dramatic fall, and immediately tucking its legs underneath to stand right back up without any human help",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "FALLING AND RISING INSTANTLY",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "video": "media/clip_walk_recover_looped.mp4"
+    },
+    {
+      "type": "three",
+      "tag": "04 / SIM-TO-REAL PIPELINE",
+      "title": "REINFORCEMENT LEARNING ON GPUS",
+      "purpose": "Explain the mechanism and takeaway of REINFORCEMENT LEARNING ON GPUS.",
+      "tone": "[Scientific, revelation]",
+      "narration": "इसे किसी कोडर ने नहीं सिखाया! एन-वि-डि-या जी-पी-यू पर रीइन्फोर्समेंट लर्निंग से इसका न्यूरल नेटवर्क ट्रेन हुआ। फिर उस दिमाग को हल्के ओ-एन-एन-एक्स मॉडल में बदलकर सीधे रोबोट की चिप में डाल दिया गया!",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "cube",
+      "visual": {
+        "start": "Dark 3D spatial coordinate grid with directional volumetric lighting.",
+        "objects": [
+          "The Embedded Hardware Chip"
+        ],
+        "action": "3D synaptic neural network firing glowing data impulses between virtual simulation checkpoints and the embedded hardware chip",
+        "camera": "Motivated tracking camera orbiting the focal 3D model.",
+        "motion_graphics": [
+          "3D SPATIAL TELEMETRY",
+          "REINFORCEMENT LEARNING ON GPUS"
+        ],
+        "end": "Model locks into informative angle for seamless scene cut."
+      },
+      "variant": "neural_network_3d",
+      "equation": "\\pi_\\theta(\\mathbf{a}_t \\mid \\mathbf{s}_t) \\xrightarrow{\\text{Isaac Sim}} \\text{ONNX Embedded Policy}",
+      "metrics": {
+        "Training Time": "3 Hours",
+        "Simulation Speed": "10,000x Realtime",
+        "Motor Update": "100 Hz"
+      }
+    },
+    {
+      "type": "video",
+      "tag": "05 / MASSIVE PARALLEL TRAINING",
+      "title": "10,000 DUCKS IN ISAAC SIM",
+      "purpose": "Explain the mechanism and takeaway of 10,000 DUCKS IN ISAAC SIM.",
+      "tone": "[Futuristic, awe-inspiring]",
+      "narration": "असली दुनिया में रोबोट हजार बार गिरता तो टूट जाता। इसलिए एन-वि-डि-या आइज़ैक सिम में, हजारों डिजिटल क्लोन डक्स ने एक साथ ट्रेनिंग ली! सालों का काम ए-आई ने कंप्यूटर में सिर्फ तीन घंटे में सीख लिया!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "film",
+      "visual": {
+        "start": "High-contrast editorial layout establishing 10,000 DUCKS IN ISAAC SIM.",
+        "objects": [
+          "Jumping Hurdles",
+          "Doing Somersaults At 10",
+          "000X Real-Time Speed"
+        ],
+        "action": "Real simulation capture from NVIDIA Isaac Sim displaying an infinite virtual grid where thousands of digital clone ducks practice walking, jumping hurdles, and doing somersaults at 10,000x real-time speed",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "10,000 DUCKS IN ISAAC SIM",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "video": "media/clip_sim_parallel.mp4"
+    },
+    {
+      "type": "product",
+      "tag": "06 / HARDWARE ARCHITECTURE",
+      "title": "MICRODUCK SPECIFICATIONS",
+      "purpose": "Explain the mechanism and takeaway of MICRODUCK SPECIFICATIONS.",
+      "tone": "[Detailed, tactile showcase]",
+      "narration": "सिर्फ तीन सौ निन्यानवे डॉलर के इस ओपन-सोर्स रोबोट में पंद्रह हाई-टॉर्क मोटर्स हैं। सिर में फ्रंट कैमरा, डेप्थ ली-डार, बॉडी में डुअल आई-एम-यू सेंसर्स, और आगे एक आर्टिकुलेटेड स्मार्ट चोंच!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing MICRODUCK SPECIFICATIONS.",
+        "objects": [
+          "Floating 3D Cutout Of Microduck",
+          "Glowing Radial Spotlight",
+          "Showcasing Its Camera Eye",
+          "Orange Articulated Beak"
+        ],
+        "action": "Floating 3D cutout of Microduck with glowing radial spotlight, showcasing its camera eye, orange articulated beak, 15 micro-servos, and modular chassis",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "MICRODUCK SPECIFICATIONS",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "image": "media/microduck_cutout.png",
+      "price": "$399 (OPEN SOURCE)",
+      "highlight": "15 MOTORS · DUAL IMU · LIDAR",
+      "tagline": "Open-source physical AI companion",
+      "specs": [
+        {
+          "label": "Form Factor",
+          "value": "25 cm / 780 Grams"
+        },
+        {
+          "label": "Actuation",
+          "value": "15 Micro Servos"
+        },
+        {
+          "label": "Sensors",
+          "value": "Depth LiDAR + Camera"
+        },
+        {
+          "label": "Balance",
+          "value": "Dual 6-Axis IMUs"
+        }
+      ]
+    },
+    {
+      "type": "video",
+      "tag": "07 / PHYSICAL INTERACTION",
+      "title": "SENSING, GRASPING & MODULARITY",
+      "purpose": "Explain the mechanism and takeaway of SENSING, GRASPING & MODULARITY.",
+      "tone": "[Engaging, practical]",
+      "narration": "इसकी चोंच सिर्फ आवाज़ नहीं निकालती, बल्कि चीजों को पहचानकर उठा भी सकती है। और इसका बैक-पैनल मैग्नेटिक और मॉड्यूलर है — ताकि बैटरी और पार्ट्स आसानी से बदले जा सकें!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "film",
+      "visual": {
+        "start": "High-contrast editorial layout establishing SENSING, GRASPING & MODULARITY.",
+        "objects": [
+          "Motherboard"
+        ],
+        "action": "Real demonstration footage of Microduck opening its articulated beak to grab a small object, followed by a developer opening the magnetic back hatch to reveal the swappable battery and motherboard",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "SENSING, GRASPING & MODULARITY",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "video": "media/clip_hardware_internals_looped.mp4"
+    },
+    {
+      "type": "bento",
+      "tag": "08 / EMBODIED AI BENCHMARKS",
+      "title": "THE $399 REVOLUTION",
+      "purpose": "Explain the mechanism and takeaway of THE $399 REVOLUTION.",
+      "tone": "[Authoritative, high-impact]",
+      "narration": "जहाँ बड़े रोबोट्स पचास लाख से एक करोड़ रुपये के आते हैं, माइक्रोडक ने हाई-एंड रोबोटिक्स को हर स्टूडेंट और कोडर के हाथ में पहुंचा दिया है!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing THE $399 REVOLUTION.",
+        "objects": [
+          "High-Tech Telemetry Bento Grid",
+          "780G Weight",
+          "Hugging Face Model Hub",
+          "Nvidia Isaac Lab Physics Foundation"
+        ],
+        "action": "High-tech telemetry bento grid with neon cyan tiles displaying the $399 price tag, 780g weight, Hugging Face model hub, and NVIDIA Isaac Lab physics foundation",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "THE $399 REVOLUTION",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "bentoItems": [
+        {
+          "title": "Accessible Price",
+          "value": "$399",
+          "span": 1,
+          "badge": "Open Hardware"
+        },
+        {
+          "title": "Weight",
+          "value": "780 Grams",
+          "span": 1,
+          "badge": "Portable"
+        },
+        {
+          "title": "Community Hub",
+          "value": "Hugging Face",
+          "span": 1,
+          "badge": "Free Models"
+        },
+        {
+          "title": "Actuation",
+          "value": "15 Servos",
+          "span": 1,
+          "badge": "Full Agility"
+        },
+        {
+          "title": "Simulation Engine",
+          "value": "NVIDIA Isaac Lab",
+          "span": 2,
+          "badge": "RTX Physics"
+        }
+      ]
+    },
+    {
+      "type": "compare",
+      "tag": "09 / OPEN SOURCE ECOSYSTEM",
+      "title": "DOWNLOADING PHYSICAL TRICKS",
+      "purpose": "Explain the mechanism and takeaway of DOWNLOADING PHYSICAL TRICKS.",
+      "tone": "[Comparative, visionary]",
+      "narration": "सबसे कमाल की बात? यह पूरी तरह ओपन-सोर्स है। जैसे आप फोन में ऐप्स डाउनलोड करते हैं, वैसे ही आप हगिंग फेस से माइक्रोडक के लिए नए डांस, वॉक और स्टंट्स फ्री में डाउनलोड कर सकते हैं!",
+      "transition": "match_cut",
+      "sfx": "click",
+      "icon": "git-compare",
+      "visual": {
+        "start": "Split comparison stage materializing with contrasting left and right panels.",
+        "objects": [
+          "Split Comparison Layout Contrasting Lega"
+        ],
+        "action": "Split comparison layout contrasting legacy expensive closed-source robotics against the Hugging Face open ONNX model ecosystem",
+        "camera": "Stable centered split-screen framing with generous subtitle margins.",
+        "motion_graphics": [
+          "SIDE-BY-SIDE ARCHITECTURAL COMPARISON",
+          "STATUS INDICATORS"
+        ],
+        "end": "Comparison holds with clear visual superiority established."
+      },
+      "left": {
+        "heading": "TRADITIONAL ROBOTICS",
+        "items": [
+          "$50,000+ Closed hardware",
+          "Hardcoded inverse kinematics",
+          "Locked in corporate labs"
+        ]
+      },
+      "right": {
+        "heading": "MICRODUCK + HUGGING",
+        "items": [
+          "$399 Open source hardware",
+          "Download walking gaits like apps",
+          "Train and share community models"
+        ]
+      }
+    },
+    {
+      "type": "video",
+      "tag": "10 / FLEET INTELLIGENCE",
+      "title": "ROLLER SKATING & STUNTS",
+      "purpose": "Explain the mechanism and takeaway of ROLLER SKATING & STUNTS.",
+      "tone": "[Playful, thrilling]",
+      "narration": "चाहे स्केटपार्क में मिनी स्केट्स पर दौड़ना हो या झुंड में तालमेल बिठाना — माइक्रोडक ने साबित कर दिया है कि पर्सनल रोबोटिक्स का दौर अब शुरू हो चुका है!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "film",
+      "visual": {
+        "start": "High-contrast editorial layout establishing ROLLER SKATING & STUNTS.",
+        "objects": [
+          "Rolling On Miniature Roller-Skates",
+          "Coordinating Group Movements Outdoors"
+        ],
+        "action": "Real video footage of colorful flock of Microducks together at a skatepark, rolling on miniature roller-skates and coordinating group movements outdoors",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "ROLLER SKATING & STUNTS",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "video": "media/clip_squad_skate_looped.mp4"
+    },
+    {
+      "type": "outro",
+      "tag": "11 / THE FUTURE OF ROBOTICS",
+      "title": "THE PERSONAL AI COMPANION",
+      "purpose": "Explain the mechanism and takeaway of THE PERSONAL AI COMPANION.",
+      "tone": "[Inspiring, call to action]",
+      "narration": "क्या आप अपने डेस्क पर ऐसा छोटा ए-आई रोबोट रखना चाहेंगे? कमेंट्स में बताइए, और ऐसे ही अनोखे टेक ब्रेकथ्रूज़ के लिए 'राजन का अड्डा' को अभी सब्सक्राइब कीजिए!",
+      "transition": "match_cut",
+      "sfx": "ding",
+      "icon": "sparkles",
+      "visual": {
+        "start": "Structured takeaway card framed in dark navy with cyan accent borders.",
+        "objects": [
+          "Dark-Mode Editorial Outro Screen",
+          "Glowing Cyber Badge",
+          "Animated Bell Icon",
+          "Rajan क Adda Subscription Prompt"
+        ],
+        "action": "Dark-mode editorial outro screen with glowing cyber badge, animated bell icon, and Rajan का ADDA subscription prompt",
+        "camera": "Stable cinematic hero outro presentation.",
+        "motion_graphics": [
+          "CHECK · ADVANCE · PAYOFF",
+          "FOLLOW FOR TECH EXPLAINERS"
+        ],
+        "end": "Holds on clean branded frame with zero audio clipping."
+      },
+      "text": "SUBSCRIBE TO RAJAN KA ADDA"
+    }
+  ]
+}

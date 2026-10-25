@@ -39,7 +39,10 @@ DYNAMIC_VISUAL_TYPES = {
     "terminal", "screenshot", "gauge", "benchmark", "bento", "hierarchy",
     "data_structure", "neural_network_graph", "seat_booking", "hook",
     "sorting_visualizer", "product", "refrigerator", "air_conditioner",
-    "linear_search_visualizer", "tesla_roadster_visualizer", "depth_parallax"
+    "linear_search_visualizer", "binary_search_visualizer", "tesla_roadster_visualizer", "pacman_enzyme_visualizer",
+    "whiteboard", "compare", "depth_parallax", "quick_commerce", "google_maps", "google_maps_visualizer",
+    "aadhaar", "aadhaar_visualizer", "tower_of_hanoi", "tower_of_hanoi_visualizer",
+    "emudhra", "emudhra_visualizer"
 }
 
 

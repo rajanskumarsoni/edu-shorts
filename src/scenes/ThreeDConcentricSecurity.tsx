@@ -3,6 +3,7 @@ import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate } from "remo
 import * as THREE from "three";
 import type { SceneSpec } from "../types";
 import { resolveSceneTag } from "../theme";
+import { MathFormula } from "../MathFormula";
 
 export const ThreeDConcentricSecurity: React.FC<{
   scene: SceneSpec;
@@ -289,34 +290,50 @@ export const ThreeDConcentricSecurity: React.FC<{
                 border: `1.5px solid ${accent}50`,
               }}
             >
-              {resolveSceneTag(scene, "06 / ZERO-KNOWLEDGE PIN")}
+              {resolveSceneTag(scene, "06 / ZERO-KNOWLEDGE SECURITY")}
             </div>
-            <div
-              style={{
-                fontFamily: "monospace",
-                fontSize: 28,
-                fontWeight: 700,
-                color: "#FFC857",
-                letterSpacing: 2,
-              }}
-            >
-              HARDWARE-ISOLATED MPIN
-            </div>
+            {scene.equation ? (
+              <MathFormula
+                equation={scene.equation}
+                accent="#FFC857"
+                fontSize={26}
+                color="#FFC857"
+                style={{
+                  background: "rgba(10, 15, 28, 0.9)",
+                  border: "1px solid rgba(255, 200, 87, 0.4)",
+                  padding: "6px 18px",
+                  borderRadius: 12,
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  fontFamily: "monospace",
+                  fontSize: 28,
+                  fontWeight: 700,
+                  color: "#FFC857",
+                  letterSpacing: 2,
+                }}
+              >
+                ZERO-KNOWLEDGE VAULT
+              </div>
+            )}
           </div>
 
           <div>
             <h1
               style={{
-                fontSize: 52,
+                fontSize: 56,
                 fontWeight: 900,
                 color: "#FFFFFF",
                 letterSpacing: -1,
                 margin: 0,
                 textShadow: `0 0 30px ${accent}60`,
                 lineHeight: 1.15,
+                textTransform: "uppercase",
               }}
             >
-              {scene.title || "UPI PIN & Secure Sandbox"}
+              {scene.title || "END-TO-END DATA ENCRYPTION"}
             </h1>
             <div
               style={{
@@ -326,38 +343,47 @@ export const ThreeDConcentricSecurity: React.FC<{
                 fontWeight: 700,
                 color: "#58D6C2",
                 background: "rgba(11, 16, 32, 0.8)",
-                padding: "6px 20px",
+                padding: "8px 22px",
                 borderRadius: 999,
                 border: "1px solid rgba(88, 214, 194, 0.4)",
-                marginTop: 8,
+                marginTop: 10,
               }}
             >
-              NO APP CAN READ YOUR 6-DIGIT PIN
+              {scene.metrics?.Privacy ? `PRIVACY: ${scene.metrics.Privacy}` : "CONFIDENTIAL BY DESIGN"}
             </div>
           </div>
         </div>
 
-        {/* Lower Telemetry Pill */}
+        {/* Lower Telemetry Pill (Positioned above bottom 350px caption safe zone) */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: 16,
-            background: "rgba(14, 20, 36, 0.88)",
+            background: "rgba(14, 20, 36, 0.92)",
             backdropFilter: "blur(20px)",
-            padding: "18px 28px",
-            borderRadius: 18,
-            border: "1px solid rgba(0, 240, 255, 0.25)",
-            marginBottom: 90,
+            padding: "20px 32px",
+            borderRadius: 22,
+            border: "1px solid rgba(0, 240, 255, 0.3)",
+            marginBottom: 380,
+            boxShadow: "0 20px 50px rgba(0,0,0,0.8)",
           }}
         >
           <div>
-            <div style={{ fontFamily: "monospace", fontSize: 26, color: "#FFC857" }}>Device Keystore</div>
-            <div style={{ fontSize: 28, fontWeight: 800, color: "#FFFFFF" }}>Hardware Encrypted</div>
+            <div style={{ fontFamily: "monospace", fontSize: 24, color: "#FFC857", fontWeight: 700 }}>
+              {scene.metrics ? Object.keys(scene.metrics)[0]?.toUpperCase() : "ENCRYPTION"}
+            </div>
+            <div style={{ fontSize: 30, fontWeight: 900, color: "#FFFFFF" }}>
+              {scene.metrics ? Object.values(scene.metrics)[0] : "AES-256 GCM"}
+            </div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontFamily: "monospace", fontSize: 26, color: "#58D6C2" }}>Bank HSM</div>
-            <div style={{ fontSize: 28, fontWeight: 800, color: "#FFFFFF" }}>FIPS 140-2 Level 3</div>
+            <div style={{ fontFamily: "monospace", fontSize: 24, color: "#58D6C2", fontWeight: 700 }}>
+              {scene.metrics && Object.keys(scene.metrics)[1] ? Object.keys(scene.metrics)[1]?.toUpperCase() : "ARCHITECTURE"}
+            </div>
+            <div style={{ fontSize: 30, fontWeight: 900, color: "#FFFFFF" }}>
+              {scene.metrics && Object.values(scene.metrics)[1] ? Object.values(scene.metrics)[1] : "ZERO-KNOWLEDGE"}
+            </div>
           </div>
         </div>
       </AbsoluteFill>

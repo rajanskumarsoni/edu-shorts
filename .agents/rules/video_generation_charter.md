@@ -75,20 +75,29 @@ Before implementation, inspect the actual operating system, CPU architecture, in
 - Choose whatever medium makes the concept click with maximum pedagogical clarity (Manim for calculus, neural_network_graph for layers/activations, Three.js for 3D terrain/models, terminal for CLI, screenshot for apps, chart for data).
 - Avoid decorative effects, camera moves, particles, bloom, and sound effects unless they clarify a visual event. Stable holds are valid when they make a diagram easier to read.
 - Do not use generic abstract circles or text-only slides. Each scene must show a relevant object, relationship, mechanism, or state change.
-- **Editorial Typography & Focal Scale Contrast**:
-  - **BIG Equation & Metric Fonts**: Equations, formulas, and primary statistics must use large, bold, prominent typography (font size 50–64+ pt equivalent, scaling to 75–85% of screen width). Never render small or hard-to-read formulas.
-  - **Mobile Shorts & Reels Legibility Floor & Safe Zones (Hard Rule)**:
+- **Strict Ergonomic Typography & Human Visual Angle Thresholds (Hard Rule)**:
+  - **The Visual Angle Scientific Foundation**:
+    Font size on video displays is strictly governed by the human visual angle formula:
+    $$\theta = 2 \arctan\left(\frac{S}{2D}\right) \iff S = 2 \cdot D \cdot \tan\left(\frac{\theta}{2}\right) \implies P(\theta) = S \cdot \rho$$
+    where $D$ is human viewing distance (mobile smartphone: $\approx 350\text{ mm} \approx 14"$; desktop: $\approx 600\text{ mm}$), $\rho$ is screen pixel density ($\approx 13.5\text{ px/mm}$ for 1080x1920 portrait; $\approx 6.2\text{ px/mm}$ for 1920x1080 landscape).
+  - **The Two Physiological Pain Boundaries**:
+    1. **Squinting / Eye-Strain Danger Zone ($< 0.22^\circ$, $< 20\text{px}$ in 1080x1920)**: Text smaller than 20px causes ciliary muscle spasm, asthenopia (ocular fatigue), and severe squinting on 6" mobile screens. NEVER render readable text below **22px** (absolute floor: **20px** for minor badge borders/mono axis only).
+    2. **Retinal Glare / Saccadic Disruption Ceiling ($> 1.8^\circ - 2.0^\circ$, $> 108\text{px}$ in 1080x1920)**: Text exceeding $1.8^\circ$ visual angle bursts outside the foveal field of view, forcing unnatural eye jumps (saccades), causing disorientation, eye pain, and layout blowouts. NEVER exceed **108px** even for the largest hero number!
+  - **Strict Canonical Typography Spectrum (1080x1920 Vertical Mobile Shorts)**:
+    * **Hero Single Metric / Stat Number** (e.g. `40%`, `99%`): **72px – 104px** (Hard absolute ceiling: **108px**). Dynamically scale down for longer strings: $\le 3$ chars: 104px; 4–5 chars: 88px; 6–7 chars: 74px; $\ge 8$ chars: 62px.
+    * **Scene Main Headline / Primary Title**: **48px – 58px** (Hard ceiling: **60px**). Max 2 lines, tight tracking `-0.02em`.
+    * **Section Headers / Prominent Subtitles**: **32px – 40px** (Optimal: **36px**).
+    * **Card Titles / Container Headers**: **26px – 32px** (Optimal: **28px**).
+    * **Body Explanations / Bullet Descriptions**: **26px – 32px** (Optimal: **28px**, line-height 1.35–1.4). NEVER drop below 24px.
+    * **Active Spoken Hindi Captions**: **48px – 52px** (Optimal: **50px**). Active word pulse max scale 1.12×.
+    * **Category Tags / Step Headers** (e.g. `01 / ARCHITECTURE`): **22px – 26px** (Uppercase, tracking `+0.1em`).
+    * **Monospace Chips / Code Telemetry / Pills**: **20px – 24px** (Optimal: **22px**).
+    * **Mathematical Formulas (KaTeX)**: Primary formula: **40px – 48px** (e.g. $Q = d \times G$); Sub-labels: **22px – 24px**.
+  - **Mobile Safe Zones & Layout Clearances**:
     * **Bottom Safe Zone**: Bottom **350px** (`y > 1570px`) is strictly reserved for Devanagari subtitles/captions. No diagram labels, cards, buttons, or interactive elements may extend into this area.
     * **Top Safe Zone**: Top **180px** (`y < 180px`) is reserved for header tags, status bar, and progress indicator.
     * **Maximum Visual Height**: Visual components and interactive diagrams must fit within a maximum height of **960px**, centered vertically.
-    * ZERO text anywhere on screen can ever drop below **28px** on 1080×1920 vertical canvas.
-    * Subtitles/Captions must be **46px - 52px** bold, positioned around `bottom: 280px` to clear the native YouTube Shorts / Instagram Reels UI overlay.
-    * Metadata tags and category badges must be at least **28px** (tracked, bold uppercase).
-    * Metric keys & secondary labels must be **32px - 36px**.
-    * Primary metrics, comparison numbers, array elements, and formula variables must be **64px - 76px+ bold** (`#FFFFFF` or neon accent).
-    * Scene titles must be **56px - 76px+**.
-  - **Authentic Real-World Hook Grounding**: Ground abstract topics in a truthful, concrete situation when it helps comprehension. Use an app/UI only when the topic genuinely concerns that interaction; a physical, mathematical, or system-level example may be clearer. Do not invent app behavior or brand details to satisfy a hook rule.
-  - Pair giant focal elements with clean, ultra-legible tracked uppercase sub-labels (`01 / THE MECHANISM`, `GLOBAL MINIMA REACHED`, `SUB-10MS LATENCY`).
+  - **Automated Verification & CI Guard**: Every video scene is automatically verified by `tools/typography_linter.py` and Step 5 of `tools/qa_suite.py`. Any font size $< 20\text{px}$ or $> 110\text{px}$ is treated as a critical production error and halts pipeline completion.
 - **Grounded visual storytelling**:
   - Every scene must anchor its spoken idea with a legible visual: a diagram, physical object, relationship, or visible state change. A vector drawing is valid; 3D is not mandatory.
   - When 3D provides the clearest explanation, choose a registered variant:
@@ -258,5 +267,9 @@ Whenever a human review requests a change, reports an aesthetic issue, or identi
    - If the issue is mechanically detectable (e.g. consecutive twin scenes, diagram exceeding 960px height) ➔ Add an assertion to `validate.py` or `tools/qa_suite.py`.
    - If a custom interactive component was engineered (e.g. `AmazonShoppingHook`, `SortingVisualizer`) ➔ Generalize it into a reusable component under `src/scenes/`.
 3. **Execution Contract**: When executing user feedback, the agent must explicitly summarize which pipeline layers were updated to ensure the mistake cannot recur.
+
+### PHASE 14: PUBLISHING BRAND POLICY & BROWSER GOVERNANCE
+- **Strict Brand Channel Only ("Rajan का ADDA")**: All videos across EVERY platform (YouTube, Telegram, Instagram, Facebook, Twitter/𝕏, LinkedIn, Threads) MUST ONLY be published to the official brand account: **"Rajan का ADDA"** (`rajan_ka_adda` / `rajan.ka.adda` / `Rajan का ADDA`). Never upload or publish to any personal account or secondary handle. Every tool must verify the destination account identity before uploading and abort immediately if the active session is not "Rajan का ADDA".
+- **Mandatory Microsoft Edge Browser**: ALL browser automation workflows, session persistence, and social media web interactions MUST strictly use **Microsoft Edge** (`channel="msedge"` in Playwright). Do NOT use generic Chromium or any other browser.
 
 Legacy specs in `videos/` remain supported and continue to use `audio/<id>/`, `media/<id>/`, and `out/<id>.mp4`.

@@ -35,8 +35,13 @@ export type SceneType =
   | "refrigerator"
   | "air_conditioner"
   | "linear_search_visualizer"
+  | "binary_search_visualizer"
   | "tesla_roadster_visualizer"
-  | "depth_parallax";
+  | "pacman_enzyme_visualizer"
+  | "quick_commerce"
+  | "depth_parallax"
+  | "tower_of_hanoi"
+  | "tower_of_hanoi_visualizer";
 
 export type Side = { heading: string; items: string[] };
 
@@ -277,7 +282,14 @@ export type SceneSpec = {
   particles?: "sparkles" | "fireflies" | "mist" | "light-rays" | boolean;
   particleCount?: number;
   particleColor?: string;
+  overlay?: string;
   narration?: string;
+  // Viral short-form retention mechanics
+  hook_strength?: number; // 1 to 10 score
+  payoff_type?: "loop_setup" | "curiosity_reveal" | "metric_shock" | "mechanism_clarity" | "actionable_tip" | string;
+  pattern_interrupt?: "zoom_punch" | "color_flash" | "shake" | "glitch" | "spotlight" | "none";
+  emphasis_words?: string[];
+  cta_reason?: "save_for_interview" | "share_with_friend" | "debate_in_comments" | "reference_cheat_sheet" | string;
   // sound fx: pick any sound from the local library (e.g. "ka_ching", "impact", "glitch", "pop", "typing") or timed cues
   sfx?: SceneSfxSpec;
   sfxVolume?: number;

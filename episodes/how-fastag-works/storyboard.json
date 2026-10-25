@@ -1,0 +1,251 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "how-fastag-works",
+  "format": "vertical",
+  "art_direction": "editorial",
+  "theme": "cyberpunk",
+  "accent": "#00F0FF",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "loop": true,
+  "pad_seconds": 0.0,
+  "music": null,
+  "music_volume": 0.06,
+  "music_ducking": true,
+  "meta": {
+    "title": "How FASTag Works in 200 Milliseconds (Without Any Battery)",
+    "description": "How does a paper-thin FASTag sticker transmit toll data at 40 km/h without any battery or internet? Inside the 3D physics of RFID electromagnetic induction and NPCI's 200ms banking core.",
+    "hashtags": [
+      "#FASTag",
+      "#TechExplainer",
+      "#RFID",
+      "#Engineering",
+      "#RajanKaAdda"
+    ],
+    "facts_to_verify": [
+      "FASTag operates on passive UHF RFID at 865-867 MHz under ISO 18000-6C / EPC Gen 2 protocol",
+      "The microchip is passive and powered solely via electromagnetic induction from the reader's RF beam",
+      "Total toll gate transaction and barrier lift completes in under 250 milliseconds via NPCI NETC switch"
+    ],
+    "misconceptions": [
+      "FASTag does not have an internal battery or active transmitter",
+      "FASTag does not use GPS tracking to deduct toll fees",
+      "FASTag is not connected to the internet; it reflects backscattered RF waves"
+    ],
+    "analogy": "Microwave induction: the sticker harvests RF radiation directly from the air to wake up its microchip."
+  },
+  "scenes": [
+    {
+      "type": "three",
+      "variant": "fastag_toll_3d",
+      "tag": "STEP 01 / 865 MHZ CARRIER WAVE",
+      "title": "STEP 01: VEHICLE APPROACH",
+      "purpose": "Establish immediate high-velocity dilemma: vehicle crossing toll plaza at 40 km/h under active 865 MHz UHF scanner.",
+      "tone": "[High energy, curious, urgent]",
+      "hook_strength": 9.6,
+      "payoff_type": "loop_setup",
+      "pattern_interrupt": "zoom_punch",
+      "emphasis_words": ["चालीस", "स्पीड", "टोल", "दो सौ", "मिली-सेकंड", "बैरियर"],
+      "narration": "आपकी गाड़ी चालीस की स्पीड में टोल प्लाज़ा पार करती है, और बिना रुके, बिना कोई बटन दबाए, सिर्फ दो सौ मिली-सेकंड में बैरियर ऊपर उठ जाता है!",
+      "audio": "audio/s1.mp3",
+      "seconds": 8.0,
+      "sfx": ["whoosh", "radar_beep"],
+      "metrics": {
+        "Velocity": "40 km/h",
+        "Clearance": "< 250ms"
+      },
+      "visual": {
+        "start": "3D perspective view looking down a multi-lane highway toll lane under a steel gantry.",
+        "objects": [
+          "3D Metallic red supercar (car.glb) with driver moving along asphalt road",
+          "Overhead steel truss gantry with 3D RFID transceiver (rfid_reader.glb)",
+          "Volumetric cyan conical RF scanning laser beam shooting downward",
+          "Rigged 3D highway officer (human.glb) standing on lane sidewalk"
+        ],
+        "action": "Vehicle drives smoothly into the conical RF radiation zone. Laser illuminates the windshield FASTag badge with an active radar pulse.",
+        "camera": "Forward-facing 3D camera tracking smoothly along the toll lane at road level.",
+        "motion_graphics": [
+          "HUD Speedometer indicator showing 40 km/h",
+          "Volumetric glowing cyan scanning cone",
+          "200ms clearance timer countdown"
+        ],
+        "end": "Car arrives directly under the scanning beam as RF waves lock onto the sticker."
+      }
+    },
+    {
+      "type": "video",
+      "video": "media/toll_booth.mp4",
+      "tag": "THE ZERO-BATTERY PUZZLE",
+      "title": "HOW DOES IT TRANSMIT DATA?",
+      "purpose": "Highlight the cognitive puzzle: paper-thin sticker with no power source transmitting data through glass.",
+      "tone": "[Mysterious, analytical]",
+      "payoff_type": "curiosity_reveal",
+      "pattern_interrupt": "color_flash",
+      "emphasis_words": ["स्टिकर", "बैटरी", "स्क्रीन", "इंटरनेट", "डेटा"],
+      "narration": "लेकिन विंडशील्ड पर चिपके इस पतले से FASTag स्टिकर में न कोई बैटरी है, न कोई स्क्रीन, और न ही इंटरनेट। तो फिर यह हवा में डेटा कैसे भेजता है?",
+      "audio": "audio/s2.mp3",
+      "seconds": 8.2,
+      "sfx": ["glitch", "click"],
+      "visual": {
+        "start": "Real 4K cinematic footage of highway traffic entering automated toll booths.",
+        "objects": [
+          "Real vehicle windshield moving past the toll camera",
+          "Floating 3D biometric HUD tracking bracket highlighting the FASTag sticker",
+          "Zero-battery diagnostic telemetry overlay"
+        ],
+        "action": "Camera tracks real car approaching the booth. HUD bounding box locks onto the windshield sticker, displaying 'NO BATTERY' and 'NO WIRES' callouts.",
+        "camera": "Smooth real-world telephoto pan tracking vehicle motion.",
+        "motion_graphics": [
+          "Animated holographic targeting reticle on FASTag",
+          "Battery level HUD icon showing 0% / Passive",
+          "Pulsing alert border"
+        ],
+        "end": "Zooms into the sticker as we prepare for the 3D microscopic cutaway."
+      }
+    },
+    {
+      "type": "three",
+      "variant": "fastag_sticker_3d",
+      "tag": "STEP 02 & 03 / INDUCTION & BACKSCATTER",
+      "title": "STEP 02: PASSIVE RF INDUCTION",
+      "purpose": "Explain the physical mechanism: antenna loop capturing RF wave energy via electromagnetic induction to power the 0.3mm silicon IC die.",
+      "tone": "[Deep scientific reveal, crisp clarity]",
+      "payoff_type": "mechanism_clarity",
+      "pattern_interrupt": "zoom_punch",
+      "emphasis_words": ["एंटीना", "सिलिकॉन", "चिप", "रेडियो", "वेव्स", "इंडक्शन"],
+      "narration": "इसके अंदर होती है एक एल्युमिनियम एंटीना कॉइल और शून्य दशमलव तीन मिलीमीटर की सिलिकॉन चिप। जब टोल का आर-एफ-आई-डी स्कैनर आठ सौ पैंसठ मेगाहर्ट्ज़ की रेडियो वेव्स फेंकता है, तो इलेक्ट्रोमैग्नेटिक इंडक्शन से यह चिप सेकंड के हज़ारवें हिस्से में पावर-अप हो जाती है!",
+      "audio": "audio/s3.mp3",
+      "seconds": 12.0,
+      "sfx": ["fast_whoosh", "sparkle"],
+      "metrics": {
+        "Frequency": "865.7 MHz",
+        "Die Size": "0.3 x 0.3 mm",
+        "Protocol": "EPC Gen 2"
+      },
+      "visual": {
+        "start": "Microscopic 3D cutaway floating behind the translucent windshield glass.",
+        "objects": [
+          "Authentic NHAI FASTag sticker substrate (fastag_sticker.png)",
+          "Etched metallic copper fractal antenna coils (fastag_inlay.png)",
+          "Microscopic 0.3mm silicon IC die with gold wire bond bridges",
+          "Concentric backscatter RF radiation wave pulses"
+        ],
+        "action": "865 MHz waves descend upon the antenna. Copper traces glow with induced electrical current. The central microchip ignites with cyan light as it wakes up.",
+        "camera": "Close-up macro orbital perspective with subtle 3D rotational tilt.",
+        "motion_graphics": [
+          "Antenna resonance frequency label '865-867 MHz UHF'",
+          "Silicon IC die callout with 0.3mm measurement scale",
+          "Expanding backscatter reflection rings"
+        ],
+        "end": "The energized chip begins reflecting modified backscatter waves back out."
+      }
+    },
+    {
+      "type": "three",
+      "variant": "fastag_server_3d",
+      "tag": "STEP 04 / NPCI 200MS BANKING DEBIT",
+      "title": "STEP 04: TOLL SERVER & NPCI",
+      "purpose": "Show the electronic handshake: TID backscatter received by reader, routed through NPCI NETC switch to bank CBS in <200ms.",
+      "tone": "[Fast paced, computational adrenaline]",
+      "payoff_type": "metric_shock",
+      "pattern_interrupt": "shake",
+      "emphasis_words": ["सिग्नल", "यूनिक", "टैग", "एन-पी-सी-आई", "दो सौ", "डिडक्ट"],
+      "narration": "यह चिप बैकस्कैटर रिफ्लेक्शन से गाड़ी का चौबीस डिजिट यूनिक टैग आईडी हवा में रिफ्लेक्ट करती है, और एन-पी-सी-आई के एन-ई-टी-सी स्विच के ज़रिए आपके बैंक खाते से सिर्फ दो सौ मिली-सेकंड में टोल डिडक्ट हो जाता है।",
+      "audio": "audio/s4.mp3",
+      "seconds": 11.5,
+      "sfx": ["fast_whoosh", "ting"],
+      "metrics": {
+        "Tag ID": "24-Digit Hex TID",
+        "Switch": "NPCI NETC Core",
+        "Latency": "180 ms"
+      },
+      "visual": {
+        "start": "Interior view of an ultra-high-speed 3D datacenter and fiber-optic pipeline.",
+        "objects": [
+          "Real 3D 42U datacenter server rack (server_rack.glb) with cascading blade LEDs",
+          "Concentric fiber-optic cyber packet rings carrying TID data",
+          "Network switching telemetry labeled 'TOLL PLAZA', 'NPCI NETC', and 'ISSUER BANK'"
+        ],
+        "action": "Data packets leap from server rack to NPCI switch, verifying balance and executing debit in 180ms.",
+        "camera": "Dynamic orbital camera revolving around the 3D server rack with glowing cyber rings.",
+        "motion_graphics": [
+          "Real-time latency counter ticking from 0ms to 180ms",
+          "Token verification checkmark icon",
+          "Encrypted ISO-20022 message payload HUD"
+        ],
+        "end": "Data packets arrive at the toll plaza controller triggering instant clearance."
+      }
+    },
+    {
+      "type": "three",
+      "variant": "fastag_barrier_3d",
+      "tag": "STEP 05 / PNEUMATIC CLEARANCE",
+      "title": "STEP 05: GATE OPEN & CLEARANCE",
+      "purpose": "Deliver physical payoff: pneumatic servo lifts barrier, traffic light switches to green, car clears effortlessly.",
+      "tone": "[Triumphant, smooth payoff]",
+      "payoff_type": "actionable_tip",
+      "pattern_interrupt": "color_flash",
+      "emphasis_words": ["पेमेंट", "कन्फर्म", "ग्रीन", "कैश", "सेकंड"],
+      "narration": "पेमेंट कन्फर्म होते ही टोल का न्यूमैटिक सर्वो बूम बैरियर उठा देता है और सिग्नल ग्रीन हो जाता है—बिना एक रुपया कैश निकाले, बिना खिड़की का शीशा नीचे किए!",
+      "audio": "audio/s5.mp3",
+      "seconds": 9.5,
+      "sfx": ["ka_ching", "ding"],
+      "metrics": {
+        "Toll Status": "PAID & CLEARED",
+        "Barrier Servo": "0.4s Pneumatic Lift"
+      },
+      "visual": {
+        "start": "3D isometric view of the toll barrier booth and approaching car.",
+        "objects": [
+          "Real 3D pneumatic boom barrier pedestal (barrier_gate.glb) with axle and beacon",
+          "Striped red-and-white boom barrier arm swinging upward 90 degrees with pneumatic cushioning",
+          "Rigged 3D human operator (human.glb) standing in full view on toll island",
+          "Traffic signal light switching from illuminated red to green clearance",
+          "Real 3D supercar (car.glb) rolling through the cleared lane into open highway"
+        ],
+        "action": "Barrier arm rapidly swings upward to 90 degrees. Green spotlight washes across the road. Car accelerates forward through the gate without braking.",
+        "camera": "Low-angle 3D camera panning upwards with the rising barrier arm.",
+        "motion_graphics": [
+          "Green glowing 'TOLL PAID' verification pill",
+          "Automated barrier clearance telemetry",
+          "Zero-friction cash icon with green checkmark"
+        ],
+        "end": "Car drives through into the open horizon as green light glows."
+      }
+    },
+    {
+      "type": "video",
+      "video": "media/highway_toll_car.mp4",
+      "tag": "06 / THE REVERSE LOOP",
+      "title": "SHARE WITH ROADTRIP BUDDY",
+      "purpose": "Provide actionable save/share reason and seamlessly loop back into Scene 1 opening phrase.",
+      "tone": "[Actionable takeaway, friendly conversational]",
+      "payoff_type": "loop_setup",
+      "pattern_interrupt": "none",
+      "cta_reason": "save_for_roadtrip",
+      "emphasis_words": ["रोड ट्रिप", "ड्राइविंग", "पार्टनर", "शेयर"],
+      "narration": "अगली बार जब आप रोड ट्रिप पर निकलें, तो यह वीडियो अपने ड्राइविंग पार्टनर को शेयर करें, ताकि उन्हें भी पता चले कि क्यों...",
+      "audio": "audio/s6.mp3",
+      "seconds": 7.8,
+      "sfx": ["sparkle"],
+      "visual": {
+        "start": "Cinematic aerial drone footage of multi-lane highway traffic flowing freely.",
+        "objects": [
+          "Real highway interchange and open expressways",
+          "Floating 'SHARE WITH DRIVING PARTNER' callout card",
+          "Seamless infinite loop visual lead-in matching Scene 1 gantry approach"
+        ],
+        "action": "Drone camera glides smoothly forward above highway traffic. An elegant frosted card pulses prompting viewers to share with their road-trip partner.",
+        "camera": "Sweeping high-altitude forward drone descent.",
+        "motion_graphics": [
+          "Save / Share icon badge",
+          "Rajan का ADDA verified brand watermark",
+          "Seamless loop visual connector arrow"
+        ],
+        "end": "Camera angle aligns directly with Scene 1 toll approach angle for flawless looping."
+      }
+    }
+  ]
+}

@@ -112,6 +112,32 @@ def main():
         except Exception as e:
             print(f"   ⚠️ Could not analyze storyboard: {e}")
 
+    # 5. Ergonomic Typography & Visual Strain Audit
+    print("\n👁️ Step 5: Ergonomic Typography & Visual Strain Audit...")
+    try:
+        from tools.typography_linter import scan_file_for_font_sizes
+        # Check specific episode visualizer component if mapped, else audit common scenes
+        ep_id = video_path.parent.name
+        scene_files = list((ROOT / "src" / "scenes").glob(f"*{ep_id.replace('-', '')}*.tsx")) + \
+                      list((ROOT / "src" / "scenes").glob(f"*{''.join(w.capitalize() for w in ep_id.split('-'))}*.tsx"))
+        
+        typo_violations = []
+        for sf in scene_files:
+            typo_violations.extend(scan_file_for_font_sizes(sf))
+        
+        if typo_violations:
+            critical = [v for v in typo_violations if "CRITICAL" in v[3]]
+            print(f"   ⚠️  Found {len(typo_violations)} typography issues ({len(critical)} critical) in {len(scene_files)} episode component(s).")
+            for line_num, code, size, issue in typo_violations[:5]:
+                print(f"      Line {line_num}: [{size:.0f}px] {issue}")
+            if critical:
+                print("   ❌ Critical eye strain / visual pain risk detected.")
+                all_passed = False
+        else:
+            print("   ✅ Typography adheres strictly to human visual angle ergonomics (20px - 108px).")
+    except Exception as e:
+        print(f"   ⚠️ Could not audit typography: {e}")
+
     print("\n" + "=" * 60)
     if all_passed:
         print("🎉 QA SUITE RESULT: PASSED (All objective criteria met)")

@@ -24,6 +24,10 @@ import { ThreeDWashingMachine } from "./ThreeDWashingMachine";
 import { ThreeDModelViewer } from "./ThreeDModelViewer";
 import { ThreeDGPSTrilateration } from "./ThreeDGPSTrilateration";
 import { ThreeDBluetoothSpace } from "./ThreeDBluetoothSpace";
+import { ThreeDQuickCommerceStore } from "./ThreeDQuickCommerceStore";
+import { ThreeDBinarySearch } from "./ThreeDBinarySearch";
+import { ThreeDGoogleMaps } from "./ThreeDGoogleMaps";
+import { ThreeDFASTagToll } from "./ThreeDFASTagToll";
 
 interface ThreeSceneProps {
   scene: SceneSpec;
@@ -40,6 +44,29 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({ scene, accent }) => {
   const variant = scene.variant || "gradient_descent";
 
   switch (variant) {
+    case "fastag_toll_3d":
+    case "fastag_toll":
+    case "fastag_3d":
+    case "rfid_toll_3d":
+    case "toll_gantry_3d":
+    case "fastag_sticker_3d":
+    case "fastag_chip_3d":
+    case "fastag_server_3d":
+    case "fastag_barrier_3d":
+    case "boom_barrier_3d":
+      return <ThreeDFASTagToll scene={scene} accent={accent} />;
+
+    case "google_maps_3d":
+    case "google_maps":
+    case "maps_navigation_3d":
+    case "navigation_3d":
+      return <ThreeDGoogleMaps scene={scene} accent={accent} />;
+
+    case "binary_search_3d":
+    case "binary_search":
+    case "step_by_step_3d":
+      return <ThreeDBinarySearch scene={scene} accent={accent} />;
+
     case "model_3d":
     case "gltf_model":
     case "model_viewer_3d":
@@ -208,6 +235,12 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({ scene, accent }) => {
     case "surfactant_micelle_3d":
     case "micelle_3d":
       return <ThreeDWashingMachine scene={scene} accent={accent} />;
+
+    case "dark_store_3d":
+    case "dark_store_warehouse_3d":
+    case "quick_commerce_store_3d":
+    case "mfc_warehouse_3d":
+      return <ThreeDQuickCommerceStore scene={scene} accent={accent} />;
 
     case "gradient_descent":
     case "crest_to_trough":

@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import * as THREE from "three";
 import type { SceneSpec } from "../types";
+import { MathFormula } from "../MathFormula";
 
 export const ThreeDNeuralNetwork: React.FC<{
   scene: SceneSpec;
@@ -261,21 +262,15 @@ export const ThreeDNeuralNetwork: React.FC<{
         </div>
 
         {scene.equation && (
-          <div
+          <MathFormula
+            equation={scene.equation}
+            accent={activeColor}
+            fontSize={30}
             style={{
               alignSelf: "flex-start",
-              padding: "12px 24px",
-              borderRadius: 16,
-              background: "rgba(10, 15, 28, 0.92)",
-              border: `1.5px solid ${activeColor}66`,
-              color: "#E2E8F0",
-              fontFamily: "monospace",
-              fontSize: 32,
-              fontWeight: 800,
+              marginTop: 6,
             }}
-          >
-            {scene.equation}
-          </div>
+          />
         )}
       </div>
 

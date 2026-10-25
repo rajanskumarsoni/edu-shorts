@@ -167,11 +167,48 @@ export const ThreeDBluetoothSpace: React.FC<{
     };
 
     // -------------------------------------------------------------
+    // HELPER: CREATE 3D EARBUD CHARGING CASE
+    // -------------------------------------------------------------
+    const createEarbudCase = (pos: [number, number, number], rotY: number = 0, scale: number = 1.0) => {
+      const cGroup = new THREE.Group();
+      cGroup.position.set(...pos);
+      cGroup.scale.set(scale, scale, scale);
+      cGroup.rotation.y = rotY;
+
+      // Base body
+      const caseBase = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.52, 0.52, 0.75, 24),
+        new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.15, metalness: 0.25 })
+      );
+      caseBase.position.y = -0.2;
+      cGroup.add(caseBase);
+
+      // Open Lid tilted back
+      const caseLid = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.53, 0.52, 0.4, 24),
+        new THREE.MeshStandardMaterial({ color: 0xf1f5f9, roughness: 0.15, metalness: 0.25 })
+      );
+      caseLid.position.set(0, 0.4, -0.28);
+      caseLid.rotation.x = -Math.PI / 3;
+      cGroup.add(caseLid);
+
+      // Interior battery LED
+      const caseLed = new THREE.Mesh(
+        new THREE.SphereGeometry(0.045, 12, 12),
+        new THREE.MeshBasicMaterial({ color: 0x10b981 })
+      );
+      caseLed.position.set(0, -0.05, 0.53);
+      cGroup.add(caseLed);
+
+      return { cGroup, caseBase, caseLid, caseLed };
+    };
+
+    // -------------------------------------------------------------
     // SCENE 1: BLUETOOTH LINK 3D
     // -------------------------------------------------------------
     if (variant === "bluetooth_link_3d" || variant === "bluetooth_3d") {
-      const phonePos: [number, number, number] = landscape ? [-4.2, 0, 0] : [-0.85, -1.5, 0];
-      const earbudPos: [number, number, number] = landscape ? [4.2, 0.2, 0] : [0.85, 1.4, 0.2];
+      const phonePos: [number, number, number] = landscape ? [-4.2, 0, 0] : [-0.85, -0.55, 0];
+      const earbudPos: [number, number, number] = landscape ? [4.2, 0.2, 0] : [0.85, 1.85, 0.2];
 
       const { pGroup, screen } = createPhone(phonePos, landscape ? 0.35 : 0.25);
 
@@ -206,9 +243,15 @@ export const ThreeDBluetoothSpace: React.FC<{
       animatedObjects.earbudLed = led;
 
       // Second earbud offset
-      const earbud2Pos: [number, number, number] = landscape ? [3.4, -0.7, -0.8] : [1.4, 0.8, -0.6];
+      const earbud2Pos: [number, number, number] = landscape ? [3.4, -0.7, -0.8] : [1.4, 1.45, -0.5];
       const { eGroup: eGroup2 } = createEarbud(earbud2Pos, -0.5, 0.85);
       rootGroup.add(eGroup2);
+
+      // Charging Case in studio
+      const casePos: [number, number, number] = landscape ? [4.8, -1.2, -0.5] : [1.35, 0.85, -0.3];
+      const { cGroup: eCase } = createEarbudCase(casePos, landscape ? -0.3 : -0.4, 0.85);
+      rootGroup.add(eCase);
+      animatedObjects.earbudCase = eCase;
 
       // Expanding cyan radio wave pulses
       const waves: THREE.Mesh[] = [];
@@ -249,7 +292,7 @@ export const ThreeDBluetoothSpace: React.FC<{
 
       // 3D Question Mark floating in the gap
       const qGroup = new THREE.Group();
-      qGroup.position.set(0, -0.05, 0.2);
+      qGroup.position.set(0, landscape ? -0.05 : 0.65, 0.2);
       const qHook = new THREE.Mesh(
         new THREE.TorusGeometry(0.32, 0.08, 16, 24, Math.PI * 1.35),
         new THREE.MeshBasicMaterial({ color: 0xffc857, transparent: true, opacity: 0.0 })
@@ -278,8 +321,8 @@ export const ThreeDBluetoothSpace: React.FC<{
     // SCENE 2: RADIO WAVES, NOT SOUND WAVES
     // -------------------------------------------------------------
     else if (variant === "bluetooth_radio_3d") {
-      const phonePos: [number, number, number] = landscape ? [-3.8, 0, 0] : [0, -1.6, 0];
-      const earbudPos: [number, number, number] = landscape ? [3.8, 0.2, 0] : [0, 2.0, 0];
+      const phonePos: [number, number, number] = landscape ? [-3.8, 0, 0] : [0, -0.75, 0];
+      const earbudPos: [number, number, number] = landscape ? [3.8, 0.2, 0] : [0, 2.35, 0];
 
       // Transparent cutaway phone chassis
       const cutawayPhone = new THREE.Group();
@@ -451,8 +494,8 @@ export const ThreeDBluetoothSpace: React.FC<{
     // SCENE 4: PAIRING AND CONNECTING
     // -------------------------------------------------------------
     else if (variant === "bluetooth_pairing_3d") {
-      const phonePos: [number, number, number] = landscape ? [-3.2, 0, 0] : [0, -1.2, 0];
-      const earbudPos: [number, number, number] = landscape ? [3.5, 0.5, 0] : [0, 2.2, 0];
+      const phonePos: [number, number, number] = landscape ? [-3.2, 0, 0] : [0, -0.75, 0];
+      const earbudPos: [number, number, number] = landscape ? [3.5, 0.5, 0] : [0, 2.35, 0];
 
       const { pGroup } = createPhone(phonePos, 0, 0.88);
       rootGroup.add(pGroup);
@@ -462,7 +505,7 @@ export const ThreeDBluetoothSpace: React.FC<{
 
       // Security Visualization Center
       const lockGroup = new THREE.Group();
-      lockGroup.position.set(0, landscape ? 0.2 : 0.6, 0);
+      lockGroup.position.set(0, landscape ? 0.2 : 0.85, 0);
 
       // 3D Padlock Body
       const lockBody = new THREE.Mesh(
@@ -514,7 +557,7 @@ export const ThreeDBluetoothSpace: React.FC<{
       dataGroup.position.set(0, 0, 0);
 
       // 1. Top: Smartphone Audio Player
-      const { pGroup } = createPhone([0, 2.2, 0], 0, 0.7);
+      const { pGroup } = createPhone([0, 2.7, 0], 0, 0.65);
       dataGroup.add(pGroup);
 
       // 2. Continuous Analog Music Waveform Ribbon
@@ -522,7 +565,7 @@ export const ThreeDBluetoothSpace: React.FC<{
       const waveCount = 50;
       for (let w = 0; w <= waveCount; w++) {
         const x = -1.6 + (w / waveCount) * 3.2;
-        const y = 1.0 + Math.sin((w / waveCount) * Math.PI * 4) * 0.28;
+        const y = 1.45 + Math.sin((w / waveCount) * Math.PI * 4) * 0.28;
         wavePts.push(new THREE.Vector3(x, y, 0.1));
       }
       const waveGeo = new THREE.BufferGeometry().setFromPoints(wavePts);
@@ -544,7 +587,7 @@ export const ThreeDBluetoothSpace: React.FC<{
             roughness: 0.2,
           })
         );
-        cube.position.set((Math.random() - 0.5) * 1.8, 0.5 - (b / 10) * 1.4, 0.1);
+        cube.position.set((Math.random() - 0.5) * 1.8, 1.1 - (b / 10) * 1.4, 0.1);
         dataGroup.add(cube);
         bitCubes.push(cube);
       }
@@ -552,7 +595,7 @@ export const ThreeDBluetoothSpace: React.FC<{
 
       // 4. Assembled "PACKET" Containers (Headers + Payloads)
       const packetContainers: THREE.Group[] = [];
-      const packetY = [-0.8, -1.6, -2.4];
+      const packetY = [0.0, -0.6, -1.2];
       packetY.forEach((py, idx) => {
         const pkt = new THREE.Group();
         pkt.position.set(0, py, 0.1);
@@ -654,8 +697,8 @@ export const ThreeDBluetoothSpace: React.FC<{
     // SCENE 7: DIGITAL PACKETS TO ACOUSTIC SOUND
     // -------------------------------------------------------------
     else if (variant === "bluetooth_audio_path_3d" || variant === "packet_to_sound_3d") {
-      const txPos: [number, number, number] = landscape ? [-4.5, 0, 0] : [0, 2.2, 0];
-      const speakerPos: [number, number, number] = landscape ? [3.5, 0, 0] : [0, -1.8, 0];
+      const txPos: [number, number, number] = landscape ? [-4.5, 0, 0] : [0, 2.6, 0];
+      const speakerPos: [number, number, number] = landscape ? [3.5, 0, 0] : [0, -0.65, 0];
 
       // Phone Transmitter Module
       const txBox = new THREE.Mesh(
@@ -900,8 +943,8 @@ export const ThreeDBluetoothSpace: React.FC<{
     // SCENE 12: FINAL REVEAL
     // -------------------------------------------------------------
     else if (variant === "bluetooth_reveal_3d" || variant === "bluetooth_master_recap_3d") {
-      const phonePos: [number, number, number] = landscape ? [-3.8, 0, 0] : [0, 2.2, 0];
-      const earbudPos: [number, number, number] = landscape ? [3.8, 0.2, 0] : [0, -2.1, 0];
+      const phonePos: [number, number, number] = landscape ? [-3.8, 0, 0] : [0, 2.45, 0];
+      const earbudPos: [number, number, number] = landscape ? [3.8, 0.2, 0] : [0, -0.75, 0];
 
       // Top: 3D Smartphone
       const { pGroup } = createPhone(phonePos, 0, landscape ? 0.85 : 0.75);
@@ -998,8 +1041,8 @@ export const ThreeDBluetoothSpace: React.FC<{
       if (anim.radioWaves) {
         const startX = landscape ? -3.4 : -0.7;
         const endX = landscape ? 3.4 : 0.7;
-        const startY = landscape ? 0 : -1.2;
-        const endY = landscape ? 0 : 1.3;
+        const startY = landscape ? 0 : -0.2;
+        const endY = landscape ? 0 : 1.7;
         anim.radioWaves.forEach((wave: THREE.Mesh, idx: number) => {
           const progress = ((frame + idx * 16) % 80) / 80;
           wave.position.x = startX + progress * (endX - startX);
@@ -1032,7 +1075,7 @@ export const ThreeDBluetoothSpace: React.FC<{
       if (anim.waveFronts) {
         anim.waveFronts.forEach((wf: THREE.Mesh, idx: number) => {
           const pr = ((frame + idx * 18) % 75) / 75;
-          wf.position.y = (landscape ? 0 : -1.0) + pr * (landscape ? 3.5 : 2.8);
+          wf.position.y = (landscape ? 0 : -0.2) + pr * (landscape ? 3.5 : 2.5);
           wf.scale.set(1 + pr * 2, 1 + pr * 2, 1);
           (wf.material as THREE.MeshBasicMaterial).opacity = Math.max(0, (1 - pr) * 0.7);
         });
@@ -1040,7 +1083,7 @@ export const ThreeDBluetoothSpace: React.FC<{
       if (anim.radioPackets) {
         anim.radioPackets.forEach((p: THREE.Mesh, idx: number) => {
           const pr = ((frame + idx * 15) % 70) / 70;
-          p.position.y = (landscape ? 0 : -1.2) + pr * (landscape ? 3.8 : 3.0);
+          p.position.y = (landscape ? 0 : -0.4) + pr * (landscape ? 3.8 : 2.7);
           p.position.x = Math.sin(pr * Math.PI * 4) * 0.2;
           p.rotation.x = frame * 0.05;
         });
@@ -1089,7 +1132,7 @@ export const ThreeDBluetoothSpace: React.FC<{
       if (anim.bitCubes) {
         anim.bitCubes.forEach((cube: THREE.Mesh, b: number) => {
           const pr = ((frame * 1.5 + b * 20) % 100) / 100;
-          cube.position.y = 0.8 - pr * 2.8;
+          cube.position.y = 1.3 - pr * 2.4;
           cube.rotation.x = frame * 0.05 + b;
           cube.rotation.y = frame * 0.07 + b;
         });
@@ -1130,7 +1173,7 @@ export const ThreeDBluetoothSpace: React.FC<{
       if (anim.pathPackets) {
         anim.pathPackets.forEach((p: THREE.Mesh, idx: number) => {
           const pr = ((frame + idx * 16) % 75) / 75;
-          p.position.y = 1.8 - pr * 3.4;
+          p.position.y = 2.2 - pr * 2.7;
           p.position.x = Math.sin(pr * Math.PI * 3) * 0.15;
         });
       }
@@ -1141,7 +1184,7 @@ export const ThreeDBluetoothSpace: React.FC<{
       if (anim.soundArcs) {
         anim.soundArcs.forEach((arc: THREE.Mesh, idx: number) => {
           const pr = ((frame + idx * 15) % 60) / 60;
-          arc.position.y = -0.5 - pr * 1.4;
+          arc.position.y = -0.1 - pr * 1.2;
           const sc = 0.5 + pr * 1.6;
           arc.scale.set(sc, sc, sc);
           (arc.material as THREE.MeshBasicMaterial).opacity = Math.max(0, (1 - pr) * 0.8);
@@ -1189,7 +1232,7 @@ export const ThreeDBluetoothSpace: React.FC<{
       if (anim.pulses) {
         anim.pulses.forEach((pulse: THREE.Mesh, idx: number) => {
           const pr = ((frame + idx * 16) % 70) / 70;
-          pulse.position.y = (landscape ? -1.2 : 1.5) - pr * (landscape ? -2.5 : 3.2);
+          pulse.position.y = (landscape ? -1.2 : 1.9) - pr * (landscape ? -2.5 : 2.6);
           const sc = 0.6 + pr * 1.5;
           pulse.scale.set(sc, sc, sc);
           (pulse.material as THREE.MeshBasicMaterial).opacity = Math.max(0, (1 - pr) * 0.75);
@@ -1198,7 +1241,7 @@ export const ThreeDBluetoothSpace: React.FC<{
       if (anim.recapPackets) {
         anim.recapPackets.forEach((p: THREE.Mesh, idx: number) => {
           const pr = ((frame + idx * 15) % 65) / 65;
-          p.position.y = (landscape ? 0 : 1.6) - pr * (landscape ? 0 : 3.3);
+          p.position.y = (landscape ? 0 : 2.0) - pr * (landscape ? 0 : 2.7);
           p.position.x = Math.sin(pr * Math.PI * 4) * 0.15;
           p.rotation.x = frame * 0.05;
         });
@@ -1206,7 +1249,7 @@ export const ThreeDBluetoothSpace: React.FC<{
       if (anim.recapSoundArcs) {
         anim.recapSoundArcs.forEach((arc: THREE.Mesh, idx: number) => {
           const pr = ((frame + idx * 15) % 55) / 55;
-          arc.position.y = -2.7 - pr * 0.8;
+          arc.position.y = -1.3 - pr * 0.8;
           const sc = 0.5 + pr * 1.5;
           arc.scale.set(sc, sc, sc);
           (arc.material as THREE.MeshBasicMaterial).opacity = Math.max(0, (1 - pr) * 0.8);
@@ -1257,7 +1300,7 @@ export const ThreeDBluetoothSpace: React.FC<{
           <div
             style={{
               fontFamily: "monospace",
-              fontSize: landscape ? 18 : 20,
+              fontSize: landscape ? 20 : 24,
               fontWeight: 800,
               color: accent,
               letterSpacing: 2.5,
@@ -1269,7 +1312,7 @@ export const ThreeDBluetoothSpace: React.FC<{
           </div>
           <div
             style={{
-              fontSize: landscape ? 36 : 38,
+              fontSize: landscape ? 36 : 42,
               fontWeight: 900,
               color: "#FFFFFF",
               letterSpacing: -0.5,
@@ -1285,7 +1328,7 @@ export const ThreeDBluetoothSpace: React.FC<{
             background: "rgba(6, 10, 20, 0.88)",
             backdropFilter: "blur(16px)",
             borderRadius: 14,
-            padding: landscape ? "12px 20px" : "10px 16px",
+            padding: landscape ? "12px 20px" : "12px 18px",
             border: "1px solid rgba(255, 255, 255, 0.15)",
             display: "flex",
             alignItems: "center",
@@ -1294,8 +1337,8 @@ export const ThreeDBluetoothSpace: React.FC<{
         >
           <div
             style={{
-              width: 10,
-              height: 10,
+              width: 12,
+              height: 12,
               borderRadius: "50%",
               background: "#10B981",
               boxShadow: "0 0 10px #10B981",
@@ -1304,7 +1347,7 @@ export const ThreeDBluetoothSpace: React.FC<{
           <div
             style={{
               fontFamily: "monospace",
-              fontSize: landscape ? 16 : 16,
+              fontSize: landscape ? 18 : 22,
               fontWeight: 700,
               color: "#FFFFFF",
             }}
@@ -1336,7 +1379,7 @@ export const ThreeDBluetoothSpace: React.FC<{
       <div
         style={{
           position: "absolute",
-          bottom: landscape ? 80 : 120,
+          bottom: landscape ? 80 : 80,
           left: landscape ? 80 : 50,
           right: landscape ? 80 : 50,
           pointerEvents: "none",
@@ -1350,33 +1393,33 @@ export const ThreeDBluetoothSpace: React.FC<{
             background: "rgba(6, 10, 20, 0.85)",
             backdropFilter: "blur(16px)",
             borderRadius: 12,
-            padding: landscape ? "10px 18px" : "8px 14px",
+            padding: landscape ? "12px 20px" : "12px 18px",
             border: "1px solid rgba(255, 255, 255, 0.12)",
             display: "flex",
-            gap: landscape ? 20 : 14,
+            gap: landscape ? 20 : 16,
           }}
         >
           <div>
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", fontFamily: "monospace" }}>
+            <div style={{ fontSize: 20, color: "rgba(255,255,255,0.6)", fontFamily: "monospace" }}>
               SPECTRUM
             </div>
-            <div style={{ fontSize: landscape ? 16 : 14, fontWeight: 800, color: accent, fontFamily: "monospace" }}>
+            <div style={{ fontSize: landscape ? 20 : 22, fontWeight: 800, color: accent, fontFamily: "monospace" }}>
               2400-2483.5 MHz
             </div>
           </div>
           <div>
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", fontFamily: "monospace" }}>
+            <div style={{ fontSize: 20, color: "rgba(255,255,255,0.6)", fontFamily: "monospace" }}>
               BANDWIDTH
             </div>
-            <div style={{ fontSize: landscape ? 16 : 14, fontWeight: 800, color: "#FFFFFF", fontFamily: "monospace" }}>
+            <div style={{ fontSize: landscape ? 20 : 22, fontWeight: 800, color: "#FFFFFF", fontFamily: "monospace" }}>
               79 x 1 MHz
             </div>
           </div>
           <div>
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.6)", fontFamily: "monospace" }}>
+            <div style={{ fontSize: 20, color: "rgba(255,255,255,0.6)", fontFamily: "monospace" }}>
               MODE
             </div>
-            <div style={{ fontSize: landscape ? 16 : 14, fontWeight: 800, color: "#10B981", fontFamily: "monospace" }}>
+            <div style={{ fontSize: landscape ? 20 : 22, fontWeight: 800, color: "#10B981", fontFamily: "monospace" }}>
               PEER-TO-PEER RF
             </div>
           </div>
@@ -1387,10 +1430,10 @@ export const ThreeDBluetoothSpace: React.FC<{
             background: "rgba(6, 10, 20, 0.85)",
             backdropFilter: "blur(16px)",
             borderRadius: 12,
-            padding: landscape ? "10px 18px" : "8px 14px",
+            padding: landscape ? "12px 20px" : "12px 18px",
             border: "1px solid rgba(255, 200, 87, 0.35)",
             fontFamily: "monospace",
-            fontSize: landscape ? 15 : 14,
+            fontSize: landscape ? 20 : 22,
             fontWeight: 800,
             color: "#FFC857",
           }}

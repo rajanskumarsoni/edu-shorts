@@ -161,6 +161,17 @@ def main():
     if asset_tool.is_file():
         run_cmd([sys.executable, str(asset_tool), "resolve", str(storyboard_file)], "Resolving Assets")
 
+    # Auto-convert any raw CAD models in media/ to .glb via Blender
+    media_dir = ep_dir / "media"
+    if media_dir.is_dir():
+        for cad_ext in ["*.obj", "*.fbx", "*.stl", "*.dae"]:
+            for cad_file in media_dir.glob(cad_ext):
+                glb_target = cad_file.with_suffix(".glb")
+                if not glb_target.exists():
+                    print(f"\n🧊 Auto-converting CAD model via Blender: {cad_file.name} -> {glb_target.name}")
+                    blender_tool = ROOT / "tools" / "blender_render.py"
+                    run_cmd([sys.executable, str(blender_tool), "convert", str(cad_file), "--out", str(glb_target)], "Blender Model Conversion")
+
     # 5. Phase 4: Synthesize Audio
     if not args.skip_tts:
         print("\n🎙️  Phase 4: Synthesizing Narration Audio...")

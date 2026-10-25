@@ -16,14 +16,13 @@ export const Gauge: React.FC<{ scene: SceneSpec; accent: string }> = ({
   scene,
   accent,
 }) => {
-  // Delegate to 3D WebGL Speedometer Gauge scene
+  // Delegate to 3D WebGL Speedometer Gauge scene only when explicitly requested
   const is3DGauge =
     scene.variant === "upi_gauge_3d" ||
     scene.variant === "telemetry_gauge_3d" ||
     scene.variant === "gauge_3d" ||
-    /latency|clearing speed|speedometer/i.test(scene.title || "") ||
-    /clearing speed|sub-2s/i.test(scene.tag || "") ||
-    typeof scene.value === "number";
+    /speedometer/i.test(scene.title || "") ||
+    /clearing speed|sub-2s/i.test(scene.tag || "");
 
   if (is3DGauge) {
     return <ThreeDTelemetryGauge scene={scene} accent={accent} />;

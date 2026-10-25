@@ -61,8 +61,10 @@ def upload_video(video_path: Path, privacy: str = "public", platform: str = "you
         except Exception:
             pass
 
+    venv_py = ROOT / ".venv" / "bin" / "python3"
+    python_bin = str(venv_py) if venv_py.is_file() else sys.executable
     cmd = [
-        sys.executable,
+        python_bin,
         str(UPLOAD_SCRIPT),
         str(video_path),
         "--platform", platform,

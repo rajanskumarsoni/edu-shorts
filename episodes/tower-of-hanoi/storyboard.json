@@ -1,0 +1,198 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "tower-of-hanoi",
+  "format": "vertical",
+  "art_direction": "editorial",
+  "theme": "cyberpunk",
+  "accent": "#00F0FF",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "pad_seconds": 0.28,
+  "music": null,
+  "meta": {
+    "title": "Will the Universe End When This Puzzle is Solved? ⏳ Tower of Hanoi & Recursion Explained",
+    "description": "An ancient legend says that when monks finish moving 64 golden disks on three diamond needles, the universe will end! But how long does it actually take? Here is the mind-bending math of the Tower of Hanoi, why brute force fails, and how computer science solves it in 3 lines using Recursion.",
+    "hashtags": [
+      "#TowerOfHanoi",
+      "#Recursion",
+      "#ComputerScience",
+      "#Maths",
+      "#Coding",
+      "#Shorts",
+      "#TechExplained",
+      "#Algorithms",
+      "#RajanKaAdda"
+    ],
+    "facts_to_verify": [
+      "Invented by French mathematician Édouard Lucas in 1883",
+      "Formula for optimal moves: 2^n - 1",
+      "For 64 disks: 2^64 - 1 = 18,446,744,073,709,551,615 moves",
+      "At 1 move/second: ~585 billion years (42x older than the 13.8 billion year universe)"
+    ],
+    "misconceptions": [],
+    "analogy": "Solving a massive puzzle by delegating smaller self-similar copies of it to a helper."
+  },
+  "scenes": [
+    {
+      "type": "tower_of_hanoi",
+      "tag": "01 / THE ANCIENT PROPHECY",
+      "title": "THE 64 GOLDEN DISKS",
+      "purpose": "Explain the mechanism and takeaway of THE 64 GOLDEN DISKS.",
+      "tone": "[Curious, high-energy]",
+      "narration": "क्या आप जानते हैं कि एक प्राचीन मंदिर में चौंसठ सोने की डिस्क रखी हैं? पुजारी रोज़ सिर्फ एक डिस्क बदलते हैं, और भविष्यवाणी है कि जब आखिरी डिस्क तीसरी सुई पर पहुँचेगी, तो यह ब्रह्मांड नष्ट हो जाएगा! क्या सच में?",
+      "transition": "zoom_through",
+      "sfx": "fast_whoosh",
+      "icon": "layers",
+      "visual": {
+        "start": "High-contrast editorial layout establishing THE 64 GOLDEN DISKS.",
+        "objects": [
+          "Ancient Temple Setting",
+          "3 Diamond Needles"
+        ],
+        "action": "Ancient temple setting with 3 diamond needles and 64 golden disks. Giant apocalyptic countdown clock estimating universe completion time while glowing golden light rays pulse.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "THE 64 GOLDEN DISKS",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "legend_hook"
+    },
+    {
+      "type": "tower_of_hanoi",
+      "tag": "02 / THE 3 SACRED RULES",
+      "title": "STRICT CONSTRAINTS",
+      "purpose": "Explain the mechanism and takeaway of STRICT CONSTRAINTS.",
+      "tone": "[Clear, direct]",
+      "narration": "इस पहेली के सिर्फ तीन सख्त नियम हैं! पहला—एक बार में सिर्फ एक डिस्क उठेगी। दूसरा—सिर्फ सबसे ऊपर वाली डिस्क को हटा सकते हैं। और तीसरा सबसे ज़रूरी नियम—किसी भी छोटी डिस्क पर बड़ी डिस्क कभी नहीं रखी जा सकती!",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "layers",
+      "visual": {
+        "start": "High-contrast editorial layout establishing STRICT CONSTRAINTS.",
+        "objects": [
+          "Top Disk Only"
+        ],
+        "action": "3 cylindrical metallic rods on an illuminated titanium stage. Demonstrates the 3 rules with live interactive physics: 1 disk per turn, top disk only, and red laser barrier rejecting a larger disk attempting to drop on a smaller disk!",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "STRICT CONSTRAINTS",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "rules_demo"
+    },
+    {
+      "type": "tower_of_hanoi",
+      "tag": "03 / LIVE 3-DISK SOLUTION",
+      "title": "7 OPTIMAL MOVES",
+      "purpose": "Explain the mechanism and takeaway of 7 OPTIMAL MOVES.",
+      "tone": "[Energetic, explaining mechanism]",
+      "narration": "सुनने में आसान लगता है, लेकिन बिना सोचे चलेंगे तो तुरंत अटक जाएंगे! तीन डिस्क को देखिए। ए से सी पर ले जाने के लिए हमें बीच वाले बी को मददगार बनाना पड़ता है। कुल सात चालों में पहेली हल हो गई!",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "layers",
+      "visual": {
+        "start": "High-contrast editorial layout establishing 7 OPTIMAL MOVES.",
+        "objects": [
+          "Amber",
+          "Magenta) Across Pegs A",
+          "A To B",
+          "C To B"
+        ],
+        "action": "Smooth parabolic trajectory arcs moving 3 disks (Cyan, Amber, Magenta) across Pegs A, B, and C in the exact 7-step sequence (A to C, A to B, C to B, A to C, B to A, B to C, A to C) with live move counter HUD.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "7 OPTIMAL MOVES",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "live_solve_3disk"
+    },
+    {
+      "type": "tower_of_hanoi",
+      "tag": "04 / THE RECURSION ENGINE",
+      "title": "DIVIDE & CONQUER",
+      "purpose": "Explain the mechanism and takeaway of DIVIDE & CONQUER.",
+      "tone": "[Analytical, impactful]",
+      "narration": "कंप्यूटर इसे बिना उलझन के कैसे हल करता है? सिर्फ तीन स्टेप्स में! पहले ऊपर की एन माइनस वन डिस्क बी पर भेजो, सबसे बड़ी डिस्क सीधे सी पर रखो, और फिर उन सब को सी पर लाओ! इसे कहते हैं रिकर्शन!",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "layers",
+      "visual": {
+        "start": "High-contrast editorial layout establishing DIVIDE & CONQUER.",
+        "objects": [
+          "The 3-Step Recursive Law Visualized",
+          "Glowing Sub-Tower Brackets",
+          "Base Disk Transfer"
+        ],
+        "action": "The 3-Step Recursive Law visualized with glowing sub-tower brackets, base disk transfer, and large bold mathematical formula: T(n) = 2^n - 1 with O(2^n) time complexity call stack tree.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "DIVIDE & CONQUER",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "recursion_formula"
+    },
+    {
+      "type": "tower_of_hanoi",
+      "tag": "05 / EXPONENTIAL EXPLOSION",
+      "title": "THE ASTRONOMICAL TRUTH",
+      "purpose": "Explain the mechanism and takeaway of THE ASTRONOMICAL TRUTH.",
+      "tone": "[Revelatory, dramatic]",
+      "narration": "इसका फॉर्मूला है दो की पावर एन माइनस वन! तीन डिस्क में सात सेकंड, दस डिस्क में सत्रह मिनट। लेकिन चौंसठ डिस्क? अठारह दशमलव चार क्विंटिलियन चालें—यानी पांच सौ पचासी अरब साल! जबकि हमारा ब्रह्मांड सिर्फ चौदह अरब साल पुराना है!",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "layers",
+      "visual": {
+        "start": "High-contrast editorial layout establishing THE ASTRONOMICAL TRUTH.",
+        "objects": [
+          "Giant Animated Telemetry Table Jumping F"
+        ],
+        "action": "Giant animated telemetry table jumping from N=3 (7 moves) to N=10 (1,023 moves) to N=64 (18.4 Quintillion moves = 585 Billion Years). Big green glowing shield confirms the universe is 100% safe!",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "THE ASTRONOMICAL TRUTH",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "astronomical_scale"
+    },
+    {
+      "type": "tower_of_hanoi",
+      "tag": "06 / THE ULTIMATE PAYOFF",
+      "title": "MASTERING RECURSION",
+      "purpose": "Explain the mechanism and takeaway of MASTERING RECURSION.",
+      "tone": "[Inspiring, upbeat]",
+      "narration": "तो बेफिक्र रहिए, ब्रह्मांड बिल्कुल सुरक्षित है! लेकिन कंप्यूटर साइंस का यह जादुई सबक याद रखिए—बड़ी से बड़ी समस्या को छोटे हिस्सों में बांटिए। ऐसे ही कमाल के कॉन्सेप्ट्स आसान भाषा में समझने के लिए राजन का अड्डा को अभी सब्सक्राइब करें!",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "layers",
+      "visual": {
+        "start": "High-contrast editorial layout establishing MASTERING RECURSION.",
+        "objects": [
+          "Self-Similar Subproblems",
+          "Exponential Power) Locking In",
+          "Glowing Gold Checkmarks",
+          "Pulsing Bell Icon."
+        ],
+        "action": "3 Core pillars of Computer Science (Base Case, Self-Similar Subproblems, Exponential Power) locking in with glowing gold checkmarks, followed by Rajan का ADDA subscription beacon with pulsing bell icon.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "MASTERING RECURSION",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "outro_takeaway"
+    }
+  ]
+}

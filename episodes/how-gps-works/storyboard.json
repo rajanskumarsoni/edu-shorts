@@ -1,0 +1,305 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "how-gps-works",
+  "format": "vertical",
+  "art_direction": "editorial",
+  "theme": "cyberpunk",
+  "accent": "#00F0FF",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "pad_seconds": 0.28,
+  "music": null,
+  "meta": {
+    "title": "How How GPS Works (जी-पी-एस कैसे काम करता है) Works | Tech Explainer",
+    "description": "Learn how How GPS Works (जी-पी-एस कैसे काम करता है) works under the hood through visual motion graphics and first-principles technical breakdown.",
+    "hashtags": [
+      "#Technology",
+      "#ComputerScience",
+      "#Engineering",
+      "#SystemDesign",
+      "#TechShorts"
+    ],
+    "facts_to_verify": [
+      "How GPS Works (जी-पी-एस कैसे काम करता है) operates via distributed synchronized state machines."
+    ],
+    "misconceptions": [],
+    "analogy": ""
+  },
+  "scenes": [
+    {
+      "type": "three",
+      "tag": "01 / THE POCKET RADAR",
+      "title": "HOW GPS TRACKS YOU",
+      "purpose": "Explain the mechanism and takeaway of HOW GPS TRACKS YOU.",
+      "tone": "[Curious, high-energy]",
+      "narration": "जब आप सड़क पर चलते हुए गू-गल मैप्स ऑन करते हैं, तो आपकी हथेली में रखा यह फोन कैसे जानता है कि आप सड़क के किस मोड़ पर खड़े हैं?",
+      "transition": "zoom_through",
+      "sfx": "fast_whoosh",
+      "icon": "cube",
+      "visual": {
+        "start": "Dark 3D spatial coordinate grid with directional volumetric lighting.",
+        "objects": [
+          "Vector Streets",
+          "Radar Waves"
+        ],
+        "action": "Metallic 3D smartphone tilted in dark cyber space displaying live dark-mode Google Maps with vector streets and turn navigation. Active glowing blue GPS puck pulses with radar waves, moving forward along the glowing route as live routing HUD floats in 3D.",
+        "camera": "Motivated tracking camera orbiting the focal 3D model.",
+        "motion_graphics": [
+          "3D SPATIAL TELEMETRY",
+          "HOW GPS TRACKS YOU"
+        ],
+        "end": "Model locks into informative angle for seamless scene cut."
+      },
+      "variant": "google_maps_3d",
+      "metrics": {
+        "Accuracy": "± 3 Meters",
+        "Refresh": "1000ms",
+        "Signal": "L1 1575.42 MHz"
+      }
+    },
+    {
+      "type": "three",
+      "tag": "02 / 20,200 KM IN SPACE",
+      "title": "THE MEO CONSTELLATION",
+      "purpose": "Explain the mechanism and takeaway of THE MEO CONSTELLATION.",
+      "tone": "[Awe-inspiring, scientific]",
+      "narration": "आपके फोन में कोई जादुई रडार नहीं है! इसका पूरा सिस्टम ज़मीन से बीस हज़ार किलोमीटर ऊपर अंतरिक्ष में चक्कर काट रही इकतीस सै-टे-लाइट्स से चलता है!",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "cube",
+      "visual": {
+        "start": "Dark 3D spatial coordinate grid with directional volumetric lighting.",
+        "objects": [
+          "Deep Ocean Blue",
+          "Glowing Night Cities",
+          "Atmospheric Halo"
+        ],
+        "action": "Camera pulls back smoothly from the street level into deep space, revealing a photorealistic 3D Earth globe rotating with deep ocean blue, glowing night cities, atmospheric halo, and an orbital network of 31 GPS satellites in Medium Earth Orbit.",
+        "camera": "Motivated tracking camera orbiting the focal 3D model.",
+        "motion_graphics": [
+          "3D SPATIAL TELEMETRY",
+          "THE MEO CONSTELLATION"
+        ],
+        "end": "Model locks into informative angle for seamless scene cut."
+      },
+      "variant": "globe_network_3d",
+      "metrics": {
+        "Orbit Altitude": "20,200 km",
+        "Constellation": "31 Satellites",
+        "Speed": "14,000 km/h"
+      }
+    },
+    {
+      "type": "compare",
+      "tag": "03 / THE BIG MISCONCEPTION",
+      "title": "YOUR PHONE NEVER TRANSMITS",
+      "purpose": "Explain the mechanism and takeaway of YOUR PHONE NEVER TRANSMITS.",
+      "tone": "[Dramatic, eye-opening]",
+      "narration": "सबसे बड़ा भ्रम: लोग सोचते हैं कि फोन सै-टे-लाइट को सिग्नल भेजता है! सच यह है कि फोन अंतरिक्ष में कुछ नहीं भेजता—यह सिर्फ सै-टे-लाइट्स के टाइम सिग्नल्स को चुपचाप सुनता है!",
+      "transition": "match_cut",
+      "sfx": "click",
+      "icon": "git-compare",
+      "visual": {
+        "start": "Split comparison stage materializing with contrasting left and right panels.",
+        "objects": [
+          "Right Side Shows Scientific Reality"
+        ],
+        "action": "High-contrast split comparison card: Left side shows common myth with red warning badge (phone transmitting signal to space), right side shows scientific reality with cyan checkmark (phone is 100% passive receiver listening to radio waves).",
+        "camera": "Stable centered split-screen framing with generous subtitle margins.",
+        "motion_graphics": [
+          "SIDE-BY-SIDE ARCHITECTURAL COMPARISON",
+          "STATUS INDICATORS"
+        ],
+        "end": "Comparison holds with clear visual superiority established."
+      },
+      "left": {
+        "heading": "COMMON MYTH",
+        "items": [
+          "Phone sends space signals",
+          "Satellite tracks your phone",
+          "Huge transmitter battery needed"
+        ]
+      },
+      "right": {
+        "heading": "SCIENTIFIC REALITY",
+        "items": [
+          "Satellites broadcast time codes",
+          "Phone is passive receiver",
+          "Zero signal sent upward"
+        ]
+      }
+    },
+    {
+      "type": "gauge",
+      "tag": "04 / SPEED OF LIGHT BROADCAST",
+      "title": "TIME-OF-FLIGHT DELAY",
+      "purpose": "Explain the mechanism and takeaway of TIME-OF-FLIGHT DELAY.",
+      "tone": "[Analytical, clear]",
+      "narration": "हर सै-टे-लाइट में लगी होती है सुपर-एक्यूरेट एटॉमिक क्लॉक. सै-टे-लाइट रेडियो वेव भेजती है—'मैं सै-टे-लाइट चार हूँ, और यह सिग्नल ठीक इस नैनो-से-कंड पर चला था!'",
+      "transition": "match_cut",
+      "sfx": "bass_drop",
+      "icon": "gauge",
+      "visual": {
+        "start": "Circular or linear precision gauge calibrated at baseline zero.",
+        "objects": [
+          "000 Kms)",
+          "Nanosecond Atomic Timestamp Telemetry."
+        ],
+        "action": "Dynamic sweeping arc gauge transitioning from 20,200 km down to 0 km in real time, measuring the electromagnetic radio transit time at the speed of light (300,000 km/s) with nanosecond atomic timestamp telemetry.",
+        "camera": "Stable centered technical HUD framing.",
+        "motion_graphics": [
+          "TELEMETRY SWEEP",
+          "REAL-TIME STATUS BADGE"
+        ],
+        "end": "Gauge locks at final threshold with verified status confirmation."
+      },
+      "value": 98.4,
+      "unit": "km",
+      "startValue": 20200.0,
+      "endValue": 0.0
+    },
+    {
+      "type": "three",
+      "tag": "05 / 3D TRILATERATION",
+      "title": "THE 4-SPHERE LOCK",
+      "purpose": "Explain the mechanism and takeaway of THE 4-SPHERE LOCK.",
+      "tone": "[Authoritative, revelatory]",
+      "narration": "एक सै-टे-लाइट से सिर्फ दूरी पता चलती है, दो से एक घेरा, तीन से दो बिंदु. और चौथी सै-टे-लाइट फोन की सस्ती घड़ी का टाइम एरर मिटाकर आपकी थ्री-डी लोकेशन लॉक कर देती है!",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "cube",
+      "visual": {
+        "start": "Dark 3D spatial coordinate grid with directional volumetric lighting.",
+        "objects": [
+          "Locking Exact Latitude",
+          "Longitude",
+          "Elevation."
+        ],
+        "action": "4 GPS satellites in 3D orbit simultaneously fire glowing laser telemetry rays and expanding spherical shells toward Earth. The spheres intersect at the user's golden beacon pin, and the 4th satellite instantly cancels receiver clock error, locking exact latitude, longitude, and elevation.",
+        "camera": "Motivated tracking camera orbiting the focal 3D model.",
+        "motion_graphics": [
+          "3D SPATIAL TELEMETRY",
+          "THE 4-SPHERE LOCK"
+        ],
+        "end": "Model locks into informative angle for seamless scene cut."
+      },
+      "variant": "gps_trilateration_3d",
+      "equation": "(x - x_i)^2 + (y - y_i)^2 + (z - z_i)^2 = [c \\cdot (t_i - \\Delta t)]^2",
+      "metrics": {
+        "Sat 1-3": "Position (X, Y, Z)",
+        "Sat 4": "Clock Drift Correction",
+        "Fix": "3D Lock"
+      }
+    },
+    {
+      "type": "bento",
+      "tag": "06 / EINSTEIN'S SECRET",
+      "title": "RELATIVITY CORRECTION",
+      "purpose": "Explain the mechanism and takeaway of RELATIVITY CORRECTION.",
+      "tone": "[Mind-blowing, intriguing]",
+      "narration": "अगर अल्बर्ट आइंस्टीन की थ्योरी ऑफ रिलेटिविटी का फॉर्मूला न लगाएं, तो समय के फर्क की वजह से हर दिन आपका जी-पी-एस ग्यारह किलोमीटर भटक जाएगा!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing RELATIVITY CORRECTION.",
+        "objects": [
+          "Warning Badge"
+        ],
+        "action": "Modular glassmorphic telemetry bento grid detailing Einstein's General and Special Relativity corrections: Speed dilation vs Gravity acceleration yielding +38 microseconds/day net drift, with warning badge showing 11 km daily drift without fix.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "RELATIVITY CORRECTION",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "bentoItems": [
+        {
+          "title": "Speed Dilation",
+          "value": "-7 μs / day",
+          "span": 1,
+          "badge": "14,000 km/h"
+        },
+        {
+          "title": "Gravity Shift",
+          "value": "+45 μs / day",
+          "span": 1,
+          "badge": "Weaker Gravity"
+        },
+        {
+          "title": "Net Daily Drift",
+          "value": "+38 μs / day",
+          "span": 2,
+          "badge": "Relativistic Shift"
+        },
+        {
+          "title": "Uncorrected Error",
+          "value": "11.4 km / day",
+          "span": 2,
+          "badge": "11km Daily Error Without Fix"
+        }
+      ]
+    },
+    {
+      "type": "three",
+      "tag": "07 / POSITION LOCKED",
+      "title": "REAL-TIME NAVIGATION",
+      "purpose": "Explain the mechanism and takeaway of REAL-TIME NAVIGATION.",
+      "tone": "[Triumphant, energetic]",
+      "narration": "चारों सिग्नल्स मिलते ही गू-गल मैप्स का ब्लू डॉट आपकी सही सड़क पर लॉक हो जाता है, और नेविगेशन शुरू हो जाता है!",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "cube",
+      "visual": {
+        "start": "Dark 3D spatial coordinate grid with directional volumetric lighting.",
+        "objects": [
+          "Glides Forward",
+          "Turn Instructions Updating Live."
+        ],
+        "action": "Flash of golden telemetry locks the coordinates, seamlessly cutting back into the 3D smartphone screen. The blue GPS dot locks precisely onto the center road lane and glides forward with turn instructions updating live.",
+        "camera": "Motivated tracking camera orbiting the focal 3D model.",
+        "motion_graphics": [
+          "3D SPATIAL TELEMETRY",
+          "REAL-TIME NAVIGATION"
+        ],
+        "end": "Model locks into informative angle for seamless scene cut."
+      },
+      "variant": "google_maps_3d",
+      "metrics": {
+        "Lock Status": "3D FIX",
+        "Satellites Tracked": "12 in View",
+        "Drift": "< 1.2m"
+      }
+    },
+    {
+      "type": "outro",
+      "tag": "08 / THE HIDDEN SCIENCE",
+      "title": "HOW GPS WORKS",
+      "purpose": "Explain the mechanism and takeaway of HOW GPS WORKS.",
+      "tone": "[Warm, engaging]",
+      "narration": "अगली बार जब आप गू-गल मैप्स खोलें, तो याद रखिएगा—अंतरिक्ष की इकतीस घड़ियां आपकी राह आसान बना रही हैं. लाइक और सब्सक्राइब ज़रूर करें!",
+      "transition": "match_cut",
+      "sfx": "ding",
+      "icon": "sparkles",
+      "visual": {
+        "start": "Structured takeaway card framed in dark navy with cyan accent borders.",
+        "objects": [
+          "Glowing Cyberpunk Outro Card",
+          "Glowing Neon Accents",
+          "Animated Particle Bursts"
+        ],
+        "action": "Glowing cyberpunk outro card with glowing neon accents, animated particle bursts, and high-CTR call-to-action cards inviting viewers to subscribe for deep-tech explainers.",
+        "camera": "Stable cinematic hero outro presentation.",
+        "motion_graphics": [
+          "CHECK · ADVANCE · PAYOFF",
+          "FOLLOW FOR TECH EXPLAINERS"
+        ],
+        "end": "Holds on clean branded frame with zero audio clipping."
+      },
+      "text": "SHARE WITH CURIOUS MINDS"
+    }
+  ]
+}

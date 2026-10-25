@@ -18,6 +18,7 @@ Usage as CLI:
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import urllib.error
 import urllib.request
@@ -97,6 +98,25 @@ def get_voice_id() -> str:
     return DEFAULT_VOICE_ID
 
 
+def synthesize_edge(text: str, out_path: Path, voice: str = None) -> bool:
+    """Open-source zero-API-key TTS synthesis fallback using edge-tts."""
+    load_env_file()
+    voice = voice or os.environ.get("EDGE_TTS_VOICE", "hi-IN-MadhurNeural")
+    try:
+        edge_bin = ROOT / ".venv" / "bin" / "edge-tts"
+        cmd = [
+            str(edge_bin) if edge_bin.exists() else "edge-tts",
+            "--voice", voice,
+            "--text", text,
+            "--write-media", str(out_path)
+        ]
+        res = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+        return out_path.exists() and out_path.stat().st_size > 0
+    except Exception as e:
+        print(f"  [edge-tts warning] {e}")
+        return False
+
+
 def synthesize(text: str, out_path: str, voice: str = None, tone: str = None) -> None:
     """Synthesize text for a single scene and write audio to out_path."""
     text = (text or "").strip()
@@ -107,6 +127,18 @@ def synthesize(text: str, out_path: str, voice: str = None, tone: str = None) ->
     voice_id = (voice or get_voice_id()).strip()
     out = Path(out_path)
     out.parent.mkdir(parents=True, exist_ok=True)
+
+    # Check if forced to use edge engine
+    if os.environ.get("TTS_ENGINE", "").lower() == "edge":
+        if synthesize_edge(text, out):
+            try:
+                tmp_norm = out.with_name(f"_tmp_{out.name}")
+                subprocess.run(["ffmpeg", "-y", "-i", str(out), "-ar", "48000", "-ac", "2", str(tmp_norm)],
+                               check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                tmp_norm.replace(out)
+            except Exception:
+                pass
+            return
 
     tone_params = parse_tone_parameters(tone)
     body = {
@@ -132,11 +164,31 @@ def synthesize(text: str, out_path: str, voice: str = None, tone: str = None) ->
         with urllib.request.urlopen(req, timeout=360) as resp:
             audio_bytes = resp.read()
     except urllib.error.URLError as err:
+        print(f"  [TTS Notice] VoiceStudio unavailable at {base_url} ({err}). Falling back to edge-tts...")
+        if synthesize_edge(text, out):
+            try:
+                tmp_norm = out.with_name(f"_tmp_{out.name}")
+                subprocess.run(["ffmpeg", "-y", "-i", str(out), "-ar", "48000", "-ac", "2", str(tmp_norm)],
+                               check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                tmp_norm.replace(out)
+            except Exception:
+                pass
+            return
         raise SystemExit(
-            f"VoiceStudio connection failed ({err}). "
-            f"Ensure VoiceStudio is running at {base_url}."
+            f"VoiceStudio connection failed ({err}) and edge-tts fallback failed. "
+            f"Ensure VoiceStudio is running at {base_url} or edge-tts is functional."
         ) from err
     except Exception as err:
+        print(f"  [TTS Notice] VoiceStudio synthesis error: {err}. Falling back to edge-tts...")
+        if synthesize_edge(text, out):
+            try:
+                tmp_norm = out.with_name(f"_tmp_{out.name}")
+                subprocess.run(["ffmpeg", "-y", "-i", str(out), "-ar", "48000", "-ac", "2", str(tmp_norm)],
+                               check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                tmp_norm.replace(out)
+            except Exception:
+                pass
+            return
         raise SystemExit(f"TTS synthesis failed: {err}") from err
 
     if not audio_bytes:
@@ -184,6 +236,15 @@ def check_status():
             print(f"\nVoiceStudio is ready with active voice: {active_voice_id}")
     except Exception as exc:
         print(f"\nCould not connect to VoiceStudio at {base_url}: {exc}")
+
+    # Check edge-tts availability
+    edge_bin = ROOT / ".venv" / "bin" / "edge-tts"
+    if edge_bin.exists() or shutil.which("edge-tts"):
+        print("\nOpen-Source Fallback / Alternative:")
+        print(" - Edge-TTS: 🟢 READY (Default: hi-IN-MadhurNeural, Alternative: hi-IN-SwaraNeural)")
+    else:
+        print("\nOpen-Source Fallback:")
+        print(" - Edge-TTS: 🔴 NOT installed (Run: .venv/bin/pip install edge-tts)")
 
 
 def synthesize_video(spec_path: str, force: bool = False):

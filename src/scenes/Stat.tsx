@@ -151,32 +151,42 @@ export const Stat: React.FC<{ scene: SceneSpec; accent: string }> = ({
           />
         </svg>
 
-        {/* Center Giant Metric Text */}
-        <div
-          style={{
-            fontSize: 210,
-            fontWeight: 900,
-            color: accent,
-            transform: `scale(${0.85 + 0.15 * s})`,
-            opacity: Math.min(1, s * 1.4),
-            fontVariantNumeric: "tabular-nums",
-            letterSpacing: "-0.04em",
-            textShadow: `0 0 70px ${accent}88, 0 8px 40px rgba(0,0,0,0.7)`,
-            zIndex: 2,
-            textAlign: "center",
-            lineHeight: 1,
-          }}
-        >
-          {countUp(String(scene.value ?? ""), p)}
-        </div>
+        {/* Center Ergonomic Metric Text (Dynamically scaled to fit circular HUD, hard clamped <= 104px) */}
+        {(() => {
+          const valStr = countUp(String(scene.value ?? ""), p);
+          // Scale font size down gracefully for longer metrics (e.g. "10,000x" vs "40%")
+          const baseSize = valStr.length <= 3 ? 104 : valStr.length <= 5 ? 88 : valStr.length <= 7 ? 74 : 62;
+          const clampedSize = Math.max(48, Math.min(104, baseSize));
+          return (
+            <div
+              style={{
+                fontSize: clampedSize,
+                fontWeight: 900,
+                color: accent,
+                transform: `scale(${0.88 + 0.12 * s})`,
+                opacity: Math.min(1, s * 1.4),
+                fontVariantNumeric: "tabular-nums",
+                letterSpacing: "-0.03em",
+                textShadow: `0 0 40px ${accent}66, 0 8px 30px rgba(0,0,0,0.7)`,
+                zIndex: 2,
+                textAlign: "center",
+                lineHeight: 1.1,
+                maxWidth: 520,
+                wordBreak: "break-word",
+              }}
+            >
+              {valStr}
+            </div>
+          );
+        })()}
       </div>
 
-      {/* Bottom Subtitle / Label */}
-      <div style={{ marginTop: 24, textAlign: "center" }}>
+      {/* Bottom Subtitle / Label (Safe bounded 32-38px) */}
+      <div style={{ marginTop: 24, textAlign: "center", maxWidth: 840 }}>
         <RevealText
           text={scene.label ?? ""}
           delay={14}
-          style={{ fontSize: 68, fontWeight: 800, color: MUTED, letterSpacing: "-0.01em" }}
+          style={{ fontSize: 36, fontWeight: 700, color: MUTED, letterSpacing: "-0.01em", lineHeight: 1.35 }}
         />
       </div>
     </AbsoluteFill>

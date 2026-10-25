@@ -24,6 +24,7 @@ import hashlib
 import hmac
 import json
 import os
+import socket
 import sys
 import threading
 import time
@@ -35,7 +36,33 @@ from urllib.request import Request, urlopen
 
 import requests
 
+# Force IPv4 preference for urllib to avoid hanging on dual-stack IPv6 routes
+_orig_getaddrinfo = socket.getaddrinfo
+def _ipv4_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
+    return _orig_getaddrinfo(host, port, socket.AF_INET, type, proto, flags)
+socket.getaddrinfo = _ipv4_getaddrinfo
+
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+
+def _ensure_project_venv():
+    venv_py = ROOT / ".venv" / "bin" / "python3"
+    if not venv_py.is_file():
+        return
+    try:
+        import playwright
+        import requests
+    except ImportError:
+        if Path(sys.executable).resolve() != venv_py.resolve():
+            import subprocess
+            res = subprocess.run([str(venv_py)] + sys.argv, cwd=str(ROOT))
+            sys.exit(res.returncode)
+
+
+_ensure_project_venv()
+
 DEFAULT_GRAPH_BASE = "https://graph.facebook.com"
 DEFAULT_GRAPH_VERSION = "v19.0"
 DEFAULT_THREADS_BASE = "https://graph.threads.net"
@@ -106,8 +133,22 @@ def youtube_access_token():
         headers={"Content-Type": "application/x-www-form-urlencoded"},
         method="POST"
     )
-    with urlopen(req, timeout=30) as resp:
-        token_data = json.loads(resp.read().decode("utf-8"))
+    try:
+        with urlopen(req, timeout=30) as resp:
+            token_data = json.loads(resp.read().decode("utf-8"))
+    except HTTPError as e:
+        err_body = e.read().decode("utf-8")
+        try:
+            err_json = json.loads(err_body)
+            err_desc = err_json.get("error_description") or err_json.get("error") or err_body
+        except Exception:
+            err_desc = err_body
+        if "invalid_grant" in err_desc or "expired or revoked" in err_desc:
+            raise UploadError(
+                "YouTube OAuth token expired or revoked. Please run '.venv/bin/python tools/get_youtube_token.py' to generate a fresh token."
+            )
+        raise UploadError(f"Google OAuth token request failed (HTTP {e.code}): {err_desc}")
+
     token = token_data.get("access_token")
     if not token:
         raise UploadError("Google OAuth response did not include an access token.")
@@ -148,26 +189,83 @@ def upload_youtube(video: Path, title: str, description: str, privacy: str = "pu
         },
         method="POST",
     )
-    with urlopen(req, timeout=30) as resp:
-        upload_url = resp.headers.get("Location")
+    try:
+        with urlopen(req, timeout=30) as resp:
+            upload_url = resp.headers.get("Location")
+    except HTTPError as e:
+        err_msg = e.read().decode("utf-8")
+        raise UploadError(f"YouTube initialization failed (HTTP {e.code}): {err_msg}")
 
     if not upload_url:
         raise UploadError("YouTube did not return a resumable upload URL.")
 
     video_bytes = video.read_bytes()
-    req_upload = Request(
-        upload_url,
-        data=video_bytes,
-        headers={
+    total_size = len(video_bytes)
+    print(f"  [YOUTUBE] Sending video binary ({total_size / (1024*1024):.1f} MB) in chunks to Google servers...")
+    
+    chunk_size = 8 * 1024 * 1024  # 8 MB per chunk (multiple of 256 KB)
+    start_byte = 0
+    result = None
+
+    while start_byte < total_size:
+        end_byte = min(start_byte + chunk_size, total_size) - 1
+        chunk = video_bytes[start_byte:end_byte + 1]
+        headers = {
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "video/mp4",
-            "Content-Length": str(len(video_bytes)),
-            "Content-Range": f"bytes 0-{len(video_bytes) - 1}/{len(video_bytes)}",
-        },
-        method="PUT",
-    )
-    with urlopen(req_upload, timeout=600) as resp:
-        result = json.loads(resp.read().decode("utf-8"))
+            "Content-Length": str(len(chunk)),
+            "Content-Range": f"bytes {start_byte}-{end_byte}/{total_size}",
+        }
+        print(f"  [YOUTUBE] Uploading chunk: {start_byte / (1024*1024):.1f}MB - {(end_byte + 1) / (1024*1024):.1f}MB / {total_size / (1024*1024):.1f}MB...")
+        
+        chunk_uploaded = False
+        for attempt in range(5):
+            try:
+                resp = requests.put(upload_url, data=chunk, headers=headers, timeout=120)
+                if resp.status_code in (200, 201):
+                    result = resp.json()
+                    start_byte = total_size
+                    chunk_uploaded = True
+                    break
+                elif resp.status_code == 308:
+                    range_hdr = resp.headers.get("Range")
+                    if range_hdr:
+                        start_byte = int(range_hdr.split("-")[1]) + 1
+                    else:
+                        start_byte = end_byte + 1
+                    chunk_uploaded = True
+                    break
+                else:
+                    raise UploadError(f"YouTube chunk upload returned HTTP {resp.status_code}: {resp.text}")
+            except (requests.RequestException, ConnectionError, OSError) as e:
+                print(f"  [YOUTUBE] ⚠️ Network glitch ({e}), retrying chunk query (attempt {attempt + 1}/5)...")
+                time.sleep(2 ** attempt)
+                try:
+                    q_resp = requests.put(
+                        upload_url,
+                        headers={
+                            "Authorization": f"Bearer {access_token}",
+                            "Content-Range": f"bytes */{total_size}"
+                        },
+                        timeout=30
+                    )
+                    if q_resp.status_code == 308:
+                        r_hdr = q_resp.headers.get("Range")
+                        if r_hdr:
+                            start_byte = int(r_hdr.split("-")[1]) + 1
+                            chunk_uploaded = True
+                            break
+                    elif q_resp.status_code in (200, 201):
+                        result = q_resp.json()
+                        start_byte = total_size
+                        chunk_uploaded = True
+                        break
+                except Exception:
+                    pass
+        if not chunk_uploaded:
+            raise UploadError("YouTube chunk upload failed after 5 retries.")
+
+    print("  [YOUTUBE] Video payload accepted by YouTube servers!")
 
     video_id = result.get("id")
     if not video_id:
@@ -225,32 +323,60 @@ def upload_telegram(video: Path, caption: str) -> str:
     ]
     thumb_path = next((p for p in thumb_candidates if p.is_file()), None)
 
-    with open(video, "rb") as vf:
-        files = {"video": (video.name, vf, "video/mp4")}
-        data = {
-            "chat_id": chat_id,
-            "caption": tg_caption,
-            "parse_mode": "Markdown",
-            "supports_streaming": "true",
-        }
-        tf = None
-        if thumb_path:
-            tf = open(thumb_path, "rb")
-            files["thumbnail"] = (thumb_path.name, tf, "image/jpeg")
+    # Telegram Bot API sendVideo has a hard 50 MB limit
+    upload_file = video
+    temp_transcoded = None
+    if video.stat().st_size > 48 * 1024 * 1024:
+        print(f"  [TELEGRAM] Video is {video.stat().st_size / (1024*1024):.1f} MB (exceeds 50 MB limit). Compressing for Telegram...")
+        import shutil
+        import subprocess
+        ffmpeg_bin = shutil.which("ffmpeg") or "/opt/homebrew/bin/ffmpeg"
+        temp_transcoded = Path(f"/tmp/tg_{uuid.uuid4().hex[:8]}.mp4")
+        cmd = [
+            ffmpeg_bin, "-y", "-i", str(video),
+            "-c:v", "libx264", "-crf", "23", "-preset", "veryfast",
+            "-c:a", "copy", str(temp_transcoded)
+        ]
+        res = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if res.returncode == 0 and temp_transcoded.is_file() and temp_transcoded.stat().st_size <= 49 * 1024 * 1024:
+            upload_file = temp_transcoded
+            print(f"  [TELEGRAM] Transcoded payload ready: {upload_file.stat().st_size / (1024*1024):.1f} MB")
+        else:
+            print("  [TELEGRAM] Transcoding failed or did not reduce size sufficiently, attempting original...")
 
-        try:
-            resp = requests.post(url, data=data, files=files, timeout=300)
-            if not resp.ok and ("entity" in resp.text.lower() or "parse" in resp.text.lower()):
-                # Fallback to plain text caption if markdown syntax is invalid
-                print("  [TELEGRAM] Retrying caption with plain-text encoding...")
-                data.pop("parse_mode", None)
-                vf.seek(0)
-                if tf:
-                    tf.seek(0)
+    try:
+        with open(upload_file, "rb") as vf:
+            files = {"video": (video.name, vf, "video/mp4")}
+            data = {
+                "chat_id": chat_id,
+                "caption": tg_caption,
+                "parse_mode": "Markdown",
+                "supports_streaming": "true",
+            }
+            tf = None
+            if thumb_path:
+                tf = open(thumb_path, "rb")
+                files["thumbnail"] = (thumb_path.name, tf, "image/jpeg")
+
+            try:
                 resp = requests.post(url, data=data, files=files, timeout=300)
-        finally:
-            if tf:
-                tf.close()
+                if not resp.ok and ("entity" in resp.text.lower() or "parse" in resp.text.lower()):
+                    # Fallback to plain text caption if markdown syntax is invalid
+                    print("  [TELEGRAM] Retrying caption with plain-text encoding...")
+                    data.pop("parse_mode", None)
+                    vf.seek(0)
+                    if tf:
+                        tf.seek(0)
+                    resp = requests.post(url, data=data, files=files, timeout=300)
+            finally:
+                if tf:
+                    tf.close()
+    finally:
+        if temp_transcoded and temp_transcoded.is_file():
+            try:
+                temp_transcoded.unlink(missing_ok=True)
+            except Exception:
+                pass
 
     if not resp.ok:
         raise UploadError(f"Telegram API error {resp.status_code}: {resp.text}")
@@ -982,8 +1108,9 @@ def main():
     parser.add_argument("--force", action="store_true", help="Force upload even if video was already published previously")
     parser.add_argument("--check", action="store_true", help="Check status of all platform API keys in .env")
     parser.add_argument("--publish", action="store_true", help="Perform real live API upload (without flag, runs dry-run)")
-    parser.add_argument("--sequential", action="store_true", help="Run uploads sequentially instead of concurrently in parallel")
-    parser.add_argument("--max-workers", type=int, default=7, help="Maximum concurrent upload workers (default: 7)")
+    parser.add_argument("--parallel", action="store_true", help="Run uploads concurrently in parallel (default: sequential for browser automation safety)")
+    parser.add_argument("--sequential", action="store_true", default=True, help="Run uploads sequentially (default: True)")
+    parser.add_argument("--max-workers", type=int, default=7, help="Maximum concurrent upload workers if --parallel is enabled (default: 7)")
 
     args = parser.parse_args()
 
@@ -1015,6 +1142,26 @@ def main():
             except Exception:
                 pass
 
+    # Check post.md for custom editorial title/description/hashtags
+    post_md = video.parent / "post.md"
+    if post_md.is_file():
+        try:
+            content = post_md.read_text(encoding="utf-8")
+            import re
+            t_match = re.search(r"^TITLE:\s*\n([^\n]+)", content, re.MULTILINE)
+            d_match = re.search(r"^DESCRIPTION:\s*\n(.*?)(?=\n[A-Z\s]+:|\Z)", content, re.DOTALL | re.MULTILINE)
+            h_match = re.search(r"^HASHTAGS:\s*\n([^\n]+)", content, re.MULTILINE)
+            if t_match and not metadata.get("title"):
+                metadata["title"] = t_match.group(1).strip()
+            elif t_match and "How What is" in metadata.get("title", ""):
+                metadata["title"] = t_match.group(1).strip()
+            if d_match and not metadata.get("description"):
+                metadata["description"] = d_match.group(1).strip()
+            if h_match and not metadata.get("hashtags"):
+                metadata["hashtags"] = [tag.strip() for tag in h_match.group(1).split() if tag.strip()]
+        except Exception:
+            pass
+
     title = args.title or metadata.get("title") or video.parent.name.replace("-", " ").title()
     hashtags = metadata.get("hashtags", [])
     hashtag_text = " ".join("#" + tag.lstrip("#") for tag in hashtags)
@@ -1044,7 +1191,7 @@ def main():
         platforms_to_run = [args.platform.strip().lower()]
 
     results = {}
-    is_parallel = (not args.sequential) and len(platforms_to_run) > 1
+    is_parallel = getattr(args, "parallel", False) and len(platforms_to_run) > 1
 
     if is_parallel:
         max_workers = min(len(platforms_to_run), args.max_workers)

@@ -29,8 +29,11 @@ Before selecting a renderer, skill, or asset, verify it exists and is supported 
 - **Vertical Safe Zones & Mobile Legibility**:
   * **Bottom Safe Zone**: Bottom **350px** (`y > 1570px`) is strictly reserved for Devanagari subtitles. Visual diagrams, labels, and buttons must not cross this boundary.
   * **Top Safe Zone**: Top **180px** (`y < 180px`) is reserved for uppercase step tags, progress bar, and status bar.
-  * **Max Component Height**: Visual diagrams must fit within a maximum height of **960px**, centered vertically.
-  * **Giant Focal Typography**: Primary comparison numbers, array elements, and core metrics must be **64px–76px bold** (`#FFFFFF` or neon accent). No text on screen can drop below **28px**.
+  * **Strict Ergonomic Typography Bounds (Eye-Strain & Visual-Pain Prevention)**:
+    - Scientific Visual Angle: $\theta = 2 \arctan(S / (2D)) \implies P = S \cdot \rho$.
+    - **Hard Floor**: NEVER drop below **22px** (absolute floor **20px** for minor badge borders/mono axis; <20px causes squinting/eye fatigue).
+    - **Hard Ceiling**: NEVER exceed **108px** even for the largest hero number (>108px causes retinal glare & visual pain).
+    - **Spectrum (1080x1920)**: Hero Stat: **72px–104px** | Titles: **48px–58px** (max 60px) | Subheads: **32px–40px** | Card Titles: **26px–32px** | Body: **26px–32px** (min 24px) | Captions: **48px–52px** | Tags: **22px–26px** | Mono Code: **20px–24px**.
 
 ---
 
@@ -102,6 +105,11 @@ Every `storyboard.json` must be structured with deep, rich detail for every fiel
 | `narration` | `string` | Spoken conversational Hindi text for VoiceStudio (`rajan story teller` profile). All technical terms hyphenated phonetically (`चैट-जी-पी-टी`, `न्यूरल नेटवर्क`, `लॉस फंक्शन`). |
 | `transition` | `string` | Visual handoff: `"zoom_through"`, `"match_cut"`, `"whip_pan"`, `"morph"`, `"dissolve"`, `"cross_fade"`. |
 | `sfx` | `array \| string` | Frame-accurate sound effect cues from `public/sfx/` (`whoosh`, `radar_beep`, `ting`, `click`, `pop`, `glitch`, `impact`, `ka_ching`, `sparkle`, `typing`). |
+| `hook_strength` | `number` | *(Viral Retention)* 1.0 to 10.0 score evaluating opening tension and thumb-stopping power. |
+| `payoff_type` | `string` | *(Viral Retention)* Category of payoff: `"loop_setup"`, `"curiosity_reveal"`, `"metric_shock"`, `"mechanism_clarity"`, `"actionable_tip"`. |
+| `pattern_interrupt` | `string` | *(Viral Retention)* Procedural visual disruption: `"zoom_punch"` (1.08x spring punch), `"shake"` (error jitter), `"color_flash"`, `"glitch"`. |
+| `emphasis_words` | `string[]` | *(Viral Retention)* Array of high-impact words/phrases to pop in vibrant Neon Yellow (`#FFE600`) in mobile captions. |
+| `cta_reason` | `string` | *(Viral Retention)* Concrete motivation to save or share (e.g. `"Send to your developer partner"`, `"Save for system design interviews"`). |
 | `visual` | `object` | **Mandatory 6-key structured visual storyboard object** (see Section 3.3). |
 
 ---

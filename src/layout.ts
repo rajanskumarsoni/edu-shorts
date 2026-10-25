@@ -1,6 +1,10 @@
 import { useVideoConfig, interpolate, spring, useCurrentFrame } from "remotion";
 
 // Adapts padding to vertical (reel) or landscape (16:9) videos.
+// Calibrated for Instagram Reels & YouTube Shorts UI safe zones:
+// - Top: clears camera/search/tabs (160px)
+// - Bottom: clears username, caption snippet, audio marquee (380px)
+// - Right: clears like/comment/share action rail (120px)
 export const useLayout = () => {
   const { width, height } = useVideoConfig();
   const landscape = width > height;
@@ -9,9 +13,13 @@ export const useLayout = () => {
     height,
     landscape,
     padX: landscape ? 160 : 80,
-    padTop: landscape ? 60 : 120,
-    // vertical: keep content above the Shorts/Reels buttons and title area
-    padBottom: landscape ? 80 : 320,
+    padTop: landscape ? 60 : 160,
+    padBottom: landscape ? 80 : 380,
+    padRight: landscape ? 160 : 120,
+    safeTop: landscape ? 60 : 160,
+    safeBottom: landscape ? 80 : 380,
+    safeRight: landscape ? 160 : 120,
+    safeLeft: landscape ? 160 : 80,
   };
 };
 

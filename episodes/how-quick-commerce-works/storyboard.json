@@ -1,0 +1,393 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "how-quick-commerce-works",
+  "format": "vertical",
+  "art_direction": "editorial",
+  "theme": "cyberpunk",
+  "accent": "#00F0FF",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "pad_seconds": 0.28,
+  "music": null,
+  "meta": {
+    "title": "How Blinkit, Zepto & Instamart Deliver in 10 Minutes! ⚡",
+    "description": "Ever wondered how Blinkit, Zepto, and Instamart deliver groceries in 10 minutes? The secret isn't rash driving—it's high-density dark stores, algorithmic pick paths, and hyperlocal proximity! #Blinkit #Zepto #Instamart #QuickCommerce #TechShorts #Engineering #HowItWorks",
+    "hashtags": [
+      "#Blinkit",
+      "#Zepto",
+      "#Instamart",
+      "#QuickCommerce",
+      "#TechShorts",
+      "#Engineering"
+    ],
+    "facts_to_verify": [
+      "How Instamart, Blinkit & Zepto Deliver in 10 Minutes operates via distributed synchronized state machines."
+    ],
+    "misconceptions": [],
+    "analogy": ""
+  },
+  "scenes": [
+    {
+      "type": "quick_commerce",
+      "tag": "01 / THE 10-MINUTE PUZZLE",
+      "title": "The 10-Minute Puzzle",
+      "purpose": "Explain the mechanism and takeaway of The 10-Minute Puzzle.",
+      "tone": "[Curious, high-energy]",
+      "narration": "आपने कभी सोचा है कि जब आप ज़ेप्टो, ब्लिंकिट या इंस्टामार्ट पर ऑर्डर प्लेस करते हैं, तो सिर्फ दस मिनट में डिलीवरी बॉय आपके दरवाजे पर कैसे पहुँच जाता है?",
+      "transition": "zoom_through",
+      "sfx": "radar_beep",
+      "icon": "truck",
+      "visual": {
+        "start": "High-tech quick commerce logistics stage materializing with telemetry HUD.",
+        "objects": [
+          "Customer Taps Place Order On Smartphone;"
+        ],
+        "action": "Customer taps Place Order on smartphone; 10:00 neon countdown timer starts ticking down as GPS radar waves lock onto nearest Dark Store",
+        "camera": "Stable technical isometric or UI framing with high visual contrast.",
+        "motion_graphics": [
+          "THE 10-MINUTE PUZZLE",
+          "HYPERLOCAL LOGISTICS ENGINE"
+        ],
+        "end": "Action locks into place with verified delivery SLA confirmation."
+      },
+      "variant": "customer_order"
+    },
+    {
+      "type": "compare",
+      "tag": "02 / MYTH VS REALITY",
+      "title": "THE SPEED MYTH DEBUNKED",
+      "purpose": "Explain the mechanism and takeaway of THE SPEED MYTH DEBUNKED.",
+      "tone": "[Direct, eye-opening]",
+      "narration": "ज़्यादातर लोग सोचते हैं कि डिलीवरी बॉय अस्सी की स्पीड पर जान जोखिम में डालकर बाइक भगाते हैं! लेकिन सच यह है कि उनकी स्पीड सिर्फ बीस किलोमीटर प्रति घंटा होती है.",
+      "transition": "match_cut",
+      "sfx": "click",
+      "icon": "git-compare",
+      "visual": {
+        "start": "Split comparison stage materializing with contrasting left and right panels.",
+        "objects": [
+          "Split Comparison Screen Contrasting Dang"
+        ],
+        "action": "Split comparison screen contrasting dangerous bike speeding myth on left with calm 20 km/h hyperlocal proximity science on right",
+        "camera": "Stable centered split-screen framing with generous subtitle margins.",
+        "motion_graphics": [
+          "SIDE-BY-SIDE ARCHITECTURAL COMPARISON",
+          "STATUS INDICATORS"
+        ],
+        "end": "Comparison holds with clear visual superiority established."
+      },
+      "left": {
+        "heading": "The Dangerous Myth",
+        "items": [
+          "Speeding at 80 km/h",
+          "Breaking Traffic Lights",
+          "High Crash Risk"
+        ]
+      },
+      "right": {
+        "heading": "The Real Science",
+        "items": [
+          "Calm Speed 20 km/h",
+          "Hyperlocal 1.8km Radius",
+          "Algorithmic Precision"
+        ]
+      }
+    },
+    {
+      "type": "three",
+      "tag": "03 / THE SECRET WEAPON",
+      "title": "INSIDE THE 3D DARK STORE",
+      "purpose": "Explain the mechanism and takeaway of INSIDE THE 3D DARK STORE.",
+      "tone": "[Revealing, technological]",
+      "narration": "तो फिर ये दस मिनट का चमत्कार होता कैसे है? इसका असली सीक्रेट है: डार्क स्टोर! ये कोई आम सुपरमार्केट नहीं, बल्कि आपके घर से दो किलोमीटर के अंदर छुपा एक हाई-टेक मिनी-वेयरहाउस है.",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "cube",
+      "visual": {
+        "start": "Dark 3D spatial coordinate grid with directional volumetric lighting.",
+        "objects": [
+          "3D Dark Store Warehouse Interior",
+          "Multi-Tier Industrial Steel Racks",
+          "Glowing Colored Inventory Bins",
+          "Golden Zone Front Racks"
+        ],
+        "action": "3D Dark Store warehouse interior with multi-tier industrial steel racks, glowing colored inventory bins, Golden Zone front racks, and standby electric scooter",
+        "camera": "Motivated tracking camera orbiting the focal 3D model.",
+        "motion_graphics": [
+          "3D SPATIAL TELEMETRY",
+          "INSIDE THE 3D DARK STORE"
+        ],
+        "end": "Model locks into informative angle for seamless scene cut."
+      },
+      "variant": "dark_store_3d"
+    },
+    {
+      "type": "whiteboard",
+      "tag": "04 / THE STORE BLUEPRINT",
+      "title": "THE GOLDEN ZONE HEATMAP",
+      "purpose": "Explain the mechanism and takeaway of THE GOLDEN ZONE HEATMAP.",
+      "tone": "[Explanatory, educational]",
+      "narration": "डार्क स्टोर के अंदर कोई आम कस्टमर नहीं जा सकता. यहाँ तीन हज़ार से ज़्यादा आइटम्स को रैंडम नहीं, बल्कि ए-आई हीटमैप के हिसाब से सजाया जाता है.",
+      "transition": "match_cut",
+      "sfx": "pop",
+      "icon": "edit-3",
+      "visual": {
+        "start": "Clean textured drafting surface with subtle architectural grid lines.",
+        "objects": [
+          "Hand-Drawn Chalkboard Sketching The Ware"
+        ],
+        "action": "Hand-drawn chalkboard sketching the warehouse layout with Golden Zone at the front packing bay holding high-velocity SKUs for 10-second reach",
+        "camera": "Stable overhead drafting perspective.",
+        "motion_graphics": [
+          "CHALKBOARD INFOGRAPHIC",
+          "KEY TAKEAWAY ANNOTATION"
+        ],
+        "end": "Drawing completes with tactile chalk texture and clear visual contrast."
+      },
+      "whiteboardType": "architecture",
+      "whiteboardTheme": "chalkboard",
+      "brushName": "2B",
+      "nodes": [
+        "ZONE A: MILK & EGGS (10s)",
+        "ZONE B: BAKERY & CHIPS (20s)",
+        "ZONE C: PACKAGED GOODS (40s)",
+        "DISPATCH STATION (90s SLA)"
+      ]
+    },
+    {
+      "type": "quick_commerce",
+      "tag": "05 / THE 90-SECOND RACE",
+      "title": "PDA BARCODE SCANNER SLA",
+      "purpose": "Explain the mechanism and takeaway of PDA BARCODE SCANNER SLA.",
+      "tone": "[Fast-paced, focused]",
+      "narration": "जैसे ही आपका ऑर्डर आता है, वेयरहाउस पिकर के हैंडहेल्ड स्कैनर पर तुरंत नोटिफिकेशन बजता है. और एक खास एल्गोरिदम उसे सबसे छोटा रास्ता बताता है.",
+      "transition": "match_cut",
+      "sfx": "radar_beep",
+      "icon": "truck",
+      "visual": {
+        "start": "High-tech quick commerce logistics stage materializing with telemetry HUD.",
+        "objects": [
+          "Dynamic Item Checklist Ticking Off",
+          "Laser Beeps"
+        ],
+        "action": "Handheld PDA barcode scanner terminal screen with dynamic item checklist ticking off with laser beeps, and an SLA stopwatch ring locking at 64 seconds",
+        "camera": "Stable technical isometric or UI framing with high visual contrast.",
+        "motion_graphics": [
+          "PDA BARCODE SCANNER SLA",
+          "HYPERLOCAL LOGISTICS ENGINE"
+        ],
+        "end": "Action locks into place with verified delivery SLA confirmation."
+      },
+      "variant": "picker_scanner"
+    },
+    {
+      "type": "video",
+      "tag": "06 / RAPID BAGGING",
+      "title": "TAMPER-PROOF QR SEALING",
+      "purpose": "Explain the mechanism and takeaway of TAMPER-PROOF QR SEALING.",
+      "tone": "[Energetic, efficient]",
+      "narration": "पिकर सिर्फ नब्बे सेकंड में सारे आइटम्स उठाकर बारकोड स्कैन करता है, बैग को सील करता है, और डिस्पेच बे पर रख देता है!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "film",
+      "visual": {
+        "start": "High-contrast editorial layout establishing TAMPER-PROOF QR SEALING.",
+        "objects": [
+          "Sealing",
+          "Tamper-Proof Qr Tracking Barcode",
+          "Handing Off To Dispatch Counter"
+        ],
+        "action": "Real-world footage of rapid warehouse item bagging, sealing with tamper-proof QR tracking barcode, and handing off to dispatch counter",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "TAMPER-PROOF QR SEALING",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "video": "media/warehouse_packing_boxes.mp4"
+    },
+    {
+      "type": "architecture",
+      "tag": "07 / PARALLEL DISPATCH",
+      "title": "THE REAL-TIME DISPATCH ENGINE",
+      "purpose": "Explain the mechanism and takeaway of THE REAL-TIME DISPATCH ENGINE.",
+      "tone": "[System architecture, insightful]",
+      "narration": "यहाँ सबसे कमाल की बात यह है: जब पिकर सामान पैक कर रहा होता है, उसी वक्त क्लाउड एल्गोरिदम बाहर खड़े सबसे नज़दीकी राइडर को ऑर्डर असाइन कर चुका होता है!",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "network",
+      "visual": {
+        "start": "Multi-tier system architecture nodes positioned in clean grid orientation.",
+        "objects": [
+          "Standby Rider Simultaneously",
+          "Synchronizing The Handoff"
+        ],
+        "action": "Glowing transaction token shoots from Customer App through Cloud Router to Store Picker and Standby Rider simultaneously, synchronizing the handoff",
+        "camera": "Stable isometric or planar architecture diagram view.",
+        "motion_graphics": [
+          "TRANSACTION PIPELINE",
+          "STATE: IN-FLIGHT"
+        ],
+        "end": "Packet reaches terminal node, completing the execution cycle."
+      },
+      "nodes": [
+        "Customer App",
+        "Cloud Routing AI",
+        "Store Picker (90s)",
+        "Standby Rider",
+        "Doorstep OTP"
+      ],
+      "direction": "horizontal"
+    },
+    {
+      "type": "quick_commerce",
+      "tag": "08 / THE 1.8 KM HYPERLOCAL RIDE",
+      "title": "CALM SPEED · SHORT DISTANCE",
+      "purpose": "Explain the mechanism and takeaway of CALM SPEED · SHORT DISTANCE.",
+      "tone": "[Reassuring, clear]",
+      "narration": "अब बचा हुआ टाइम: छह मिनट. क्योंकि डार्क स्टोर आपके घर से सिर्फ डेढ़ से दो किलोमीटर दूर होता है, इसलिए साधारण स्पीड पर भी राइडर पाँच से छह मिनट में आपके अपार्टमेंट पहुँच जाता है.",
+      "transition": "match_cut",
+      "sfx": "radar_beep",
+      "icon": "truck",
+      "visual": {
+        "start": "High-tech quick commerce logistics stage materializing with telemetry HUD.",
+        "objects": [
+          "Nighttime City Street Map",
+          "Glowing 1.8 Km Geo-Fence Circle"
+        ],
+        "action": "Nighttime city street map with glowing 1.8 KM Geo-Fence circle, delivery partner on electric scooter cruising at safe 21 km/h along turn-by-turn route",
+        "camera": "Stable technical isometric or UI framing with high visual contrast.",
+        "motion_graphics": [
+          "CALM SPEED · SHORT DISTANCE",
+          "HYPERLOCAL LOGISTICS ENGINE"
+        ],
+        "end": "Action locks into place with verified delivery SLA confirmation."
+      },
+      "variant": "scooter_transit"
+    },
+    {
+      "type": "video",
+      "tag": "09 / STREET NAVIGATION",
+      "title": "REAL-TIME GPS ROUTING",
+      "purpose": "Explain the mechanism and takeaway of REAL-TIME GPS ROUTING.",
+      "tone": "[Dynamic, urban]",
+      "narration": "राइडर को ट्रैफिक सिग्नल्स तोड़ने की बिल्कुल ज़रूरत नहीं पड़ती. जी-पी-एस और स्मार्ट रूटिंग उन्हें गलियों और शॉर्टकट्स से बिना किसी रुकावट के ले जाती है.",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "film",
+      "visual": {
+        "start": "High-contrast editorial layout establishing REAL-TIME GPS ROUTING.",
+        "objects": [
+          "High-Tech Hud Overlays",
+          "Gps Tracking"
+        ],
+        "action": "Real high-resolution stock video of courier on electric scooter navigating city roads with high-tech HUD overlays showing GPS tracking",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "REAL-TIME GPS ROUTING",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "video": "media/courier_delivery_scooter.mp4"
+    },
+    {
+      "type": "quick_commerce",
+      "tag": "10 / THE 600-SECOND BREAKDOWN",
+      "title": "THE 10-MINUTE TIME BUDGET",
+      "purpose": "Explain the mechanism and takeaway of THE 10-MINUTE TIME BUDGET.",
+      "tone": "[Analytical, structured]",
+      "narration": "पूरे दस मिनट यानी छह सौ सेकंड का गणित बिल्कुल साफ है: पंद्रह सेकंड ऑर्डर डिस्पेच, नब्बे सेकंड पिकिंग, तीस सेकंड पैकिंग, और छह मिनट की सेफ राइड!",
+      "transition": "match_cut",
+      "sfx": "radar_beep",
+      "icon": "truck",
+      "visual": {
+        "start": "High-tech quick commerce logistics stage materializing with telemetry HUD.",
+        "objects": [
+          "90S Item Picking",
+          "30S Qr Bagging",
+          "375S Safe Scooter Transit",
+          "90S Doorstep Delivery"
+        ],
+        "action": "Segmented progress timeline detailing: 15s AI Dispatch, 90s Item Picking, 30s QR Bagging, 375s Safe Scooter Transit, 90s Doorstep Delivery",
+        "camera": "Stable technical isometric or UI framing with high visual contrast.",
+        "motion_graphics": [
+          "THE 10-MINUTE TIME BUDGET",
+          "HYPERLOCAL LOGISTICS ENGINE"
+        ],
+        "end": "Action locks into place with verified delivery SLA confirmation."
+      },
+      "variant": "countdown_blueprint"
+    },
+    {
+      "type": "benchmark",
+      "tag": "11 / LOGISTICS REVOLUTION",
+      "title": "DELIVERY SPEED COMPARISON",
+      "purpose": "Explain the mechanism and takeaway of DELIVERY SPEED COMPARISON.",
+      "tone": "[Impactful, authoritative]",
+      "narration": "क्विक कॉमर्स कोई जादू नहीं, बल्कि हाई-टेक लॉजिस्टिक्स, डेटा साइंस और हाइपरलोकल वेयरहाउसिंग की जीत है.",
+      "transition": "match_cut",
+      "sfx": "radar_beep",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing DELIVERY SPEED COMPARISON.",
+        "objects": [
+          "Dynamic Speed Comparison Bars",
+          "Demonstrating A 288X Speed Improvement"
+        ],
+        "action": "Dynamic speed comparison bars showing traditional 48-hour delivery versus 10-minute quick commerce, demonstrating a 288x speed improvement",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "DELIVERY SPEED COMPARISON",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "runners": [
+        {
+          "name": "Traditional Delivery (2 Days)",
+          "value": 2880,
+          "status": "Slow / Distant",
+          "color": "#FF4444"
+        },
+        {
+          "name": "Quick Commerce Dark Store",
+          "value": 10,
+          "status": "288x Faster",
+          "color": "#00F0FF"
+        }
+      ],
+      "unit": "mins"
+    },
+    {
+      "type": "outro",
+      "tag": "12 / THE ENGINEERING PAYOFF",
+      "title": "SCIENCE BEHIND THE SPEED",
+      "purpose": "Explain the mechanism and takeaway of SCIENCE BEHIND THE SPEED.",
+      "tone": "[Inspiring, memorable]",
+      "narration": "अगली बार जब आपका दूध और ब्रेड दस मिनट में आए, तो याद रखिएगा: इसके पीछे तेज़ बाइक नहीं, बल्कि एक ज़बरदस्त इंजीनियरिंग सिस्टम काम कर रहा है! ऐसे ही टेक्नोलॉजी ब्रेकडाउन के लिए सब्सक्राइब करें.",
+      "transition": "match_cut",
+      "sfx": "ding",
+      "icon": "sparkles",
+      "visual": {
+        "start": "Structured takeaway card framed in dark navy with cyan accent borders.",
+        "objects": [
+          "Structured Summary Card",
+          "3 Key Pillars Locking In",
+          "Gold Checkmarks",
+          "Channel Follow Cta Badge"
+        ],
+        "action": "Structured summary card with 3 key pillars locking in with gold checkmarks and channel follow CTA badge",
+        "camera": "Stable cinematic hero outro presentation.",
+        "motion_graphics": [
+          "CHECK · ADVANCE · PAYOFF",
+          "FOLLOW FOR TECH EXPLAINERS"
+        ],
+        "end": "Holds on clean branded frame with zero audio clipping."
+      },
+      "text": "SCIENCE BEHIND THE SPEED"
+    }
+  ]
+}

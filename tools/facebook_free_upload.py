@@ -20,6 +20,22 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+
+def _ensure_project_venv():
+    venv_py = ROOT / ".venv" / "bin" / "python3"
+    if not venv_py.is_file():
+        return
+    try:
+        import playwright
+    except ImportError:
+        if Path(sys.executable).resolve() != venv_py.resolve():
+            import subprocess
+            res = subprocess.run([str(venv_py)] + sys.argv, cwd=str(ROOT))
+            sys.exit(res.returncode)
+
+
+_ensure_project_venv()
+
 PROFILE_DIR = ROOT / ".browser_profiles" / "facebook"
 MANIFEST_FILE = ROOT / "episodes" / ".uploaded_manifest.json"
 
@@ -136,11 +152,14 @@ def upload_to_facebook_free(video: Path, caption: str = None, headless: bool = F
     print(f"📦 Video File : {video.name} ({video.stat().st_size / (1024*1024):.1f} MB)")
     print(f"🏢 Destination: Facebook Page ID: {page_id} (Rajan का ADDA)")
     print(f"📝 Caption Preview:\n   {caption_text[:120]}...")
-    print("=" * 65)
+    # STRICT Brand Verification - Rajan का ADDA Only
+    if str(page_id) != "101495382307544":
+        raise RuntimeError(f"STRICT POLICY VIOLATION: Facebook Page ID {page_id} is not 'Rajan का ADDA' (101495382307544). Upload aborted.")
 
     with sync_playwright() as p:
         context = p.chromium.launch_persistent_context(
             user_data_dir=str(PROFILE_DIR),
+            channel="msedge",
             headless=headless,
             viewport={"width": 1280, "height": 850},
             args=["--disable-blink-features=AutomationControlled"],
@@ -150,7 +169,7 @@ def upload_to_facebook_free(video: Path, caption: str = None, headless: bool = F
 
         # Step 1: Open Meta Business Suite Reels Composer for the Page
         composer_url = f"https://business.facebook.com/latest/reels_composer?asset_id={page_id}"
-        print(f"\n🌐 Navigating to Meta Business Suite for Page ({composer_url})...")
+        print(f"\n🌐 Navigating to Meta Business Suite for Page (Rajan का ADDA) with Microsoft Edge...")
         page.goto(composer_url, timeout=60000, wait_until="domcontentloaded")
         page.wait_for_timeout(5000)
 
@@ -179,17 +198,39 @@ def upload_to_facebook_free(video: Path, caption: str = None, headless: bool = F
 
         # Step 3: Attach Video File
         print(f"📤 Attaching video file to Page Reel: {video.name}...")
-        file_input = page.locator('input[type="file"]')
-        if file_input.count() > 0:
-            file_input.first.set_input_files(str(video))
-        else:
-            add_video_btn = page.locator('div[role="button"]:has-text("Add Video"), button:has-text("Add Video")').first
-            if add_video_btn.is_visible(timeout=10000):
-                with page.expect_file_chooser(timeout=20000) as fc_info:
-                    add_video_btn.click()
-                fc_info.value.set_files(str(video))
-            else:
-                page.locator('input[type="file"]').first.set_input_files(str(video))
+        attached = False
+        # Try checking for active input[type="file"]
+        for _ in range(5):
+            file_input = page.locator('input[type="file"]')
+            if file_input.count() > 0:
+                file_input.first.set_input_files(str(video))
+                attached = True
+                break
+            page.wait_for_timeout(1000)
+
+        if not attached:
+            add_video_btn = page.locator(
+                'div[role="button"]:has-text("Add Video"), div[role="button"]:has-text("Add video"), '
+                'button:has-text("Add Video"), button:has-text("Add video"), '
+                'div[role="button"]:has-text("Upload"), button:has-text("Upload")'
+            ).first
+            if add_video_btn.is_visible(timeout=8000):
+                try:
+                    with page.expect_file_chooser(timeout=15000) as fc_info:
+                        add_video_btn.click()
+                    fc_info.value.set_files(str(video))
+                    attached = True
+                except Exception:
+                    pass
+
+        if not attached:
+            try:
+                page.locator('input[type="file"]').first.set_input_files(str(video), timeout=15000)
+                attached = True
+            except Exception as ex:
+                Path("scratch").mkdir(exist_ok=True)
+                page.screenshot(path="scratch/facebook_error.png")
+                raise ex
         page.wait_for_timeout(6000)
 
         # Step 4: Enter Caption
@@ -254,8 +295,8 @@ def upload_to_facebook_free(video: Path, caption: str = None, headless: bool = F
         # Retrieve direct reel URL if visible in published posts / page reels
         post_url = f"https://www.facebook.com/reel/"
         try:
-            page.goto(f"https://business.facebook.com/latest/posts/published_posts?asset_id={page_id}", timeout=30000, wait_until="domcontentloaded")
-            page.wait_for_timeout(4000)
+            page.goto(f"https://business.facebook.com/latest/posts/published_posts?asset_id={page_id}", timeout=45000, wait_until="commit")
+            page.wait_for_timeout(6000)
             reel_link = page.locator('a[href*="/reel/"]').first
             if reel_link.is_visible(timeout=5000):
                 href = reel_link.get_attribute("href")
@@ -305,6 +346,7 @@ def main():
         with sync_playwright() as p:
             context = p.chromium.launch_persistent_context(
                 user_data_dir=str(PROFILE_DIR),
+                channel="msedge",
                 headless=False,
                 viewport={"width": 1280, "height": 850},
             )

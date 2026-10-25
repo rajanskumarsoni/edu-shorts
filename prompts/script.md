@@ -22,9 +22,15 @@ Before drafting the script, conduct targeted research to identify:
    - All technical acronyms spelled phonetically with hyphens for VoiceStudio (`एन-पी-सी-आई`, `यू-पी-आई`, `ए-पी-आई`, `सी-बी-एस`, `एच-टी-टी-पी`).
    - Natural spoken numbers ("दस लाख", "पचास हज़ार", "दो सेकंड").
    - Direct viewer address: "आपने कभी सोचा है...", "जब आप...".
-2. **Formula**:
+2. **Formula & Hook Retention Scoring Matrix**:
    - `HOOK → PROBLEM → CURIOSITY → EXPLANATION (WHY → WHAT → HOW) → PAYOFF`.
-   - Ground the hook in a familiar, truthful situation when it helps explain the topic. Use a consumer app only when the topic genuinely concerns that interaction; do not invent branded UI or force an app example. Abstract topics may open with a physical, mathematical, or system-level puzzle.
+   - **Stage 1A: 5-Hook Retention Generation & Scoring (Mandatory)**:
+     Before selecting the opening line, draft **5 distinct hook variations** and score them on:
+     * **Relatability / Familiar Anchor** (1-10): Famous company/app, everyday dilemma, money, or outage.
+     * **Curiosity Gap / Stakes** (1-10): How surprising or urgent is the setup?
+     * **Frame-0 Visual Momentum** (1-10): Can the visual immediately move or punch in without a slow title card?
+     * *Formula*: $\text{Score} = \text{Relatability} \times 0.35 + \text{Curiosity} \times 0.35 + \text{VisualMomentum} \times 0.30$.
+     * Choose the highest scoring hook for Scene 1.
 3. **Visual Intent & Creative Flexibility**:
    - In each scene's `Visual Intent`, state the clearest visual representation, preferring existing supported scene types. A specialized skill is optional: use it only when its purpose fits the scene, its `SKILL.md` is available, and its output can be used by this pipeline. Verify dependencies, output format, aspect ratio, and command before relying on it.
      * **High-Impact Title Punch / Hook**: `bs-creatormotion-type-title-takeover` or `bs-hyperframes-velocity-sting`.
@@ -34,10 +40,13 @@ Before drafting the script, conduct targeted research to identify:
      * **Code Transformation / Diff**: `bs-hyperframes-code-change-launch`.
      * **Checklist / Core Pillars**: `bs-creatormotion-cards-action-checklist`.
    * These are examples, not requirements. Do not use a skill merely because it is installed, and do not treat a skill as a Remotion scene type. Select only tools and assets that materially improve the episode.
-4. **Pacing, Word Count & Action Cues**:
-   - Target runtime: 45 - 150 seconds; never exceed the engine's hard limit of 180 seconds.
+4. **Pacing, Word Count & Retention Mechanics**:
+   - Target runtime: 45 - 150 seconds; never exceed the engine's hard limit of 180 seconds (max 3 minutes for deep technical explainers).
    - Estimate the word count from the target duration and speaking pace; 220 - 360 words is a rough guide, not a requirement.
    - **Write for Phrase-Level Choreography**: Structure the narration so that sentences contain natural, punchy pauses and distinct action clauses (e.g. clause 1 introduces subjects, clause 2 highlights a comparison, clause 3 triggers the state change). This allows the visual animator to synchronize physical movements with spoken words.
+   - **Pattern Interrupts**: Include a visual pattern interrupt (e.g. zoom punch, state shake, or warning color flash) every 15–20 seconds to reset viewer fatigue.
+   - **Actionable Save / Share Motivation**: Do not end with a generic "Follow for more". Give a specific, compelling reason to **save** ("Save this architecture cheat sheet for your next system design interview") or **share** ("Send this to your tech partner who still thinks HTTP is secure").
+   - **Seamless Infinite Loop Outro**: Craft the final scene's closing clause so it flows syntactically back into the opening hook question of Scene 1 (e.g. Outro: "...और यही वजह है कि जब भी आप..." ➔ Scene 1 Hook: "...UPI से ₹100 ट्रांसफर करते हैं, तो वो 2 सेकंड में सेटल कैसे होता है?"). This tricks and rewards viewer retention with effortless re-watches on Instagram Reels.
 5. **Format (Clean Markdown)**:
    Output scene by scene in this exact structure:
 

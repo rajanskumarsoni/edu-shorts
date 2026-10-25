@@ -1,0 +1,423 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "how-google-maps-works",
+  "format": "vertical",
+  "art_direction": "editorial",
+  "theme": "cyberpunk",
+  "accent": "#00F0FF",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "pad_seconds": 0.28,
+  "music": null,
+  "meta": {
+    "title": "How How Google Maps Works | System Design (गूगल मैप्स) Works | Tech Explainer",
+    "description": "Learn how How Google Maps Works | System Design (गूगल मैप्स) works under the hood through visual motion graphics and first-principles technical breakdown.",
+    "hashtags": [
+      "#Technology",
+      "#ComputerScience",
+      "#Engineering",
+      "#SystemDesign",
+      "#TechShorts"
+    ],
+    "facts_to_verify": [
+      "Google Maps daily active users: 1+ Billion",
+      "Peak location write QPS: 1,000,000 requests/sec",
+      "Map storage footprint: ~70 Petabytes",
+      "Tile resolution: 256x256 pixels across 21 zoom levels",
+      "Routing SLA target: < 200 milliseconds"
+    ],
+    "misconceptions": [
+      "Google Maps runs Dijkstra across the entire globe in one shot (debunk: graph size would crash memory; hierarchical routing tiles load only relevant corridors)",
+      "Map images are heavy raster PNG downloads (debunk: vector tiles transmit mathematical geometries rendered on client GPU)",
+      "Phones stream GPS continuously every second (debunk: updates are batched every 15-30s to prevent mobile battery drain)"
+    ],
+    "analogy": "Hierarchical highway navigation: looking at city streets only near your driveway and destination, while zooming straight through cross-country expressways in between"
+  },
+  "scenes": [
+    {
+      "type": "three",
+      "tag": "01 / THE 200ms MIRACLE",
+      "title": "GOOGLE MAPS UNDER THE HOOD",
+      "purpose": "Explain the mechanism and takeaway of GOOGLE MAPS UNDER THE HOOD.",
+      "tone": "[Curious, high-energy]",
+      "narration": "जब आप गू-गल मैप्स पर नेविगेशन शुरू करते हैं, तो दुनिया की करोड़ों सड़कों में से आपका सबसे तेज़ रास्ता सिर्फ दो सौ मि-ली-से-कंड्स में कैसे मिल जाता है?",
+      "transition": "zoom_through",
+      "sfx": "fast_whoosh",
+      "icon": "cube",
+      "visual": {
+        "start": "Dark 3D spatial coordinate grid with directional volumetric lighting.",
+        "objects": [
+          "Radar Waves"
+        ],
+        "action": "3D smartphone tilted in space displaying live dark-mode vector map. Neon cyan turn-by-turn navigation line weaves through city blocks, while an active GPS location puck pulses with radar waves and a floating holographic HUD displays live routing telemetry.",
+        "camera": "Motivated tracking camera orbiting the focal 3D model.",
+        "motion_graphics": [
+          "3D SPATIAL TELEMETRY",
+          "GOOGLE MAPS UNDER THE HOOD"
+        ],
+        "end": "Model locks into informative angle for seamless scene cut."
+      },
+      "variant": "google_maps_3d",
+      "metrics": {
+        "Global Roads": "60M+ km",
+        "ETA Accuracy": "97.4%",
+        "Routing SLA": "< 200ms"
+      }
+    },
+    {
+      "type": "google_maps",
+      "tag": "02 / GLOBAL SCALE IN REAL TIME",
+      "title": "THE 1-BILLION USER MACHINE",
+      "purpose": "Explain the mechanism and takeaway of THE 1-BILLION USER MACHINE.",
+      "tone": "[Impactful, authoritative]",
+      "narration": "यह कोई साधारण ऐप नहीं! गू-गल मैप्स पर एक अरब डेली यूज़र्स हैं, सत्तर पे-टा-बाइट्स मैप डेटा है, और हर सेकंड दस लाख लोकेशन अपडेट्स आते हैं!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing THE 1-BILLION USER MACHINE.",
+        "objects": [
+          "000 Requests Per Second",
+          "1 Billion Daily Active Users."
+        ],
+        "action": "Animated planet Earth surrounded by thousands of glowing data packets shooting in from every continent, with animated live counters spinning up to 1,000,000 requests per second and 1 Billion daily active users.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "THE 1-BILLION USER MACHINE",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "scale_visualizer"
+    },
+    {
+      "type": "three",
+      "tag": "03 / 3D SPHERE TO 2D PLANE",
+      "title": "WEB MERCATOR PROJECTION",
+      "purpose": "Explain the mechanism and takeaway of WEB MERCATOR PROJECTION.",
+      "tone": "[Explanatory, scientific]",
+      "narration": "पहला चैलेंज: हमारी पृथ्वी गोल थ्री-डी स्फीयर है, जबकि फोन टू-डी फ्लैट ग्लास! थ्री-डी को टू-डी में बदलने के लिए इस्तेमाल होता है—वेब मर-के-टर प्रो-जेक-शन.",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "cube",
+      "visual": {
+        "start": "Dark 3D spatial coordinate grid with directional volumetric lighting.",
+        "objects": [
+          "Deep Oceanic Blues",
+          "Green Continents",
+          "Glowing Night Lights"
+        ],
+        "action": "Photorealistic 3D Earth globe rotating in space with deep oceanic blues, green continents, glowing night lights, and an illuminated Web Mercator latitude-longitude grid.",
+        "camera": "Motivated tracking camera orbiting the focal 3D model.",
+        "motion_graphics": [
+          "3D SPATIAL TELEMETRY",
+          "WEB MERCATOR PROJECTION"
+        ],
+        "end": "Model locks into informative angle for seamless scene cut."
+      },
+      "variant": "globe_network_3d",
+      "equation": "x = R \\cdot (\\lambda - \\lambda_0), \\quad y = R \\cdot \\ln[\\tan(\\frac{\\pi}{4} + \\frac{\\varphi}{2})]",
+      "metrics": {
+        "Projection": "EPSG:3857",
+        "Geometry": "Oblate Spheroid",
+        "Tile System": "Quadtree"
+      }
+    },
+    {
+      "type": "google_maps",
+      "tag": "04 / DYNAMIC MAP TILING",
+      "title": "256x256 VECTOR TILE MOSAIC",
+      "purpose": "Explain the mechanism and takeaway of 256x256 VECTOR TILE MOSAIC.",
+      "tone": "[Educational, clear]",
+      "narration": "सत्तर पे-टा-बाइट्स मैप फोन में डाउनलोड नहीं हो सकता! इसलिए दुनिया को दो सौ छप्पन बाय दो सौ छप्पन के छोटे वेक-टर टाइल्स में बाँटा जाता है.",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing 256x256 VECTOR TILE MOSAIC.",
+        "objects": [
+          "Laser Slices",
+          "Fractures Again Into 16 Sub-Tiles",
+          "Vector Roads",
+          "Buildings Appearing Dynamically."
+        ],
+        "action": "A square 256x256 world tile zooms in and physically fractures into 4 puzzle quadrants with laser slices, and fractures again into 16 sub-tiles with vector roads and buildings appearing dynamically.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "256X256 VECTOR TILE MOSAIC",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "quadtree_tiling"
+    },
+    {
+      "type": "google_maps",
+      "tag": "05 / ADDRESS TO COORDINATES",
+      "title": "ROOFTOP GEOCODING",
+      "purpose": "Explain the mechanism and takeaway of ROOFTOP GEOCODING.",
+      "tone": "[Clear, architectural]",
+      "narration": "जब आप पता लिखते हैं, तो जि-यो-को-डिंग सर्विस उसे को-ऑर-डि-नेट्स में बदलती है. और बार-बार सर्च के लिए रे-डिस कैश से जवाब एक मि-ली-से-कंड में आता है.",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing ROOFTOP GEOCODING.",
+        "objects": [
+          "Bouncy Gravity",
+          "Radiating Glowing Shockwave Rings",
+          "Exact Coordinates."
+        ],
+        "action": "Animated search bar types address string, an aerial satellite reticle locks onto a 3D isometric house, and a classic red 3D Google pin drops with bouncy gravity, radiating glowing shockwave rings with exact coordinates.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "ROOFTOP GEOCODING",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "geocoding_drop"
+    },
+    {
+      "type": "google_maps",
+      "tag": "06 / WHY GLOBAL DIJKSTRA CRASHES",
+      "title": "THE GRAPH SCALING NIGHTMARE",
+      "purpose": "Explain the mechanism and takeaway of THE GRAPH SCALING NIGHTMARE.",
+      "tone": "[Dramatic, eye-opening]",
+      "narration": "पूरी दुनिया की सड़कें एक विशाल ग्राफ हैं—चौराहे नोड्स और सड़कें एजेस. लेकिन पूरी दुनिया के ग्राफ पर सीधा रास्ता ढूँढने पर सर्वर तुरंत क्रैश हो जाएगा!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing THE GRAPH SCALING NIGHTMARE.",
+        "objects": [
+          "Crackling Red Electrical Hazard Sparks",
+          "Flashing Sirens",
+          "Smoke 100 Ram Overflow"
+        ],
+        "action": "A glowing web of road nodes overloads with crackling red electrical hazard sparks, while a central server violently shakes with flashing sirens and smoke: 100% RAM OVERFLOW!",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "THE GRAPH SCALING NIGHTMARE",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "graph_ram_crash"
+    },
+    {
+      "type": "google_maps",
+      "tag": "07 / HIERARCHICAL LEVEL OF DETAIL",
+      "title": "ELEVATED SUPER-HIGHWAYS",
+      "purpose": "Explain the mechanism and takeaway of ELEVATED SUPER-HIGHWAYS.",
+      "tone": "[Insightful, revelatory]",
+      "narration": "समाधान है—हा-य-रार-कि-कल राउटिंग टाइल्स! जब आप दिल्ली से मुंबई जाते हैं, तो एल्गोरिदम शहर की गलियां नहीं, बल्कि सिर्फ हाई-स्पीड नेशनल हाईवे ग्रिड लोड करता है!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing ELEVATED SUPER-HIGHWAYS.",
+        "objects": [
+          "Ramps Down At The Destination."
+        ],
+        "action": "3-tier elevation road cross-section where a yellow car drives out of a ground-level house driveway, climbs an illuminated ramp onto a glowing golden sky-highway zooming at supersonic speed, and ramps down at the destination.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "ELEVATED SUPER-HIGHWAYS",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "hierarchical_highway"
+    },
+    {
+      "type": "google_maps",
+      "tag": "08 / TARGET-DIRECTED SEARCH",
+      "title": "DIJKSTRA VS A* COMPASS",
+      "purpose": "Explain the mechanism and takeaway of DIJKSTRA VS A* COMPASS.",
+      "tone": "[Energetic, comparative]",
+      "narration": "फिर आता है ए-स्टार एल्गोरिदम! यह सिर्फ दूरी नहीं नापता, बल्कि हे-यू-रि-स्टिक से सीधे मंज़िल की दिशा में सर्च करता है. टाइम ढाई सेकंड से घटकर सिर्फ अड़तीस मि-ली-से-कंड!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing DIJKSTRA VS A* COMPASS.",
+        "objects": [
+          "450Ms",
+          "Reaching The Goal In 38Ms"
+        ],
+        "action": "Split maze showdown: Blind Dijkstra radially floods in all 360 degrees taking 2,450ms, while A* fires a focused cyan compass laser beam straight toward the destination pin, reaching the goal in 38ms!",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "DIJKSTRA VS A* COMPASS",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "astar_maze_race"
+    },
+    {
+      "type": "google_maps",
+      "tag": "09 / CROWDSOURCED SPEED STREAM",
+      "title": "1,000,000 WRITE QPS INGESTION",
+      "purpose": "Explain the mechanism and takeaway of 1,000,000 WRITE QPS INGESTION.",
+      "tone": "[Technological, focused]",
+      "narration": "लाइव ट्रैफिक कैसे पता चलता है? आपके फोन से! बैटरी बचाने के लिए फोन हर पंद्रह सेकंड में जी-पी-एस बैच भेजता है, जिसे का-फ-का और कै-सें-ड्रा डेटाबेस संभालते हैं.",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing 1,000,000 WRITE QPS INGESTION.",
+        "objects": [
+          "Smartphone On Car Dashboard",
+          "Circular 15-Second Timer Counting Down",
+          "000 Writessec."
+        ],
+        "action": "Smartphone on car dashboard with circular 15-second timer counting down, batching GPS coordinate packets that shoot upward into 4-partition Apache Kafka distributed message bus and write directly into Apache Cassandra NoSQL clusters at 1,000,000 writes/sec.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "1,000,000 WRITE QPS INGESTION",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "gps_kafka_ingestion"
+    },
+    {
+      "type": "google_maps",
+      "tag": "10 / NEURAL NET TRAVEL TIME",
+      "title": "LIVE TRAFFIC COLOR SHIFT",
+      "purpose": "Explain the mechanism and takeaway of LIVE TRAFFIC COLOR SHIFT.",
+      "tone": "[Clear, predictive]",
+      "narration": "इसके बाद गू-गल का म-शीन लर्-निंग मॉडल हिस्टोरिकल डेटा और सड़कों की लाइव स्पीड मिलाकर बिल्कुल सटीक ई-टी-ए यानी पहुँचने का समय कैलकुलेट करता है.",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing LIVE TRAFFIC COLOR SHIFT.",
+        "objects": [
+          "Animated 3-Lane Highway",
+          "Then To Jammed Crimson Red",
+          "Glowing Brake Lights"
+        ],
+        "action": "Animated 3-lane highway with moving cars changing dynamically from Emerald Green (60 km/h) to Warning Amber, and then to Jammed Crimson Red with glowing brake lights, as the AI ETA clock dynamically recalculates.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "LIVE TRAFFIC COLOR SHIFT",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "traffic_heatmap_shift"
+    },
+    {
+      "type": "video",
+      "tag": "11 / SUDDEN ROADBLOCK",
+      "title": "REAL-TIME CONGESTION DETECTION",
+      "purpose": "Explain the mechanism and takeaway of REAL-TIME CONGESTION DETECTION.",
+      "tone": "[Dramatic, urgent]",
+      "narration": "मान लीजिए आप जा रहे हैं और आगे वाले हाईवे पर अचानक जाम लग जाता है. अब गू-गल मैप्स को कैसे पता चलता है कि आपको तुरंत रास्ता बदलना है?",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "film",
+      "visual": {
+        "start": "High-contrast editorial layout establishing REAL-TIME CONGESTION DETECTION.",
+        "objects": [
+          "Glowing Red Hazard Beacon",
+          "840 Phones"
+        ],
+        "action": "Real 4K city traffic jam footage with glowing red hazard beacon, pulsating radar scanner detecting speed collapse from 80 km/h to 4 km/h across 1,840 phones, triggering proactive reroute engine in Super-Tile #402.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "REAL-TIME CONGESTION DETECTION",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "video": "media/traffic_jam_city.mp4",
+      "overlay": "traffic_jam_detection"
+    },
+    {
+      "type": "google_maps",
+      "tag": "12 / WEBSOCKET PUSH REROUTE",
+      "title": "PROACTIVE DETOUR ALERT",
+      "purpose": "Explain the mechanism and takeaway of PROACTIVE DETOUR ALERT.",
+      "tone": "[Insightful, innovative]",
+      "narration": "यहाँ आता है सु-पर टाइल्स आर्किटेक्चर! सिस्टम हर गाड़ी की सु-पर टाइल्स ट्रैक करता है. जाम होते ही वेब-सॉ-केट्स से लाइव अलर्ट आता है: \"फास्टर रूट फाउंड!\"",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing PROACTIVE DETOUR ALERT.",
+        "objects": [
+          "The Navigation Car Steers Right",
+          "Bypassing The Red Accident Completely."
+        ],
+        "action": "A glowing green notification pops up: FASTER ROUTE FOUND! An alternate emerald green overpass bridge lights up, and the navigation car steers right, bypassing the red accident completely.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "PROACTIVE DETOUR ALERT",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "dynamic_reroute_detour"
+    },
+    {
+      "type": "google_maps",
+      "tag": "13 / SYSTEM DESIGN IN HARMONY",
+      "title": "THE MASTER BLUEPRINT",
+      "purpose": "Explain the mechanism and takeaway of THE MASTER BLUEPRINT.",
+      "tone": "[Synthesizing, authoritative]",
+      "narration": "यह है मास्टर आर्किटेक्चर: वेक-टर टाइल्स, हा-य-रार-कि-कल ए-स्टार, कै-सें-ड्रा और वेब-सॉ-केट्स—सब मिलकर आपको बिना जाम में फँसे सही समय पर मंज़िल तक पहुँचाते हैं!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing THE MASTER BLUEPRINT.",
+        "objects": [
+          "Hierarchical A 38Ms",
+          "Kafka  Cassandra 1M Qps",
+          "Websockets Push Detour)",
+          "Zero Delay."
+        ],
+        "action": "4 synchronized architectural pillars (Vector Tiles 256x256 GPU, Hierarchical A* 38ms, Kafka & Cassandra 1M QPS, WebSockets Push Detour) with the navigation car cruising smoothly past blocked traffic to reach the destination on time with zero delay.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "THE MASTER BLUEPRINT",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "master_ecosystem_loop"
+    },
+    {
+      "type": "google_maps",
+      "tag": "14 / SUBSCRIBE TO RAJAN KA ADDA",
+      "title": "THE LESSON UNDER THE HOOD",
+      "purpose": "Explain the mechanism and takeaway of THE LESSON UNDER THE HOOD.",
+      "tone": "[Inspiring, upbeat]",
+      "narration": "अगली बार जब मैप्स आपको ट्रैफिक से बचाए, याद रखिए कि पर्दे के पीछे लाखों लाइनों का सिस्टम डिज़ाइन चल रहा था! ऐसे ही कॉन्सेप्ट्स के लिए राजन का अड्डा को सब्सक्राइब करें!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing THE LESSON UNDER THE HOOD.",
+        "objects": [
+          "Animated Ringing Bell",
+          "Pulsing Subscribe Button."
+        ],
+        "action": "Glowing 3D-styled Google Maps Pin hovering above system design takeaway badges, transitioning into Rajan का ADDA subscription beacon with animated ringing bell and pulsing subscribe button.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "THE LESSON UNDER THE HOOD",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "maps_system_outro"
+    }
+  ]
+}

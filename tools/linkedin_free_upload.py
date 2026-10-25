@@ -21,6 +21,22 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+
+def _ensure_project_venv():
+    venv_py = ROOT / ".venv" / "bin" / "python3"
+    if not venv_py.is_file():
+        return
+    try:
+        import playwright
+    except ImportError:
+        if Path(sys.executable).resolve() != venv_py.resolve():
+            import subprocess
+            res = subprocess.run([str(venv_py)] + sys.argv, cwd=str(ROOT))
+            sys.exit(res.returncode)
+
+
+_ensure_project_venv()
+
 PROFILE_DIR = ROOT / ".browser_profiles" / "linkedin"
 MANIFEST_FILE = ROOT / "episodes" / ".uploaded_manifest.json"
 
@@ -159,6 +175,7 @@ def upload_to_linkedin_free(video: Path, text: str = None, title: str = "", head
     with sync_playwright() as p:
         context = p.chromium.launch_persistent_context(
             user_data_dir=str(PROFILE_DIR),
+            channel="msedge",
             headless=headless,
             viewport={"width": 1280, "height": 850},
             args=["--disable-blink-features=AutomationControlled"],
@@ -169,7 +186,14 @@ def upload_to_linkedin_free(video: Path, text: str = None, title: str = "", head
         # Step 1 & 2: Ensure Logged In with Admin Access to Company Page
         print("\n🌐 Navigating to LinkedIn Company Page admin...")
         target_nav_url = f"https://www.linkedin.com/company/{company_id}/admin/feed/posts/" if company_id else "https://www.linkedin.com/feed/"
-        page.goto(target_nav_url, timeout=60000, wait_until="domcontentloaded")
+        try:
+            page.goto(target_nav_url, timeout=45000, wait_until="domcontentloaded")
+        except Exception:
+            print("   DOMContentLoaded wait timed out or slow; falling back to commit state...")
+            try:
+                page.goto(target_nav_url, timeout=30000, wait_until="commit")
+            except Exception:
+                pass
         page.wait_for_timeout(4000)
 
         deadline = time.time() + 600  # 10 minutes timeout
@@ -280,22 +304,79 @@ def upload_to_linkedin_free(video: Path, text: str = None, title: str = "", head
         except Exception:
             submit_btn.evaluate("el => el.click()")
 
-        # Step 6: Wait for post modal to close
-        print("⏳ Finalizing post submission...")
-        page.wait_for_timeout(15000)
-
-        # Extract published post URN
-        post_url = f"https://www.linkedin.com/company/{company_id}/admin/dashboard/"
+        # Step 6: Wait for post modal to close completely
+        print("⏳ Finalizing post submission and waiting for modal to close...")
         try:
-            page.goto(f"https://www.linkedin.com/company/{company_id}/admin/dashboard/", timeout=60000, wait_until="domcontentloaded")
-            page.wait_for_timeout(4000)
-            act_link = page.locator('a[href*="/feed/update/urn:li:activity:"]').first
-            if act_link.is_visible(timeout=4000):
-                href = act_link.get_attribute("href")
-                if href:
-                    post_url = f"https://www.linkedin.com{href}" if href.startswith("/") else href
+            composer_modal.wait_for(state="hidden", timeout=120000)
+            print("✅ Post modal closed successfully!")
+        except Exception:
+            print("⚠️ Composer modal did not close within 120s; waiting 10s buffer...")
+            page.wait_for_timeout(10000)
+
+        # Step 7: Wait for in-page background video upload to finish!
+        print("⏳ Waiting for video upload to finish ('Please remain on this page')...")
+        upload_deadline = time.time() + 300  # 5 minutes max
+        upload_banner = page.locator('div:has-text("Uploading video"), div:has-text("Processing video"), div:has-text("remain on this page")')
+        
+        page.wait_for_timeout(4000)
+        
+        while time.time() < upload_deadline:
+            if upload_banner.count() > 0 and upload_banner.first.is_visible(timeout=1500):
+                banner_text = ""
+                try:
+                    banner_text = upload_banner.first.inner_text().strip().split("\n")[0]
+                except Exception:
+                    pass
+                print(f"   ...uploading to LinkedIn in background ({banner_text or 'in progress'})...")
+                page.wait_for_timeout(5000)
+            else:
+                print("✅ Video upload completed! Ingestion finished.")
+                break
+        else:
+            print("⚠️ Upload banner wait reached limit; proceeding to verify post...")
+
+        # Check for success toast
+        success_toast = page.locator('text="Post successful", a:has-text("View post")').first
+        if success_toast.is_visible(timeout=5000):
+            print("✅ LinkedIn confirmed post creation!")
+
+        page.wait_for_timeout(5000)
+
+        # Read manifest to avoid grabbing previous episode URL
+        prev_li_url = None
+        try:
+            if MANIFEST_FILE.is_file():
+                mf = json.loads(MANIFEST_FILE.read_text(encoding="utf-8"))
+                for ep_key, ep_data in mf.items():
+                    if isinstance(ep_data, dict) and "linkedin" in ep_data and ep_data["linkedin"]:
+                        prev_li_url = ep_data["linkedin"]
         except Exception:
             pass
+
+        # Extract published post URN from published posts page
+        admin_url = f"https://www.linkedin.com/company/{company_id}/admin/page-posts/published/"
+        post_url = None
+        for attempt in range(1, 5):
+            try:
+                page.goto(admin_url, timeout=45000, wait_until="domcontentloaded")
+                page.wait_for_timeout(5000)
+                # Find all links to published activities
+                act_links = page.locator('a[href*="/feed/update/urn:li:activity:"]').all()
+                for al in act_links:
+                    href = al.get_attribute("href")
+                    if href:
+                        full_u = f"https://www.linkedin.com{href}" if href.startswith("/") else href
+                        if full_u != prev_li_url:
+                            post_url = full_u
+                            break
+                if post_url:
+                    break
+            except Exception as e:
+                print(f"   Retry {attempt} fetching published post: {e}")
+            page.wait_for_timeout(5000)
+
+        if not post_url:
+            post_url = admin_url
 
         print("\n" + "=" * 65)
         print("🎉 SUCCESS! Video published to LinkedIn Company Page ($0.00 Free):")
@@ -337,6 +418,7 @@ def main():
         with sync_playwright() as p:
             context = p.chromium.launch_persistent_context(
                 user_data_dir=str(PROFILE_DIR),
+                channel="msedge",
                 headless=False,
                 viewport={"width": 1280, "height": 850},
             )

@@ -11,8 +11,9 @@ import {
 import type { SceneSpec } from "../types";
 import { useLayout } from "../layout";
 import { RevealText } from "../Reveal";
-import { FONT } from "../theme";
+import { FONT, MONO } from "../theme";
 import * as brush from "p5.brush/standalone";
+import { MathFormula } from "../MathFormula";
 
 export const WhiteboardScene: React.FC<{
   scene: SceneSpec;
@@ -22,6 +23,7 @@ export const WhiteboardScene: React.FC<{
   const { fps, durationInFrames, width, height } = useVideoConfig();
   const L = useLayout();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const loadedCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const isLandscape = L.landscape;
   const whiteboardType = scene.whiteboardType || "algorithm";
@@ -61,7 +63,10 @@ export const WhiteboardScene: React.FC<{
     if (!canvas) return;
 
     try {
-      brush.load(canvas);
+      if (loadedCanvasRef.current !== canvas) {
+        brush.load(canvas);
+        loadedCanvasRef.current = canvas;
+      }
       brush.scaleBrushes(isLandscape ? 2.5 : 3.2);
       brush.clear(bgColor);
 
@@ -150,18 +155,26 @@ export const WhiteboardScene: React.FC<{
       } else if (whiteboardType === "architecture" || whiteboardType === "flow") {
         // Hand-drawn architecture boxes connected with organic lines
         // Fully responsive: horizontal in landscape, vertical stacked in 9:16 portrait
+        const rawNodeNames = (scene.nodes && scene.nodes.length > 0)
+          ? scene.nodes
+          : (scene.whiteboardData && scene.whiteboardData.length > 0)
+          ? scene.whiteboardData.map((d: any) => String(d.label ?? d.value ?? ""))
+          : null;
+        const defaultNames = ["CLIENT APP", "API GATEWAY", "MICROSERVICE", "DATABASE"];
+        const nodeNames = rawNodeNames && rawNodeNames.length >= 4 ? rawNodeNames : defaultNames;
+
         const nodes = isLandscape
           ? [
-              { name: "CLIENT APP", x: -280, y: cy - 140, color: primaryStroke },
-              { name: "API GATEWAY", x: 0, y: cy - 140, color: accentStroke },
-              { name: "MICROSERVICE", x: 0, y: cy + 120, color: secondaryStroke },
-              { name: "DATABASE", x: 280, y: cy + 120, color: tertiaryStroke },
+              { name: nodeNames[0], x: -280, y: cy - 140, color: primaryStroke },
+              { name: nodeNames[1], x: 0, y: cy - 140, color: accentStroke },
+              { name: nodeNames[2], x: 0, y: cy + 120, color: secondaryStroke },
+              { name: nodeNames[3], x: 280, y: cy + 120, color: tertiaryStroke },
             ]
           : [
-              { name: "CLIENT APP", x: 0, y: cy - 280, color: primaryStroke },
-              { name: "API GATEWAY", x: 0, y: cy - 90, color: accentStroke },
-              { name: "MICROSERVICE", x: 0, y: cy + 100, color: secondaryStroke },
-              { name: "DATABASE", x: 0, y: cy + 290, color: tertiaryStroke },
+              { name: nodeNames[0], x: 0, y: cy - 280, color: primaryStroke },
+              { name: nodeNames[1], x: 0, y: cy - 90, color: accentStroke },
+              { name: nodeNames[2], x: 0, y: cy + 100, color: secondaryStroke },
+              { name: nodeNames[3], x: 0, y: cy + 290, color: tertiaryStroke },
             ];
 
         // Box width and height
@@ -437,7 +450,7 @@ export const WhiteboardScene: React.FC<{
         {scene.tag && (
           <div
             style={{
-              fontSize: isLandscape ? 18 : 24,
+              fontSize: isLandscape ? 22 : 28,
               fontWeight: 800,
               letterSpacing: "0.22em",
               textTransform: "uppercase",
@@ -465,7 +478,7 @@ export const WhiteboardScene: React.FC<{
           <h1
             style={{
               margin: 0,
-              fontSize: isLandscape ? 38 : 50,
+              fontSize: isLandscape ? 44 : 56,
               fontWeight: 900,
               letterSpacing: "-0.02em",
               lineHeight: 1.15,
@@ -551,6 +564,71 @@ export const WhiteboardScene: React.FC<{
         </div>
       )}
 
+      {/* Node Labels Overlay for Architecture / Flow */}
+      {(whiteboardType === "architecture" || whiteboardType === "flow") && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            zIndex: 6,
+          }}
+        >
+          {(() => {
+            const rawNodeNames = (scene.nodes && scene.nodes.length > 0)
+              ? scene.nodes
+              : (scene.whiteboardData && scene.whiteboardData.length > 0)
+              ? scene.whiteboardData.map((d: any) => String(d.label ?? d.value ?? ""))
+              : null;
+            const defaultNames = ["CLIENT APP", "API GATEWAY", "MICROSERVICE", "DATABASE"];
+            const nodeNames = rawNodeNames && rawNodeNames.length >= 4 ? rawNodeNames : defaultNames;
+            const cy = isLandscape ? -20 : -50;
+            const coords = isLandscape
+              ? [
+                  { x: -280, y: cy - 140, color: primaryStroke },
+                  { x: 0, y: cy - 140, color: accentStroke },
+                  { x: 0, y: cy + 120, color: secondaryStroke },
+                  { x: 280, y: cy + 120, color: tertiaryStroke },
+                ]
+              : [
+                  { x: 0, y: cy - 280, color: primaryStroke },
+                  { x: 0, y: cy - 90, color: accentStroke },
+                  { x: 0, y: cy + 100, color: secondaryStroke },
+                  { x: 0, y: cy + 290, color: tertiaryStroke },
+                ];
+            const bw = isLandscape ? 200 : 340;
+            const bh = 110;
+
+            return coords.map((c, i) => (
+              <div
+                key={i}
+                style={{
+                  position: "absolute",
+                  left: width / 2 + c.x - bw / 2,
+                  top: height / 2 + c.y - bh / 2,
+                  width: bw,
+                  height: bh,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 14px",
+                  textAlign: "center",
+                  fontSize: isLandscape ? 20 : 28,
+                  fontWeight: 900,
+                  fontFamily: MONO,
+                  color: isChalk ? "#FFFFFF" : "#0F172A",
+                  letterSpacing: "0.08em",
+                  textShadow: isChalk ? "0 2px 12px rgba(0,0,0,0.9)" : "none",
+                  opacity: drawProgress > 0.3 ? 1 : 0,
+                }}
+              >
+                {nodeNames[i] || ""}
+              </div>
+            ));
+          })()}
+        </div>
+      )}
+
       {/* Equation / Callout HUD Badge */}
       {scene.equation && (
         <div
@@ -559,20 +637,22 @@ export const WhiteboardScene: React.FC<{
             bottom: isLandscape ? 80 : 420, // Above bottom 350px caption safe zone
             left: "50%",
             transform: "translateX(-50%)",
-            backgroundColor: isChalk ? "rgba(15, 23, 42, 0.85)" : "rgba(255, 255, 255, 0.92)",
-            border: `2px solid ${isChalk ? "rgba(0, 240, 255, 0.4)" : "rgba(2, 132, 199, 0.4)"}`,
-            boxShadow: isChalk ? "0 0 30px rgba(0, 240, 255, 0.2)" : "0 8px 30px rgba(0, 0, 0, 0.08)",
-            borderRadius: 20,
-            padding: "16px 36px",
-            fontSize: isLandscape ? 28 : 36,
-            fontWeight: 800,
-            fontFamily: "monospace",
-            color: isChalk ? "#FFFFFF" : "#0F172A",
             zIndex: 15,
-            whiteSpace: "nowrap",
           }}
         >
-          {scene.equation}
+          <MathFormula
+            equation={scene.equation}
+            accent={isChalk ? "#00F0FF" : "#0284C7"}
+            fontSize={isLandscape ? 28 : 34}
+            color={isChalk ? "#FFFFFF" : "#0F172A"}
+            style={{
+              backgroundColor: isChalk ? "rgba(15, 23, 42, 0.88)" : "rgba(255, 255, 255, 0.95)",
+              border: `2px solid ${isChalk ? "rgba(0, 240, 255, 0.4)" : "rgba(2, 132, 199, 0.4)"}`,
+              boxShadow: isChalk ? "0 0 30px rgba(0, 240, 255, 0.2)" : "0 8px 30px rgba(0, 0, 0, 0.08)",
+              borderRadius: 20,
+              padding: "14px 32px",
+            }}
+          />
         </div>
       )}
     </AbsoluteFill>

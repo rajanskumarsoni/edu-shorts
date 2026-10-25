@@ -21,6 +21,22 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+
+def _ensure_project_venv():
+    venv_py = ROOT / ".venv" / "bin" / "python3"
+    if not venv_py.is_file():
+        return
+    try:
+        import playwright
+    except ImportError:
+        if Path(sys.executable).resolve() != venv_py.resolve():
+            import subprocess
+            res = subprocess.run([str(venv_py)] + sys.argv, cwd=str(ROOT))
+            sys.exit(res.returncode)
+
+
+_ensure_project_venv()
+
 PROFILE_DIR = ROOT / ".browser_profiles" / "twitter"
 MANIFEST_FILE = ROOT / "episodes" / ".uploaded_manifest.json"
 
@@ -118,9 +134,10 @@ def upload_to_twitter_free(video: Path, text: str = None, headless: bool = False
     print("=" * 65)
 
     with sync_playwright() as p:
-        # Launch persistent context to preserve cookies and login state
+        # Launch persistent context with Microsoft Edge to preserve cookies and login state
         context = p.chromium.launch_persistent_context(
             user_data_dir=str(PROFILE_DIR),
+            channel="msedge",
             headless=headless,
             viewport={"width": 1280, "height": 850},
             args=["--disable-blink-features=AutomationControlled"],
@@ -128,7 +145,7 @@ def upload_to_twitter_free(video: Path, text: str = None, headless: bool = False
 
         page = context.pages[0] if context.pages else context.new_page()
 
-        print("\n🌐 Navigating to https://x.com/home...")
+        print("\n🌐 Navigating to https://x.com/home with Microsoft Edge...")
         page.goto("https://x.com/home", timeout=60000, wait_until="domcontentloaded")
         page.wait_for_timeout(3000)
 
@@ -145,14 +162,67 @@ def upload_to_twitter_free(video: Path, text: str = None, headless: bool = False
                 context.close()
                 raise TimeoutError("Login timed out. Please run again and complete login.")
 
-        # Step 2: Open Compose Dialog
-        print("✍️  Opening post composer (https://x.com/compose/post)...")
-        page.goto("https://x.com/compose/post", timeout=60000, wait_until="domcontentloaded")
-        page.wait_for_timeout(2500)
+        # Step 1b: STRICT Brand Verification - Rajan का ADDA Only
+        profile_btn = page.locator('a[data-testid="AppTabBar_Profile_Link"]').first
+        if profile_btn.is_visible(timeout=3000):
+            handle = profile_btn.get_attribute("href") or ""
+            if "rajan_ka_adda" not in handle.lower():
+                context.close()
+                raise RuntimeError(f"STRICT POLICY VIOLATION: Current Twitter handle '{handle}' is NOT 'rajan_ka_adda'. Upload aborted.")
+            print(f"✅ Verified official brand account: {handle}")
 
-        textarea = page.locator('[data-testid="tweetTextarea_0"]').first
-        textarea.wait_for(state="visible", timeout=30000)
-        textarea.click()
+        # Step 2: Open Compose Dialog
+        print("✍️  Opening post composer...")
+        new_tweet_btn = page.locator('a[data-testid="SideNav_NewTweet_Button"], [data-testid="SideNav_NewTweet_Button"]').first
+        if new_tweet_btn.is_visible(timeout=3000):
+            try:
+                new_tweet_btn.click()
+                page.wait_for_timeout(2000)
+            except Exception:
+                pass
+
+        if not page.locator('div[role="dialog"]').first.is_visible(timeout=2000):
+            try:
+                page.goto("https://x.com/compose/post", timeout=45000, wait_until="domcontentloaded")
+            except Exception:
+                page.goto("https://x.com/compose/post", timeout=30000, wait_until="commit")
+            page.wait_for_timeout(2500)
+
+        # Twitter compose modal can be inside [role="dialog"] or inline
+        dialog = page.locator('div[role="dialog"]').first
+        if dialog.is_visible(timeout=3000):
+            print("   Detected active compose dialog modal.")
+            textarea = dialog.locator('[data-testid="tweetTextarea_0"], div[role="textbox"]').first
+            file_input = dialog.locator('input[data-testid="fileInput"], input[type="file"]').first
+            post_btn = dialog.locator('button[data-testid="tweetButton"], button[data-testid="tweetButtonInline"]').first
+        else:
+            # Inline composer on home timeline
+            print("   Using inline composer on home timeline...")
+            # Click the placeholder area if not yet focused
+            placeholder = page.locator('div[aria-label="Post text"], [data-testid="tweetTextarea_0"], .public-DraftEditor-content').first
+            if placeholder.is_visible(timeout=3000):
+                try:
+                    placeholder.click(force=True)
+                except Exception:
+                    pass
+            textarea = page.locator('[data-testid="tweetTextarea_0"], div[role="textbox"]').first
+            file_input = page.locator('input[data-testid="fileInput"], input[type="file"]').first
+            post_btn = page.locator('button[data-testid="tweetButtonInline"], button[data-testid="tweetButton"]').first
+
+        try:
+            textarea.wait_for(state="visible", timeout=25000)
+        except Exception as ex:
+            Path("scratch").mkdir(exist_ok=True)
+            page.screenshot(path="scratch/twitter_error.png")
+            raise ex
+
+        try:
+            textarea.click(force=True, timeout=5000)
+        except Exception:
+            try:
+                textarea.focus()
+            except Exception:
+                pass
         page.wait_for_timeout(500)
 
         # Step 3: Insert Tweet Text
@@ -162,16 +232,12 @@ def upload_to_twitter_free(video: Path, text: str = None, headless: bool = False
 
         # Step 4: Attach Video File
         print(f"📤 Attaching video file: {video.name}...")
-        file_input = page.locator('input[data-testid="fileInput"], input[type="file"]').first
         file_input.set_input_files(str(video))
 
         # Step 5: Wait for Upload & Transcoding
         print("⏳ Uploading video to 𝕏 (waiting for processing)...")
         attachments = page.locator('[data-testid="attachments"]').first
         attachments.wait_for(state="visible", timeout=60000)
-
-        # Twitter disables the "Post" button while video is uploading or encoding
-        post_btn = page.locator('button[data-testid="tweetButton"]').first
         
         # Poll until the button is no longer disabled
         print("⏳ Waiting for video encoding to finish on 𝕏...")
@@ -272,6 +338,7 @@ def main():
         with sync_playwright() as p:
             context = p.chromium.launch_persistent_context(
                 user_data_dir=str(PROFILE_DIR),
+                channel="msedge",
                 headless=False,
                 viewport={"width": 1280, "height": 850},
             )

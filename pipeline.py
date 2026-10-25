@@ -529,6 +529,12 @@ def build(spec_path: str, args):
     audio_dir.mkdir(parents=True, exist_ok=True)
     pub.mkdir(parents=True, exist_ok=True)
     media_dir.mkdir(parents=True, exist_ok=True)
+    pub_media = pub / "media"
+    pub_media.mkdir(parents=True, exist_ok=True)
+    for mfile in media_dir.glob("*"):
+        if mfile.is_file():
+            stage_file(mfile, pub_media / mfile.name)
+            stage_file(mfile, pub / mfile.name)
     scale_label = 0.5 if getattr(args, "preview", False) else args.scale
     print(f"=== {vid} ({fmt} {int(size[0] * scale_label)}x{int(size[1] * scale_label)}, audio: {mode}) ===")
 
@@ -544,7 +550,15 @@ def build(spec_path: str, args):
         for n, s in enumerate(scenes_spec, 1):
             narration = s.get("narration", "").strip()
             if narration:
-                src = get_scene_audio(narration, audio_dir, n, tone=s.get("tone"))
+                src = None
+                if s.get("audio"):
+                    candidate = episode_dir / s["audio"]
+                    if not candidate.exists():
+                        candidate = ROOT / s["audio"]
+                    if candidate.exists():
+                        src = candidate
+                if not src:
+                    src = get_scene_audio(narration, audio_dir, n, tone=s.get("tone"))
                 # Ensure audio is 48kHz stereo to avoid playback speed artifacts
                 src = ensure_48k_stereo(src)
                 total_dur, speech_end = measure_speech_end(src)
@@ -700,9 +714,19 @@ def build(spec_path: str, args):
                 print(f"  Warning: Scene {n} (diagram) has no rendered diagram file.")
         # Handle 3D model files for "three" type scenes with model_3d variant
         if s["type"] == "three" and s.get("model"):
+            raw_model = s["model"]
+            if (raw_model.startswith("http://") or raw_model.startswith("https://") or "sketchfab.com" in raw_model) and not (media_dir / Path(raw_model).name).exists():
+                print(f"  [Scene {n}] Auto-downloading remote 3D model via model_manager: {raw_model}")
+                cmd = [sys.executable, str(ROOT / "tools" / "model_manager.py"), "download", raw_model, "--topic", vid]
+                subprocess.run(cmd, check=True)
+
             model_src = ROOT / s["model"]
             if not model_src.exists():
                 model_src = media_dir / Path(s["model"]).name
+            if not model_src.exists():
+                slug_match = re.search(r"/3d-models/([a-zA-Z0-9_-]+)-[0-9a-fA-F]{32}", raw_model)
+                if slug_match:
+                    model_src = media_dir / (slug_match.group(1).replace("-", "_") + ".glb")
             if not model_src.exists():
                 model_src = ROOT / "public" / s["model"]
             if not model_src.exists():
@@ -841,7 +865,8 @@ def build(spec_path: str, args):
         raw_out.unlink(missing_ok=True)
     else:
         cmd = [npx, "remotion", "render", "src/index.ts", "Video", str(out),
-               f"--props=public/{vid}/manifest.json", f"--concurrency={concurrency_val}"]
+               f"--props=public/{vid}/manifest.json", f"--concurrency={concurrency_val}",
+               "--timeout=60000"]
         if render_scale != 1:
             cmd.append(f"--scale={render_scale}")
         if getattr(args, "preview", False):

@@ -51,9 +51,16 @@ import { WhiteboardScene } from "./scenes/WhiteboardScene";
 import { RefrigeratorVisualizer } from "./scenes/RefrigeratorVisualizer";
 import { AirConditionerVisualizer } from "./scenes/AirConditionerVisualizer";
 import { LinearSearchVisualizer } from "./scenes/LinearSearchVisualizer";
+import { BinarySearchVisualizer } from "./scenes/BinarySearchVisualizer";
 import { TeslaRoadsterVisualizer } from "./scenes/TeslaRoadsterVisualizer";
+import { PacmanEnzymeVisualizer } from "./scenes/PacmanEnzymeVisualizer";
+import { QuickCommerceVisualizer } from "./scenes/QuickCommerceVisualizer";
 import { DepthParallaxScene } from "./scenes/DepthParallaxBackground";
 import { ParticleOverlay } from "./scenes/ParticleOverlay";
+import { GoogleMapsVisualizer } from "./scenes/GoogleMapsVisualizer";
+import { AadhaarVisualizer } from "./scenes/AadhaarVisualizer";
+import { TowerOfHanoiVisualizer } from "./scenes/TowerOfHanoiVisualizer";
+import { EMudhraVisualizer } from "./scenes/EMudhraVisualizer";
 
 const SCENES = {
   hook: Hook,
@@ -92,8 +99,19 @@ const SCENES = {
   refrigerator: RefrigeratorVisualizer,
   air_conditioner: AirConditionerVisualizer,
   linear_search_visualizer: LinearSearchVisualizer,
+  binary_search_visualizer: BinarySearchVisualizer,
   tesla_roadster_visualizer: TeslaRoadsterVisualizer,
+  pacman_enzyme_visualizer: PacmanEnzymeVisualizer,
+  quick_commerce: QuickCommerceVisualizer,
   depth_parallax: DepthParallaxScene,
+  google_maps_visualizer: GoogleMapsVisualizer,
+  google_maps: GoogleMapsVisualizer,
+  aadhaar_visualizer: AadhaarVisualizer,
+  aadhaar: AadhaarVisualizer,
+  tower_of_hanoi: TowerOfHanoiVisualizer,
+  tower_of_hanoi_visualizer: TowerOfHanoiVisualizer,
+  emudhra: EMudhraVisualizer,
+  emudhra_visualizer: EMudhraVisualizer,
 };
 
 const DEFAULT_SFX_VOLUMES: Record<string, number> = {
@@ -387,6 +405,42 @@ const SceneSFX: React.FC<{
     cues.push({ sound: "ding", frame: Math.min(durFrames - 6, 42), volume: 0.14 });
   }
 
+  // J. Metric count-up micro-ratchet ticks for Stat scenes
+  if (scene.type === "stat") {
+    for (let f = 6; f <= Math.min(durFrames - 10, 28); f += 4) {
+      cues.push({ sound: "tick", frame: f, volume: 0.08 });
+    }
+    cues.push({ sound: "impact", frame: 4, volume: 0.22 });
+  }
+
+  // K. Staggered card entrance pops for Bento grids
+  if (scene.type === "bento" && Array.isArray((scene as any).bentoItems)) {
+    const bItems = (scene as any).bentoItems;
+    const gap = Math.min(8, Math.floor((durFrames * 0.4) / Math.max(1, bItems.length)));
+    bItems.forEach((_: any, i: number) => {
+      cues.push({ sound: "pop", frame: 8 + i * gap, volume: 0.12 });
+    });
+  }
+
+  // L. Side-by-side contrast pops for Compare scenes
+  if (scene.type === "compare") {
+    cues.push({ sound: "pop", frame: 8, volume: 0.14 });
+    cues.push({ sound: "ting", frame: 22, volume: 0.15 });
+  }
+
+  // M. Real-object hardware showcase spotlight and specs
+  if (scene.type === "product") {
+    cues.push({ sound: "camera_shutter", frame: 4, volume: 0.16 });
+    cues.push({ sound: "sparkle", frame: 20, volume: 0.14 });
+  }
+
+  // N. Live packet transit beeps for Architecture and Diagram scenes
+  if (scene.type === "architecture" || scene.type === "diagram") {
+    for (let f = 12; f < durFrames - 15; f += 24) {
+      cues.push({ sound: "radar_beep", frame: f, volume: 0.08 });
+    }
+  }
+
   return (
     <>
       {cues.map((cue, idx) => {
@@ -452,11 +506,13 @@ const SceneView: React.FC<{
   const sceneArtDirection = artDirection;
   // In Remotion, useCurrentFrame() inside a <Sequence> is already the local frame (0 to durationInFrames)
   const localFrame = frame;
-  // Snappy cinematic cross-blend: enter in 6 frames, hold until handoff to avoid black dip
+  // Frame-0 Thumb-Stopper: Scene 0 enters with 100% opacity on frame 0 so mobile feeds never see a black dip.
+  // Hold 100% opacity through the final frame for seamless infinite looping on Instagram Reels.
+  const enterOpacity = (index === 0 || sceneArtDirection !== "cinematic") ? 1 : 0;
   const opacity = interpolate(
     localFrame,
     [0, 6, durationInFrames - 2, durationInFrames],
-    sceneArtDirection === "cinematic" ? [0, 1, 1, 0.9] : [1, 1, 1, 1],
+    [enterOpacity, 1, 1, 1],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
 
@@ -486,11 +542,26 @@ const SceneView: React.FC<{
     (scene.type === "architecture" && /pipeline|architecture|end-to-end/i.test(scene.tag || scene.title || "")) ||
     (scene.type === "callout" && /fail|reconciliation|pending|golden rule|alert/i.test(scene.tag || scene.title || "")) ||
     (scene.type === "outro" && (/digital india|seconds on screen|systems behind|mission accomplished/i.test(scene.tag || scene.text || "") || scene.icon === "sparkles"));
+  // Pattern Interrupts for viral retention (zoom_punch, shake, color_flash)
+  const isZoomPunch = scene.pattern_interrupt === "zoom_punch";
+  const punchScale = isZoomPunch
+    ? interpolate(localFrame, [0, 4, 14], [1.08, 1.04, 1.0], { extrapolateRight: "clamp" })
+    : 1;
+  const isShake = scene.pattern_interrupt === "shake" && localFrame < 10;
+  const shakeX = isShake ? Math.sin(localFrame * 3.8) * (10 - localFrame) * 1.8 : 0;
+  const flashOpacity =
+    scene.pattern_interrupt === "color_flash" && localFrame < 8
+      ? interpolate(localFrame, [0, 8], [0.35, 0], { extrapolateRight: "clamp" })
+      : 0;
+
+  // Subconscious Kinetic Push (Ken Burns Momentum): 3.5% slow push over scene duration prevents static slide feel
+  const subtlePush = 1 + 0.035 * (localFrame / Math.max(durationInFrames, 1));
+
   const camera = isNative3D
-    ? "none"
+    ? `scale(${punchScale}) translate(${shakeX}px, 0px)`
     : sceneArtDirection === "cinematic"
-      ? `translate(${panX}px, ${panY}px) scale(${zoom * (beatPulse ? beatPulseScale : 1)}) rotate(${tilt}deg)`
-      : "none";
+      ? `translate(${panX + shakeX}px, ${panY}px) scale(${zoom * punchScale * (beatPulse ? beatPulseScale : 1)}) rotate(${tilt}deg)`
+      : `scale(${punchScale * subtlePush}) translate(${shakeX}px, 0px)`;
 
   return (
     <AbsoluteFill style={{ opacity }}>
@@ -501,6 +572,16 @@ const SceneView: React.FC<{
           <Content scene={scene} accent={accent} />
         </AbsoluteFill>
       </ArtDirectionContext.Provider>
+      {flashOpacity > 0 && (
+        <AbsoluteFill
+          style={{
+            background: "#FFFFFF",
+            opacity: flashOpacity,
+            pointerEvents: "none",
+            zIndex: 40,
+          }}
+        />
+      )}
       {scene.particles && (
         <ParticleOverlay
           type={typeof scene.particles === "string" ? scene.particles : "sparkles"}
@@ -517,6 +598,7 @@ const SceneView: React.FC<{
           accent={accent}
           wordTimings={scene.wordTimings}
           localFrame={localFrame}
+          emphasisWords={scene.emphasis_words}
         />
       )}
     </AbsoluteFill>
@@ -542,20 +624,24 @@ export const Video: React.FC<VideoProps> = ({
   const activeTheme = getTheme(theme, accent);
   const globalFrame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
-  const totalFrames = scenes.reduce((acc, s) => acc + s.durationInFrames, 0);
+  const normalizedScenes = scenes.map((s: any) => ({
+    ...s,
+    durationInFrames: s.durationInFrames ?? Math.round((s.seconds ?? 3) * fps),
+  }));
+  const totalFrames = normalizedScenes.reduce((acc, s) => acc + s.durationInFrames, 0);
   const progressPercent = Math.min(
     100,
     Math.max(0, (globalFrame / Math.max(1, totalFrames)) * 100)
   );
   let frameCursor = 0;
   let activeSceneStart = 0;
-  const activeScene = scenes.find((scene) => {
+  const activeScene = normalizedScenes.find((scene) => {
     const sceneStart = frameCursor;
     const isActive = globalFrame < sceneStart + scene.durationInFrames;
     if (isActive) activeSceneStart = sceneStart;
     frameCursor += scene.durationInFrames;
     return isActive;
-  }) ?? scenes[scenes.length - 1];
+  }) ?? normalizedScenes[normalizedScenes.length - 1];
   const activeBeat = getActiveVisualBeat(
     activeScene?.beats,
     (globalFrame - activeSceneStart) / Math.max(1, (activeScene?.durationInFrames ?? 1) - 1)
@@ -608,7 +694,7 @@ export const Video: React.FC<VideoProps> = ({
         artDirection={art_direction}
       />
 
-      {scenes.map((s, i) => {
+      {normalizedScenes.map((s, i) => {
         const start = from;
         from += s.durationInFrames;
         return (

@@ -1,0 +1,285 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "how-aadhaar-works",
+  "format": "vertical",
+  "art_direction": "editorial",
+  "theme": "cyberpunk",
+  "accent": "#00F0FF",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "pad_seconds": 0.0,
+  "music": null,
+  "meta": {
+    "title": "How Aadhaar Works | Deep-Dive Technical Explainer",
+    "description": "Learn how Aadhaar works under the hood through zero-knowledge authentication, Verhoeff checksums, multi-modal ABIS de-duplication, AES-256 envelope encryption, and resident privacy shields.",
+    "hashtags": [
+      "#Technology",
+      "#Cybersecurity",
+      "#Aadhaar",
+      "#SystemDesign",
+      "#TechShorts"
+    ],
+    "facts_to_verify": [
+      "Aadhaar first digit cannot be 0 or 1",
+      "12th digit calculated via Verhoeff checksum (D5 dihedral group)",
+      "Envelope encryption uses AES-256 and RSA-2048",
+      "Enrolment client requires operator biometric login",
+      "Multi-modal ABIS compares 10 fingerprints and 2 irises across 1.4B+ records",
+      "Banks (AUA) and ASAs receive only encrypted packets and cannot decrypt biometrics",
+      "Registered Devices encrypt at capture with replay protection via UTC timestamp and txn ID",
+      "Resident privacy shields include 16-digit VID, masked Aadhaar, and biometric lock"
+    ],
+    "misconceptions": [
+      "The bank stores your fingerprint when you authenticate (debunk: the bank only receives a YES/NO response code; raw biometrics remain locked in UIDAI's central vault)",
+      "Your 12-digit Aadhaar number contains your birthdate or region (debunk: it is a purely random number with zero encoded demographic data)",
+      "Someone can clone your fingerprint on paper or rubber (debunk: Registered Device optical sensors enforce liveness detection)"
+    ],
+    "analogy": "A bank safety deposit box where your 12-digit number is just an index key, but only your physical biometric signature can prove you are the resident."
+  },
+  "scenes": [
+    {
+      "type": "aadhaar",
+      "variant": "aadhaar_hook",
+      "tag": "00 / THE ZERO-KNOWLEDGE PUZZLE",
+      "title": "HOW AADHAAR WORKS",
+      "purpose": "Hook the viewer with the shocking paradox that Aadhaar contains no name and banks cannot read biometrics.",
+      "tone": "[Shock, high-energy]",
+      "seconds": 9.0,
+      "audio": "audio/s0.mp3",
+      "narration": "आधार नंबर में आपका नाम तक नहीं होता! और बैंक आपकी उंगली का डेटा पढ़ भी नहीं सकता। फिर भी वो आपको कैसे पहचानता है? आख़िर तक देखिए।",
+      "transition": "whip_pan",
+      "sfx": "radar_beep",
+      "icon": "shield",
+      "visual": {
+        "start": "Extreme macro close-up of thumb on optical prism scanner glass.",
+        "objects": ["Scanner Prism", "Green Photon Grid", "Locked Padlock"],
+        "action": "Photon grid sweeps thumb, emerald YES stamp slams in, smash cut to giant 'YOUR AADHAAR HAS NO NAME', demographic steel tags slashed down, locked padlock drops over finger at bank.",
+        "camera": "Macro tracking zoom accelerating into scanner glass.",
+        "motion_graphics": ["YOUR AADHAAR HAS NO NAME", "BANK CAN'T READ FINGERPRINT"],
+        "end": "Screen accelerates to black whip cut into Part 1."
+      }
+    },
+    {
+      "type": "aadhaar",
+      "variant": "aadhaar_number",
+      "tag": "01 / THE 12-DIGIT KEY",
+      "title": "RANDOM NUMBER & VERHOEFF CHECKSUM",
+      "purpose": "Explain the 12-digit random number structure, first digit exclusion rule, and Verhoeff error detection.",
+      "tone": "[Curious, engaging]",
+      "seconds": 17.0,
+      "audio": "audio/s1.mp3",
+      "narration": "मिलिए रवि से। रवि का आधार नंबर बारह अंकों का रैंडम नंबर है। पहला अंक कभी शून्य या एक नहीं होता। इसमें नाम, जाति, पता, कुछ नहीं छिपा। आख़िरी अंक चेकसम है, जो वरहुफ़ एल्गोरिदम से बनता है। एक भी अंक गलत हो, तो चेकसम पकड़ लेता है।",
+      "transition": "zoom_through",
+      "sfx": "fast_whoosh",
+      "icon": "hash",
+      "visual": {
+        "start": "Chapter Flash Card PART 1/5: THE RANDOM KEY.",
+        "objects": ["Ravi Avatar", "12 Split-Flap Number Tiles", "Verhoeff Engine"],
+        "action": "Ravi avatar pops in, 12 tiles flip rapidly, first tile red ⊘ over 0 and 1, demographic tags dissolve, 12th tile detaches into Verhoeff D5 dihedral engine, interactive typo and transposition tests flash crimson alert.",
+        "camera": "Slow motivated dolly zoom toward Ravi.",
+        "motion_graphics": ["FIRST DIGIT NEVER 0 OR 1", "VERHOEFF CHECKSUM: D5 DIHEDRAL"],
+        "end": "12th tile clicks into place with emerald spark and ding."
+      }
+    },
+    {
+      "type": "aadhaar",
+      "variant": "aadhaar_enrolment",
+      "tag": "02 / ZERO-LEAK ENROLMENT",
+      "title": "MULTI-MODAL BIOMETRIC CAPTURE",
+      "purpose": "Show operator biometric lock, demographic form typing, 10-finger, dual iris, and face photo quality controls.",
+      "tone": "[Clear, architectural]",
+      "seconds": 20.0,
+      "audio": "audio/s2.mp3",
+      "narration": "रवि एनरोलमेंट सेंटर पहुँचता है। पहले ऑपरेटर अपनी पहचान बायोमेट्रिक से साबित करता है। फिर रवि का नाम, जन्मतिथि और पता दर्ज होता है। इसके बाद दसों उंगलियाँ, दोनों आँखों की पुतलियाँ और चेहरे की फ़ोटो ली जाती है। हर स्कैन की क्वालिटी जाँची जाती है, और धुंधला स्कैन दोबारा लिया जाता है।",
+      "transition": "dissolve",
+      "sfx": "click",
+      "icon": "user-check",
+      "visual": {
+        "start": "Chapter Flash Card PART 2/5: ZERO-LEAK ENROLMENT.",
+        "objects": ["Operator Console", "10-Finger Hand Silhouette", "Dual Iris Reticles", "3D Face Mesh"],
+        "action": "Operator thumbpress locks in green shield badge, demographics type in, 10 finger bulbs light up, dual iris waves expand, face photo triggers flash, quality meters show red blurry retake jumping to 88% approved, 12-frame glitch re-hook 1.",
+        "camera": "Stable editorial multi-panel layout.",
+        "motion_graphics": ["OPERATOR BIOMETRIC LOCK", "QUALITY CHECK: RETAKE APPROVED"],
+        "end": "Glitch cut teaser: 'WAIT FOR STEP 3: HOW DOES THE PACKET ESCAPE UNTOUCHED?'"
+      }
+    },
+    {
+      "type": "aadhaar",
+      "variant": "aadhaar_packet_encrypt",
+      "tag": "03 / AIRTIGHT PACKET",
+      "title": "AES-256 & ENVELOPE ENCRYPTION",
+      "purpose": "Visualize packet formation, symmetric AES-256 lock, asymmetric RSA public key envelope, and digital signature.",
+      "tone": "[Authoritative, security]",
+      "seconds": 18.0,
+      "audio": "audio/s3.mp3",
+      "narration": "अब असली सुरक्षा शुरू होती है। डेटा लेते ही मशीन उसे पैकेट में बंद करके एन्क्रिप्ट कर देती है, ए ई एस दो सौ छप्पन से। इस ताले की चाबी भी यू आई डी ए आई की पब्लिक की से लॉक होती है। फिर पैकेट पर डिजिटल साइन लगता है और वो सेंट्रल सर्वर पहुँचता है।",
+      "transition": "zoom_through",
+      "sfx": "fast_whoosh",
+      "icon": "lock",
+      "visual": {
+        "start": "Captured docket collapses inward into glowing 3D isometric cyber cube.",
+        "objects": ["Cyber Cube", "AES-256 Padlock", "Session Key", "Public Key Padlock", "Wax Seal"],
+        "action": "Chunky AES-256 padlock snaps shut with matrix noise burst, small session key floats out, UIDAI public key open padlock snaps shut over it, holographic digital signature wax seal stamps down, packet streams along fiber highway.",
+        "camera": "Perspective zoom tracking packet through network routers.",
+        "motion_graphics": ["AES-256 SYMMETRIC LOCK", "RSA-2048 ENVELOPE ENCRYPTION"],
+        "end": "Packet arrives at UIDAI Central Datacenter."
+      }
+    },
+    {
+      "type": "aadhaar",
+      "variant": "aadhaar_deduplication",
+      "tag": "04 / 1-IN-A-BILLION MATCH",
+      "title": "MULTI-MODAL ABIS SWEEP",
+      "purpose": "Explain the 1-in-a-billion multi-modal ABIS de-duplication sweep preventing duplicate identity creation.",
+      "tone": "[Dramatic, scientific]",
+      "seconds": 20.0,
+      "audio": "audio/s4.mp3",
+      "narration": "अब यू आई डी ए आई को पक्का करना है कि रवि पहले से दर्ज तो नहीं। ए बी आई एस उसकी उंगलियों और आँखों के पैटर्न की तुलना करोड़ों रिकॉर्ड से करता है। मिलान मिला, तो आवेदन रद्द। अनोखा निकला, तो रवि को मिलता है उसका अपना आधार नंबर।",
+      "transition": "dissolve",
+      "sfx": "radar_beep",
+      "icon": "database",
+      "visual": {
+        "start": "Chapter Flash Card PART 3/5: 1-IN-A-BILLION DE-DUPE.",
+        "objects": ["Ravi Minutiae Template", "1.4B Record Blur Cylinder", "ABIS Laser Beam"],
+        "action": "Multi-modal ABIS engines fire bright laser comparison beam across records, Branch A duplicate demo triggers red warning strobe and application rejected, Branch B unique sweep generates green pulse, 12 digits lock in with chime.",
+        "camera": "Split-screen high-contrast comparison.",
+        "motion_graphics": ["COMPARING 1,400,000,000+ ENROLMENTS", "100% UNIQUE RESIDENT VERIFIED"],
+        "end": "e-Aadhaar card renders and lowers into permanent vault."
+      }
+    },
+    {
+      "type": "aadhaar",
+      "variant": "aadhaar_vault",
+      "tag": "05 / CENTRAL IDENTITY REPOSITORY",
+      "title": "CIDR ZERO-TRUST ARCHITECTURE",
+      "purpose": "Establish the core principle: the 12-digit number is only an index key; biometrics are the only proof.",
+      "tone": "[Authoritative, high-tech]",
+      "seconds": 11.0,
+      "audio": "audio/s5.mp3",
+      "narration": "रवि का रिकॉर्ड एन्क्रिप्ट होकर सेंट्रल आइडेंटिटीज़ डेटा रिपॉज़िटरी में रहता है। नंबर सिर्फ़ चाबी है। असली सबूत है रवि की उंगली या आँख। अब बैंक में क्या होता है, देखिए।",
+      "transition": "whip_pan",
+      "sfx": "impact",
+      "icon": "shield-check",
+      "visual": {
+        "start": "CIDR subterranean vault with triple concentric hexagonal glowing shield rings.",
+        "objects": ["Hexagonal Energy Shields", "Vault Slot", "Physical Golden Key", "Biometric Hologram"],
+        "action": "Record slides into vault slot, 12-digit number transforms into physical golden key in keyhole, large golden text slams down: 'NUMBER = KEY, BIOMETRIC = PROOF', biometric hologram lights up beside key, camera pans to bank queue.",
+        "camera": "Concentric rotating orbits settling on vault lock.",
+        "motion_graphics": ["NUMBER = KEY", "BIOMETRIC = PROOF"],
+        "end": "Glitch cut teaser: 'NOW ENTER THE BANK: CAN THEY STEAL YOUR PRINT?'"
+      }
+    },
+    {
+      "type": "aadhaar",
+      "variant": "aadhaar_authentication",
+      "tag": "06 / ZERO-KNOWLEDGE AUTH",
+      "title": "REGISTERED DEVICE & PRIVATE KEY",
+      "purpose": "Resolve the opening hook: Registered device encrypts on-chip, bank & ASA cannot open, UIDAI sends only YES/NO.",
+      "tone": "[Energetic, explanatory]",
+      "seconds": 33.0,
+      "audio": "audio/s6.mp3",
+      "narration": "रवि बैंक पहुँचता है, आधार नंबर बताता है और उंगली लगाता है। स्कैनर एक रजिस्टर्ड डिवाइस है, जो उंगली पढ़ते ही डेटा एन्क्रिप्ट कर देता है। डेटा के साथ टाइमस्टैम्प और ट्रांज़ैक्शन आई डी भी बंद होते हैं। ताला एक नई सेशन की से लगता है, और वो की यू आई डी ए आई की पब्लिक की से लॉक होती है। बैंक, यानी ए यू ए, और ए एस ए इसे सिर्फ़ आगे भेजते हैं, खोल नहीं सकते। यू आई डी ए आई प्राइवेट की से इसे खोलता है, रिकॉर्ड से मिलाता है, और जवाब देता है: सिर्फ़ हाँ या ना। बैंक को उंगली का डेटा कभी मिला ही नहीं। यही है जवाब!",
+      "transition": "zoom_through",
+      "sfx": "ding",
+      "icon": "check-circle",
+      "visual": {
+        "start": "Chapter Flash Card PART 4/5: THE ZERO-KNOWLEDGE AUTH.",
+        "objects": ["5-Node Vertical Pipeline", "Registered Device", "Bank AUA", "ASA Switch", "Golden Private Key"],
+        "action": "Ravi presses thumb on RD scanner, silicon chip encrypts before cable, timestamp & txn tags attach, session key locks packet and dissolves, hops to Bank & ASA with flashing CAN'T OPEN badges, golden private key descends from HSM in UIDAI vault, minutiae matches, green YES stamp travels back while biometric visibly stays in vault.",
+        "camera": "Smooth vertical pipeline pan following packet travel and return.",
+        "motion_graphics": ["REGISTERED DEVICE: ON-CHIP ENCRYPTION", "CAN'T OPEN: RELAY ONLY", "BANK ONLY GETS: YES"],
+        "end": "Glitch cut teaser: 'BUT WHAT IF SOMEONE CHEATS THE SYSTEM?'"
+      }
+    },
+    {
+      "type": "aadhaar",
+      "variant": "aadhaar_threats",
+      "tag": "07 / ATTACK VECTORS",
+      "title": "MITM, REPLAY & FAKE FINGER DEFENSE",
+      "purpose": "Demonstrate the defenses against man-in-the-middle interception, replay attacks, and silicone spoof fingers.",
+      "tone": "[Alert, fast-paced]",
+      "seconds": 18.0,
+      "audio": "audio/s7.mp3",
+      "narration": "पर अगर कोई धोखा दे? रास्ते में पैकेट पकड़ ले, तो उसे सिर्फ़ शोर दिखेगा, क्योंकि चाबी उसके पास नहीं। वही पैकेट दोबारा भेजे, तो टाइमस्टैम्प और आई डी से पकड़ा जाएगा। नकली उंगली लगाए, तो लाइवनेस जाँच उसे ठुकरा देगी।",
+      "transition": "dissolve",
+      "sfx": "glitch",
+      "icon": "alert-triangle",
+      "visual": {
+        "start": "Hooded villain silhouette attempts 3 attacks in sequence.",
+        "objects": ["Villain Silhouette", "Scrambled Noise Burst", "Expired Stamp", "Rubber Finger Fake"],
+        "action": "1) Intercept: villain snatches packet, sees only scrambled static noise, drops packet. 2) Replay: villain resends old packet 5 mins later, timestamp trips, crimson 'ALREADY USED' stamp slams down. 3) Fake rubber finger: sensor optical liveness detection engages, capillary ring stays dead grey, big red ✗ 'LIVENESS FAILED'.",
+        "camera": "Rapid three-part punch-in shots.",
+        "motion_graphics": ["ATTACK 1: ONLY STATIC NOISE", "ATTACK 2: ALREADY USED", "ATTACK 3: LIVENESS FAILED"],
+        "end": "Threat summary grid dissolves into user governance."
+      }
+    },
+    {
+      "type": "aadhaar",
+      "variant": "aadhaar_ekyc",
+      "tag": "08 / DATA GOVERNANCE",
+      "title": "USER CONSENT & SIGNED eKYC",
+      "purpose": "Explain resident consent mechanics and digitally signed eKYC packages.",
+      "tone": "[Clear, confident]",
+      "seconds": 9.0,
+      "audio": "audio/s8.mp3",
+      "narration": "बैंक को नाम और पता चाहिए? रवि की सहमति से यू आई डी ए आई डिजिटल हस्ताक्षर के साथ ई के वाई सी डेटा भेजता है। सहमति नहीं, तो डेटा नहीं।",
+      "transition": "pop",
+      "sfx": "pop",
+      "icon": "file-text",
+      "visual": {
+        "start": "Chapter Flash Card PART 5/5: PRIVACY & CONSENT.",
+        "objects": ["Consent Toggle Switch", "Digitally Signed eKYC Card", "Firewall Gate"],
+        "action": "Bank prompt displays account requirement, Ravi taps physical consent switch toggling OFF to glowing neon green ON, digitally signed eKYC card with wax seal flies along pipe to bank, negative branch shows red firewall blocking pipe.",
+        "camera": "Direct UI interaction framing.",
+        "motion_graphics": ["RESIDENT CONSENT: ACTIVE", "DIGITALLY SIGNED eKYC"],
+        "end": "Bank terminal confirms user-controlled access."
+      }
+    },
+    {
+      "type": "aadhaar",
+      "variant": "aadhaar_privacy",
+      "tag": "09 / USER PRIVACY SHIELDS",
+      "title": "VID, MASKED AADHAAR & BIO LOCK",
+      "purpose": "Empower the viewer with 4 practical privacy tools: VID, Masked Aadhaar, Offline QR, and Biometric Lock.",
+      "tone": "[Empowering, practical]",
+      "seconds": 14.0,
+      "audio": "audio/s9.mp3",
+      "narration": "रवि के पास प्राइवेसी के चार औज़ार हैं। सोलह अंकों की बदली जाने वाली वर्चुअल आईडी। सिर्फ़ आख़िरी चार अंक दिखाने वाला मास्क्ड आधार। ऑफ़लाइन क्यू आर जाँच। और बायोमेट्रिक लॉक, जिससे वो बायोमेट्रिक्स खुद बंद कर सकता है।",
+      "transition": "whoosh",
+      "sfx": "click",
+      "icon": "sliders",
+      "visual": {
+        "start": "4 Tool Cards grid appears in sequence around Ravi.",
+        "objects": ["16-Digit VID Card", "Masked Aadhaar Card", "Offline QR Phone", "Biometric Lock Padlock"],
+        "action": "1) 16-Digit VID card flips and regenerates numbers. 2) Masked Aadhaar card collapses first 8 digits into dots. 3) Smartphone scans QR in airplane mode with instant green check. 4) mAadhaar app biometric lock clamps titanium padlock over fingerprint and iris icons.",
+        "camera": "Sequential 4-card focus pull.",
+        "motion_graphics": ["16-DIGIT REVOCABLE VID", "MASKED: LAST 4 DIGITS", "OFFLINE QR VERIFIED", "BIOMETRIC LOCKED"],
+        "end": "All 4 cards form a defensive perimeter around Ravi."
+      }
+    },
+    {
+      "type": "aadhaar",
+      "variant": "aadhaar_outro_loop",
+      "tag": "10 / RECAP & SEAMLESS LOOP",
+      "title": "ZERO-KNOWLEDGE ARCHITECTURE",
+      "purpose": "Deliver the final takeaway and seamlessly snap into frame 0 for an infinite repeating loop.",
+      "tone": "[Triumphant, payoff]",
+      "seconds": 8.0,
+      "audio": "audio/s10.mp3",
+      "narration": "याद रखिए: नंबर चाबी है, बायोमेट्रिक सबूत है, और बैंक को मिलता है सिर्फ़ एक जवाब, हाँ या ना।",
+      "transition": "zoom_through",
+      "sfx": "ding",
+      "icon": "repeat",
+      "visual": {
+        "start": "3 illuminated symbols light up in center screen: Key, Fingerprint Proof, Emerald YES Stamp.",
+        "objects": ["Golden Key", "Fingerprint Proof", "YES Stamp", "Scanner Prism"],
+        "action": "Summary headline locks in: 'ZERO-KNOWLEDGE ARCHITECTURE', camera orbits around smiling Ravi, scene zooms toward optical glass scanner, last 20 frames snap directly into Frame 0 thumb on scanner and green YES stamp.",
+        "camera": "Circular orbit snapping back to macro prism angle.",
+        "motion_graphics": ["NUMBER = KEY", "BIOMETRIC = PROOF", "BANK GETS ONLY YES/NO"],
+        "end": "Frame 5310 matches Frame 0 exactly for infinite seamless loop."
+      }
+    }
+  ]
+}

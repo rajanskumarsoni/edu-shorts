@@ -26,14 +26,15 @@ COMMON_SCENE_FIELDS = {
     "purpose", "transition", "camera", "action", "objects", "tag", "tone",
     "beats", "journeyStep", "search_image", "generate_image", "search_video",
     "search_sfx", "search_model", "search_icon", "icon_path", "image_provider", "video_provider",
-    "variant", "sortTriggerFrame", "particles", "particleCount", "particleColor"
+    "variant", "sortTriggerFrame", "particles", "particleCount", "particleColor", "audio",
+    "emphasis_words", "pattern_interrupt", "hook_strength", "payoff_type"
 }
 ALLOWED = {
     "hook": {"type", "text", "title", "image", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "bullets": {"type", "title", "items", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "stat": {"type", "value", "label", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "manim": {"type", "title", "manim", "narration", "seconds"} | COMMON_SCENE_FIELDS,
-    "video": {"type", "video", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "video": {"type", "video", "title", "overlay", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "diagram": {"type", "title", "diagram", "mermaid", "graphviz", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "outro": {"type", "text", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "image": {"type", "image", "title", "narration", "seconds"} | COMMON_SCENE_FIELDS,
@@ -60,13 +61,24 @@ ALLOWED = {
     "chart": {"type", "title", "tag", "chartType", "chartData", "chartTitle", "unit", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "product": {"type", "title", "image", "tag", "specs", "highlight", "price", "tagline", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "sorting_visualizer": {"type", "title", "tag", "mode", "array", "equation", "metrics", "narration", "seconds"} | COMMON_SCENE_FIELDS,
-    "amazon_shopping": {"type", "title", "tag", "text", "sortTriggerFrame", "narration", "seconds"} | COMMON_SCENE_FIELDS,
-    "whiteboard": {"type", "title", "tag", "whiteboardType", "whiteboardTheme", "brushName", "paper", "strokes", "whiteboardData", "equation", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "amazon_shopping": {"type", "title", "tag", "text", "image", "products", "sortTriggerFrame", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "whiteboard": {"type", "title", "tag", "whiteboardType", "whiteboardTheme", "brushName", "paper", "strokes", "whiteboardData", "equation", "nodes", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "refrigerator": {"type", "title", "tag", "variant", "image", "video", "metrics", "specs", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "air_conditioner": {"type", "title", "tag", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "linear_search_visualizer": {"type", "title", "tag", "variant", "searchItems", "searchTarget", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "binary_search_visualizer": {"type", "title", "tag", "variant", "searchItems", "searchTarget", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "tesla_roadster_visualizer": {"type", "title", "tag", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "pacman_enzyme_visualizer": {"type", "title", "tag", "variant", "metrics", "specs", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "quick_commerce": {"type", "title", "tag", "variant", "countdownSeconds", "metrics", "specs", "speedKmh", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "depth_parallax": {"type", "title", "tag", "image", "depthMap", "intensity", "movement", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "google_maps_visualizer": {"type", "title", "tag", "variant", "metrics", "specs", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "google_maps": {"type", "title", "tag", "variant", "metrics", "specs", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "aadhaar_visualizer": {"type", "title", "tag", "variant", "metrics", "specs", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "aadhaar": {"type", "title", "tag", "variant", "metrics", "specs", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "tower_of_hanoi": {"type", "title", "tag", "variant", "metrics", "specs", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "tower_of_hanoi_visualizer": {"type", "title", "tag", "variant", "metrics", "specs", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "emudhra": {"type", "title", "tag", "variant", "metrics", "specs", "narration", "seconds", "image"} | COMMON_SCENE_FIELDS,
+    "emudhra_visualizer": {"type", "title", "tag", "variant", "metrics", "specs", "narration", "seconds", "image"} | COMMON_SCENE_FIELDS,
 }
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp", ".svg")
 VIDEO_EXTS = (".mp4", ".mov", ".webm")
@@ -117,7 +129,7 @@ REGISTERED_3D_VARIANTS = {
     "upi_city_3d", "city_network_3d", "participants_3d", "city_3d",
     "upi_qr_3d", "qr_inspection_3d", "qr_matrix_3d", "qr_3d", "qrcode_3d",
     "upi_phone_layers_3d", "phone_layers_3d", "sandbox_3d", "phone_3d",
-    "smartphone_3d", "mobile_3d",
+    "smartphone_3d", "mobile_3d", "google_maps_3d", "google_maps", "maps_navigation_3d", "navigation_3d",
     "upi_bank_vault_3d", "bank_vault_3d", "upi_bank_vault_credit_3d",
     "cbs_ledger_3d", "bank_3d", "vault_3d",
     "neural_network_3d", "neural_network", "backprop_3d", "brain_3d", "ai_3d",
@@ -131,7 +143,7 @@ REGISTERED_3D_VARIANTS = {
     "bluetooth_ecosystem_3d", "bluetooth_pipeline_3d", "bluetooth_reveal_3d",
     "bluetooth_master_recap_3d", "bluetooth_3d",
     "server_rack_3d", "server_rack", "datacenter_3d", "npci_datacenter",
-    "server_3d", "servers_3d",
+    "server_3d", "servers_3d", "fastag_server_3d",
     "upi_settlement_3d", "settlement_3d", "dual_ledger_3d",
     "bilateral_settlement_3d",
     "upi_gauge_3d", "telemetry_gauge_3d", "gauge_3d", "speedometer_3d",
@@ -152,7 +164,14 @@ REGISTERED_3D_VARIANTS = {
     # Washing Machine / Centrifugal / Molecular physics
     "washing_machine_3d", "washer_3d", "washing_machine", "washer_drum_3d",
     "centrifugal_spin_3d", "drum_spin_3d", "surfactant_micelle_3d", "micelle_3d",
+    # Quick Commerce / Dark Store micro-fulfillment
+    "dark_store_3d", "dark_store_warehouse_3d", "quick_commerce_store_3d", "mfc_warehouse_3d",
     "gradient_descent", "crest_to_trough",
+    # Binary Search 3D
+    "binary_search_3d", "binary_search", "step_by_step_3d",
+    # FASTag / RFID Toll Collection 3D
+    "fastag_toll_3d", "fastag_toll", "fastag_3d", "rfid_toll_3d", "toll_gantry_3d",
+    "fastag_sticker_3d", "fastag_chip_3d", "fastag_barrier_3d", "boom_barrier_3d",
     # Dedicated GLTF/GLB 3D model variants
     "model_3d", "gltf_model", "model_viewer_3d", "custom_model_3d",
 }
@@ -413,7 +432,10 @@ def validate_data(data, root=ROOT):
             rep.err(where, '"narration" must be text')
         else:
             wc = words(nar)
-            est += wc / WORDS_PER_SECOND + 0.45
+            if s.get("seconds") is not None and is_num(s["seconds"]) and s["seconds"] > 0:
+                est += s["seconds"]
+            else:
+                est += wc / WORDS_PER_SECOND + 0.45
             if wc < 8 and t not in ("hook", "outro"):
                 rep.warn(where, f"narration is only {wc} word(s) (aim for 15-40)")
             elif wc > 45:
@@ -447,7 +469,7 @@ def validate_data(data, root=ROOT):
             cinematic_types = {"three", "manim", "architecture", "code", "image", "video",
                                "compare", "gauge", "timeline", "bento", "benchmark",
                                "hierarchy", "data_structure", "inspector", "quadrant",
-                               "concentric", "seat_booking", "neural_network_graph", "sorting_visualizer", "refrigerator", "air_conditioner", "linear_search_visualizer", "tesla_roadster_visualizer", "depth_parallax"}
+                               "concentric", "seat_booking", "neural_network_graph", "sorting_visualizer", "refrigerator", "air_conditioner", "linear_search_visualizer", "tesla_roadster_visualizer", "depth_parallax", "aadhaar", "aadhaar_visualizer"}
             is_cinematic = t in cinematic_types
             if is_cinematic:
                 required_visual_fields = {
@@ -770,11 +792,31 @@ def validate_data(data, root=ROOT):
         types[0] == "air_conditioner" and scenes[0].get("variant") == "split_hook"
     ) and not (
         types[0] == "linear_search_visualizer" and scenes[0].get("variant") == "intro"
+    ) and not (
+        types[0] == "binary_search_visualizer" and scenes[0].get("variant") in ("intro", "book_analogy")
+    ) and not (
+        types[0] == "three" and scenes[0].get("variant") in ("phone_layers_3d", "upi_hook_3d", "hook_3d", "smartphone_3d", "mobile_3d", "google_maps_3d", "maps_navigation_3d", "bluetooth_link_3d", "fastag_toll_3d")
+    ) and not (
+        types[0] == "quick_commerce" and scenes[0].get("variant") == "customer_order"
+    ) and not (
+        types[0] in ("aadhaar", "aadhaar_visualizer") and scenes[0].get("variant") in ("aadhaar_hook", "hook")
+    ) and not (
+        types[0] in ("tower_of_hanoi", "tower_of_hanoi_visualizer") and scenes[0].get("variant") in ("legend_hook", "hook")
+    ) and not (
+        types[0] in ("emudhra", "emudhra_visualizer") and scenes[0].get("variant") in ("campus_headquarters", "headquarters", "hook")
     ):
         rep.warn("scenes", "first scene should be a hook, video, or an interview prompt")
-    if types and types[-1] not in ("outro", "interview"):
+    if types and types[-1] not in ("outro", "interview") and not (
+        types[-1] == "three" and scenes[-1].get("variant") in ("upi_outro_3d", "outro_3d", "digital_india_3d", "bluetooth_reveal_3d", "bluetooth_master_recap_3d")
+    ) and not (
+        types[-1] in ("google_maps", "google_maps_visualizer") and scenes[-1].get("variant") in ("maps_system_outro", "outro")
+    ) and not (
+        types[-1] in ("aadhaar", "aadhaar_visualizer") and scenes[-1].get("variant") in ("aadhaar_recap_loop", "aadhaar_outro_loop", "recap", "loop", "outro")
+    ) and not (
+        types[-1] in ("tower_of_hanoi", "tower_of_hanoi_visualizer") and scenes[-1].get("variant") in ("outro_takeaway", "outro")
+    ):
         rep.warn("scenes", "last scene should be an outro or recap")
-    if not any(t in types for t in ("manim", "three", "architecture", "code", "gauge", "bento", "benchmark", "hierarchy", "data_structure", "inspector", "quadrant", "concentric", "seat_booking", "neural_network_graph", "interview", "terminal", "screenshot", "chart", "product", "sorting_visualizer", "refrigerator", "air_conditioner", "linear_search_visualizer", "tesla_roadster_visualizer", "depth_parallax")):
+    if not any(t in types for t in ("manim", "three", "architecture", "code", "gauge", "bento", "benchmark", "hierarchy", "data_structure", "inspector", "quadrant", "concentric", "seat_booking", "neural_network_graph", "interview", "terminal", "screenshot", "chart", "product", "sorting_visualizer", "refrigerator", "air_conditioner", "linear_search_visualizer", "binary_search_visualizer", "tesla_roadster_visualizer", "quick_commerce", "depth_parallax", "google_maps", "google_maps_visualizer", "aadhaar", "aadhaar_visualizer", "tower_of_hanoi", "tower_of_hanoi_visualizer")):
         rep.warn("scenes", "no animated visual explanation (manim, three, architecture, code, gauge, bento, benchmark...); at least one is recommended")
 
     # No Consecutive Twins rule: Never use the exact same scene type and variant twice in a row

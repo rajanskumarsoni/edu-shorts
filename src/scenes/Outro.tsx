@@ -12,13 +12,13 @@ export const Outro: React.FC<{ scene: SceneSpec; accent: string }> = ({
   accent,
 }) => {
   // Delegate to 3D WebGL Digital India Outro
+  // Delegate to 3D WebGL Payoff scene only when explicitly requested
   const is3DOutro =
     scene.variant === "upi_outro_3d" ||
     scene.variant === "outro_3d" ||
     scene.variant === "digital_india_3d" ||
-    /digital india|seconds on screen|systems behind/i.test(scene.text || "") ||
-    /mission accomplished|digital india/i.test(scene.tag || "") ||
-    (scene.type === "outro" && (scene.icon === "sparkles" || scene.icon === "smartphone"));
+    /digital india/i.test(scene.text || "") ||
+    /digital india/i.test(scene.tag || "");
 
   if (is3DOutro) {
     return <ThreeDOutroPayoff scene={scene} accent={accent} />;

@@ -204,15 +204,64 @@ Before writing factual narration or storyboard claims:
       * **Bottom Safe Zone**: The bottom **350px** (`y > 1570px`) is strictly reserved for Devanagari subtitles/captions. No diagram labels, cards, buttons, or interactive graphics may extend into this zone.
       * **Top Safe Zone**: The top **180px** (`y < 180px`) is reserved for header tags, status bar, and progress indicator.
       * **Maximum Visual Height**: Visual components and interactive diagrams must fit within a maximum height of **960px**, centered vertically between `y = 200px` and `y = 1550px`.
-15. **Giant Focal Numerals & High-Contrast Typography**:
-    - Primary comparison values, algorithmic elements, array items, and key metrics must be styled with high contrast and a minimum font size of **64px–76px bold** (`#FFFFFF` or neon accent on dark obsidian). Never use small muted pills for the core subject of an explanation.
-    - Zero text anywhere on screen can drop below **28px** on a 1080x1920 mobile viewport.
+15. **Strict Ergonomic Typography & Human Visual Angle Thresholds (Eye-Strain & Visual-Pain Prevention)**:
+    - **The Visual Angle Scientific Foundation**:
+      Font size on video displays is strictly governed by the human visual angle formula:
+      $$\theta = 2 \arctan\left(\frac{S}{2D}\right) \iff S = 2 \cdot D \cdot \tan\left(\frac{\theta}{2}\right) \implies P(\theta) = S \cdot \rho$$
+      where $D$ is human viewing distance (mobile smartphone: $\approx 350\text{ mm} \approx 14"$; desktop: $\approx 600\text{ mm}$), $\rho$ is screen pixel density ($\approx 13.5\text{ px/mm}$ for 1080x1920 portrait; $\approx 6.2\text{ px/mm}$ for 1920x1080 landscape).
+    - **The Two Physiological Pain Boundaries**:
+      1. **Squinting / Eye-Strain Danger Zone ($< 0.22^\circ$, $< 20\text{px}$ in 1080x1920)**: Text smaller than 20px causes ciliary muscle spasm, asthenopia (ocular fatigue), and severe squinting on 6" mobile screens. NEVER render readable text below **22px** (absolute floor: **20px** for minor badge borders/mono axis only).
+      2. **Retinal Glare / Saccadic Disruption Ceiling ($> 1.8^\circ - 2.0^\circ$, $> 108\text{px}$ in 1080x1920)**: Text exceeding $1.8^\circ$ visual angle bursts outside the foveal field of view, forcing unnatural eye jumps (saccades), causing disorientation, eye pain, and layout blowouts. NEVER exceed **108px** even for the largest hero number!
+    - **Strict Canonical Typography Spectrum (1080x1920 Vertical Mobile Shorts)**:
+      * **Hero Single Metric / Stat Number** (e.g. `40%`, `99%`): **72px – 104px** (Hard absolute ceiling: **108px**). Dynamically scale down for longer strings: $\le 3$ chars: 104px; 4–5 chars: 88px; 6–7 chars: 74px; $\ge 8$ chars: 62px.
+      * **Scene Main Headline / Primary Title**: **48px – 58px** (Hard ceiling: **60px**). Max 2 lines, tight tracking `-0.02em`.
+      * **Section Headers / Prominent Subtitles**: **32px – 40px** (Optimal: **36px**).
+      * **Card Titles / Container Headers**: **26px – 32px** (Optimal: **28px**).
+      * **Body Explanations / Bullet Descriptions**: **26px – 32px** (Optimal: **28px**, line-height 1.35–1.4). NEVER drop below 24px.
+      * **Active Spoken Hindi Captions**: **48px – 52px** (Optimal: **50px**). Active word pulse max scale 1.12×.
+      * **Category Tags / Step Headers** (e.g. `01 / ARCHITECTURE`): **22px – 26px** (Uppercase, tracking `+0.1em`).
+      * **Monospace Chips / Code Telemetry / Pills**: **20px – 24px** (Optimal: **22px**).
+      * **Mathematical Formulas (KaTeX)**: Primary formula: **40px – 48px** (e.g. $Q = d \times G$); Sub-labels: **22px – 24px**.
+    - **Landscape 16:9 Adaptations (1920x1080)**:
+      * Hero Metric: 54px–76px (Ceiling: 84px) | Title: 38px–48px | Subhead: 28px–34px | Body: 20px–26px | Tag: 18px–22px | Absolute Floor: 16px.
+    - **Automated Verification & CI Guard**: Every video scene is automatically verified by `tools/typography_linter.py` and Step 5 of `tools/qa_suite.py`. Any font size $< 20\text{px}$ or $> 110\text{px}$ is treated as a critical production error and halts pipeline completion.
 16. **Authentic Real-World Hook Grounding**:
     - Ground abstract topics in a concrete situation the audience can recognize. Use a real app/UI only when the topic genuinely concerns that interaction; otherwise choose a relevant physical-world or system-level example. Do not invent app behavior or brand details merely to satisfy a hook rule.
     - Real UI components must model realistic physical details (smartphone viewport, dynamic island, search bar, status bar, real branding, and animated touch cursor with tap ripple).
 17. **Phrase-Synced Action Choreography & Remotion Sequence Rule**:
     - Scene animations must not be generic continuous linear drifts or unsynced loops. Actions must be broken into distinct phases synchronized with spoken audio clauses/cues (e.g. Phase 1 Enter -> Phase 2 Spotlight -> Phase 3 Condition/Alert -> Phase 4 Execution/Swap).
     - **Remotion Sequence Scope**: Inside a Remotion `<Sequence>`, `useCurrentFrame()` is ALREADY 0-indexed to the scene start (0 to scene duration). NEVER subtract `sceneStartFrame`, as doing so produces negative frame counts and freezes caption progression.
+18. **Strict Brand Channel Policy ("Rajan का ADDA" Only) & Mandatory Microsoft Edge Browser**:
+    - **Single Authorized Brand**: All videos across EVERY platform (YouTube, Telegram, Instagram, Facebook, Twitter/𝕏, LinkedIn, Threads) MUST ONLY be published to the official brand account: **"Rajan का ADDA"** (`rajan_ka_adda` / `rajan.ka.adda` / `Rajan का ADDA`). Never upload or publish to any personal account or secondary handle. Every tool must verify the destination account identity before uploading and abort immediately if the active session is not "Rajan का ADDA".
+    - **Mandatory Microsoft Edge Browser**: ALL browser automation workflows, session persistence, and social media web interactions MUST strictly use **Microsoft Edge** (`channel="msedge"` in Playwright). Do NOT use generic Chromium or any other browser.
+19. **Instagram Reels & Shorts Viral Optimization (While Preserving Up to 3-Minute Technical Depth)**:
+    - **Retain 3-Minute (180s) Technical Depth**: Technical, educational explainers must never sacrifice factual rigor or causal explanation. Keep the hard ceiling at 180 seconds while applying viral short-form retention mechanics.
+    - **Instagram UI Safe-Zone Clearance**: All interactive diagrams, gauges, 3D models, and telemetry must respect the Reels safe area:
+      * **Top Clearance**: 160px (avoids Reels camera, tabs, search icons).
+      * **Bottom Clearance**: 380px (keeps content safely above profile username, caption snippet, audio ticker, and bottom nav bar).
+      * **Right Clearance**: 120px (avoids right-side like/comment/share/remix action column).
+    - **Kinetic "Viral Pop" Captions**: Captions are rendered at `bottom: 380px` in a 2–3 word sliding window with a `1.22×` scale bounce, glowing neon shadows, and auto-detected emphasis colors (`#FFE600` for metrics, percentages, currency, and warning terms).
+    - **Frame-0 Visual Momentum (Thumb-Stopper)**: Scene 0 MUST start with 100% opacity on frame 0 (zero initial fade-in from black) and immediate visual motion to prevent users from scrolling past.
+    - **Seamless Infinite Loop Engine**: When authoring the outro in `script.md`, structure the closing clause to flow directly back into the opening hook question. This triggers automatic re-watches on Instagram without jarring cuts or blank frames.
+20. **Universal Asset Placement & Sourcing Matrix (The Right Asset at the Right Place)**:
+    - Agents must NEVER randomly select assets or use generic placeholders. Every asset chosen must directly serve the pedagogical objective:
+      | Video Need / Pedagogical Scene | Asset Type | Primary Source / Engine | Secondary / Fallback Source | Automation Tool | Why This Asset Fits Here |
+      | :--- | :--- | :--- | :--- | :--- | :--- |
+      | **Real-world context / Problem hook** | Real 4K Video B-Roll | **Pexels / Pixabay Video** | Wikimedia / Coverr | `tools/asset_finder.py video` | Immediately grounds the viewer in a recognizable everyday reality. |
+      | **Science / Space / Aerospace** | Archival / Research Video | **NASA Image & Video Library** | Internet Archive | `tools/asset_finder.py video --provider nasa` | 100% authentic public-domain physics and scientific footage. |
+      | **Historical tech / Computing origins** | Archival Footage | **Internet Archive (Archive.org)** | Wikimedia Commons | `tools/asset_finder.py video --provider archive` | Historic footage (Prelinger, Bell Labs) creates documentary credibility. |
+      | **Internal hardware / Spatial depth** | 3D CAD Mesh (`.glb`) | **Curated Presets** (`smartphone`, `server_rack`, `laptop`) | **Poly Haven CC0** / **Sketchfab** | `tools/model_manager.py get\|download` | Allows 360° camera fly-throughs inside chips, antennas, and server racks. |
+      | **Custom mechanical / Physical conversions** | Blender 3D Model | **Blender 5.2.2 Engine** (`tools/blender_render.py`) | Procedural Three.js | `tools/model_manager.py convert` | Centered origin, PBR textures, and normalized dimensions for Three.js. |
+      | **Network handshakes & State transitions** | Chronological 2D Diagram | **Mermaid / SVG** (`diagram` scene) | Architecture cards | `tools/diagram_renderer.py` | Clearly displays time progression and bidirectional message handshakes. |
+      | **System architecture & Data flow** | 2.5D Isometric Graph | **Native Remotion Architecture** | Bento telemetry grid | Built-in React components | Shows multi-node infrastructure without visual clutter. |
+      | **Mathematical proofs & Calculus** | Formula Animations | **Manim (CE)** / **KaTeX Math Engine** | Neural Network Graph | `manim` / `<MathFormula>` | Renders publication-grade vector formulas and gradient curves. |
+      | **Developer tools & Commands** | CLI Terminal Simulation | **Native Remotion Terminal** | Code editor component | Built-in React components | Simulates character-by-character typing with real syntax highlighting. |
+      | **Software UI / Web Platforms** | Interactive UI Simulation | **Screenshot / Mouse Cursor** | **OBS Studio** capture | `screenshot` / `tools/html_recorder.py` | Shows real user actions, click ripples, and prompt responses. |
+      | **Physical Gadgets / Chips / Hardware** | Cutout Showcase | **Product Scene** (Transparent PNG) | 3D Model (`model_3d`) | `product` with `--nobg` | Radial spotlight and spec cards make consumer hardware pop. |
+      | **Algorithm & Napkin Sketches** | Tactile Chalkboard | **Whiteboard Scene** (`p5.brush`) | Diagram renderer | Built-in canvas engine | Charcoal and rotring textures humanize complex sorting/trees. |
+      | **Voiceover / Narration** | Spoken Audio | **VoiceStudio** (`rajan story teller`) | **Edge-TTS** (`hi-IN-MadhurNeural`) | `tts.py` | Natural conversational Hindi with phonetic acronyms. |
+      | **Micro Sound Design** | Frame-Accurate SFX | **Local 19-Sound Library** (`public/sfx/`) | **Freesound API** | Built-in SFX engine | Accentuates transitions, alerts, scans, and metric drops without clutter. |
+      | **Mobile Subtitles / Captions** | Word-Level Highlighting | **Whisper / Faster-Whisper** | Pre-timed timestamps | `Captions.tsx` | High-retention active word pop with safe-zone clearance. |
 
 ## Workflow & QA Commands
 - **Asset Acquisition & Licensing**:
@@ -243,9 +292,9 @@ Before declaring any video complete:
 - [ ] Resolution matches target (1080x1920 vertical or 1920x1080 landscape)
 - [ ] Audio-video sync tight (< 0.5s tolerance)
 - [ ] Black frames < 2% of total duration
-- [ ] Zero text overflow, clipping, or sub-28px fonts on mobile
+- [ ] Ergonomic Typography verified via tools/typography_linter.py (20px - 108px bounds, zero eye strain / retinal glare)
 - [ ] Safe Zone clearance verified: 350px bottom clearance for subtitles with zero diagram/UI collisions
-- [ ] Giant typography verified: primary numbers/metrics are 64px–76px bold
+- [ ] Focal typography verified: primary numbers/metrics are 72px–104px bold (hard ceiling 108px)
 - [ ] Phrase-synced choreography: scene action triggers on exact spoken narration cues
 - [ ] Audio loudness normalized around -16 LUFS
 - [ ] Visual momentum on beat with no static text-only slides or consecutive twin scene types

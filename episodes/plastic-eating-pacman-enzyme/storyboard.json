@@ -1,0 +1,295 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "plastic-eating-pacman-enzyme",
+  "format": "vertical",
+  "art_direction": "editorial",
+  "theme": "emerald",
+  "accent": "#00FF9D",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "pad_seconds": 0.28,
+  "music": null,
+  "meta": {
+    "title": "How Bacteria Eat Plastic Like Pac-Man! 🦠🍽️",
+    "description": "Scientists at the University of Konstanz discovered a revolutionary 'Pac-Man enzyme' in soil bacteria that devours plastic in under a year while also cleaving penicillin antibiotics! Here is the first-principles technical breakdown. #Science #Biotech #PlasticPollution #Microbiology #Shorts",
+    "hashtags": [
+      "#Science",
+      "#Biotech",
+      "#PlasticPollution",
+      "#Microbiology",
+      "#Shorts"
+    ],
+    "facts_to_verify": [
+      "How Bacteria Eat Plastic Like Pac-Man operates via distributed synchronized state machines."
+    ],
+    "misconceptions": [
+      "Bacteria can now eat all ordinary plastic bags and water bottles; conventional polyethylene (HDPE) lacks ester bonds and remains 100% resistant.",
+      "Microbes decompose plastic by swallowing whole pieces; they use surface-anchored depolymerase enzymes that bore tiny cavities into the material.",
+      "Plastic-eating and antibiotic resistance are unrelated; this enzyme shares structural homology with beta-lactamases, proving deep evolutionary links."
+    ],
+    "analogy": "Like a microscopic Pac-Man anchored to a bacterial submarine chomping through chemical beads on a polymer necklace, turning tough plastic into bite-sized nutrients."
+  },
+  "scenes": [
+    {
+      "type": "video",
+      "tag": "01 / THE PLASTIC CRISIS",
+      "title": "PLASTIC CHOKING OUR PLANET",
+      "purpose": "Explain the mechanism and takeaway of PLASTIC CHOKING OUR PLANET.",
+      "tone": "[Urgent, dramatic]",
+      "narration": "हर साल लाखों टन प्लास्टिक हमारे समुद्रों में बहकर जमा हो रहा है, जो सैकड़ों सालों तक सड़ता ही नहीं!",
+      "transition": "zoom_through",
+      "sfx": "whoosh",
+      "icon": "film",
+      "visual": {
+        "start": "High-contrast editorial layout establishing PLASTIC CHOKING OUR PLANET.",
+        "objects": [
+          "Real Ocean Video Footage",
+          "Plastic Waste",
+          "Micro-Animated Water Wave Telemetry."
+        ],
+        "action": "Real ocean video footage with plastic waste, floating red warning reticle \"300+ YEARS TO DEGRADE\", and micro-animated water wave telemetry.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "PLASTIC CHOKING OUR PLANET",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "video": "media/plastic_ocean_garbage.mp4"
+    },
+    {
+      "type": "pacman_enzyme_visualizer",
+      "tag": "02 / BOTANICAL DISCOVERY",
+      "title": "FOREST SOIL HUMUS EXPERIMENT",
+      "purpose": "Explain the mechanism and takeaway of FOREST SOIL HUMUS EXPERIMENT.",
+      "tone": "[Curious, intriguing]",
+      "narration": "लेकिन जर्मनी की कॉन्सटांस यूनिवर्सिटी के वैज्ञानिकों ने जंगल की मिट्टी में कुछ ऐसा खोजा, जिसने सबको चौंका दिया!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing FOREST SOIL HUMUS EXPERIMENT.",
+        "objects": [
+          "Organic Root Fibers"
+        ],
+        "action": "Cross-section of botanical garden forest humus at 10cm depth with organic root fibers and buried bioplastic film under microscopic colonization.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "FOREST SOIL HUMUS EXPERIMENT",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "soil_discovery"
+    },
+    {
+      "type": "benchmark",
+      "tag": "03 / THE 1-YEAR TIMELINE",
+      "title": "BIODEGRADATION SPEED RACE",
+      "purpose": "Explain the mechanism and takeaway of BIODEGRADATION SPEED RACE.",
+      "tone": "[Analytical, impactful]",
+      "narration": "जहाँ नॉर्मल प्लास्टिक वैसी की वैसी रही, वहीं नए बायो-प्लास्टिक को मिट्टी के बैक्टीरिया ने एक साल के अंदर पूरी तरह चट कर दिया!",
+      "transition": "match_cut",
+      "sfx": "radar_beep",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing BIODEGRADATION SPEED RACE.",
+        "objects": [
+          "Cellulose Breaks In 80 Days"
+        ],
+        "action": "Live speed race bars animating from left to right; cellulose breaks in 80 days, bioplastic completely vanishes in under a year, while conventional plastic remains 100% locked.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "BIODEGRADATION SPEED RACE",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "runners": [
+        {
+          "name": "Cellulose (Natural)",
+          "value": 80,
+          "status": "Decomposed",
+          "color": "#58D6C2"
+        },
+        {
+          "name": "LCAP Bioplastic",
+          "value": 280,
+          "status": "100% Vanished",
+          "color": "#00FF9D"
+        },
+        {
+          "name": "HDPE (Normal Plastic)",
+          "value": 365,
+          "status": "0% Degraded (Immortal)",
+          "color": "#EF4444"
+        }
+      ],
+      "unit": "days"
+    },
+    {
+      "type": "image",
+      "tag": "04 / ELECTRON MICROSCOPY",
+      "title": "MYSTERIOUS BACTERIAL BITES",
+      "purpose": "Explain the mechanism and takeaway of MYSTERIOUS BACTERIAL BITES.",
+      "tone": "[Scientific, mysterious]",
+      "narration": "इलेक्ट्रॉन माइक्रोस्कोप से देखने पर प्लास्टिक की सतह पर बैक्टीरिया के आकार के रहस्यमयी गड्ढे मिले — जैसे किसी ने उनमें से बाइट्स ली हों!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing MYSTERIOUS BACTERIAL BITES.",
+        "objects": [
+          "Zooming Scan Beam"
+        ],
+        "action": "Electron microscope scan displaying the plastic surface with zooming scan beam, highlighting microscopic bite-mark pits carved directly by individual bacterial cells.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "MYSTERIOUS BACTERIAL BITES",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "image": "media/plastic_degrading_bacteria.webp"
+    },
+    {
+      "type": "pacman_enzyme_visualizer",
+      "tag": "05 / ENZYME CATALYSIS",
+      "title": "THE 'PAC-MAN' MOLECULAR MOUTH",
+      "purpose": "Explain the mechanism and takeaway of THE 'PAC-MAN' MOLECULAR MOUTH.",
+      "tone": "[Energetic, explanatory]",
+      "narration": "वैज्ञानिकों ने पाया कि इन बैक्टीरिया के पास एक खास एंज़ाइम है, जिसे 'पैक-मैन' नाम दिया गया है, जो प्लास्टिक की चेन को टुकड़ों में काट देता है!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing THE 'PAC-MAN' MOLECULAR MOUTH.",
+        "objects": [
+          "Chomping Down On Polyester Chains"
+        ],
+        "action": "Molecular animation of the bacterial outer membrane with lipid anchor holding the Pac-Man enzyme jaws, chomping down on polyester chains and cleaving ester bonds into monomer building blocks.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "THE 'PAC-MAN' MOLECULAR MOUTH",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "variant": "pacman_mouth"
+    },
+    {
+      "type": "compare",
+      "tag": "06 / THE SHOCKING TWIST",
+      "title": "DUAL ACTIVITY CROSSOVER",
+      "purpose": "Explain the mechanism and takeaway of DUAL ACTIVITY CROSSOVER.",
+      "tone": "[Shocked, dramatic reveal]",
+      "narration": "लेकिन असली ट्विस्ट यह है कि यह एंज़ाइम पेनिसिलिन जैसी एंटी-बायोटिक्स को भी तोड़ सकता है, जो सुपर-बग्स के काम करने के तरीके से मिलता-जुलता है!",
+      "transition": "match_cut",
+      "sfx": "click",
+      "icon": "git-compare",
+      "visual": {
+        "start": "Split comparison stage materializing with contrasting left and right panels.",
+        "objects": [
+          "Side-By-Side Comparison Cards Contrastin"
+        ],
+        "action": "Side-by-side comparison cards contrasting the enzyme's dual superpowers: breaking plastic polymers on the left and disabling penicillin antibiotics on the right.",
+        "camera": "Stable centered split-screen framing with generous subtitle margins.",
+        "motion_graphics": [
+          "SIDE-BY-SIDE ARCHITECTURAL COMPARISON",
+          "STATUS INDICATORS"
+        ],
+        "end": "Comparison holds with clear visual superiority established."
+      },
+      "left": {
+        "heading": "Plastic Hydrolysis",
+        "items": [
+          "Family-VIII Esterase",
+          "Cleaves Ester Bonds",
+          "Recycles into Monomers"
+        ]
+      },
+      "right": {
+        "heading": "Antibiotic Resistance",
+        "items": [
+          "Acts like Beta-Lactamase",
+          "Cleaves Penicillin Ring",
+          "Bacterial Survival Tool"
+        ]
+      }
+    },
+    {
+      "type": "bento",
+      "tag": "07 / THE REALITY CHECK",
+      "title": "DESIGNING FUTURE MATERIALS",
+      "purpose": "Explain the mechanism and takeaway of DESIGNING FUTURE MATERIALS.",
+      "tone": "[Authoritative, educational]",
+      "narration": "याद रहे, यह जादू आम प्लास्टिक की बोतलों पर काम नहीं करेगा; हमें भविष्य के प्लास्टिक को ऐसे ब्रेकिंग पॉइंट्स के साथ ही डिज़ाइन करना होगा!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing DESIGNING FUTURE MATERIALS.",
+        "objects": [
+          "Glowing Bento Matrix Contrasting Unbreak"
+        ],
+        "action": "Glowing bento matrix contrasting unbreakable carbon-carbon backbones against hydrolysable ester breaking points required for microbial digestion.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "DESIGNING FUTURE MATERIALS",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "bentoItems": [
+        {
+          "title": "Normal Plastic (HDPE)",
+          "value": "0% Degraded",
+          "badge": "Locked C-C Bonds",
+          "span": 2
+        },
+        {
+          "title": "Future Bioplastics (LCAP)",
+          "value": "100% In 1 Year",
+          "badge": "Ester Break Points",
+          "span": 2
+        },
+        {
+          "title": "The Golden Rule",
+          "value": "Engineered Break Points",
+          "badge": "Essential",
+          "span": 2
+        }
+      ]
+    },
+    {
+      "type": "outro",
+      "tag": "08 / THE PAYOFF",
+      "title": "CAN MICROBES SAVE EARTH?",
+      "purpose": "Explain the mechanism and takeaway of CAN MICROBES SAVE EARTH?.",
+      "tone": "[Inspiring, engaging CTA]",
+      "narration": "क्या बैक्टीरिया हमारी धरती को प्लास्टिक से बचा पाएंगे? अपनी राय कमेंट्स में बताइए और ऐसी ही साइंस के लिए सब्सक्राइब कीजिए!",
+      "transition": "match_cut",
+      "sfx": "ding",
+      "icon": "sparkles",
+      "visual": {
+        "start": "Structured takeaway card framed in dark navy with cyan accent borders.",
+        "objects": [
+          "Glowing Eco-Shield Outro Card",
+          "Dna Leaf Icon",
+          "Channel Subscribe Button",
+          "Animated Comment Question Prompt."
+        ],
+        "action": "Glowing eco-shield outro card with DNA leaf icon, channel subscribe button, and animated comment question prompt.",
+        "camera": "Stable cinematic hero outro presentation.",
+        "motion_graphics": [
+          "CHECK · ADVANCE · PAYOFF",
+          "FOLLOW FOR TECH EXPLAINERS"
+        ],
+        "end": "Holds on clean branded frame with zero audio clipping."
+      },
+      "text": "WILL BACTERIA SOLVE PLASTIC?"
+    }
+  ]
+}

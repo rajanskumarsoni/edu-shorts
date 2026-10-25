@@ -13,12 +13,29 @@ Usage:
 import argparse
 import json
 import os
+import re
 import sys
 import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+
+
+def _ensure_project_venv():
+    venv_py = ROOT / ".venv" / "bin" / "python3"
+    if not venv_py.is_file():
+        return
+    try:
+        import playwright
+    except ImportError:
+        if Path(sys.executable).resolve() != venv_py.resolve():
+            import subprocess
+            res = subprocess.run([str(venv_py)] + sys.argv, cwd=str(ROOT))
+            sys.exit(res.returncode)
+
+
+_ensure_project_venv()
 
 PROFILE_DIR = ROOT / ".browser_profiles" / "threads"
 MANIFEST_FILE = ROOT / "episodes" / ".uploaded_manifest.json"
@@ -113,6 +130,7 @@ def upload_to_threads_free(video: Path, text: str = None, headless: bool = False
     with sync_playwright() as p:
         context = p.chromium.launch_persistent_context(
             user_data_dir=str(PROFILE_DIR),
+            channel="msedge",
             headless=headless,
             viewport={"width": 1280, "height": 850},
             args=["--disable-blink-features=AutomationControlled"],
@@ -120,7 +138,7 @@ def upload_to_threads_free(video: Path, text: str = None, headless: bool = False
 
         page = context.pages[0] if context.pages else context.new_page()
 
-        print("\n🌐 Navigating to https://www.threads.net/...")
+        print("\n🌐 Navigating to https://www.threads.net/ with Microsoft Edge...")
         page.goto("https://www.threads.net/", timeout=60000, wait_until="domcontentloaded")
         page.wait_for_timeout(3500)
 
@@ -141,16 +159,30 @@ def upload_to_threads_free(video: Path, text: str = None, headless: bool = False
             page.goto("https://www.threads.net/", timeout=60000)
             page.wait_for_timeout(4000)
 
+        # Step 1b: STRICT Brand Verification - Rajan का ADDA Only
+        profile_links = [a.get_attribute("href") or "" for a in page.locator('a[href*="/@"]').all()]
+        is_rajan = any("rajan.ka.adda" in h.lower() or "rajan_ka_adda" in h.lower() for h in profile_links)
+        if not is_rajan:
+            context.close()
+            raise RuntimeError(f"STRICT POLICY VIOLATION: Current Threads account ({profile_links[:2]}) is NOT 'rajan.ka.adda'. Upload aborted.")
+        print("✅ Verified official brand account: @rajan.ka.adda")
+
         # Step 2: Open Composer
         print("✍️  Opening Threads post composer...")
-        create_btn = page.locator('svg[aria-label="Create"], div[contenteditable="true"][role="textbox"]').first
-        create_btn.wait_for(state="visible", timeout=15000)
+        create_btn = page.locator('div:has-text("What\'s new?")').last
+        if not create_btn.is_visible():
+            create_btn = page.locator('svg[aria-label="Create"]').first
+        if not create_btn.is_visible():
+            create_btn = page.locator('button:has-text("New thread"), div:has-text("New thread")').first
         create_btn.click()
-        page.wait_for_timeout(1500)
+        page.wait_for_timeout(2000)
+
+        dialog = page.locator('div[role="dialog"]').last
+        dialog.wait_for(state="visible", timeout=10000)
 
         # Step 3: Insert Text
         print("📝 Inserting post caption...")
-        textbox = page.locator('div[contenteditable="true"][role="textbox"]').last
+        textbox = dialog.locator('div[contenteditable="true"][role="textbox"]').first
         textbox.wait_for(state="visible", timeout=15000)
         textbox.click()
         page.wait_for_timeout(500)
@@ -159,27 +191,18 @@ def upload_to_threads_free(video: Path, text: str = None, headless: bool = False
 
         # Step 4: Attach Video File
         print(f"📤 Attaching video file: {video.name}...")
-        file_input = page.locator('input[type="file"]').last
+        file_input = dialog.locator('input[type="file"]').last
         file_input.set_input_files(str(video))
 
-        # Step 5: Wait for Upload & Transcoding
+        # Step 5: Wait for Upload & Video Preview
         print("⏳ Uploading video to Threads (waiting for video preview)...")
-        upload_start = time.time()
-        max_upload_time = 300  # 5 minutes
-        post_btn = page.locator('div[role="button"]:has-text("Post"), button:has-text("Post")').last
-        post_btn.wait_for(state="visible", timeout=20000)
-
-        while time.time() - upload_start < max_upload_time:
-            is_disabled = post_btn.get_attribute("aria-disabled") == "true" or post_btn.is_disabled()
-            if not is_disabled:
-                # Video has uploaded and Post button is enabled!
-                break
-            page.wait_for_timeout(3000)
-            print("   ...still processing video on Threads...")
-        else:
-            raise TimeoutError("Video processing on Threads timed out.")
-
+        dialog.locator("video").first.wait_for(state="visible", timeout=60000)
+        print("✅ Video preview rendered in Threads composer!")
         page.wait_for_timeout(3000)
+
+        # Locate exact Post button inside the composer dialog
+        post_btn = dialog.locator('div[role="button"], button').filter(has_text=re.compile(r"^Post$")).first
+        post_btn.wait_for(state="visible", timeout=10000)
 
         # Step 6: Click Post Button
         print("🚀 Publishing Thread...")
@@ -189,18 +212,70 @@ def upload_to_threads_free(video: Path, text: str = None, headless: bool = False
             post_btn.click(force=True)
 
         # Step 7: Wait for Compose modal to close
-        print("⏳ Finalizing post submission...")
-        page.wait_for_timeout(5000)
+        print("⏳ Waiting for composer modal to close...")
+        dialog.wait_for(state="hidden", timeout=60000)
+        print("✅ Composer modal closed! Video is being published by Threads...")
 
-        post_url = "https://www.threads.net/"
+        # Step 8: Wait for the background "Posting..." toast to finish
+        print("⏳ Waiting for Threads background transcoding and posting toast to complete...")
         try:
-            profile_btn = page.locator('a[href*="/@"]').first
-            if profile_btn.is_visible(timeout=5000):
-                href = profile_btn.get_attribute("href")
-                if href:
-                    post_url = f"https://www.threads.net{href}" if href.startswith("/") else href
+            posting_toast = page.locator('text="Posting..."').first
+            if posting_toast.is_visible(timeout=10000):
+                print("   Detected active \x27Posting...\x27 banner on Threads...")
+                posting_toast.wait_for(state="hidden", timeout=180000)
+                print("   \x27Posting...\x27 banner finished!")
+        except Exception as e:
+            print(f"   Notice while monitoring posting banner: {e}")
+
+        # Buffer to let Threads feed index the new post
+        page.wait_for_timeout(10000)
+
+        # Step 9: Verify and Capture NEW Thread URL
+        print("🔍 Verifying newly published thread on @rajan.ka.adda...")
+        post_url = None
+        
+        # Check if a "View" link appeared in the toast
+        try:
+            view_toast = page.locator('a:has-text("View"), a[href*="/post/"]').first
+            if view_toast.is_visible(timeout=5000):
+                href = view_toast.get_attribute("href")
+                if href and href.startswith("/"):
+                    post_url = f"https://www.threads.net{href}"
+                elif href and href.startswith("http"):
+                    post_url = href
         except Exception:
             pass
+
+        # Read manifest to know previously recorded URL so we never return a duplicate/old post!
+        prev_threads_url = None
+        try:
+            if MANIFEST_FILE.is_file():
+                mf = json.loads(MANIFEST_FILE.read_text(encoding="utf-8"))
+                for ep_key, ep_data in mf.items():
+                    if isinstance(ep_data, dict) and "threads" in ep_data and ep_data["threads"]:
+                        prev_threads_url = ep_data["threads"]
+        except Exception:
+            pass
+
+        if not post_url or post_url == prev_threads_url:
+            for attempt in range(1, 4):
+                try:
+                    page.goto("https://www.threads.net/@rajan.ka.adda", timeout=45000, wait_until="domcontentloaded")
+                    page.wait_for_timeout(5000)
+                    post_links = [a.get_attribute("href") for a in page.locator('a[href*="/post/"]').all() if a.get_attribute("href")]
+                    for pl in post_links:
+                        full_pl = f"https://www.threads.net{pl}" if pl.startswith("/") else pl
+                        if full_pl != prev_threads_url:
+                            post_url = full_pl
+                            break
+                    if post_url:
+                        break
+                except Exception as e:
+                    print(f"   Retry {attempt} navigating to profile: {e}")
+                page.wait_for_timeout(5000)
+
+        if not post_url:
+            post_url = "https://www.threads.net/@rajan.ka.adda"
 
         print("\n" + "=" * 65)
         print("🎉 SUCCESS! Video published to Threads ($0.00 Free):")
@@ -240,6 +315,7 @@ def main():
         with sync_playwright() as p:
             context = p.chromium.launch_persistent_context(
                 user_data_dir=str(PROFILE_DIR),
+                channel="msedge",
                 headless=False,
                 viewport={"width": 1280, "height": 850},
             )

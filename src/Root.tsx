@@ -27,15 +27,20 @@ export const Root: React.FC = () => (
       fps={30}
       durationInFrames={90}
       defaultProps={defaultProps}
-      calculateMetadata={({ props }: { props: VideoProps }) => ({
-        durationInFrames: Math.max(
-          1,
-          props.scenes.reduce((a: number, s: SceneSpec) => a + s.durationInFrames, 0)
-        ),
-        fps: props.fps,
-        width: props.width,
-        height: props.height,
-      })}
+      calculateMetadata={({ props }: { props: VideoProps }) => {
+        const fps = props?.fps || 30;
+        const totalDuration = (props?.scenes || []).reduce(
+          (a: number, s: any) =>
+            a + (s.durationInFrames ?? Math.round((s.seconds ?? 3) * fps)),
+          0
+        );
+        return {
+          durationInFrames: Math.max(1, totalDuration || 90),
+          fps: fps,
+          width: props?.width || ((props as any)?.format === "landscape" ? 1920 : 1080),
+          height: props?.height || ((props as any)?.format === "landscape" ? 1080 : 1920),
+        };
+      }}
     />
     <Composition
       id="ThreeDGradient"

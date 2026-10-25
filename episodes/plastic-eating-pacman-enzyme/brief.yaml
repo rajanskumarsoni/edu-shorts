@@ -1,0 +1,42 @@
+id: "plastic-eating-pacman-enzyme"
+topic: "How Bacteria Devour Plastic with a Pac-Man Enzyme and a Surprising Secret"
+title: "How Bacteria Eat Plastic Like Pac-Man"
+target_duration_seconds: 70
+format: "vertical"
+art_direction: "editorial"
+theme: "emerald"
+accent: "#00FF9D"
+
+pedagogy:
+  audience: "Curious 15-year-old viewer fascinated by biology, environmental science, and future biotech"
+  core_question: "Can bacteria really eat synthetic plastic waste, and what is the surprising secret behind the 'Pac-Man' enzyme?"
+  core_mechanism: "University of Konstanz researchers discovered that soil bacteria produce an esterase enzyme (Family VIII) with a wide active cleft ('Pac-Man mouth') anchored to their outer membrane. This enzyme hydrolyzes ester bonds in biodegradable polyesters (LCAP) within a year, while also surprisingly cleaving the beta-lactam ring of penicillin antibiotics."
+  analogy: "Like a microscopic Pac-Man anchored to a bacterial submarine chomping through chemical beads on a polymer necklace, turning tough plastic into bite-sized nutrients."
+  misconceptions:
+    - "Bacteria can now eat all ordinary plastic bags and water bottles; conventional polyethylene (HDPE) lacks ester bonds and remains 100% resistant."
+    - "Microbes decompose plastic by swallowing whole pieces; they use surface-anchored depolymerase enzymes that bore tiny cavities into the material."
+    - "Plastic-eating and antibiotic resistance are unrelated; this enzyme shares structural homology with beta-lactamases, proving deep evolutionary links."
+
+verified_mechanism:
+  - "Long-chain aliphatic polyesters (LCAP) buried in forest soil humus broke down completely within 250 to 330 days, while conventional HDPE showed virtually zero degradation."
+  - "Scanning electron microscopy revealed microscopic pits/cavities on the plastic surface matching the exact dimensions of individual bacterial cells."
+  - "The bacteria use a Family-VIII esterase with an exposed wide active cleft, nicknamed the 'Pac-Man enzyme', anchored to the outer cell membrane via a lipid tether."
+  - "The enzyme hydrolyzes ester bonds (R-COO-R' + H2O -> R-COOH + HO-R'), releasing carbon monomers that bacteria absorb for cellular growth and respiration (releasing CO2)."
+  - "In laboratory tests, the same Pac-Man enzyme unexpectedly cleaved the beta-lactam ring of penicillin, mirroring bacterial antibiotic resistance mechanisms."
+  - "To harness microbial plastic degradation, humans must design plastics with hydrolysable biochemical breaking points rather than resistant carbon-carbon backbones."
+
+research_sources:
+  - url: "https://www.sciencedaily.com/releases/2026/10/261014015509.htm"
+    supports: "ScienceDaily report: University of Konstanz discovery of Pac-Man enzyme in soil bacteria, 1-year bioplastic degradation vs HDPE, and penicillin cleavage."
+  - url: "http://dx.doi.org/10.1093/ismejo/wrag203"
+    supports: "The ISME Journal (2026): Bacterial family-VIII esterase displays dual activities: hydrolysis of polyester bioplastics and beta-lactam antibiotics by Harry Lerner et al."
+
+visual_plan:
+  - "Scene 1: Real stock video of plastic waste floating in oceans with floating hazard telemetry reticle (video)."
+  - "Scene 2: Hand-drawn botanical forest soil cross-section with organic p5.brush strokes showing buried bioplastic film at 10cm depth (whiteboard)."
+  - "Scene 3: Live speed race benchmark comparing Cellulose (80d) vs LCAP Bioplastic (280d) vs HDPE (0% degraded) (benchmark)."
+  - "Scene 4: High-magnification electron microscope scan showing microscopic bite-mark pits carved by bacteria into the plastic film (image)."
+  - "Scene 5: Custom molecular simulation of the surface-anchored Pac-Man enzyme jaws chomping polymer chains into monomers (pacman_enzyme_visualizer)."
+  - "Scene 6: Dual activity split comparison showing esterase plastic breakdown vs beta-lactamase penicillin ring cleavage (compare)."
+  - "Scene 7: Bento reality check: locked carbon-carbon bonds of HDPE vs hydrolysable ester breaking points of future bioplastics (bento)."
+  - "Scene 8: High-impact branded outro payoff with bio-shield badge and audience subscribe CTA (outro)."
