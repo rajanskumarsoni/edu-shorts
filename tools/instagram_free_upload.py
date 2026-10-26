@@ -328,7 +328,11 @@ def upload_to_instagram_free(video: Path, caption: str = None, headless: bool = 
 
         # Step 7: Click Share
         print("🚀 Clicking Share button to publish Reel...")
-        share_btn = page.locator('div[role="button"]:has-text("Share"), button:has-text("Share")').first
+        # Scope strictly inside the New reel modal to avoid clicking background feed Share buttons
+        modal = page.locator('div[role="dialog"]:has-text("New reel"), div[role="dialog"]:has-text("Create new post")').first
+        share_btn = modal.locator('div[role="button"]:has-text("Share"), button:has-text("Share")').first
+        if share_btn.count() == 0:
+            share_btn = page.locator('div[role="dialog"] div[role="button"]:has-text("Share"), div[role="dialog"] button:has-text("Share")').last
         share_btn.wait_for(state="visible", timeout=20000)
         
         # Execute click via JS and force click
@@ -343,9 +347,14 @@ def upload_to_instagram_free(video: Path, caption: str = None, headless: bool = 
         shared_confirmed = False
         while time.time() - upload_start < 300: # 5 min timeout
             try:
-                # Check for "Your reel has been shared" or "Your post has been shared"
-                confirm = page.locator('text="Your reel has been shared", text="Your post has been shared", text="Reel shared", text="Post shared"').first
+                # Check for "Your reel has been shared", "Copy Link" post-share modal, or dialog close
+                confirm = page.locator('text="Your reel has been shared", text="Your post has been shared", text="Reel shared", text="Post shared", text="Copy Link", div[role="dialog"]:has-text("Share")').first
                 if confirm.is_visible(timeout=3000):
+                    shared_confirmed = True
+                    break
+                # If create dialog disappeared, the reel was shared
+                create_dialog = page.locator('div[role="dialog"]:has-text("New reel"), div[role="dialog"]:has-text("Create new post")')
+                if create_dialog.count() == 0:
                     shared_confirmed = True
                     break
             except Exception:

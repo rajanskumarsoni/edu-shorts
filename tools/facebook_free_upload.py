@@ -170,8 +170,13 @@ def upload_to_facebook_free(video: Path, caption: str = None, headless: bool = F
         # Step 1: Open Meta Business Suite Reels Composer for the Page
         composer_url = f"https://business.facebook.com/latest/reels_composer?asset_id={page_id}"
         print(f"\n🌐 Navigating to Meta Business Suite for Page (Rajan का ADDA) with Microsoft Edge...")
-        page.goto(composer_url, timeout=60000, wait_until="domcontentloaded")
-        page.wait_for_timeout(5000)
+        page.goto(composer_url, timeout=60000, wait_until="load")
+        
+        # Give Meta Business Suite SPA time to render
+        try:
+            page.wait_for_selector('input[type="file"], div[role="button"]:has-text("Add Video"), div[role="button"]:has-text("Upload"), button:has-text("Add Video")', timeout=20000)
+        except Exception:
+            page.wait_for_timeout(6000)
 
         # Handle cookie banners if present
         try:
@@ -193,20 +198,20 @@ def upload_to_facebook_free(video: Path, caption: str = None, headless: bool = F
                 context.close()
                 raise TimeoutError("Login timed out. Please run again and complete login.")
 
-            page.goto(composer_url, timeout=60000)
-            page.wait_for_timeout(5000)
+            page.goto(composer_url, timeout=60000, wait_until="load")
+            page.wait_for_timeout(8000)
 
         # Step 3: Attach Video File
         print(f"📤 Attaching video file to Page Reel: {video.name}...")
         attached = False
         # Try checking for active input[type="file"]
-        for _ in range(5):
+        for _ in range(8):
             file_input = page.locator('input[type="file"]')
             if file_input.count() > 0:
                 file_input.first.set_input_files(str(video))
                 attached = True
                 break
-            page.wait_for_timeout(1000)
+            page.wait_for_timeout(1500)
 
         if not attached:
             add_video_btn = page.locator(
