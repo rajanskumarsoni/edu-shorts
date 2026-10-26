@@ -63,6 +63,7 @@ import { TowerOfHanoiVisualizer } from "./scenes/TowerOfHanoiVisualizer";
 import { EMudhraVisualizer } from "./scenes/EMudhraVisualizer";
 import { BikeSelfStartVisualizer } from "./scenes/BikeSelfStartVisualizer";
 import { TreeTraversalVisualizer } from "./scenes/TreeTraversalVisualizer";
+import { BiometricUnlockVisualizer } from "./scenes/BiometricUnlockVisualizer";
 
 const SCENES = {
   hook: Hook,
@@ -118,6 +119,8 @@ const SCENES = {
   bike_self_start_visualizer: BikeSelfStartVisualizer,
   tree_traversal: TreeTraversalVisualizer,
   tree_traversal_visualizer: TreeTraversalVisualizer,
+  biometric_unlock: BiometricUnlockVisualizer,
+  biometric_unlock_visualizer: BiometricUnlockVisualizer,
 };
 
 const DEFAULT_SFX_VOLUMES: Record<string, number> = {

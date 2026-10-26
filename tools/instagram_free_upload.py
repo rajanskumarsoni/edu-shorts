@@ -203,7 +203,7 @@ def upload_to_instagram_free(video: Path, caption: str = None, headless: bool = 
                 context.close()
                 raise RuntimeError("Not logged into Instagram. Please run with visible browser once: .venv/bin/python tools/instagram_free_upload.py --login-only")
 
-            page.goto("https://www.instagram.com/accounts/login/", timeout=60000)
+            page.goto("https://www.instagram.com/accounts/login/", timeout=60000, wait_until="domcontentloaded")
             logged_in = wait_for_user_login(page, timeout_sec=180)
             if not logged_in:
                 context.close()
@@ -446,7 +446,7 @@ def main():
                 viewport={"width": 1280, "height": 850},
             )
             page = context.pages[0] if context.pages else context.new_page()
-            page.goto("https://www.instagram.com/accounts/login/", timeout=60000)
+            page.goto("https://www.instagram.com/accounts/login/", timeout=60000, wait_until="domcontentloaded")
             wait_for_user_login(page, timeout_sec=300)
             context.close()
         return 0

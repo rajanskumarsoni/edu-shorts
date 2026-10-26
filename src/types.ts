@@ -45,7 +45,9 @@ export type SceneType =
   | "bike_self_start"
   | "bike_self_start_visualizer"
   | "tree_traversal"
-  | "tree_traversal_visualizer";
+  | "tree_traversal_visualizer"
+  | "biometric_unlock"
+  | "biometric_unlock_visualizer";
 
 export type Side = { heading: string; items: string[] };
 

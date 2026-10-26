@@ -44,7 +44,8 @@ DYNAMIC_VISUAL_TYPES = {
     "aadhaar", "aadhaar_visualizer", "tower_of_hanoi", "tower_of_hanoi_visualizer",
     "emudhra", "emudhra_visualizer",
     "bike_self_start", "bike_self_start_visualizer",
-    "tree_traversal", "tree_traversal_visualizer"
+    "tree_traversal", "tree_traversal_visualizer",
+    "biometric_unlock", "biometric_unlock_visualizer"
 }
 
 

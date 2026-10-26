@@ -49,7 +49,8 @@ VALID_SCENE_TYPES = {
     "tower_of_hanoi", "tower_of_hanoi_visualizer",
     "emudhra", "emudhra_visualizer",
     "bike_self_start", "bike_self_start_visualizer",
-    "tree_traversal", "tree_traversal_visualizer"
+    "tree_traversal", "tree_traversal_visualizer",
+    "biometric_unlock", "biometric_unlock_visualizer"
 }
 
 SCENE_DEFAULT_SFX = {
@@ -74,6 +75,8 @@ SCENE_DEFAULT_SFX = {
     "binary_search_visualizer": "fast_whoosh",
     "tower_of_hanoi": "fast_whoosh",
     "tower_of_hanoi_visualizer": "fast_whoosh",
+    "biometric_unlock": "radar_beep",
+    "biometric_unlock_visualizer": "radar_beep",
     "outro": "ding",
     "default": "whoosh"
 }
@@ -102,6 +105,8 @@ SCENE_DEFAULT_ICONS = {
     "binary_search_visualizer": "split",
     "tower_of_hanoi": "layers",
     "tower_of_hanoi_visualizer": "layers",
+    "biometric_unlock": "fingerprint",
+    "biometric_unlock_visualizer": "fingerprint",
     "outro": "sparkles",
     "default": "zap"
 }

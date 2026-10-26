@@ -96,5 +96,19 @@
     ],
     "duration": 32,
     "scene_count": 8
+  },
+  "how-biometric-unlock-works": {
+    "timestamp": "2026-10-27 01:13:44",
+    "platforms": [
+      "youtube",
+      "facebook",
+      "twitter",
+      "linkedin",
+      "threads",
+      "telegram",
+      "instagram"
+    ],
+    "duration": 32,
+    "scene_count": 8
   }
 }

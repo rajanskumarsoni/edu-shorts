@@ -101,3 +101,24 @@ export const useWordPulse = (isActive: boolean, options: {
     [1, 1 + strength]
   );
 };
+
+/**
+ * Universal Mobile Font Size Clamping Formula.
+ * Ensures typography on vertical 1080x1920 Shorts/Reels screens NEVER drops below
+ * ergonomic human visual angle readability thresholds.
+ *
+ * Formula: fontSize = Math.max(minFloor, Math.round(requestedSize * scaleFactor))
+ */
+export const safeFont = (requestedSize: number, minFloor: number = 24): number => {
+  return Math.max(minFloor, Math.round(requestedSize));
+};
+
+export const TYPOGRAPHY_FLOOR = {
+  badge: 24,       // Absolute minimum floor for any badge, tag, or indicator
+  caption: 26,     // Secondary sub-captions, formulas, coordinates
+  body: 30,        // Explanations, cards, lists, descriptions
+  subheading: 38,  // Card titles, feature headers, split names
+  heading: 52,     // Scene titles, large warning alerts
+  hero: 76,        // Massive stats, latencies, 0.2s, 30,000, O(1)
+} as const;
+

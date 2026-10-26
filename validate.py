@@ -83,6 +83,8 @@ ALLOWED = {
     "bike_self_start_visualizer": {"type", "title", "tag", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "tree_traversal": {"type", "title", "tag", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "tree_traversal_visualizer": {"type", "title", "tag", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "biometric_unlock": {"type", "title", "tag", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "biometric_unlock_visualizer": {"type", "title", "tag", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
 }
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp", ".svg")
 VIDEO_EXTS = (".mp4", ".mov", ".webm")

@@ -1,0 +1,4027 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "how-biometric-unlock-works",
+  "format": "vertical",
+  "art_direction": "editorial",
+  "theme": "cyberpunk",
+  "accent": "#00F0FF",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "pad_seconds": 0.28,
+  "music": null,
+  "meta": {
+    "title": "How Fingerprint & Face Unlock Recognize You Works | Tech Explainer",
+    "description": "Learn how Fingerprint & Face Unlock Recognize You works under the hood through visual motion graphics and first-principles technical breakdown.",
+    "hashtags": [
+      "#Technology",
+      "#ComputerScience",
+      "#Engineering",
+      "#SystemDesign",
+      "#TechShorts"
+    ],
+    "facts_to_verify": [
+      "Fingerprint & Face Unlock Recognize You operates via distributed synchronized state machines."
+    ],
+    "misconceptions": [],
+    "analogy": ""
+  },
+  "facts": [
+    {
+      "claim": "Unlock Recognition Latency",
+      "verified_value": "< 200 milliseconds (0.2s)",
+      "source": "Qualcomm 3D Sonic & Apple Face ID Benchmarks"
+    },
+    {
+      "claim": "Ultrasonic Frequency",
+      "verified_value": "10 to 20 MHz Acoustic Waves",
+      "source": "Qualcomm 3D Sonic Sensor Max Specs"
+    },
+    {
+      "claim": "Fingerprint Minutiae Points Extracted",
+      "verified_value": "30 to 40 Points (Endings & Bifurcations)",
+      "source": "ISO/IEC 19794-2 Biometric Standard"
+    },
+    {
+      "claim": "Face ID Infrared Dot Grid",
+      "verified_value": "> 30,000 Invisible Dots",
+      "source": "Apple TrueDepth Camera System White Paper"
+    },
+    {
+      "claim": "Infrared Laser Wavelength",
+      "verified_value": "940 nm (Invisible VCSEL)",
+      "source": "Apple Face ID Technical Documentation"
+    },
+    {
+      "claim": "Hardware Security Isolation",
+      "verified_value": "Separate Physical Silicon Core",
+      "source": "Apple Secure Enclave & Android TEE (TrustZone)"
+    },
+    {
+      "claim": "Cryptographic Storage Standard",
+      "verified_value": "AES-256 Bit Encryption",
+      "source": "NIST FIPS 140-2 Level 3 Hardware Security"
+    },
+    {
+      "claim": "Face ID False Acceptance Rate",
+      "verified_value": "1 in 1,000,000 (< 0.0001%)",
+      "source": "Apple Security Architecture White Paper"
+    },
+    {
+      "claim": "Touch ID False Acceptance Rate",
+      "verified_value": "1 in 50,000 (0.002%)",
+      "source": "Apple Touch ID Security Benchmark"
+    },
+    {
+      "claim": "Stored Raw Image Count",
+      "verified_value": "0 Images (Strictly Zero Photos Saved)",
+      "source": "Android CDD & Apple Biometrics Security Architecture"
+    }
+  ],
+  "choreography": {
+    "total_events": 31,
+    "actors": [
+      "customer",
+      "payment_screen",
+      "radio_wave",
+      "system_core"
+    ],
+    "targets": [
+      "2d photo spoof vs 30,000 infrared dots_interface",
+      "3d depth mesh • attention awareness_interface",
+      "binary answer • only secure math_interface",
+      "instant recognition • zero delay_interface",
+      "minutiae extraction • 256-bit coordinate hash_interface",
+      "secure enclave • zero os access_interface",
+      "ultrasonic sound waves • 3d acoustic map_interface",
+      "zero photos stored • total privacy_interface"
+    ],
+    "concurrent_pairs": [],
+    "timeline_contiguous": true,
+    "events_summary": [
+      {
+        "event_id": "evt_00_01",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "instant recognition • zero delay_interface",
+        "start_pct": 0,
+        "end_pct": 23
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "instant recognition • zero delay_interface",
+        "start_pct": 23,
+        "end_pct": 51
+      },
+      {
+        "event_id": "evt_00_03",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "instant recognition • zero delay_interface",
+        "start_pct": 51,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "zero photos stored • total privacy_interface",
+        "start_pct": 0,
+        "end_pct": 20
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "zero photos stored • total privacy_interface",
+        "start_pct": 20,
+        "end_pct": 50
+      },
+      {
+        "event_id": "evt_00_03",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "zero photos stored • total privacy_interface",
+        "start_pct": 50,
+        "end_pct": 60
+      },
+      {
+        "event_id": "evt_00_04",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "zero photos stored • total privacy_interface",
+        "start_pct": 60,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "customer",
+        "action": "state_transition",
+        "target": "ultrasonic sound waves • 3d acoustic map_interface",
+        "start_pct": 0,
+        "end_pct": 12
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "payment_screen",
+        "action": "state_transition",
+        "target": "ultrasonic sound waves • 3d acoustic map_interface",
+        "start_pct": 12,
+        "end_pct": 42
+      },
+      {
+        "event_id": "evt_00_03",
+        "actor": "radio_wave",
+        "action": "state_transition",
+        "target": "ultrasonic sound waves • 3d acoustic map_interface",
+        "start_pct": 42,
+        "end_pct": 82
+      },
+      {
+        "event_id": "evt_00_04",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "ultrasonic sound waves • 3d acoustic map_interface",
+        "start_pct": 82,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "minutiae extraction • 256-bit coordinate hash_interface",
+        "start_pct": 0,
+        "end_pct": 15
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "raise_or_hold",
+        "target": "minutiae extraction • 256-bit coordinate hash_interface",
+        "start_pct": 15,
+        "end_pct": 37
+      },
+      {
+        "event_id": "evt_00_03",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "minutiae extraction • 256-bit coordinate hash_interface",
+        "start_pct": 37,
+        "end_pct": 63
+      },
+      {
+        "event_id": "evt_00_04",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "minutiae extraction • 256-bit coordinate hash_interface",
+        "start_pct": 63,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "2d photo spoof vs 30,000 infrared dots_interface",
+        "start_pct": 0,
+        "end_pct": 10
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "2d photo spoof vs 30,000 infrared dots_interface",
+        "start_pct": 10,
+        "end_pct": 58
+      },
+      {
+        "event_id": "evt_00_03",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "2d photo spoof vs 30,000 infrared dots_interface",
+        "start_pct": 58,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "3d depth mesh • attention awareness_interface",
+        "start_pct": 0,
+        "end_pct": 37
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "3d depth mesh • attention awareness_interface",
+        "start_pct": 37,
+        "end_pct": 66
+      },
+      {
+        "event_id": "evt_00_03",
+        "actor": "customer",
+        "action": "state_transition",
+        "target": "3d depth mesh • attention awareness_interface",
+        "start_pct": 66,
+        "end_pct": 80
+      },
+      {
+        "event_id": "evt_00_04",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "3d depth mesh • attention awareness_interface",
+        "start_pct": 80,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "secure enclave • zero os access_interface",
+        "start_pct": 0,
+        "end_pct": 27
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "secure enclave • zero os access_interface",
+        "start_pct": 27,
+        "end_pct": 70
+      },
+      {
+        "event_id": "evt_00_03",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "secure enclave • zero os access_interface",
+        "start_pct": 70,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "customer",
+        "action": "state_transition",
+        "target": "binary answer • only secure math_interface",
+        "start_pct": 0,
+        "end_pct": 13
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "binary answer • only secure math_interface",
+        "start_pct": 13,
+        "end_pct": 41
+      },
+      {
+        "event_id": "evt_00_03",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "binary answer • only secure math_interface",
+        "start_pct": 41,
+        "end_pct": 51
+      },
+      {
+        "event_id": "evt_00_04",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "binary answer • only secure math_interface",
+        "start_pct": 51,
+        "end_pct": 61
+      },
+      {
+        "event_id": "evt_00_05",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "binary answer • only secure math_interface",
+        "start_pct": 61,
+        "end_pct": 84
+      },
+      {
+        "event_id": "evt_00_06",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "binary answer • only secure math_interface",
+        "start_pct": 84,
+        "end_pct": 100
+      }
+    ]
+  },
+  "coverage_map": [
+    {
+      "scene_index": 1,
+      "scene_title": "INSTANT RECOGNITION • ZERO DELAY",
+      "segments": [
+        {
+          "segment_id": "seg_01_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 41,
+            "text": "फ़ोन पर उँगली रखी या सिर्फ़ एक नज़र देखी—"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 3.6,
+          "start_pct": 0,
+          "end_pct": 23,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: फ़ोन पर उँगली रखी या सिर्फ़ एक नज़र."
+          }
+        },
+        {
+          "segment_id": "seg_01_02",
+          "source_text_span": {
+            "start_char": 41,
+            "end_char": 86,
+            "text": "और सिर्फ़ आधे सेकंड से भी कम में लॉक खुल गया!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 3.6,
+          "end_time_sec": 8.0,
+          "start_pct": 23,
+          "end_pct": 51,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: और सिर्फ़ आधे सेकंड से भी कम में लॉ."
+          }
+        },
+        {
+          "segment_id": "seg_01_03",
+          "source_text_span": {
+            "start_char": 86,
+            "end_char": 182,
+            "text": "लेकिन क्या आपने कभी सोचा है कि क्या आपका फ़ोन आपकी असली फ़ोटो या फ़िंगरप्रिंट संभाल कर रखता है?"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 8.0,
+          "end_time_sec": 15.6,
+          "start_pct": 51,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: लेकिन क्या आपने कभी सोचा है कि क्या."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 2,
+      "scene_title": "ZERO PHOTOS STORED • TOTAL PRIVACY",
+      "segments": [
+        {
+          "segment_id": "seg_02_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 34,
+            "text": "अगर कोई हैकर आपका फ़ोन हैक कर ले,"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 3.2,
+          "start_pct": 0,
+          "end_pct": 20,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: अगर कोई हैकर आपका फ़ोन हैक कर ले,."
+          }
+        },
+        {
+          "segment_id": "seg_02_02",
+          "source_text_span": {
+            "start_char": 34,
+            "end_char": 94,
+            "text": "तो क्या वो आपके फ़िंगरप्रिंट या चेहरे की फ़ोटो चुरा सकता है?"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 3.2,
+          "end_time_sec": 8.0,
+          "start_pct": 20,
+          "end_pct": 50,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो क्या वो आपके फ़िंगरप्रिंट या चेह."
+          }
+        },
+        {
+          "segment_id": "seg_02_03",
+          "source_text_span": {
+            "start_char": 94,
+            "end_char": 116,
+            "text": "जवाब है— बिल्कुल नहीं!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 8.0,
+          "end_time_sec": 9.6,
+          "start_pct": 50,
+          "end_pct": 60,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जवाब है— बिल्कुल नहीं!."
+          }
+        },
+        {
+          "segment_id": "seg_02_04",
+          "source_text_span": {
+            "start_char": 116,
+            "end_char": 201,
+            "text": "क्योंकि आपका फ़ोन कभी भी आपकी असली फ़ोटो या फ़िंगरप्रिंट की तस्वीर सेव ही नहीं करता!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 9.6,
+          "end_time_sec": 16.0,
+          "start_pct": 60,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: क्योंकि आपका फ़ोन कभी भी आपकी असली ."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 3,
+      "scene_title": "ULTRASONIC SOUND WAVES • 3D ACOUSTIC MAP",
+      "segments": [
+        {
+          "segment_id": "seg_03_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 22,
+            "text": "जब आप उँगली रखते हैं,"
+          },
+          "entities": [
+            "customer"
+          ],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 2.0,
+          "start_pct": 0,
+          "end_pct": 12,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जब आप उँगली रखते हैं,."
+          }
+        },
+        {
+          "segment_id": "seg_03_02",
+          "source_text_span": {
+            "start_char": 22,
+            "end_char": 95,
+            "text": "तो स्क्रीन के नीचे छुपा अल्ट्रासोनिक सेंसर हज़ारों साउंड वेव्स छोड़ता है।"
+          },
+          "entities": [
+            "payment_screen"
+          ],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 2.0,
+          "end_time_sec": 6.8,
+          "start_pct": 12,
+          "end_pct": 42,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो स्क्रीन के नीचे छुपा अल्ट्रासोनि."
+          }
+        },
+        {
+          "segment_id": "seg_03_03",
+          "source_text_span": {
+            "start_char": 95,
+            "end_char": 179,
+            "text": "ये ध्वनि तरंगें आपकी त्वचा की लकीरों और पसीने के नन्हें छेदों से टकराकर लौटती हैं,"
+          },
+          "entities": [
+            "radio_wave"
+          ],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 6.8,
+          "end_time_sec": 13.2,
+          "start_pct": 42,
+          "end_pct": 82,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: ये ध्वनि तरंगें आपकी त्वचा की लकीरो."
+          }
+        },
+        {
+          "segment_id": "seg_03_04",
+          "source_text_span": {
+            "start_char": 179,
+            "end_char": 214,
+            "text": "जिससे एक थ्री-डी नक़्शा बन जाता है।"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 13.2,
+          "end_time_sec": 16.0,
+          "start_pct": 82,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जिससे एक थ्री-डी नक़्शा बन जाता है।."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 4,
+      "scene_title": "MINUTIAE EXTRACTION • 256-BIT COORDINATE HASH",
+      "segments": [
+        {
+          "segment_id": "seg_04_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 32,
+            "text": "सेंसर पूरी उँगली याद नहीं रखता,"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 2.4,
+          "start_pct": 0,
+          "end_pct": 15,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: सेंसर पूरी उँगली याद नहीं रखता,."
+          }
+        },
+        {
+          "segment_id": "seg_04_02",
+          "source_text_span": {
+            "start_char": 32,
+            "end_char": 90,
+            "text": "बल्कि सिर्फ़ तीस से चालीस 'माइन्यूशिया' पॉइंट्स पकड़ता है—"
+          },
+          "entities": [],
+          "actions": [
+            "raise_or_hold"
+          ],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 2.4,
+          "end_time_sec": 6.0,
+          "start_pct": 15,
+          "end_pct": 37,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: raise_or_hold performed on focal object."
+          }
+        },
+        {
+          "segment_id": "seg_04_03",
+          "source_text_span": {
+            "start_char": 90,
+            "end_char": 145,
+            "text": "जहाँ लकीरें ख़त्म होती हैं या दो हिस्सों में बँटती हैं।"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 6.0,
+          "end_time_sec": 10.4,
+          "start_pct": 37,
+          "end_pct": 63,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जहाँ लकीरें ख़त्म होती हैं या दो हि."
+          }
+        },
+        {
+          "segment_id": "seg_04_04",
+          "source_text_span": {
+            "start_char": 145,
+            "end_char": 222,
+            "text": "और इन्हें बदलकर एक दो सौ छप्पन-बिट की सुरक्षित गणितीय संख्या बना दी जाती है।"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 10.4,
+          "end_time_sec": 16.4,
+          "start_pct": 63,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: और इन्हें बदलकर एक दो सौ छप्पन-बिट ."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 5,
+      "scene_title": "2D PHOTO SPOOF VS 30,000 INFRARED DOTS",
+      "segments": [
+        {
+          "segment_id": "seg_05_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 14,
+            "text": "और फ़ेस अनलॉक?"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 1.5,
+          "start_pct": 0,
+          "end_pct": 10,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: और फ़ेस अनलॉक?."
+          }
+        },
+        {
+          "segment_id": "seg_05_02",
+          "source_text_span": {
+            "start_char": 14,
+            "end_char": 101,
+            "text": "साधारण कैमरे वाले टू-डी फ़ेस अनलॉक को तो कोई भी आपकी फ़ोटो दिखाकर बेवकूफ़ बना सकता है!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 1.5,
+          "end_time_sec": 8.3,
+          "start_pct": 10,
+          "end_pct": 58,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: साधारण कैमरे वाले टू-डी फ़ेस अनलॉक ."
+          }
+        },
+        {
+          "segment_id": "seg_05_03",
+          "source_text_span": {
+            "start_char": 101,
+            "end_char": 196,
+            "text": "लेकिन थ्री-डी फ़ेस अनलॉक आपके चेहरे पर तीस हज़ार से ज़्यादा अदृश्य इन्फ्रारेड डॉट्स फेंकता है!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 8.3,
+          "end_time_sec": 14.7,
+          "start_pct": 58,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: लेकिन थ्री-डी फ़ेस अनलॉक आपके चेहरे."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 6,
+      "scene_title": "3D DEPTH MESH • ATTENTION AWARENESS",
+      "segments": [
+        {
+          "segment_id": "seg_06_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 79,
+            "text": "इन्फ्रारेड कैमरा इन डॉट्स की गहराई नापकर आपके चेहरे का एक थ्री-डी मेश बनाता है।"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 6.0,
+          "start_pct": 0,
+          "end_pct": 37,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: इन्फ्रारेड कैमरा इन डॉट्स की गहराई ."
+          }
+        },
+        {
+          "segment_id": "seg_06_02",
+          "source_text_span": {
+            "start_char": 79,
+            "end_char": 139,
+            "text": "और अटेंशन डिटेक्शन यह पक्का करता है कि आपकी आँखें खुली हों—"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 6.0,
+          "end_time_sec": 10.8,
+          "start_pct": 37,
+          "end_pct": 66,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: और अटेंशन डिटेक्शन यह पक्का करता है."
+          }
+        },
+        {
+          "segment_id": "seg_06_03",
+          "source_text_span": {
+            "start_char": 139,
+            "end_char": 162,
+            "text": "ताकि जब आप सो रहे हों,"
+          },
+          "entities": [
+            "customer"
+          ],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 10.8,
+          "end_time_sec": 13.2,
+          "start_pct": 66,
+          "end_pct": 80,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: ताकि जब आप सो रहे हों,."
+          }
+        },
+        {
+          "segment_id": "seg_06_04",
+          "source_text_span": {
+            "start_char": 162,
+            "end_char": 194,
+            "text": "तो कोई आपका फ़ोन अनलॉक न कर सके!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 13.2,
+          "end_time_sec": 16.4,
+          "start_pct": 80,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो कोई आपका फ़ोन अनलॉक न कर सके!."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 7,
+      "scene_title": "SECURE ENCLAVE • ZERO OS ACCESS",
+      "segments": [
+        {
+          "segment_id": "seg_07_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 41,
+            "text": "ये सारा डेटा फ़ोन की आम मेमोरी में नहीं,"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 3.6,
+          "start_pct": 0,
+          "end_pct": 27,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: ये सारा डेटा फ़ोन की आम मेमोरी में ."
+          }
+        },
+        {
+          "segment_id": "seg_07_02",
+          "source_text_span": {
+            "start_char": 41,
+            "end_char": 122,
+            "text": "बल्कि प्रोसेसर के अंदर एक अलग हार्डवेयर लॉकर 'सिक्योर एन्क्लेव' में क़ैद रहता है।"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 3.6,
+          "end_time_sec": 9.2,
+          "start_pct": 27,
+          "end_pct": 70,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: बल्कि प्रोसेसर के अंदर एक अलग हार्ड."
+          }
+        },
+        {
+          "segment_id": "seg_07_03",
+          "source_text_span": {
+            "start_char": 122,
+            "end_char": 177,
+            "text": "ऑपरेटिंग सिस्टम तक को अंदर झाँकने की इजाज़त नहीं होती!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 9.2,
+          "end_time_sec": 13.2,
+          "start_pct": 70,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: ऑपरेटिंग सिस्टम तक को अंदर झाँकने क."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 8,
+      "scene_title": "BINARY ANSWER • ONLY SECURE MATH",
+      "segments": [
+        {
+          "segment_id": "seg_08_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 22,
+            "text": "जब आप अनलॉक करते हैं,"
+          },
+          "entities": [
+            "customer"
+          ],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 2.0,
+          "start_pct": 0,
+          "end_pct": 13,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जब आप अनलॉक करते हैं,."
+          }
+        },
+        {
+          "segment_id": "seg_08_02",
+          "source_text_span": {
+            "start_char": 22,
+            "end_char": 75,
+            "text": "तो एन्क्लेव सिर्फ़ एक ही जवाब देता है: 'हाँ' या 'ना'।"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 2.0,
+          "end_time_sec": 6.4,
+          "start_pct": 13,
+          "end_pct": 41,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो एन्क्लेव सिर्फ़ एक ही जवाब देता ."
+          }
+        },
+        {
+          "segment_id": "seg_08_03",
+          "source_text_span": {
+            "start_char": 75,
+            "end_char": 97,
+            "text": "यानी कोई फ़ोटो नहीं,"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 6.4,
+          "end_time_sec": 8.0,
+          "start_pct": 41,
+          "end_pct": 51,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: यानी कोई फ़ोटो नहीं,."
+          }
+        },
+        {
+          "segment_id": "seg_08_04",
+          "source_text_span": {
+            "start_char": 97,
+            "end_char": 118,
+            "text": "सिर्फ़ सुरक्षित गणित!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 8.0,
+          "end_time_sec": 9.5,
+          "start_pct": 51,
+          "end_pct": 61,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: सिर्फ़ सुरक्षित गणित!."
+          }
+        },
+        {
+          "segment_id": "seg_08_05",
+          "source_text_span": {
+            "start_char": 118,
+            "end_char": 158,
+            "text": "अगली बार जब एक झटके में फ़ोन अनलॉक हो,"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 9.5,
+          "end_time_sec": 13.1,
+          "start_pct": 61,
+          "end_pct": 84,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: अगली बार जब एक झटके में फ़ोन अनलॉक ."
+          }
+        },
+        {
+          "segment_id": "seg_08_06",
+          "source_text_span": {
+            "start_char": 158,
+            "end_char": 190,
+            "text": "तो इस सीक्रेट साइंस को याद रखना!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 13.1,
+          "end_time_sec": 15.9,
+          "start_pct": 84,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो इस सीक्रेट साइंस को याद रखना!."
+          }
+        }
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "type": "biometric_unlock",
+      "tag": "01 / THE 0.2-SECOND MIRACLE",
+      "title": "INSTANT RECOGNITION • ZERO DELAY",
+      "purpose": "Explain the mechanism and takeaway of INSTANT RECOGNITION • ZERO DELAY.",
+      "tone": "[Curious, high-energy mystery opening]",
+      "narration": "फ़ोन पर उँगली रखी या सिर्फ़ एक नज़र देखी—और सिर्फ़ आधे सेकंड से भी कम में लॉक खुल गया! लेकिन क्या आपने कभी सोचा है कि क्या आपका फ़ोन आपकी असली फ़ोटो या फ़िंगरप्रिंट संभाल कर रखता है?",
+      "transition": "zoom_through",
+      "sfx": "radar_beep",
+      "icon": "fingerprint",
+      "visual": {
+        "start": "High-contrast editorial layout establishing INSTANT RECOGNITION • ZERO DELAY.",
+        "objects": [
+          "Titanium Smartphone Glass On Obsidian Pedestal",
+          "Illuminated Ultrasonic Sensor Ripples",
+          "Truedepth Infrared Notch Scanning",
+          "0.2S Digital Stopwatch Counter."
+        ],
+        "action": "Titanium smartphone glass on obsidian pedestal with illuminated ultrasonic sensor ripples and TrueDepth infrared notch scanning with 0.2s digital stopwatch counter.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "INSTANT RECOGNITION • ZERO DELAY",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "pattern_interrupt": "zoom_punch",
+      "emphasis_words": [
+        "फ़ोन",
+        "उँगली",
+        "एक नज़र",
+        "आधे सेकंड से भी कम",
+        "फ़ोटो",
+        "फ़िंगरप्रिंट"
+      ],
+      "hook_strength": 9.5,
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 41,
+            "text": "फ़ोन पर उँगली रखी या सिर्फ़ एक नज़र देखी—"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Instant Recognition • Zero Delay Interface: फ़ोन पर उँगली रखी या सिर्फ़ एक नज़र देखी—",
+          "required_assets": [
+            "system_core",
+            "instant recognition • zero delay_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "instant recognition • zero delay_interface",
+          "preconditions": [
+            "system_core positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "system_core in neutral baseline resting state",
+          "action": "फ़ोन पर उँगली रखी या सिर्फ़ एक नज़र देखी— के अनुरूप system_core और instant recognition • zero delay_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions instant recognition • zero delay_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 3.6,
+          "start_pct": 0,
+          "end_pct": 23,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "system_core"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core in neutral baseline resting state",
+            "end_state": "system_core completes state_transition and transitions instant recognition • zero delay_interface to active state (step 1)",
+            "duration_ms": 3600,
+            "completion_condition": "system_core completes state_transition and transitions instant recognition • zero delay_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Instant Recognition • Zero Delay Interface"
+          ],
+          "words": "फ़ोन पर उँगली रखी या सिर्फ़ एक नज़र देखी—",
+          "visual_attention_target": {
+            "target_id": "instant recognition • zero delay_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: फ़ोन पर उँगली रखी या सिर्फ़ एक नज़र."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 41,
+            "end_char": 86,
+            "text": "और सिर्फ़ आधे सेकंड से भी कम में लॉक खुल गया!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Instant Recognition • Zero Delay Interface: और सिर्फ़ आधे सेकंड से भी कम में लॉक खुल गया!",
+          "required_assets": [
+            "system_core",
+            "instant recognition • zero delay_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "instant recognition • zero delay_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions instant recognition • zero delay_interface to active state (step 1)",
+          "action": "और सिर्फ़ आधे सेकंड से भी कम में लॉक खुल गया! के अनुरूप system_core और instant recognition • zero delay_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions instant recognition • zero delay_interface to active state (step 2)",
+          "start_time": 3.6,
+          "end_time": 8.0,
+          "start_pct": 23,
+          "end_pct": 51,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "instant recognition • zero delay_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions instant recognition • zero delay_interface to active state (step 1)",
+            "end_state": "system_core completes state_transition and transitions instant recognition • zero delay_interface to active state (step 2)",
+            "duration_ms": 4400,
+            "completion_condition": "system_core completes state_transition and transitions instant recognition • zero delay_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Instant Recognition • Zero Delay Interface"
+          ],
+          "words": "और सिर्फ़ आधे सेकंड से भी कम में लॉक खुल गया!",
+          "visual_attention_target": {
+            "target_id": "instant recognition • zero delay_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: और सिर्फ़ आधे सेकंड से भी कम में लॉ."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_03",
+          "narration_segment_ids": [
+            "seg_00_03"
+          ],
+          "source_text_span": {
+            "start_char": 86,
+            "end_char": 182,
+            "text": "लेकिन क्या आपने कभी सोचा है कि क्या आपका फ़ोन आपकी असली फ़ोटो या फ़िंगरप्रिंट संभाल कर रखता है?"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Instant Recognition • Zero Delay Interface: लेकिन क्या आपने कभी सोचा है कि क्या आपका फ़ोन आपकी",
+          "required_assets": [
+            "system_core",
+            "instant recognition • zero delay_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "instant recognition • zero delay_interface",
+          "preconditions": [
+            "completed evt_00_02",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions instant recognition • zero delay_interface to active state (step 2)",
+          "action": "लेकिन क्या आपने कभी सोचा है कि क्या आपका फ़ोन के अनुरूप system_core और instant recognition • zero delay_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions instant recognition • zero delay_interface to active state (step 3)",
+          "start_time": 8.0,
+          "end_time": 15.6,
+          "start_pct": 51,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "instant recognition • zero delay_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions instant recognition • zero delay_interface to active state (step 2)",
+            "end_state": "system_core completes state_transition and transitions instant recognition • zero delay_interface to active state (step 3)",
+            "duration_ms": 7600,
+            "completion_condition": "system_core completes state_transition and transitions instant recognition • zero delay_interface to active state (step 3) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Instant Recognition • Zero Delay Interface"
+          ],
+          "words": "लेकिन क्या आपने कभी सोचा है कि क्या आपका फ़ोन आपकी असली फ़ोटो या फ़िंगरप्रिंट संभाल कर रखता है?",
+          "visual_attention_target": {
+            "target_id": "instant recognition • zero delay_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: लेकिन क्या आपने कभी सोचा है कि क्या."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "फ़ोन पर उँगली रखी या सिर्फ़ एक नज़र देखी—",
+          "start_pct": 0,
+          "end_pct": 23,
+          "show": [
+            "System Core",
+            "Instant Recognition • Zero Delay Interface"
+          ],
+          "action": "फ़ोन पर उँगली रखी या सिर्फ़ एक नज़र देखी— के अनुरूप system_core और instant recognition • zero delay_interface में दृश्य परिवर्तन होता है।",
+          "camera": "establishing_medium",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "और सिर्फ़ आधे सेकंड से भी कम में लॉक खुल गया!",
+          "start_pct": 23,
+          "end_pct": 51,
+          "show": [
+            "System Core",
+            "Instant Recognition • Zero Delay Interface"
+          ],
+          "action": "और सिर्फ़ आधे सेकंड से भी कम में लॉक खुल गया! के अनुरूप system_core और instant recognition • zero delay_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "लेकिन क्या आपने कभी सोचा है कि क्या आपका फ़ोन आपकी असली फ़ोटो या फ़िंगरप्रिंट संभाल कर रखता है?",
+          "start_pct": 51,
+          "end_pct": 100,
+          "show": [
+            "System Core",
+            "Instant Recognition • Zero Delay Interface"
+          ],
+          "action": "लेकिन क्या आपने कभी सोचा है कि क्या आपका फ़ोन के अनुरूप system_core और instant recognition • zero delay_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        }
+      ],
+      "variant": "hook"
+    },
+    {
+      "type": "biometric_unlock",
+      "tag": "02 / THE BIGGEST MYTH",
+      "title": "ZERO PHOTOS STORED • TOTAL PRIVACY",
+      "purpose": "Explain the mechanism and takeaway of ZERO PHOTOS STORED • TOTAL PRIVACY.",
+      "tone": "[Urgent, dramatic myth buster]",
+      "narration": "अगर कोई हैकर आपका फ़ोन हैक कर ले, तो क्या वो आपके फ़िंगरप्रिंट या चेहरे की फ़ोटो चुरा सकता है? जवाब है—बिल्कुल नहीं! क्योंकि आपका फ़ोन कभी भी आपकी असली फ़ोटो या फ़िंगरप्रिंट की तस्वीर सेव ही नहीं करता!",
+      "transition": "match_cut",
+      "sfx": "radar_beep",
+      "icon": "fingerprint",
+      "visual": {
+        "start": "High-contrast editorial layout establishing ZERO PHOTOS STORED • TOTAL PRIVACY.",
+        "objects": [
+          "Transitioning Into Secure Cryptographic Matrix."
+        ],
+        "action": "Red cybersecurity alert perimeter deflecting malicious probe with bold red cross badges over raw photo frames, transitioning into secure cryptographic matrix.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "ZERO PHOTOS STORED • TOTAL PRIVACY",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "pattern_interrupt": "shake",
+      "emphasis_words": [
+        "हैकर",
+        "हैक",
+        "फ़ोटो चुरा",
+        "बिल्कुल नहीं",
+        "तस्वीर सेव"
+      ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 34,
+            "text": "अगर कोई हैकर आपका फ़ोन हैक कर ले,"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Zero Photos Stored • Total Privacy Interface: अगर कोई हैकर आपका फ़ोन हैक कर ले,",
+          "required_assets": [
+            "system_core",
+            "zero photos stored • total privacy_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "zero photos stored • total privacy_interface",
+          "preconditions": [
+            "system_core positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "system_core in neutral baseline resting state",
+          "action": "अगर कोई हैकर आपका फ़ोन हैक कर ले, के अनुरूप system_core और zero photos stored • total privacy_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 3.2,
+          "start_pct": 0,
+          "end_pct": 20,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "system_core"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core in neutral baseline resting state",
+            "end_state": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 1)",
+            "duration_ms": 3200,
+            "completion_condition": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Zero Photos Stored • Total Privacy Interface"
+          ],
+          "words": "अगर कोई हैकर आपका फ़ोन हैक कर ले,",
+          "visual_attention_target": {
+            "target_id": "zero photos stored • total privacy_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: अगर कोई हैकर आपका फ़ोन हैक कर ले,."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 34,
+            "end_char": 94,
+            "text": "तो क्या वो आपके फ़िंगरप्रिंट या चेहरे की फ़ोटो चुरा सकता है?"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Zero Photos Stored • Total Privacy Interface: तो क्या वो आपके फ़िंगरप्रिंट या चेहरे की फ़ोटो चुर",
+          "required_assets": [
+            "system_core",
+            "zero photos stored • total privacy_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "zero photos stored • total privacy_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 1)",
+          "action": "तो क्या वो आपके फ़िंगरप्रिंट या चेहरे की फ़ोट के अनुरूप system_core और zero photos stored • total privacy_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 2)",
+          "start_time": 3.2,
+          "end_time": 8.0,
+          "start_pct": 20,
+          "end_pct": 50,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "zero photos stored • total privacy_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 1)",
+            "end_state": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 2)",
+            "duration_ms": 4800,
+            "completion_condition": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Zero Photos Stored • Total Privacy Interface"
+          ],
+          "words": "तो क्या वो आपके फ़िंगरप्रिंट या चेहरे की फ़ोटो चुरा सकता है?",
+          "visual_attention_target": {
+            "target_id": "zero photos stored • total privacy_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो क्या वो आपके फ़िंगरप्रिंट या चेह."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_03",
+          "narration_segment_ids": [
+            "seg_00_03"
+          ],
+          "source_text_span": {
+            "start_char": 94,
+            "end_char": 116,
+            "text": "जवाब है— बिल्कुल नहीं!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Zero Photos Stored • Total Privacy Interface: जवाब है— बिल्कुल नहीं!",
+          "required_assets": [
+            "system_core",
+            "zero photos stored • total privacy_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "zero photos stored • total privacy_interface",
+          "preconditions": [
+            "completed evt_00_02",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 2)",
+          "action": "जवाब है— बिल्कुल नहीं! के अनुरूप system_core और zero photos stored • total privacy_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 3)",
+          "start_time": 8.0,
+          "end_time": 9.6,
+          "start_pct": 50,
+          "end_pct": 60,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "zero photos stored • total privacy_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 2)",
+            "end_state": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 3)",
+            "duration_ms": 1599,
+            "completion_condition": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 3) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Zero Photos Stored • Total Privacy Interface"
+          ],
+          "words": "जवाब है— बिल्कुल नहीं!",
+          "visual_attention_target": {
+            "target_id": "zero photos stored • total privacy_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जवाब है— बिल्कुल नहीं!."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_04",
+          "narration_segment_ids": [
+            "seg_00_04"
+          ],
+          "source_text_span": {
+            "start_char": 116,
+            "end_char": 201,
+            "text": "क्योंकि आपका फ़ोन कभी भी आपकी असली फ़ोटो या फ़िंगरप्रिंट की तस्वीर सेव ही नहीं करता!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Zero Photos Stored • Total Privacy Interface: क्योंकि आपका फ़ोन कभी भी आपकी असली फ़ोटो या फ़िंगर",
+          "required_assets": [
+            "system_core",
+            "zero photos stored • total privacy_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "zero photos stored • total privacy_interface",
+          "preconditions": [
+            "completed evt_00_03",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 3)",
+          "action": "क्योंकि आपका फ़ोन कभी भी आपकी असली फ़ोटो या फ के अनुरूप system_core और zero photos stored • total privacy_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 4)",
+          "start_time": 9.6,
+          "end_time": 16.0,
+          "start_pct": 60,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "zero photos stored • total privacy_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 3)",
+            "end_state": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 4)",
+            "duration_ms": 6400,
+            "completion_condition": "system_core completes state_transition and transitions zero photos stored • total privacy_interface to active state (step 4) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Zero Photos Stored • Total Privacy Interface"
+          ],
+          "words": "क्योंकि आपका फ़ोन कभी भी आपकी असली फ़ोटो या फ़िंगरप्रिंट की तस्वीर सेव ही नहीं करता!",
+          "visual_attention_target": {
+            "target_id": "zero photos stored • total privacy_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: क्योंकि आपका फ़ोन कभी भी आपकी असली ."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "अगर कोई हैकर आपका फ़ोन हैक कर ले,",
+          "start_pct": 0,
+          "end_pct": 20,
+          "show": [
+            "System Core",
+            "Zero Photos Stored • Total Privacy Interface"
+          ],
+          "action": "अगर कोई हैकर आपका फ़ोन हैक कर ले, के अनुरूप system_core और zero photos stored • total privacy_interface में दृश्य परिवर्तन होता है।",
+          "camera": "establishing_medium",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "तो क्या वो आपके फ़िंगरप्रिंट या चेहरे की फ़ोटो चुरा सकता है?",
+          "start_pct": 20,
+          "end_pct": 50,
+          "show": [
+            "System Core",
+            "Zero Photos Stored • Total Privacy Interface"
+          ],
+          "action": "तो क्या वो आपके फ़िंगरप्रिंट या चेहरे की फ़ोट के अनुरूप system_core और zero photos stored • total privacy_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "जवाब है— बिल्कुल नहीं!",
+          "start_pct": 50,
+          "end_pct": 60,
+          "show": [
+            "System Core",
+            "Zero Photos Stored • Total Privacy Interface"
+          ],
+          "action": "जवाब है— बिल्कुल नहीं! के अनुरूप system_core और zero photos stored • total privacy_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "क्योंकि आपका फ़ोन कभी भी आपकी असली फ़ोटो या फ़िंगरप्रिंट की तस्वीर सेव ही नहीं करता!",
+          "start_pct": 60,
+          "end_pct": 100,
+          "show": [
+            "System Core",
+            "Zero Photos Stored • Total Privacy Interface"
+          ],
+          "action": "क्योंकि आपका फ़ोन कभी भी आपकी असली फ़ोटो या फ के अनुरूप system_core और zero photos stored • total privacy_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        }
+      ],
+      "variant": "hacker_myth"
+    },
+    {
+      "type": "biometric_unlock",
+      "tag": "03 / UNDER THE GLASS",
+      "title": "ULTRASONIC SOUND WAVES • 3D ACOUSTIC MAP",
+      "purpose": "Explain the mechanism and takeaway of ULTRASONIC SOUND WAVES • 3D ACOUSTIC MAP.",
+      "tone": "[Fascinating scientific deep-dive]",
+      "narration": "जब आप उँगली रखते हैं, तो स्क्रीन के नीचे छुपा अल्ट्रासोनिक सेंसर हज़ारों साउंड वेव्स छोड़ता है। ये ध्वनि तरंगें आपकी त्वचा की लकीरों और पसीने के नन्हें छेदों से टकराकर लौटती हैं, जिससे एक थ्री-डी नक़्शा बन जाता है।",
+      "transition": "match_cut",
+      "sfx": "radar_beep",
+      "icon": "fingerprint",
+      "visual": {
+        "start": "High-contrast editorial layout establishing ULTRASONIC SOUND WAVES • 3D ACOUSTIC MAP.",
+        "objects": [
+          "High-Precision Display Cutaway Revealing Cover Glass",
+          "Oled Matrix",
+          "Sweat Pores."
+        ],
+        "action": "High-precision display cutaway revealing cover glass, OLED matrix, and Qualcomm 3D Sonic transducer emitting 15 MHz acoustic waves bouncing off skin ridges and sweat pores.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "ULTRASONIC SOUND WAVES • 3D ACOUSTIC MAP",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "pattern_interrupt": "flash",
+      "emphasis_words": [
+        "स्क्रीन के नीचे",
+        "अल्ट्रासोनिक सेंसर",
+        "हज़ारों साउंड वेव्स",
+        "लकीरों",
+        "पसीने",
+        "थ्री-डी नक़्शा"
+      ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 22,
+            "text": "जब आप उँगली रखते हैं,"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "Customer performs state_transition on Ultrasonic Sound Waves • 3D Acoustic Map Interface: जब आप उँगली रखते हैं,",
+          "required_assets": [
+            "customer",
+            "ultrasonic sound waves • 3d acoustic map_interface",
+            "customer"
+          ],
+          "actor_or_subject": "customer",
+          "target_object": "ultrasonic sound waves • 3d acoustic map_interface",
+          "preconditions": [
+            "customer positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "customer in neutral baseline resting state",
+          "action": "जब आप उँगली रखते हैं, के अनुरूप customer और ultrasonic sound waves • 3d acoustic map_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "customer completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 2.0,
+          "start_pct": 0,
+          "end_pct": 12,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "customer"
+          },
+          "animation_instruction": {
+            "target": "customer",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "customer in neutral baseline resting state",
+            "end_state": "customer completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 1)",
+            "duration_ms": 2000,
+            "completion_condition": "customer completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "ग्राहक • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "ग्राहक • स्टेट बदलाव",
+          "show": [
+            "Customer",
+            "Ultrasonic Sound Waves • 3D Acoustic Map Interface"
+          ],
+          "words": "जब आप उँगली रखते हैं,",
+          "visual_attention_target": {
+            "target_id": "ultrasonic sound waves • 3d acoustic map_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जब आप उँगली रखते हैं,."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 22,
+            "end_char": 95,
+            "text": "तो स्क्रीन के नीचे छुपा अल्ट्रासोनिक सेंसर हज़ारों साउंड वेव्स छोड़ता है।"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "Payment Screen performs state_transition on Ultrasonic Sound Waves • 3D Acoustic Map Interface: तो स्क्रीन के नीचे छुपा अल्ट्रासोनिक सेंसर हज़ारों",
+          "required_assets": [
+            "payment_screen",
+            "ultrasonic sound waves • 3d acoustic map_interface",
+            "payment_screen"
+          ],
+          "actor_or_subject": "payment_screen",
+          "target_object": "ultrasonic sound waves • 3d acoustic map_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "payment_screen ready for state transition"
+          ],
+          "initial_state": "customer completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 1)",
+          "action": "तो स्क्रीन के नीचे छुपा अल्ट्रासोनिक सेंसर हज के अनुरूप payment_screen और ultrasonic sound waves • 3d acoustic map_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "payment_screen completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 2)",
+          "start_time": 2.0,
+          "end_time": 6.8,
+          "start_pct": 12,
+          "end_pct": 42,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "ultrasonic sound waves • 3d acoustic map_interface"
+          },
+          "animation_instruction": {
+            "target": "payment_screen",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "customer completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 1)",
+            "end_state": "payment_screen completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 2)",
+            "duration_ms": 4800,
+            "completion_condition": "payment_screen completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "Payment Screen • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "Payment Screen • स्टेट बदलाव",
+          "show": [
+            "Payment Screen",
+            "Ultrasonic Sound Waves • 3D Acoustic Map Interface"
+          ],
+          "words": "तो स्क्रीन के नीचे छुपा अल्ट्रासोनिक सेंसर हज़ारों साउंड वेव्स छोड़ता है।",
+          "visual_attention_target": {
+            "target_id": "ultrasonic sound waves • 3d acoustic map_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो स्क्रीन के नीचे छुपा अल्ट्रासोनि."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_03",
+          "narration_segment_ids": [
+            "seg_00_03"
+          ],
+          "source_text_span": {
+            "start_char": 95,
+            "end_char": 179,
+            "text": "ये ध्वनि तरंगें आपकी त्वचा की लकीरों और पसीने के नन्हें छेदों से टकराकर लौटती हैं,"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "Radio Wave performs state_transition on Ultrasonic Sound Waves • 3D Acoustic Map Interface: ये ध्वनि तरंगें आपकी त्वचा की लकीरों और पसीने के न",
+          "required_assets": [
+            "radio_wave",
+            "ultrasonic sound waves • 3d acoustic map_interface",
+            "radio_wave"
+          ],
+          "actor_or_subject": "radio_wave",
+          "target_object": "ultrasonic sound waves • 3d acoustic map_interface",
+          "preconditions": [
+            "completed evt_00_02",
+            "radio_wave ready for state transition"
+          ],
+          "initial_state": "payment_screen completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 2)",
+          "action": "ये ध्वनि तरंगें आपकी त्वचा की लकीरों और पसीने के अनुरूप radio_wave और ultrasonic sound waves • 3d acoustic map_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "radio_wave completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 3)",
+          "start_time": 6.8,
+          "end_time": 13.2,
+          "start_pct": 42,
+          "end_pct": 82,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "ultrasonic sound waves • 3d acoustic map_interface"
+          },
+          "animation_instruction": {
+            "target": "radio_wave",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "payment_screen completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 2)",
+            "end_state": "radio_wave completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 3)",
+            "duration_ms": 6399,
+            "completion_condition": "radio_wave completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 3) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "Radio Wave • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "Radio Wave • स्टेट बदलाव",
+          "show": [
+            "Radio Wave",
+            "Ultrasonic Sound Waves • 3D Acoustic Map Interface"
+          ],
+          "words": "ये ध्वनि तरंगें आपकी त्वचा की लकीरों और पसीने के नन्हें छेदों से टकराकर लौटती हैं,",
+          "visual_attention_target": {
+            "target_id": "ultrasonic sound waves • 3d acoustic map_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: ये ध्वनि तरंगें आपकी त्वचा की लकीरो."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_04",
+          "narration_segment_ids": [
+            "seg_00_04"
+          ],
+          "source_text_span": {
+            "start_char": 179,
+            "end_char": 214,
+            "text": "जिससे एक थ्री-डी नक़्शा बन जाता है।"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Ultrasonic Sound Waves • 3D Acoustic Map Interface: जिससे एक थ्री-डी नक़्शा बन जाता है।",
+          "required_assets": [
+            "system_core",
+            "ultrasonic sound waves • 3d acoustic map_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "ultrasonic sound waves • 3d acoustic map_interface",
+          "preconditions": [
+            "completed evt_00_03",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "radio_wave completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 3)",
+          "action": "जिससे एक थ्री-डी नक़्शा बन जाता है। के अनुरूप system_core और ultrasonic sound waves • 3d acoustic map_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 4)",
+          "start_time": 13.2,
+          "end_time": 16.0,
+          "start_pct": 82,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "ultrasonic sound waves • 3d acoustic map_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "radio_wave completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 3)",
+            "end_state": "system_core completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 4)",
+            "duration_ms": 2800,
+            "completion_condition": "system_core completes state_transition and transitions ultrasonic sound waves • 3d acoustic map_interface to active state (step 4) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Ultrasonic Sound Waves • 3D Acoustic Map Interface"
+          ],
+          "words": "जिससे एक थ्री-डी नक़्शा बन जाता है।",
+          "visual_attention_target": {
+            "target_id": "ultrasonic sound waves • 3d acoustic map_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जिससे एक थ्री-डी नक़्शा बन जाता है।."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "जब आप उँगली रखते हैं,",
+          "start_pct": 0,
+          "end_pct": 12,
+          "show": [
+            "Customer",
+            "Ultrasonic Sound Waves • 3D Acoustic Map Interface"
+          ],
+          "action": "जब आप उँगली रखते हैं, के अनुरूप customer और ultrasonic sound waves • 3d acoustic map_interface में दृश्य परिवर्तन होता है।",
+          "camera": "establishing_medium",
+          "label": "ग्राहक • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "तो स्क्रीन के नीचे छुपा अल्ट्रासोनिक सेंसर हज़ारों साउंड वेव्स छोड़ता है।",
+          "start_pct": 12,
+          "end_pct": 42,
+          "show": [
+            "Payment Screen",
+            "Ultrasonic Sound Waves • 3D Acoustic Map Interface"
+          ],
+          "action": "तो स्क्रीन के नीचे छुपा अल्ट्रासोनिक सेंसर हज के अनुरूप payment_screen और ultrasonic sound waves • 3d acoustic map_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "Payment Screen • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "ये ध्वनि तरंगें आपकी त्वचा की लकीरों और पसीने के नन्हें छेदों से टकराकर लौटती हैं,",
+          "start_pct": 42,
+          "end_pct": 82,
+          "show": [
+            "Radio Wave",
+            "Ultrasonic Sound Waves • 3D Acoustic Map Interface"
+          ],
+          "action": "ये ध्वनि तरंगें आपकी त्वचा की लकीरों और पसीने के अनुरूप radio_wave और ultrasonic sound waves • 3d acoustic map_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "Radio Wave • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "जिससे एक थ्री-डी नक़्शा बन जाता है।",
+          "start_pct": 82,
+          "end_pct": 100,
+          "show": [
+            "System Core",
+            "Ultrasonic Sound Waves • 3D Acoustic Map Interface"
+          ],
+          "action": "जिससे एक थ्री-डी नक़्शा बन जाता है। के अनुरूप system_core और ultrasonic sound waves • 3d acoustic map_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        }
+      ],
+      "variant": "ultrasonic_fingerprint"
+    },
+    {
+      "type": "biometric_unlock",
+      "tag": "04 / THE SECRET MATH",
+      "title": "MINUTIAE EXTRACTION • 256-BIT COORDINATE HASH",
+      "purpose": "Explain the mechanism and takeaway of MINUTIAE EXTRACTION • 256-BIT COORDINATE HASH.",
+      "tone": "[Clear, intellectual revelation]",
+      "narration": "सेंसर पूरी उँगली याद नहीं रखता, बल्कि सिर्फ़ तीस से चालीस 'माइन्यूशिया' पॉइंट्स पकड़ता है—जहाँ लकीरें ख़त्म होती हैं या दो हिस्सों में बँटती हैं। और इन्हें बदलकर एक दो सौ छप्पन-बिट की सुरक्षित गणितीय संख्या बना दी जाती है।",
+      "transition": "match_cut",
+      "sfx": "radar_beep",
+      "icon": "fingerprint",
+      "visual": {
+        "start": "High-contrast editorial layout establishing MINUTIAE EXTRACTION • 256-BIT COORDINATE HASH.",
+        "objects": [
+          "Detailed Fingerprint Ridge Map",
+          "Bifurcations"
+        ],
+        "action": "Detailed fingerprint ridge map with laser sweep identifying 30 to 40 Ridge Endings and Bifurcations, outputting coordinate vectors into an AES-256 bit encrypted array.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "MINUTIAE EXTRACTION • 256-BIT COORDINATE HASH",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "pattern_interrupt": "zoom_punch",
+      "emphasis_words": [
+        "सेंसर",
+        "पूरी उँगली नहीं",
+        "माइन्यूशिया",
+        "पॉइंट्स",
+        "लकीरें ख़त्म",
+        "दो हिस्सों",
+        "दो सौ छप्पन-बिट की सुरक्षित गणितीय संख्या"
+      ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 32,
+            "text": "सेंसर पूरी उँगली याद नहीं रखता,"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Minutiae Extraction • 256-Bit Coordinate Hash Interface: सेंसर पूरी उँगली याद नहीं रखता,",
+          "required_assets": [
+            "system_core",
+            "minutiae extraction • 256-bit coordinate hash_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "minutiae extraction • 256-bit coordinate hash_interface",
+          "preconditions": [
+            "system_core positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "system_core in neutral baseline resting state",
+          "action": "सेंसर पूरी उँगली याद नहीं रखता, के अनुरूप system_core और minutiae extraction • 256-bit coordinate hash_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 2.4,
+          "start_pct": 0,
+          "end_pct": 15,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "system_core"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core in neutral baseline resting state",
+            "end_state": "system_core completes state_transition and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 1)",
+            "duration_ms": 2400,
+            "completion_condition": "system_core completes state_transition and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Minutiae Extraction • 256-Bit Coordinate Hash Interface"
+          ],
+          "words": "सेंसर पूरी उँगली याद नहीं रखता,",
+          "visual_attention_target": {
+            "target_id": "minutiae extraction • 256-bit coordinate hash_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: सेंसर पूरी उँगली याद नहीं रखता,."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 32,
+            "end_char": 90,
+            "text": "बल्कि सिर्फ़ तीस से चालीस 'माइन्यूशिया' पॉइंट्स पकड़ता है—"
+          },
+          "semantic_action": "raise_or_hold",
+          "visual_explanation": "System Core performs raise_or_hold on Minutiae Extraction • 256-Bit Coordinate Hash Interface: बल्कि सिर्फ़ तीस से चालीस 'माइन्यूशिया' पॉइंट्स पक",
+          "required_assets": [
+            "system_core",
+            "minutiae extraction • 256-bit coordinate hash_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "minutiae extraction • 256-bit coordinate hash_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 1)",
+          "action": "बल्कि सिर्फ़ तीस से चालीस 'माइन्यूशिया' पॉइंट के अनुरूप system_core और minutiae extraction • 256-bit coordinate hash_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes raise_or_hold and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 2)",
+          "start_time": 2.4,
+          "end_time": 6.0,
+          "start_pct": 15,
+          "end_pct": 37,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "minutiae extraction • 256-bit coordinate hash_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "raise_or_hold",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 1)",
+            "end_state": "system_core completes raise_or_hold and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 2)",
+            "duration_ms": 3600,
+            "completion_condition": "system_core completes raise_or_hold and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • Raise Or Hold",
+            "badge": "RAISE_OR_HOLD"
+          },
+          "label": "सिस्टम कोर • Raise Or Hold",
+          "show": [
+            "System Core",
+            "Minutiae Extraction • 256-Bit Coordinate Hash Interface"
+          ],
+          "words": "बल्कि सिर्फ़ तीस से चालीस 'माइन्यूशिया' पॉइंट्स पकड़ता है—",
+          "visual_attention_target": {
+            "target_id": "minutiae extraction • 256-bit coordinate hash_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: raise_or_hold performed on focal object."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_03",
+          "narration_segment_ids": [
+            "seg_00_03"
+          ],
+          "source_text_span": {
+            "start_char": 90,
+            "end_char": 145,
+            "text": "जहाँ लकीरें ख़त्म होती हैं या दो हिस्सों में बँटती हैं।"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Minutiae Extraction • 256-Bit Coordinate Hash Interface: जहाँ लकीरें ख़त्म होती हैं या दो हिस्सों में बँटती",
+          "required_assets": [
+            "system_core",
+            "minutiae extraction • 256-bit coordinate hash_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "minutiae extraction • 256-bit coordinate hash_interface",
+          "preconditions": [
+            "completed evt_00_02",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes raise_or_hold and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 2)",
+          "action": "जहाँ लकीरें ख़त्म होती हैं या दो हिस्सों में  के अनुरूप system_core और minutiae extraction • 256-bit coordinate hash_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 3)",
+          "start_time": 6.0,
+          "end_time": 10.4,
+          "start_pct": 37,
+          "end_pct": 63,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "minutiae extraction • 256-bit coordinate hash_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes raise_or_hold and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 2)",
+            "end_state": "system_core completes state_transition and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 3)",
+            "duration_ms": 4400,
+            "completion_condition": "system_core completes state_transition and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 3) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Minutiae Extraction • 256-Bit Coordinate Hash Interface"
+          ],
+          "words": "जहाँ लकीरें ख़त्म होती हैं या दो हिस्सों में बँटती हैं।",
+          "visual_attention_target": {
+            "target_id": "minutiae extraction • 256-bit coordinate hash_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जहाँ लकीरें ख़त्म होती हैं या दो हि."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_04",
+          "narration_segment_ids": [
+            "seg_00_04"
+          ],
+          "source_text_span": {
+            "start_char": 145,
+            "end_char": 222,
+            "text": "और इन्हें बदलकर एक दो सौ छप्पन-बिट की सुरक्षित गणितीय संख्या बना दी जाती है।"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Minutiae Extraction • 256-Bit Coordinate Hash Interface: और इन्हें बदलकर एक दो सौ छप्पन-बिट की सुरक्षित गणि",
+          "required_assets": [
+            "system_core",
+            "minutiae extraction • 256-bit coordinate hash_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "minutiae extraction • 256-bit coordinate hash_interface",
+          "preconditions": [
+            "completed evt_00_03",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 3)",
+          "action": "और इन्हें बदलकर एक दो सौ छप्पन-बिट की सुरक्षि के अनुरूप system_core और minutiae extraction • 256-bit coordinate hash_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 4)",
+          "start_time": 10.4,
+          "end_time": 16.4,
+          "start_pct": 63,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "minutiae extraction • 256-bit coordinate hash_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 3)",
+            "end_state": "system_core completes state_transition and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 4)",
+            "duration_ms": 5999,
+            "completion_condition": "system_core completes state_transition and transitions minutiae extraction • 256-bit coordinate hash_interface to active state (step 4) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Minutiae Extraction • 256-Bit Coordinate Hash Interface"
+          ],
+          "words": "और इन्हें बदलकर एक दो सौ छप्पन-बिट की सुरक्षित गणितीय संख्या बना दी जाती है।",
+          "visual_attention_target": {
+            "target_id": "minutiae extraction • 256-bit coordinate hash_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: और इन्हें बदलकर एक दो सौ छप्पन-बिट ."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "सेंसर पूरी उँगली याद नहीं रखता,",
+          "start_pct": 0,
+          "end_pct": 15,
+          "show": [
+            "System Core",
+            "Minutiae Extraction • 256-Bit Coordinate Hash Interface"
+          ],
+          "action": "सेंसर पूरी उँगली याद नहीं रखता, के अनुरूप system_core और minutiae extraction • 256-bit coordinate hash_interface में दृश्य परिवर्तन होता है।",
+          "camera": "establishing_medium",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "बल्कि सिर्फ़ तीस से चालीस 'माइन्यूशिया' पॉइंट्स पकड़ता है—",
+          "start_pct": 15,
+          "end_pct": 37,
+          "show": [
+            "System Core",
+            "Minutiae Extraction • 256-Bit Coordinate Hash Interface"
+          ],
+          "action": "बल्कि सिर्फ़ तीस से चालीस 'माइन्यूशिया' पॉइंट के अनुरूप system_core और minutiae extraction • 256-bit coordinate hash_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • Raise Or Hold",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "जहाँ लकीरें ख़त्म होती हैं या दो हिस्सों में बँटती हैं।",
+          "start_pct": 37,
+          "end_pct": 63,
+          "show": [
+            "System Core",
+            "Minutiae Extraction • 256-Bit Coordinate Hash Interface"
+          ],
+          "action": "जहाँ लकीरें ख़त्म होती हैं या दो हिस्सों में  के अनुरूप system_core और minutiae extraction • 256-bit coordinate hash_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "और इन्हें बदलकर एक दो सौ छप्पन-बिट की सुरक्षित गणितीय संख्या बना दी जाती है।",
+          "start_pct": 63,
+          "end_pct": 100,
+          "show": [
+            "System Core",
+            "Minutiae Extraction • 256-Bit Coordinate Hash Interface"
+          ],
+          "action": "और इन्हें बदलकर एक दो सौ छप्पन-बिट की सुरक्षि के अनुरूप system_core और minutiae extraction • 256-bit coordinate hash_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        }
+      ],
+      "variant": "minutiae_points"
+    },
+    {
+      "type": "biometric_unlock",
+      "tag": "05 / 3D FACE UNLOCK",
+      "title": "2D PHOTO SPOOF VS 30,000 INFRARED DOTS",
+      "purpose": "Explain the mechanism and takeaway of 2D PHOTO SPOOF VS 30,000 INFRARED DOTS.",
+      "tone": "[High-contrast technology duel]",
+      "narration": "और फ़ेस अनलॉक? साधारण कैमरे वाले टू-डी फ़ेस अनलॉक को तो कोई भी आपकी फ़ोटो दिखाकर बेवकूफ़ बना सकता है! लेकिन थ्री-डी फ़ेस अनलॉक आपके चेहरे पर तीस हज़ार से ज़्यादा अदृश्य इन्फ्रारेड डॉट्स फेंकता है!",
+      "transition": "match_cut",
+      "sfx": "radar_beep",
+      "icon": "fingerprint",
+      "visual": {
+        "start": "High-contrast editorial layout establishing 2D PHOTO SPOOF VS 30,000 INFRARED DOTS.",
+        "objects": [
+          "Split Comparative Display Contrasting Ch"
+        ],
+        "action": "Split comparative display contrasting cheap 2D selfie camera spoofed by printed photo against Apple TrueDepth module projecting 30,000 invisible 940nm infrared dots over facial contours.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "2D PHOTO SPOOF VS 30,000 INFRARED DOTS",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "pattern_interrupt": "shake",
+      "emphasis_words": [
+        "फ़ेस अनलॉक",
+        "साधारण कैमरे",
+        "टू-डी फ़ेस अनलॉक",
+        "फ़ोटो दिखाकर बेवकूफ़",
+        "थ्री-डी",
+        "तीस हज़ार से ज़्यादा",
+        "इन्फ्रारेड डॉट्स"
+      ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 14,
+            "text": "और फ़ेस अनलॉक?"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on 2D Photo Spoof Vs 30,000 Infrared Dots Interface: और फ़ेस अनलॉक?",
+          "required_assets": [
+            "system_core",
+            "2d photo spoof vs 30,000 infrared dots_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "2d photo spoof vs 30,000 infrared dots_interface",
+          "preconditions": [
+            "system_core positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "system_core in neutral baseline resting state",
+          "action": "और फ़ेस अनलॉक? के अनुरूप system_core और 2d photo spoof vs 30,000 infrared dots_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions 2d photo spoof vs 30,000 infrared dots_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 1.5,
+          "start_pct": 0,
+          "end_pct": 10,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "system_core"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core in neutral baseline resting state",
+            "end_state": "system_core completes state_transition and transitions 2d photo spoof vs 30,000 infrared dots_interface to active state (step 1)",
+            "duration_ms": 1500,
+            "completion_condition": "system_core completes state_transition and transitions 2d photo spoof vs 30,000 infrared dots_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "2D Photo Spoof Vs 30,000 Infrared Dots Interface"
+          ],
+          "words": "और फ़ेस अनलॉक?",
+          "visual_attention_target": {
+            "target_id": "2d photo spoof vs 30,000 infrared dots_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: और फ़ेस अनलॉक?."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 14,
+            "end_char": 101,
+            "text": "साधारण कैमरे वाले टू-डी फ़ेस अनलॉक को तो कोई भी आपकी फ़ोटो दिखाकर बेवकूफ़ बना सकता है!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on 2D Photo Spoof Vs 30,000 Infrared Dots Interface: साधारण कैमरे वाले टू-डी फ़ेस अनलॉक को तो कोई भी आप",
+          "required_assets": [
+            "system_core",
+            "2d photo spoof vs 30,000 infrared dots_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "2d photo spoof vs 30,000 infrared dots_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions 2d photo spoof vs 30,000 infrared dots_interface to active state (step 1)",
+          "action": "साधारण कैमरे वाले टू-डी फ़ेस अनलॉक को तो कोई  के अनुरूप system_core और 2d photo spoof vs 30,000 infrared dots_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions 2d photo spoof vs 30,000 infrared dots_interface to active state (step 2)",
+          "start_time": 1.5,
+          "end_time": 8.3,
+          "start_pct": 10,
+          "end_pct": 58,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "2d photo spoof vs 30,000 infrared dots_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions 2d photo spoof vs 30,000 infrared dots_interface to active state (step 1)",
+            "end_state": "system_core completes state_transition and transitions 2d photo spoof vs 30,000 infrared dots_interface to active state (step 2)",
+            "duration_ms": 6800,
+            "completion_condition": "system_core completes state_transition and transitions 2d photo spoof vs 30,000 infrared dots_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "2D Photo Spoof Vs 30,000 Infrared Dots Interface"
+          ],
+          "words": "साधारण कैमरे वाले टू-डी फ़ेस अनलॉक को तो कोई भी आपकी फ़ोटो दिखाकर बेवकूफ़ बना सकता है!",
+          "visual_attention_target": {
+            "target_id": "2d photo spoof vs 30,000 infrared dots_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: साधारण कैमरे वाले टू-डी फ़ेस अनलॉक ."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_03",
+          "narration_segment_ids": [
+            "seg_00_03"
+          ],
+          "source_text_span": {
+            "start_char": 101,
+            "end_char": 196,
+            "text": "लेकिन थ्री-डी फ़ेस अनलॉक आपके चेहरे पर तीस हज़ार से ज़्यादा अदृश्य इन्फ्रारेड डॉट्स फेंकता है!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on 2D Photo Spoof Vs 30,000 Infrared Dots Interface: लेकिन थ्री-डी फ़ेस अनलॉक आपके चेहरे पर तीस हज़ार स",
+          "required_assets": [
+            "system_core",
+            "2d photo spoof vs 30,000 infrared dots_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "2d photo spoof vs 30,000 infrared dots_interface",
+          "preconditions": [
+            "completed evt_00_02",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions 2d photo spoof vs 30,000 infrared dots_interface to active state (step 2)",
+          "action": "लेकिन थ्री-डी फ़ेस अनलॉक आपके चेहरे पर तीस हज के अनुरूप system_core और 2d photo spoof vs 30,000 infrared dots_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions 2d photo spoof vs 30,000 infrared dots_interface to active state (step 3)",
+          "start_time": 8.3,
+          "end_time": 14.7,
+          "start_pct": 58,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "2d photo spoof vs 30,000 infrared dots_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions 2d photo spoof vs 30,000 infrared dots_interface to active state (step 2)",
+            "end_state": "system_core completes state_transition and transitions 2d photo spoof vs 30,000 infrared dots_interface to active state (step 3)",
+            "duration_ms": 6399,
+            "completion_condition": "system_core completes state_transition and transitions 2d photo spoof vs 30,000 infrared dots_interface to active state (step 3) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "2D Photo Spoof Vs 30,000 Infrared Dots Interface"
+          ],
+          "words": "लेकिन थ्री-डी फ़ेस अनलॉक आपके चेहरे पर तीस हज़ार से ज़्यादा अदृश्य इन्फ्रारेड डॉट्स फेंकता है!",
+          "visual_attention_target": {
+            "target_id": "2d photo spoof vs 30,000 infrared dots_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: लेकिन थ्री-डी फ़ेस अनलॉक आपके चेहरे."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "और फ़ेस अनलॉक?",
+          "start_pct": 0,
+          "end_pct": 10,
+          "show": [
+            "System Core",
+            "2D Photo Spoof Vs 30,000 Infrared Dots Interface"
+          ],
+          "action": "और फ़ेस अनलॉक? के अनुरूप system_core और 2d photo spoof vs 30,000 infrared dots_interface में दृश्य परिवर्तन होता है।",
+          "camera": "establishing_medium",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "साधारण कैमरे वाले टू-डी फ़ेस अनलॉक को तो कोई भी आपकी फ़ोटो दिखाकर बेवकूफ़ बना सकता है!",
+          "start_pct": 10,
+          "end_pct": 58,
+          "show": [
+            "System Core",
+            "2D Photo Spoof Vs 30,000 Infrared Dots Interface"
+          ],
+          "action": "साधारण कैमरे वाले टू-डी फ़ेस अनलॉक को तो कोई  के अनुरूप system_core और 2d photo spoof vs 30,000 infrared dots_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "लेकिन थ्री-डी फ़ेस अनलॉक आपके चेहरे पर तीस हज़ार से ज़्यादा अदृश्य इन्फ्रारेड डॉट्स फेंकता है!",
+          "start_pct": 58,
+          "end_pct": 100,
+          "show": [
+            "System Core",
+            "2D Photo Spoof Vs 30,000 Infrared Dots Interface"
+          ],
+          "action": "लेकिन थ्री-डी फ़ेस अनलॉक आपके चेहरे पर तीस हज के अनुरूप system_core और 2d photo spoof vs 30,000 infrared dots_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        }
+      ],
+      "variant": "face_dot_projector"
+    },
+    {
+      "type": "biometric_unlock",
+      "tag": "06 / DEPTH & LIVENESS",
+      "title": "3D DEPTH MESH • ATTENTION AWARENESS",
+      "purpose": "Explain the mechanism and takeaway of 3D DEPTH MESH • ATTENTION AWARENESS.",
+      "tone": "[Empowering safety revelation]",
+      "narration": "इन्फ्रारेड कैमरा इन डॉट्स की गहराई नापकर आपके चेहरे का एक थ्री-डी मेश बनाता है। और अटेंशन डिटेक्शन यह पक्का करता है कि आपकी आँखें खुली हों—ताकि जब आप सो रहे हों, तो कोई आपका फ़ोन अनलॉक न कर सके!",
+      "transition": "match_cut",
+      "sfx": "radar_beep",
+      "icon": "fingerprint",
+      "visual": {
+        "start": "High-contrast editorial layout establishing 3D DEPTH MESH • ATTENTION AWARENESS.",
+        "objects": [
+          "3D Wireframe Head Rotating",
+          "Depth Curvature Contours",
+          "Sleeping Lockout Guard."
+        ],
+        "action": "3D wireframe head rotating with depth curvature contours, dual eye-tracking attention gaze vectors locking on screen with sleeping lockout guard.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "3D DEPTH MESH • ATTENTION AWARENESS",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "pattern_interrupt": "flash",
+      "emphasis_words": [
+        "इन्फ्रारेड कैमरा",
+        "गहराई नापकर",
+        "थ्री-डी मेश",
+        "अटेंशन डिटेक्शन",
+        "आँखें खुली",
+        "सो रहे",
+        "अनलॉक न कर सके"
+      ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 79,
+            "text": "इन्फ्रारेड कैमरा इन डॉट्स की गहराई नापकर आपके चेहरे का एक थ्री-डी मेश बनाता है।"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on 3D Depth Mesh • Attention Awareness Interface: इन्फ्रारेड कैमरा इन डॉट्स की गहराई नापकर आपके चेहर",
+          "required_assets": [
+            "system_core",
+            "3d depth mesh • attention awareness_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "3d depth mesh • attention awareness_interface",
+          "preconditions": [
+            "system_core positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "system_core in neutral baseline resting state",
+          "action": "इन्फ्रारेड कैमरा इन डॉट्स की गहराई नापकर आपके के अनुरूप system_core और 3d depth mesh • attention awareness_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 6.0,
+          "start_pct": 0,
+          "end_pct": 37,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "system_core"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core in neutral baseline resting state",
+            "end_state": "system_core completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 1)",
+            "duration_ms": 6000,
+            "completion_condition": "system_core completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "3D Depth Mesh • Attention Awareness Interface"
+          ],
+          "words": "इन्फ्रारेड कैमरा इन डॉट्स की गहराई नापकर आपके चेहरे का एक थ्री-डी मेश बनाता है।",
+          "visual_attention_target": {
+            "target_id": "3d depth mesh • attention awareness_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: इन्फ्रारेड कैमरा इन डॉट्स की गहराई ."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 79,
+            "end_char": 139,
+            "text": "और अटेंशन डिटेक्शन यह पक्का करता है कि आपकी आँखें खुली हों—"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on 3D Depth Mesh • Attention Awareness Interface: और अटेंशन डिटेक्शन यह पक्का करता है कि आपकी आँखें ",
+          "required_assets": [
+            "system_core",
+            "3d depth mesh • attention awareness_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "3d depth mesh • attention awareness_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 1)",
+          "action": "और अटेंशन डिटेक्शन यह पक्का करता है कि आपकी आ के अनुरूप system_core और 3d depth mesh • attention awareness_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 2)",
+          "start_time": 6.0,
+          "end_time": 10.8,
+          "start_pct": 37,
+          "end_pct": 66,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "3d depth mesh • attention awareness_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 1)",
+            "end_state": "system_core completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 2)",
+            "duration_ms": 4800,
+            "completion_condition": "system_core completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "3D Depth Mesh • Attention Awareness Interface"
+          ],
+          "words": "और अटेंशन डिटेक्शन यह पक्का करता है कि आपकी आँखें खुली हों—",
+          "visual_attention_target": {
+            "target_id": "3d depth mesh • attention awareness_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: और अटेंशन डिटेक्शन यह पक्का करता है."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_03",
+          "narration_segment_ids": [
+            "seg_00_03"
+          ],
+          "source_text_span": {
+            "start_char": 139,
+            "end_char": 162,
+            "text": "ताकि जब आप सो रहे हों,"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "Customer performs state_transition on 3D Depth Mesh • Attention Awareness Interface: ताकि जब आप सो रहे हों,",
+          "required_assets": [
+            "customer",
+            "3d depth mesh • attention awareness_interface",
+            "customer"
+          ],
+          "actor_or_subject": "customer",
+          "target_object": "3d depth mesh • attention awareness_interface",
+          "preconditions": [
+            "completed evt_00_02",
+            "customer ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 2)",
+          "action": "ताकि जब आप सो रहे हों, के अनुरूप customer और 3d depth mesh • attention awareness_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "customer completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 3)",
+          "start_time": 10.8,
+          "end_time": 13.2,
+          "start_pct": 66,
+          "end_pct": 80,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "3d depth mesh • attention awareness_interface"
+          },
+          "animation_instruction": {
+            "target": "customer",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 2)",
+            "end_state": "customer completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 3)",
+            "duration_ms": 2399,
+            "completion_condition": "customer completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 3) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "ग्राहक • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "ग्राहक • स्टेट बदलाव",
+          "show": [
+            "Customer",
+            "3D Depth Mesh • Attention Awareness Interface"
+          ],
+          "words": "ताकि जब आप सो रहे हों,",
+          "visual_attention_target": {
+            "target_id": "3d depth mesh • attention awareness_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: ताकि जब आप सो रहे हों,."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_04",
+          "narration_segment_ids": [
+            "seg_00_04"
+          ],
+          "source_text_span": {
+            "start_char": 162,
+            "end_char": 194,
+            "text": "तो कोई आपका फ़ोन अनलॉक न कर सके!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on 3D Depth Mesh • Attention Awareness Interface: तो कोई आपका फ़ोन अनलॉक न कर सके!",
+          "required_assets": [
+            "system_core",
+            "3d depth mesh • attention awareness_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "3d depth mesh • attention awareness_interface",
+          "preconditions": [
+            "completed evt_00_03",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "customer completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 3)",
+          "action": "तो कोई आपका फ़ोन अनलॉक न कर सके! के अनुरूप system_core और 3d depth mesh • attention awareness_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 4)",
+          "start_time": 13.2,
+          "end_time": 16.4,
+          "start_pct": 80,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "3d depth mesh • attention awareness_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "customer completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 3)",
+            "end_state": "system_core completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 4)",
+            "duration_ms": 3199,
+            "completion_condition": "system_core completes state_transition and transitions 3d depth mesh • attention awareness_interface to active state (step 4) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "3D Depth Mesh • Attention Awareness Interface"
+          ],
+          "words": "तो कोई आपका फ़ोन अनलॉक न कर सके!",
+          "visual_attention_target": {
+            "target_id": "3d depth mesh • attention awareness_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो कोई आपका फ़ोन अनलॉक न कर सके!."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "इन्फ्रारेड कैमरा इन डॉट्स की गहराई नापकर आपके चेहरे का एक थ्री-डी मेश बनाता है।",
+          "start_pct": 0,
+          "end_pct": 37,
+          "show": [
+            "System Core",
+            "3D Depth Mesh • Attention Awareness Interface"
+          ],
+          "action": "इन्फ्रारेड कैमरा इन डॉट्स की गहराई नापकर आपके के अनुरूप system_core और 3d depth mesh • attention awareness_interface में दृश्य परिवर्तन होता है।",
+          "camera": "establishing_medium",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "और अटेंशन डिटेक्शन यह पक्का करता है कि आपकी आँखें खुली हों—",
+          "start_pct": 37,
+          "end_pct": 66,
+          "show": [
+            "System Core",
+            "3D Depth Mesh • Attention Awareness Interface"
+          ],
+          "action": "और अटेंशन डिटेक्शन यह पक्का करता है कि आपकी आ के अनुरूप system_core और 3d depth mesh • attention awareness_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "ताकि जब आप सो रहे हों,",
+          "start_pct": 66,
+          "end_pct": 80,
+          "show": [
+            "Customer",
+            "3D Depth Mesh • Attention Awareness Interface"
+          ],
+          "action": "ताकि जब आप सो रहे हों, के अनुरूप customer और 3d depth mesh • attention awareness_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "ग्राहक • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "तो कोई आपका फ़ोन अनलॉक न कर सके!",
+          "start_pct": 80,
+          "end_pct": 100,
+          "show": [
+            "System Core",
+            "3D Depth Mesh • Attention Awareness Interface"
+          ],
+          "action": "तो कोई आपका फ़ोन अनलॉक न कर सके! के अनुरूप system_core और 3d depth mesh • attention awareness_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        }
+      ],
+      "variant": "liveness_attention"
+    },
+    {
+      "type": "biometric_unlock",
+      "tag": "07 / THE HARDWARE VAULT",
+      "title": "SECURE ENCLAVE • ZERO OS ACCESS",
+      "purpose": "Explain the mechanism and takeaway of SECURE ENCLAVE • ZERO OS ACCESS.",
+      "tone": "[Authoritative, high-security breakdown]",
+      "narration": "ये सारा डेटा फ़ोन की आम मेमोरी में नहीं, बल्कि प्रोसेसर के अंदर एक अलग हार्डवेयर लॉकर 'सिक्योर एन्क्लेव' में क़ैद रहता है। ऑपरेटिंग सिस्टम तक को अंदर झाँकने की इजाज़त नहीं होती!",
+      "transition": "match_cut",
+      "sfx": "radar_beep",
+      "icon": "fingerprint",
+      "visual": {
+        "start": "High-contrast editorial layout establishing SECURE ENCLAVE • ZERO OS ACCESS.",
+        "objects": [
+          "Microscopic Silicon Chip Layout",
+          "Trng Separated From Android",
+          "Ios Memory."
+        ],
+        "action": "Microscopic silicon chip layout with isolated titanium hardware vault containing dedicated crypto coprocessor and TRNG separated from Android and iOS memory.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "SECURE ENCLAVE • ZERO OS ACCESS",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "pattern_interrupt": "zoom_punch",
+      "emphasis_words": [
+        "डेटा",
+        "आम मेमोरी में नहीं",
+        "प्रोसेसर",
+        "अलग हार्डवेयर लॉकर",
+        "सिक्योर एन्क्लेव",
+        "ऑपरेटिंग सिस्टम"
+      ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 41,
+            "text": "ये सारा डेटा फ़ोन की आम मेमोरी में नहीं,"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Secure Enclave • Zero Os Access Interface: ये सारा डेटा फ़ोन की आम मेमोरी में नहीं,",
+          "required_assets": [
+            "system_core",
+            "secure enclave • zero os access_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "secure enclave • zero os access_interface",
+          "preconditions": [
+            "system_core positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "system_core in neutral baseline resting state",
+          "action": "ये सारा डेटा फ़ोन की आम मेमोरी में नहीं, के अनुरूप system_core और secure enclave • zero os access_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions secure enclave • zero os access_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 3.6,
+          "start_pct": 0,
+          "end_pct": 27,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "system_core"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core in neutral baseline resting state",
+            "end_state": "system_core completes state_transition and transitions secure enclave • zero os access_interface to active state (step 1)",
+            "duration_ms": 3600,
+            "completion_condition": "system_core completes state_transition and transitions secure enclave • zero os access_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Secure Enclave • Zero Os Access Interface"
+          ],
+          "words": "ये सारा डेटा फ़ोन की आम मेमोरी में नहीं,",
+          "visual_attention_target": {
+            "target_id": "secure enclave • zero os access_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: ये सारा डेटा फ़ोन की आम मेमोरी में ."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 41,
+            "end_char": 122,
+            "text": "बल्कि प्रोसेसर के अंदर एक अलग हार्डवेयर लॉकर 'सिक्योर एन्क्लेव' में क़ैद रहता है।"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Secure Enclave • Zero Os Access Interface: बल्कि प्रोसेसर के अंदर एक अलग हार्डवेयर लॉकर 'सिक्",
+          "required_assets": [
+            "system_core",
+            "secure enclave • zero os access_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "secure enclave • zero os access_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions secure enclave • zero os access_interface to active state (step 1)",
+          "action": "बल्कि प्रोसेसर के अंदर एक अलग हार्डवेयर लॉकर  के अनुरूप system_core और secure enclave • zero os access_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions secure enclave • zero os access_interface to active state (step 2)",
+          "start_time": 3.6,
+          "end_time": 9.2,
+          "start_pct": 27,
+          "end_pct": 70,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "secure enclave • zero os access_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions secure enclave • zero os access_interface to active state (step 1)",
+            "end_state": "system_core completes state_transition and transitions secure enclave • zero os access_interface to active state (step 2)",
+            "duration_ms": 5600,
+            "completion_condition": "system_core completes state_transition and transitions secure enclave • zero os access_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Secure Enclave • Zero Os Access Interface"
+          ],
+          "words": "बल्कि प्रोसेसर के अंदर एक अलग हार्डवेयर लॉकर 'सिक्योर एन्क्लेव' में क़ैद रहता है।",
+          "visual_attention_target": {
+            "target_id": "secure enclave • zero os access_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: बल्कि प्रोसेसर के अंदर एक अलग हार्ड."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_03",
+          "narration_segment_ids": [
+            "seg_00_03"
+          ],
+          "source_text_span": {
+            "start_char": 122,
+            "end_char": 177,
+            "text": "ऑपरेटिंग सिस्टम तक को अंदर झाँकने की इजाज़त नहीं होती!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Secure Enclave • Zero Os Access Interface: ऑपरेटिंग सिस्टम तक को अंदर झाँकने की इजाज़त नहीं ह",
+          "required_assets": [
+            "system_core",
+            "secure enclave • zero os access_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "secure enclave • zero os access_interface",
+          "preconditions": [
+            "completed evt_00_02",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions secure enclave • zero os access_interface to active state (step 2)",
+          "action": "ऑपरेटिंग सिस्टम तक को अंदर झाँकने की इजाज़त न के अनुरूप system_core और secure enclave • zero os access_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions secure enclave • zero os access_interface to active state (step 3)",
+          "start_time": 9.2,
+          "end_time": 13.2,
+          "start_pct": 70,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "secure enclave • zero os access_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions secure enclave • zero os access_interface to active state (step 2)",
+            "end_state": "system_core completes state_transition and transitions secure enclave • zero os access_interface to active state (step 3)",
+            "duration_ms": 4000,
+            "completion_condition": "system_core completes state_transition and transitions secure enclave • zero os access_interface to active state (step 3) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Secure Enclave • Zero Os Access Interface"
+          ],
+          "words": "ऑपरेटिंग सिस्टम तक को अंदर झाँकने की इजाज़त नहीं होती!",
+          "visual_attention_target": {
+            "target_id": "secure enclave • zero os access_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: ऑपरेटिंग सिस्टम तक को अंदर झाँकने क."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "ये सारा डेटा फ़ोन की आम मेमोरी में नहीं,",
+          "start_pct": 0,
+          "end_pct": 27,
+          "show": [
+            "System Core",
+            "Secure Enclave • Zero Os Access Interface"
+          ],
+          "action": "ये सारा डेटा फ़ोन की आम मेमोरी में नहीं, के अनुरूप system_core और secure enclave • zero os access_interface में दृश्य परिवर्तन होता है।",
+          "camera": "establishing_medium",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "बल्कि प्रोसेसर के अंदर एक अलग हार्डवेयर लॉकर 'सिक्योर एन्क्लेव' में क़ैद रहता है।",
+          "start_pct": 27,
+          "end_pct": 70,
+          "show": [
+            "System Core",
+            "Secure Enclave • Zero Os Access Interface"
+          ],
+          "action": "बल्कि प्रोसेसर के अंदर एक अलग हार्डवेयर लॉकर  के अनुरूप system_core और secure enclave • zero os access_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "ऑपरेटिंग सिस्टम तक को अंदर झाँकने की इजाज़त नहीं होती!",
+          "start_pct": 70,
+          "end_pct": 100,
+          "show": [
+            "System Core",
+            "Secure Enclave • Zero Os Access Interface"
+          ],
+          "action": "ऑपरेटिंग सिस्टम तक को अंदर झाँकने की इजाज़त न के अनुरूप system_core और secure enclave • zero os access_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        }
+      ],
+      "variant": "secure_enclave"
+    },
+    {
+      "type": "biometric_unlock",
+      "tag": "08 / THE FINAL PAYOFF",
+      "title": "BINARY ANSWER • ONLY SECURE MATH",
+      "purpose": "Explain the mechanism and takeaway of BINARY ANSWER • ONLY SECURE MATH.",
+      "tone": "[Inspiring, upbeat channel payoff]",
+      "narration": "जब आप अनलॉक करते हैं, तो एन्क्लेव सिर्फ़ एक ही जवाब देता है: 'हाँ' या 'ना'। यानी कोई फ़ोटो नहीं, सिर्फ़ सुरक्षित गणित! अगली बार जब एक झटके में फ़ोन अनलॉक हो, तो इस सीक्रेट साइंस को याद रखना!",
+      "transition": "match_cut",
+      "sfx": "radar_beep",
+      "icon": "fingerprint",
+      "visual": {
+        "start": "High-contrast editorial layout establishing BINARY ANSWER • ONLY SECURE MATH.",
+        "objects": [
+          "Locking In 3 Core Pillars",
+          "Ringing Rajan Ka Adda Bell."
+        ],
+        "action": "Hardware comparator matching vectors at 99.8% confidence emitting binary token 1 to unlock screen, locking in 3 Core Pillars and ringing Rajan Ka Adda bell.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "BINARY ANSWER • ONLY SECURE MATH",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "pattern_interrupt": "flash",
+      "emphasis_words": [
+        "एन्क्लेव",
+        "हाँ' या 'ना",
+        "कोई फ़ोटो नहीं",
+        "सुरक्षित गणित",
+        "एक झटके में",
+        "सीक्रेट साइंस"
+      ],
+      "payoff_type": "loop_setup",
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 22,
+            "text": "जब आप अनलॉक करते हैं,"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "Customer performs state_transition on Binary Answer • Only Secure Math Interface: जब आप अनलॉक करते हैं,",
+          "required_assets": [
+            "customer",
+            "binary answer • only secure math_interface",
+            "customer"
+          ],
+          "actor_or_subject": "customer",
+          "target_object": "binary answer • only secure math_interface",
+          "preconditions": [
+            "customer positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "customer in neutral baseline resting state",
+          "action": "जब आप अनलॉक करते हैं, के अनुरूप customer और binary answer • only secure math_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "customer completes state_transition and transitions binary answer • only secure math_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 2.0,
+          "start_pct": 0,
+          "end_pct": 13,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "customer"
+          },
+          "animation_instruction": {
+            "target": "customer",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "customer in neutral baseline resting state",
+            "end_state": "customer completes state_transition and transitions binary answer • only secure math_interface to active state (step 1)",
+            "duration_ms": 2000,
+            "completion_condition": "customer completes state_transition and transitions binary answer • only secure math_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "ग्राहक • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "ग्राहक • स्टेट बदलाव",
+          "show": [
+            "Customer",
+            "Binary Answer • Only Secure Math Interface"
+          ],
+          "words": "जब आप अनलॉक करते हैं,",
+          "visual_attention_target": {
+            "target_id": "binary answer • only secure math_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जब आप अनलॉक करते हैं,."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 22,
+            "end_char": 75,
+            "text": "तो एन्क्लेव सिर्फ़ एक ही जवाब देता है: 'हाँ' या 'ना'।"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Binary Answer • Only Secure Math Interface: तो एन्क्लेव सिर्फ़ एक ही जवाब देता है: 'हाँ' या 'न",
+          "required_assets": [
+            "system_core",
+            "binary answer • only secure math_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "binary answer • only secure math_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "customer completes state_transition and transitions binary answer • only secure math_interface to active state (step 1)",
+          "action": "तो एन्क्लेव सिर्फ़ एक ही जवाब देता है: 'हाँ'  के अनुरूप system_core और binary answer • only secure math_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 2)",
+          "start_time": 2.0,
+          "end_time": 6.4,
+          "start_pct": 13,
+          "end_pct": 41,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "binary answer • only secure math_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "customer completes state_transition and transitions binary answer • only secure math_interface to active state (step 1)",
+            "end_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 2)",
+            "duration_ms": 4400,
+            "completion_condition": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Binary Answer • Only Secure Math Interface"
+          ],
+          "words": "तो एन्क्लेव सिर्फ़ एक ही जवाब देता है: 'हाँ' या 'ना'।",
+          "visual_attention_target": {
+            "target_id": "binary answer • only secure math_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो एन्क्लेव सिर्फ़ एक ही जवाब देता ."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_03",
+          "narration_segment_ids": [
+            "seg_00_03"
+          ],
+          "source_text_span": {
+            "start_char": 75,
+            "end_char": 97,
+            "text": "यानी कोई फ़ोटो नहीं,"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Binary Answer • Only Secure Math Interface: यानी कोई फ़ोटो नहीं,",
+          "required_assets": [
+            "system_core",
+            "binary answer • only secure math_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "binary answer • only secure math_interface",
+          "preconditions": [
+            "completed evt_00_02",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 2)",
+          "action": "यानी कोई फ़ोटो नहीं, के अनुरूप system_core और binary answer • only secure math_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 3)",
+          "start_time": 6.4,
+          "end_time": 8.0,
+          "start_pct": 41,
+          "end_pct": 51,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "binary answer • only secure math_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 2)",
+            "end_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 3)",
+            "duration_ms": 1599,
+            "completion_condition": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 3) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Binary Answer • Only Secure Math Interface"
+          ],
+          "words": "यानी कोई फ़ोटो नहीं,",
+          "visual_attention_target": {
+            "target_id": "binary answer • only secure math_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: यानी कोई फ़ोटो नहीं,."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_04",
+          "narration_segment_ids": [
+            "seg_00_04"
+          ],
+          "source_text_span": {
+            "start_char": 97,
+            "end_char": 118,
+            "text": "सिर्फ़ सुरक्षित गणित!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Binary Answer • Only Secure Math Interface: सिर्फ़ सुरक्षित गणित!",
+          "required_assets": [
+            "system_core",
+            "binary answer • only secure math_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "binary answer • only secure math_interface",
+          "preconditions": [
+            "completed evt_00_03",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 3)",
+          "action": "सिर्फ़ सुरक्षित गणित! के अनुरूप system_core और binary answer • only secure math_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 4)",
+          "start_time": 8.0,
+          "end_time": 9.5,
+          "start_pct": 51,
+          "end_pct": 61,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "binary answer • only secure math_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 3)",
+            "end_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 4)",
+            "duration_ms": 1500,
+            "completion_condition": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 4) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Binary Answer • Only Secure Math Interface"
+          ],
+          "words": "सिर्फ़ सुरक्षित गणित!",
+          "visual_attention_target": {
+            "target_id": "binary answer • only secure math_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: सिर्फ़ सुरक्षित गणित!."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_05",
+          "narration_segment_ids": [
+            "seg_00_05"
+          ],
+          "source_text_span": {
+            "start_char": 118,
+            "end_char": 158,
+            "text": "अगली बार जब एक झटके में फ़ोन अनलॉक हो,"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Binary Answer • Only Secure Math Interface: अगली बार जब एक झटके में फ़ोन अनलॉक हो,",
+          "required_assets": [
+            "system_core",
+            "binary answer • only secure math_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "binary answer • only secure math_interface",
+          "preconditions": [
+            "completed evt_00_04",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 4)",
+          "action": "अगली बार जब एक झटके में फ़ोन अनलॉक हो, के अनुरूप system_core और binary answer • only secure math_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 5)",
+          "start_time": 9.5,
+          "end_time": 13.1,
+          "start_pct": 61,
+          "end_pct": 84,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "binary answer • only secure math_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 4)",
+            "end_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 5)",
+            "duration_ms": 3599,
+            "completion_condition": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 5) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Binary Answer • Only Secure Math Interface"
+          ],
+          "words": "अगली बार जब एक झटके में फ़ोन अनलॉक हो,",
+          "visual_attention_target": {
+            "target_id": "binary answer • only secure math_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: अगली बार जब एक झटके में फ़ोन अनलॉक ."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_06",
+          "narration_segment_ids": [
+            "seg_00_06"
+          ],
+          "source_text_span": {
+            "start_char": 158,
+            "end_char": 190,
+            "text": "तो इस सीक्रेट साइंस को याद रखना!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Binary Answer • Only Secure Math Interface: तो इस सीक्रेट साइंस को याद रखना!",
+          "required_assets": [
+            "system_core",
+            "binary answer • only secure math_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "binary answer • only secure math_interface",
+          "preconditions": [
+            "completed evt_00_05",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 5)",
+          "action": "तो इस सीक्रेट साइंस को याद रखना! के अनुरूप system_core और binary answer • only secure math_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 6)",
+          "start_time": 13.1,
+          "end_time": 15.9,
+          "start_pct": 84,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "binary answer • only secure math_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 5)",
+            "end_state": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 6)",
+            "duration_ms": 2800,
+            "completion_condition": "system_core completes state_transition and transitions binary answer • only secure math_interface to active state (step 6) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Binary Answer • Only Secure Math Interface"
+          ],
+          "words": "तो इस सीक्रेट साइंस को याद रखना!",
+          "visual_attention_target": {
+            "target_id": "binary answer • only secure math_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो इस सीक्रेट साइंस को याद रखना!."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "जब आप अनलॉक करते हैं,",
+          "start_pct": 0,
+          "end_pct": 13,
+          "show": [
+            "Customer",
+            "Binary Answer • Only Secure Math Interface"
+          ],
+          "action": "जब आप अनलॉक करते हैं, के अनुरूप customer और binary answer • only secure math_interface में दृश्य परिवर्तन होता है।",
+          "camera": "establishing_medium",
+          "label": "ग्राहक • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "तो एन्क्लेव सिर्फ़ एक ही जवाब देता है: 'हाँ' या 'ना'।",
+          "start_pct": 13,
+          "end_pct": 41,
+          "show": [
+            "System Core",
+            "Binary Answer • Only Secure Math Interface"
+          ],
+          "action": "तो एन्क्लेव सिर्फ़ एक ही जवाब देता है: 'हाँ'  के अनुरूप system_core और binary answer • only secure math_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "यानी कोई फ़ोटो नहीं,",
+          "start_pct": 41,
+          "end_pct": 51,
+          "show": [
+            "System Core",
+            "Binary Answer • Only Secure Math Interface"
+          ],
+          "action": "यानी कोई फ़ोटो नहीं, के अनुरूप system_core और binary answer • only secure math_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "सिर्फ़ सुरक्षित गणित!",
+          "start_pct": 51,
+          "end_pct": 61,
+          "show": [
+            "System Core",
+            "Binary Answer • Only Secure Math Interface"
+          ],
+          "action": "सिर्फ़ सुरक्षित गणित! के अनुरूप system_core और binary answer • only secure math_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "अगली बार जब एक झटके में फ़ोन अनलॉक हो,",
+          "start_pct": 61,
+          "end_pct": 84,
+          "show": [
+            "System Core",
+            "Binary Answer • Only Secure Math Interface"
+          ],
+          "action": "अगली बार जब एक झटके में फ़ोन अनलॉक हो, के अनुरूप system_core और binary answer • only secure math_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        },
+        {
+          "words": "तो इस सीक्रेट साइंस को याद रखना!",
+          "start_pct": 84,
+          "end_pct": 100,
+          "show": [
+            "System Core",
+            "Binary Answer • Only Secure Math Interface"
+          ],
+          "action": "तो इस सीक्रेट साइंस को याद रखना! के अनुरूप system_core और binary answer • only secure math_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "fingerprint"
+        }
+      ],
+      "variant": "match_and_payoff"
+    }
+  ]
+}
