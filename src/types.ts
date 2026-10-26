@@ -41,7 +41,11 @@ export type SceneType =
   | "quick_commerce"
   | "depth_parallax"
   | "tower_of_hanoi"
-  | "tower_of_hanoi_visualizer";
+  | "tower_of_hanoi_visualizer"
+  | "bike_self_start"
+  | "bike_self_start_visualizer"
+  | "tree_traversal"
+  | "tree_traversal_visualizer";
 
 export type Side = { heading: string; items: string[] };
 
@@ -125,13 +129,80 @@ export type VisualStoryboard = {
 export type ArtDirection = "editorial" | "cinematic";
 
 export type VisualBeat = {
-  at: number; // normalized scene progress, from 0 to 1
-  label: string;
-  action: string;
+  words?: string; // exact narration phrase this beat covers
+  start_pct?: number; // 0-100 position in scene's audio
+  end_pct?: number; // 0-100 position in scene's audio
+  show?: string[]; // concrete objects/characters that must be visible
+  action: string; // one literal action
+  camera?: string; // shot type and focus
+  label: string; // short on-screen text/icon (in narration language)
+  icon_or_asset?: string; // asset id or generation prompt
+  at?: number; // legacy normalized scene progress, from 0 to 1
   state?: string;
   visualState?: string; // optional machine-readable state for purpose-built scene renderers
   focus?: string;
   journeyStep?: number; // zero-based stage override for this beat
+};
+
+export type VisualEvent = {
+  event_id: string;
+  narration_segment_ids?: string[];
+  source_text_span?: {
+    start_char?: number;
+    end_char?: number;
+    text: string;
+  };
+  semantic_action: string;
+  visual_explanation?: string;
+  required_assets?: string[];
+  actor_or_subject?: string;
+  target_object?: string;
+  preconditions?: string[];
+  initial_state?: string | Record<string, any>;
+  action: string;
+  final_state?: string | Record<string, any>;
+  start_time?: number;
+  end_time?: number;
+  start_pct?: number; // 0-100
+  end_pct?: number; // 0-100
+  timing_confidence?: "measured_word" | "measured_segment" | "estimated_phrase" | string;
+  spatial_relationships?: string | Record<string, any>;
+  camera_instruction?: string | {
+    shot?: string;
+    movement?: string;
+    target?: string;
+  };
+  animation_instruction?: string | {
+    target?: string;
+    motion?: string;
+    easing?: string;
+    duration_ms?: number;
+    completion_condition?: string;
+  };
+  concurrent_event_ids?: string[];
+  transition_to_next_event?: string;
+  on_screen_text?: string | {
+    label?: string;
+    badge?: string;
+    subtitle?: string;
+  };
+  label?: string; // backward compat with beat label
+  show?: string[]; // backward compat with beat show
+  words?: string; // backward compat with beat words
+  at?: number; // legacy normalized progress
+  visualState?: string; // optional machine-readable state
+  focus?: string; // focal target
+  journeyStep?: number; // journey step override
+  visual_attention_target?: string | {
+    target_id?: string;
+    emphasis?: "spotlight" | "pulse" | "reticle" | "none" | string;
+  };
+  mute_comprehension_test?: string | {
+    question: string;
+    expected_answer?: string;
+    expected_evidence?: string;
+  };
+  validation_status?: "passed" | "pending" | "warning" | "failed" | string;
 };
 
 export type SceneSpec = {
@@ -160,6 +231,7 @@ export type SceneSpec = {
   graphic?: string; // motion graphic or lottie/3d variant (e.g. "highway_3d", "lottie/scan.json")
   visual?: VisualStoryboard;
   beats?: VisualBeat[];
+  events?: VisualEvent[]; // comprehensive visual choreography events
   journeyStep?: number; // zero-based active stage in VideoProps.journey (string or structured object)
   motion?: string; // camera / physics motion directives
   camera?: string; // optional camera movement directive

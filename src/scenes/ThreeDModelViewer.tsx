@@ -28,7 +28,17 @@ export const ThreeDModelViewer: React.FC<{
   } | null>(null);
 
   // Determine model path
-  const rawModelPath = scene.model || (scene as any).modelUrl || "models/sample.glb";
+  const epPrefix = scene.audio ? scene.audio.split("/")[0] : "";
+  let rawModelPath = scene.model || (scene as any).modelUrl;
+  if (!rawModelPath) {
+    if (scene.variant === "starter_gears_3d") rawModelPath = "media/starter_gears.glb";
+    else if (scene.variant === "sprag_clutch_3d") rawModelPath = "media/sprag_clutch.glb";
+    else if (scene.variant === "motorcycle_engine_3d") rawModelPath = "media/motorcycle_engine.glb";
+    else rawModelPath = "models/sample.glb";
+  }
+  if (epPrefix && rawModelPath.startsWith("media/") && !rawModelPath.startsWith(epPrefix)) {
+    rawModelPath = `${epPrefix}/${rawModelPath}`;
+  }
   const modelUrl = rawModelPath.startsWith("http://") || rawModelPath.startsWith("https://")
     ? rawModelPath
     : staticFile(rawModelPath.replace(/^\/+/, ""));

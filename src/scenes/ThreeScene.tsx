@@ -28,6 +28,7 @@ import { ThreeDQuickCommerceStore } from "./ThreeDQuickCommerceStore";
 import { ThreeDBinarySearch } from "./ThreeDBinarySearch";
 import { ThreeDGoogleMaps } from "./ThreeDGoogleMaps";
 import { ThreeDFASTagToll } from "./ThreeDFASTagToll";
+import { ThreeDStarlinkPhasedArray } from "./ThreeDStarlinkPhasedArray";
 
 interface ThreeSceneProps {
   scene: SceneSpec;
@@ -71,6 +72,9 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({ scene, accent }) => {
     case "gltf_model":
     case "model_viewer_3d":
     case "custom_model_3d":
+    case "starter_gears_3d":
+    case "sprag_clutch_3d":
+    case "motorcycle_engine_3d":
       return <ThreeDModelViewer scene={scene} accent={accent} />;
 
     case "atm_machine_3d":
@@ -84,6 +88,8 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({ scene, accent }) => {
     case "hook_3d":
     case "qr_scan_3d":
     case "smartphone_qr_3d":
+    case "retail_payment_3d":
+    case "shop_payment_3d":
       return <ThreeDUPIHook scene={scene} accent={accent} />;
 
     case "concentric_security_3d":
@@ -150,6 +156,12 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({ scene, accent }) => {
     case "gps_constellation_3d":
     case "satellite_orbit_3d":
       return <ThreeDGPSTrilateration scene={scene} accent={accent} />;
+
+    case "starlink_phased_array_3d":
+    case "phased_array_3d":
+    case "phased_array":
+    case "starlink_beam_3d":
+      return <ThreeDStarlinkPhasedArray scene={scene} accent={accent} />;
 
     case "bluetooth_link_3d":
     case "bluetooth_radio_3d":

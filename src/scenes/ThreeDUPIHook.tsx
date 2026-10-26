@@ -19,6 +19,9 @@ export const ThreeDUPIHook: React.FC<{
     phoneGroup: THREE.Group;
     standeeGroup: THREE.Group;
     coffeeCupGroup: THREE.Group;
+    shoppingBagGroup: THREE.Group;
+    groceryBox: THREE.Mesh;
+    packedBadge: THREE.Mesh;
     laserPlane: THREE.Mesh;
     screenTexture: THREE.CanvasTexture;
     screenCanvas: HTMLCanvasElement;
@@ -113,6 +116,52 @@ export const ThreeDUPIHook: React.FC<{
       coffeeCupGroup.add(ring);
       steamRings.push(ring);
     }
+
+    // 2b. Realistic 3D Artisan Shopping Bag with Shopkeeper Packing Motion (Left counter)
+    const shoppingBagGroup = new THREE.Group();
+    shoppingBagGroup.position.set(-2.4, -0.9, -0.4);
+    threeScene.add(shoppingBagGroup);
+
+    const bagGeo = new THREE.BoxGeometry(1.3, 1.6, 0.85);
+    const bagMat = new THREE.MeshStandardMaterial({
+      color: 0xb48a60,
+      roughness: 0.85,
+      metalness: 0.05,
+    });
+    const bagBody = new THREE.Mesh(bagGeo, bagMat);
+    bagBody.position.y = 0.8;
+    shoppingBagGroup.add(bagBody);
+
+    const handleMat = new THREE.MeshStandardMaterial({ color: 0x8c6239, roughness: 0.9 });
+    const handleL = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.035, 8, 16, Math.PI), handleMat);
+    handleL.position.set(0, 1.6, 0.18);
+    shoppingBagGroup.add(handleL);
+
+    const handleR = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.035, 8, 16, Math.PI), handleMat);
+    handleR.position.set(0, 1.6, -0.18);
+    shoppingBagGroup.add(handleR);
+
+    // Product item being packed (artisan coffee box)
+    const itemGeo = new THREE.BoxGeometry(0.75, 1.0, 0.45);
+    const itemMat = new THREE.MeshStandardMaterial({
+      color: 0x38bdf8,
+      roughness: 0.35,
+      metalness: 0.3,
+    });
+    const groceryBox = new THREE.Mesh(itemGeo, itemMat);
+    groceryBox.position.set(0, 2.2, 0);
+    shoppingBagGroup.add(groceryBox);
+
+    // Packed checkmark badge on bag
+    const badgeGeo = new THREE.PlaneGeometry(0.65, 0.32);
+    const badgeMat = new THREE.MeshBasicMaterial({
+      color: 0x22c55e,
+      transparent: true,
+      opacity: 0,
+    });
+    const packedBadge = new THREE.Mesh(badgeGeo, badgeMat);
+    packedBadge.position.set(0, 0.8, 0.44);
+    shoppingBagGroup.add(packedBadge);
 
     // 3. Realistic 3D QR Standee on Counter (Center)
     const standeeGroup = new THREE.Group();
@@ -274,6 +323,9 @@ export const ThreeDUPIHook: React.FC<{
       phoneGroup,
       standeeGroup,
       coffeeCupGroup,
+      shoppingBagGroup,
+      groceryBox,
+      packedBadge,
       laserPlane,
       screenTexture,
       screenCanvas,
@@ -299,24 +351,82 @@ export const ThreeDUPIHook: React.FC<{
     const s = stateRef.current;
     if (!s) return;
 
-    // Smooth 3D arc orbit: moves from wide angle showing counter, cup, and standee to balanced 3/4 view
-    const arcT = interpolate(frame, [0, 90], [0, 1], {
+    // Dynamic Choreographic Phase Detection from scene.events
+    const totalFrames = scene.durationInFrames || 90;
+    let raiseEndPct = 26;
+    let scanEndPct = 65;
+    let paymentSuccessPct = 68;
+    let packingStartPct = 18;
+    let packingEndPct = 58;
+
+    if (scene.events && scene.events.length > 0) {
+      for (const ev of scene.events) {
+        if (ev.semantic_action === "raise_phone" || ev.semantic_action === "raise_or_hold") {
+          raiseEndPct = ev.end_pct ?? 26;
+        }
+        if (ev.semantic_action === "scan_qr" || ev.semantic_action === "scan") {
+          scanEndPct = ev.end_pct ?? 65;
+        }
+        if (ev.semantic_action === "pack_goods") {
+          packingStartPct = ev.start_pct ?? 18;
+          packingEndPct = ev.end_pct ?? 58;
+        }
+        if (
+          ev.semantic_action === "auth" ||
+          ev.semantic_action === "authorize_or_pay" ||
+          ev.semantic_action === "success"
+        ) {
+          paymentSuccessPct = ev.start_pct ?? 68;
+        }
+      }
+    }
+
+    const raiseEndFrame = Math.max(1, Math.round(totalFrames * (raiseEndPct / 100)));
+    const paymentSuccessFrame = Math.max(raiseEndFrame + 1, Math.round(totalFrames * (paymentSuccessPct / 100)));
+    const packingStartFrame = Math.round(totalFrames * (packingStartPct / 100));
+    const packingEndFrame = Math.max(packingStartFrame + 1, Math.round(totalFrames * (packingEndPct / 100)));
+
+    // Motivated Camera Direction: Establishing Shot ➔ Medium Focus ➔ Device Close-Up
+    const camT = interpolate(frame, [0, raiseEndFrame, paymentSuccessFrame], [0, 0.5, 1], {
       extrapolateLeft: "clamp",
       extrapolateRight: "clamp",
     });
 
-    s.camera.position.x = interpolate(arcT, [0, 1], [-1.0, -0.4]);
-    s.camera.position.y = interpolate(arcT, [0, 1], [3.8, 3.0]);
-    s.camera.position.z = interpolate(arcT, [0, 1], [12.0, 10.2]);
+    s.camera.position.x = interpolate(camT, [0, 0.5, 1], [-1.0, -0.6, -0.2]);
+    s.camera.position.y = interpolate(camT, [0, 0.5, 1], [3.8, 3.2, 2.6]);
+    s.camera.position.z = interpolate(camT, [0, 0.5, 1], [12.0, 10.8, 9.4]);
     s.camera.lookAt(
-      interpolate(arcT, [0, 1], [0.3, 0.2]),
-      interpolate(arcT, [0, 1], [0.1, 0.3]),
-      interpolate(arcT, [0, 1], [0.0, 0.1])
+      interpolate(camT, [0, 0.5, 1], [0.3, 0.1, -0.1]),
+      interpolate(camT, [0, 0.5, 1], [0.1, 0.25, 0.4]),
+      interpolate(camT, [0, 0.5, 1], [0.0, 0.1, 0.2])
     );
 
-    // Phone breathing motion
-    s.phoneGroup.position.y = 0.5 + Math.sin(frame * 0.04) * 0.03;
-    s.phoneGroup.rotation.y = 0.48 + Math.sin(frame * 0.03) * 0.03;
+    // 1. Phone Raising Action: Customer raises phone from waist level to aim at QR code
+    const raiseT = interpolate(frame, [0, raiseEndFrame], [0, 1], {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    });
+
+    s.phoneGroup.position.x = interpolate(raiseT, [0, 1], [-1.8, -1.4]);
+    s.phoneGroup.position.y =
+      interpolate(raiseT, [0, 1], [-0.7, 0.5]) + Math.sin(frame * 0.04) * 0.02;
+    s.phoneGroup.position.z = interpolate(raiseT, [0, 1], [2.8, 1.8]);
+    s.phoneGroup.rotation.x = interpolate(raiseT, [0, 1], [0.65, 0.3]);
+    s.phoneGroup.rotation.y = interpolate(raiseT, [0, 1], [0.35, 0.48]);
+    s.phoneGroup.rotation.z = interpolate(raiseT, [0, 1], [-0.15, -0.1]);
+
+    // 2. Concurrent Shopkeeper Packing: Goods slide into bag and seal closes
+    const packT = interpolate(frame, [packingStartFrame, packingEndFrame], [0, 1], {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    });
+    s.groceryBox.position.y = interpolate(packT, [0, 1], [2.2, 0.75]);
+    (s.packedBadge.material as THREE.MeshBasicMaterial).opacity = interpolate(
+      frame,
+      [packingEndFrame, packingEndFrame + 10],
+      [0, 1],
+      { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+    );
 
     // Coffee steam animation
     s.steamRings.forEach((ring, idx) => {
@@ -326,19 +436,19 @@ export const ThreeDUPIHook: React.FC<{
       (ring.material as THREE.MeshBasicMaterial).opacity = (1 - ph) * 0.45;
     });
 
-    // Laser scan animation (sweeps vertically across QR)
-    const isScanning = frame < 65;
+    // 3. Laser scan animation during active scanning window
+    const isScanning = frame >= Math.round(raiseEndFrame * 0.7) && frame < paymentSuccessFrame;
     s.laserPlane.visible = isScanning;
     if (isScanning) {
-      const scanPhase = (frame % 36) / 36;
+      const scanPhase = ((frame - raiseEndFrame) % 32) / 32;
       s.laserPlane.position.y = -0.1 + Math.sin(scanPhase * Math.PI) * 1.1;
       s.laserPlane.position.z = 0.6 + Math.cos(scanPhase * Math.PI) * 0.35;
       s.laserPlane.scale.x = 0.95 + Math.sin(frame * 0.25) * 0.12;
     }
 
-    // Payment Shockwave expansion on success (frame >= 60)
-    if (frame >= 60) {
-      const swT = interpolate(frame, [60, 100], [0, 1], {
+    // 4. Payment Shockwave expansion on success
+    if (frame >= paymentSuccessFrame) {
+      const swT = interpolate(frame, [paymentSuccessFrame, paymentSuccessFrame + 35], [0, 1], {
         extrapolateLeft: "clamp",
         extrapolateRight: "clamp",
       });
@@ -351,7 +461,7 @@ export const ThreeDUPIHook: React.FC<{
     const w = s.screenCanvas.width;
     const h = s.screenCanvas.height;
 
-    const isPaid = frame >= 65;
+    const isPaid = frame >= paymentSuccessFrame;
 
     ctx.fillStyle = isPaid ? "#064e3b" : "#0B1020";
     ctx.fillRect(0, 0, w, h);

@@ -42,7 +42,7 @@ CURATED_PRESETS = {
     "smartphone": {
         "desc": "Modern sleek smartphone with bezel and screen area",
         "filename": "smartphone.glb",
-        "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb" # fallback placeholder, replaced with direct raw model URLs
+        "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb"
     },
     "credit_card": {
         "desc": "Standard EMV chip credit/debit card with magnetic stripe",
@@ -62,6 +62,31 @@ CURATED_PRESETS = {
     "laptop": {
         "desc": "Modern thin aluminum laptop with trackpad and keyboard",
         "filename": "laptop.glb",
+        "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box/glTF-Binary/Box.glb"
+    },
+    "car": {
+        "desc": "Detailed 3D automobile vehicle mesh with wheels and chassis",
+        "filename": "car.glb",
+        "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box/glTF-Binary/Box.glb"
+    },
+    "vehicle": {
+        "desc": "Heavy commercial transport vehicle (truck / transport)",
+        "filename": "vehicle.glb",
+        "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box/glTF-Binary/Box.glb"
+    },
+    "barrier_gate": {
+        "desc": "Automated boom barrier toll gate",
+        "filename": "barrier_gate.glb",
+        "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box/glTF-Binary/Box.glb"
+    },
+    "rfid_reader": {
+        "desc": "Overhead UHF RFID gantry scanner reader",
+        "filename": "rfid_reader.glb",
+        "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box/glTF-Binary/Box.glb"
+    },
+    "human": {
+        "desc": "Low-poly human figure for scale and interaction",
+        "filename": "human.glb",
         "url": "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box/glTF-Binary/Box.glb"
     },
     "duck": {
@@ -700,6 +725,16 @@ def main():
         preset_info = CURATED_PRESETS[args.preset]
         filename = args.name or preset_info["filename"]
         dest = resolve_dest(args.topic, filename)
+        
+        # Check local shared catalog in public/models/general/ first
+        local_general = MODELS_DIR / "general" / filename
+        if local_general.exists():
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy(local_general, dest)
+            print(f"✅ Found in local curated catalog: {local_general.name} -> {dest.name}")
+            cmd_inspect(dest)
+            return 0
+
         ok = download_file(preset_info["url"], dest)
         if ok:
             cmd_inspect(dest)

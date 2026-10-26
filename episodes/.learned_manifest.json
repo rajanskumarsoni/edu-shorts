@@ -1,0 +1,86 @@
+{
+  "how-quick-commerce-works": {
+    "timestamp": "2026-10-26 16:10:44",
+    "platforms": [
+      "telegram",
+      "twitter",
+      "threads",
+      "facebook",
+      "linkedin",
+      "instagram",
+      "youtube"
+    ],
+    "duration": 48,
+    "scene_count": 12
+  },
+  "how-google-maps-works": {
+    "timestamp": "2026-10-26 16:10:44",
+    "platforms": [
+      "youtube",
+      "telegram",
+      "linkedin",
+      "threads",
+      "facebook",
+      "twitter",
+      "instagram"
+    ],
+    "duration": 56,
+    "scene_count": 14
+  },
+  "how-aadhaar-works": {
+    "timestamp": "2026-10-26 16:10:44",
+    "platforms": [
+      "youtube",
+      "telegram",
+      "instagram",
+      "facebook",
+      "twitter",
+      "linkedin",
+      "threads"
+    ],
+    "duration": 177.0,
+    "scene_count": 11
+  },
+  "tower-of-hanoi": {
+    "timestamp": "2026-10-26 16:10:44",
+    "platforms": [
+      "youtube",
+      "threads",
+      "instagram",
+      "telegram",
+      "twitter",
+      "linkedin",
+      "facebook"
+    ],
+    "duration": 24,
+    "scene_count": 6
+  },
+  "nvidia-microducks": {
+    "timestamp": "2026-10-26 16:10:44",
+    "platforms": [
+      "threads",
+      "youtube",
+      "facebook",
+      "twitter",
+      "linkedin",
+      "telegram",
+      "instagram"
+    ],
+    "duration": 44,
+    "scene_count": 11
+  },
+  "emudhra-security-leak": {
+    "timestamp": "2026-10-26 16:10:44",
+    "platforms": [
+      "threads",
+      "telegram",
+      "facebook",
+      "twitter",
+      "linkedin",
+      "instagram",
+      "youtube"
+    ],
+    "duration": 52,
+    "scene_count": 13
+  }
+}

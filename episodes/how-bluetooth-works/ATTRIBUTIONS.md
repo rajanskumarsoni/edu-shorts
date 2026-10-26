@@ -1,15 +1,19 @@
-# Asset Licenses & Legal Attributions: How Bluetooth Works
+# Asset Licensing & Attribution Notice
 
-## 3D Procedural Geometries & Shaders
-- **Engine**: Three.js WebGL procedural meshes in `src/scenes/ThreeDBluetoothSpace.tsx`.
-- **Assets**: Procedural 3D smartphone chassis, wireless earbuds, charging case, 2.4 GHz wavefront rings, 79-channel spectrum bars, and acoustic vibration driver.
-- **License**: Custom MIT / Educational repository original implementation.
+Generated automatically by edu-shorts pipeline.
+Always verify commercial suitability before publishing.
 
-## Audio & Music
-- **Speech Synthesis**: Synthesized via local VoiceStudio instance running OmniVoice profile `rajan story teller` (Voice ID: `e42e619e`).
-- **Sound Effects**: Local SFX library (`public/sfx/fast_whoosh.wav`, `whoosh.wav`, `pop.wav`, `click.wav`, `sparkle.wav`).
-- **Background Bed**: `public/music/warm_focus.mp3` (Royalty-free ambient tech bed, speech-ducked to 35% during narration).
+## Media Assets Inventory (1 items)
 
-## Primary Scientific Sources
-1. **Bluetooth SIG (Special Interest Group)**: Official Core Specification v5.4, 2.4 GHz ISM Band Physical Layer (PHY), Adaptive Frequency Hopping (AFH) 79 channels @ 1,600 hops/s.
-2. **IEEE 802.15.1 Standards**: Wireless Personal Area Networks (WPAN) specification.
+### Icon: cube
+- **Local Path**: `media/cube.svg`
+- **Provider**: ICONIFY
+- **License**: ISC / MIT / Apache 2.0 (Open Vector)
+- **Author / Creator**: Public Domain / Creative Commons
+- **Source**: https://api.iconify.design/lucide/box.svg?color=%2300F0FF
+
+## YouTube Description Attribution Block
+```text
+Media & Music Credits:
+- Icon: cube (ISC / MIT / Apache 2.0 (Open Vector))
+```

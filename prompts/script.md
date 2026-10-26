@@ -20,9 +20,17 @@ Before drafting the script, conduct targeted research to identify:
 1. **Language Division (Strict)**:
    - **Narration strictly in conversational Hindi (बोलचाल की हिंदी / Hinglish)**.
    - All technical acronyms spelled phonetically with hyphens for VoiceStudio (`एन-पी-सी-आई`, `यू-पी-आई`, `ए-पी-आई`, `सी-बी-एस`, `एच-टी-टी-पी`).
-   - Natural spoken numbers ("दस लाख", "पचास हज़ार", "दो सेकंड").
+   - Natural spoken numbers verified against digits: spell exact numbers ("छत्तीस हज़ार", never "छत्तीसगढ़ हज़ार"; "साढ़े पाँच सौ", "छह सौ मिली-सेकंड").
    - Direct viewer address: "आपने कभी सोचा है...", "जब आप...".
-2. **Formula & Hook Retention Scoring Matrix**:
+   - **Emphasis Words Rule**: Every word in `Emphasis Words` MUST be an exact substring present in that scene's narration text. Never include words not spoken in that scene.
+
+2. **Mute-First Design Rule & Facts Table (Mandatory)**:
+   - **Canonical Facts Table**: Before writing scene narration, define a Markdown facts table at the top of `script.md` with columns: `Name | Value | Unit | Source | Verified Date`. ALL numbers in narration, labels, benchmark runners, and visuals must read directly from this table.
+   - **Visual-Word Choreography**: Every noun, verb, and number in the narration must have a matching on-screen visual shown in sync with the spoken word. The video must be 100% understandable with sound OFF.
+   - **Negation Visuals**: Plan explicit visuals for negative statements ("no towers" = cell tower with a red cross ✕, "no motor" = electric motor with a red cross ✕).
+   - **On-Screen Labels**: Labels and key metric callouts must be presented in the narration language (Hindi / Devanagari alongside standard technical acronyms) so sound-off viewers can read along effortlessly.
+
+3. **Formula & Hook Retention Scoring Matrix**:
    - `HOOK → PROBLEM → CURIOSITY → EXPLANATION (WHY → WHAT → HOW) → PAYOFF`.
    - **Stage 1A: 5-Hook Retention Generation & Scoring (Mandatory)**:
      Before selecting the opening line, draft **5 distinct hook variations** and score them on:
@@ -31,32 +39,36 @@ Before drafting the script, conduct targeted research to identify:
      * **Frame-0 Visual Momentum** (1-10): Can the visual immediately move or punch in without a slow title card?
      * *Formula*: $\text{Score} = \text{Relatability} \times 0.35 + \text{Curiosity} \times 0.35 + \text{VisualMomentum} \times 0.30$.
      * Choose the highest scoring hook for Scene 1.
-3. **Visual Intent & Creative Flexibility**:
-   - In each scene's `Visual Intent`, state the clearest visual representation, preferring existing supported scene types. A specialized skill is optional: use it only when its purpose fits the scene, its `SKILL.md` is available, and its output can be used by this pipeline. Verify dependencies, output format, aspect ratio, and command before relying on it.
-     * **High-Impact Title Punch / Hook**: `bs-creatormotion-type-title-takeover` or `bs-hyperframes-velocity-sting`.
-     * **Tactile Explanation / Classroom**: `bs-chalkboard-infographic` or `bs-hand-drawn-visual-notes`.
-     * **System Architecture & Data Flows**: `bs-interactive-system-map` or `bs-project-knowledge-graph`.
-     * **Consumer Experience / Mobile App**: `bs-hyperframes-device-canvas-launch`.
-     * **Code Transformation / Diff**: `bs-hyperframes-code-change-launch`.
-     * **Checklist / Core Pillars**: `bs-creatormotion-cards-action-checklist`.
-   * These are examples, not requirements. Do not use a skill merely because it is installed, and do not treat a skill as a Remotion scene type. Select only tools and assets that materially improve the episode.
-4. **Pacing, Word Count & Retention Mechanics**:
+
+4. **Visual Intent & Creative Flexibility**:
+   - In each scene's `Visual Intent`, state the clearest visual representation, preferring existing supported scene types.
+   - State clearly which objects appear, what action occurs, and which numbers/labels appear on screen.
+
+5. **Pacing, Word Count & Retention Mechanics**:
    - Target runtime: 45 - 150 seconds; never exceed the engine's hard limit of 180 seconds (max 3 minutes for deep technical explainers).
    - Estimate the word count from the target duration and speaking pace; 220 - 360 words is a rough guide, not a requirement.
-   - **Write for Phrase-Level Choreography**: Structure the narration so that sentences contain natural, punchy pauses and distinct action clauses (e.g. clause 1 introduces subjects, clause 2 highlights a comparison, clause 3 triggers the state change). This allows the visual animator to synchronize physical movements with spoken words.
    - **Pattern Interrupts**: Include a visual pattern interrupt (e.g. zoom punch, state shake, or warning color flash) every 15–20 seconds to reset viewer fatigue.
-   - **Actionable Save / Share Motivation**: Do not end with a generic "Follow for more". Give a specific, compelling reason to **save** ("Save this architecture cheat sheet for your next system design interview") or **share** ("Send this to your tech partner who still thinks HTTP is secure").
-   - **Seamless Infinite Loop Outro**: Craft the final scene's closing clause so it flows syntactically back into the opening hook question of Scene 1 (e.g. Outro: "...और यही वजह है कि जब भी आप..." ➔ Scene 1 Hook: "...UPI से ₹100 ट्रांसफर करते हैं, तो वो 2 सेकंड में सेटल कैसे होता है?"). This tricks and rewards viewer retention with effortless re-watches on Instagram Reels.
-5. **Format (Clean Markdown)**:
+   - **Seamless Infinite Loop Outro**: Craft the final scene's closing clause so it flows syntactically back into the opening hook question of Scene 1.
+
+6. **Format (Clean Markdown)**:
    Output scene by scene in this exact structure:
 
 ```markdown
 # Episode <ID>: <Topic Title>
 
+## Facts Table
+| Name | Value | Unit | Source | Verified Date |
+| :--- | :--- | :--- | :--- | :--- |
+| Starlink Altitude | 550 | km | SpaceX Starlink Specs | 2026-10 |
+| GEO Altitude | 35786 | km | ITU Satellite Standard | 2026-10 |
+| Starlink Latency | 24 | ms | Cloudflare / Speedtest 2026 | 2026-10 |
+| GEO Latency | 620 | ms | ITU Satellite Standard | 2026-10 |
+
 ## Scene 1
 - **Tag**: 01 / THE SPIKE HOOK
 - **Tone**: [Curious, high energy]
-- **Visual Intent**: Show requests reaching a server and the server approaching capacity; use a clear diagram or grounded 3D scene, whichever explains it better.
+- **Visual Intent**: Show requests reaching a server and the server approaching capacity.
+- **Emphasis Words**: ["Coldplay", "टिकट", "एक सेकंड", "दस लाख", "क्रैश"]
 - **Narration**:
 जब Coldplay के टिकट लाइव होते हैं, तो एक सेकंड में दस लाख लोग एक साथ 'Book' बटन दबाते हैं। अगर कोई ब्रेक न हो, तो आपका पूरा डेटाबेस कुछ ही सेकंड में क्रैश हो जाएगा।
 
@@ -64,6 +76,7 @@ Before drafting the script, conduct targeted research to identify:
 - **Tag**: 02 / THE DIGITAL BOUNCER
 - **Tone**: [Explaining mechanism]
 - **Visual Intent**: Show the limiter admitting a safe number of requests and holding back the excess.
+- **Emphasis Words**: ["Rate Limiter", "डिजिटल बाउंसर", "गेट"]
 - **Narration**:
 यहीं काम आता है एक Rate Limiter—सिस्टम का डिजिटल बाउंसर, जो तय करता है कि किस यूज़र को अंदर जाने देना है और किसे गेट पर ही रोकना है।
 ```

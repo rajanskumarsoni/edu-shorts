@@ -20,11 +20,11 @@ MAX_SECONDS = 180          # hard production limit: 3 minutes
 SHORTS_SECONDS = MAX_SECONDS
 WORDS_PER_SECOND = 2.5     # rough speaking speed used for the estimate
 
-TOP_ALLOWED = {"$schema", "id", "format", "audio_mode", "accent", "theme", "art_direction", "music", "music_volume", "music_ducking", "captions", "progress", "sfx", "loop", "meta", "journey", "pad_seconds", "scenes"}
+TOP_ALLOWED = {"$schema", "id", "format", "audio_mode", "accent", "theme", "art_direction", "music", "music_volume", "music_ducking", "captions", "progress", "sfx", "loop", "meta", "facts", "journey", "pad_seconds", "choreography", "coverage_map", "scenes"}
 COMMON_SCENE_FIELDS = {
     "sfx", "sfxVolume", "icon", "graphic", "visual", "motion",
     "purpose", "transition", "camera", "action", "objects", "tag", "tone",
-    "beats", "journeyStep", "search_image", "generate_image", "search_video",
+    "beats", "events", "journeyStep", "search_image", "generate_image", "search_video",
     "search_sfx", "search_model", "search_icon", "icon_path", "image_provider", "video_provider",
     "variant", "sortTriggerFrame", "particles", "particleCount", "particleColor", "audio",
     "emphasis_words", "pattern_interrupt", "hook_strength", "payoff_type"
@@ -79,6 +79,10 @@ ALLOWED = {
     "tower_of_hanoi_visualizer": {"type", "title", "tag", "variant", "metrics", "specs", "narration", "seconds"} | COMMON_SCENE_FIELDS,
     "emudhra": {"type", "title", "tag", "variant", "metrics", "specs", "narration", "seconds", "image"} | COMMON_SCENE_FIELDS,
     "emudhra_visualizer": {"type", "title", "tag", "variant", "metrics", "specs", "narration", "seconds", "image"} | COMMON_SCENE_FIELDS,
+    "bike_self_start": {"type", "title", "tag", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "bike_self_start_visualizer": {"type", "title", "tag", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "tree_traversal": {"type", "title", "tag", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
+    "tree_traversal_visualizer": {"type", "title", "tag", "variant", "narration", "seconds"} | COMMON_SCENE_FIELDS,
 }
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp", ".svg")
 VIDEO_EXTS = (".mp4", ".mov", ".webm")
@@ -135,6 +139,7 @@ REGISTERED_3D_VARIANTS = {
     "neural_network_3d", "neural_network", "backprop_3d", "brain_3d", "ai_3d",
     "globe_network_3d", "globe_network", "distributed_mesh", "network_3d",
     "internet_3d", "cloud_3d",
+    "starlink_phased_array_3d", "phased_array_3d", "phased_array", "starlink_beam_3d",
     "gps_trilateration_3d", "trilateration_3d", "gps_constellation_3d", "satellite_orbit_3d",
     "bluetooth_link_3d", "bluetooth_radio_3d", "bluetooth_discovery_3d",
     "bluetooth_pairing_3d", "bluetooth_layers_3d", "bluetooth_digital_data_3d",
@@ -174,6 +179,7 @@ REGISTERED_3D_VARIANTS = {
     "fastag_sticker_3d", "fastag_chip_3d", "fastag_barrier_3d", "boom_barrier_3d",
     # Dedicated GLTF/GLB 3D model variants
     "model_3d", "gltf_model", "model_viewer_3d", "custom_model_3d",
+    "starter_gears_3d", "sprag_clutch_3d", "motorcycle_engine_3d",
 }
 
 # Topics where the default `gradient_descent` math grid IS the correct
@@ -356,7 +362,8 @@ def validate_data(data, root=ROOT):
 
     music = data.get("music")
     if music is not None:
-        if music != "none" and (not isinstance(music, str) or not (root / music).exists()):
+        music_exists = (root / music).exists() or (ROOT / music).exists()
+        if music != "none" and (not isinstance(music, str) or not music_exists):
             rep.err("music", f'file not found: {music!r} (use null for default Warm Focus, or "none" to disable)')
 
     meta = data.get("meta")
@@ -523,18 +530,38 @@ def validate_data(data, root=ROOT):
                 for beat_index, beat in enumerate(beats, 1):
                     beat_where = f"{where} beat {beat_index}"
                     if not isinstance(beat, dict):
-                        rep.err(beat_where, 'must be an object with "at", "label", and "action"')
+                        rep.err(beat_where, 'must be an object with "label", "action", and timing ("at" or "start_pct"/"end_pct")')
                         continue
-                    extra_beat_fields = set(beat) - {"at", "label", "action", "state", "visualState", "focus", "journeyStep"}
+                    allowed_beat_fields = {
+                        "at", "label", "action", "state", "visualState", "focus", "journeyStep",
+                        "words", "start_pct", "end_pct", "show", "camera", "icon_or_asset"
+                    }
+                    extra_beat_fields = set(beat) - allowed_beat_fields
                     if extra_beat_fields:
                         rep.warn(beat_where, f"unknown beat fields ignored: {sorted(extra_beat_fields)}")
+                    
+                    # Support both mute-first percentage timing (0-100) and normalized 'at' (0.0-1.0)
+                    has_pct = "start_pct" in beat and "end_pct" in beat
                     at = beat.get("at")
-                    if not is_num(at) or not 0 <= at <= 1:
-                        rep.err(beat_where, '"at" must be normalized scene progress from 0 to 1')
-                    elif at <= previous_at:
-                        rep.err(beat_where, '"at" values must be strictly increasing')
+                    if has_pct:
+                        s_pct = beat["start_pct"]
+                        e_pct = beat["end_pct"]
+                        if not is_num(s_pct) or not 0 <= s_pct <= 100:
+                            rep.err(beat_where, '"start_pct" must be a number between 0 and 100')
+                        if not is_num(e_pct) or not 0 <= e_pct <= 100:
+                            rep.err(beat_where, '"end_pct" must be a number between 0 and 100')
+                        if is_num(s_pct) and is_num(e_pct) and s_pct >= e_pct:
+                            rep.err(beat_where, '"start_pct" must be less than "end_pct"')
+                    elif at is not None:
+                        if not is_num(at) or not 0 <= at <= 1:
+                            rep.err(beat_where, '"at" must be normalized scene progress from 0 to 1')
+                        elif at <= previous_at:
+                            rep.err(beat_where, '"at" values must be strictly increasing')
+                        else:
+                            previous_at = at
                     else:
-                        previous_at = at
+                        rep.err(beat_where, 'beat must specify timing via "start_pct"/"end_pct" (0-100) or "at" (0-1)')
+
                     for field in ("label", "action"):
                         if not isinstance(beat.get(field), str) or not beat[field].strip():
                             rep.err(beat_where, f'"{field}" must be non-empty text')
@@ -668,6 +695,21 @@ def validate_data(data, root=ROOT):
                     rep.err(where, f'variant "gradient_descent" is the abstract math default and is '
                                    f'only valid for math/optimization topics. For "{topic}" map to a '
                                    f'real physical 3D object variant instead')
+            # ---- Asset-First Contract: 3D model validation
+            model = s.get("model")
+            s_model = s.get("search_model")
+            if model:
+                exists = (root / model).exists() or (ROOT / model).exists() or (ROOT / "public" / model).exists()
+                if not exists:
+                    if s_model:
+                        rep.warn(where, f'3D model not found locally; will auto-fetch via search_model "{s_model}"')
+                    else:
+                        rep.err(where, f"Asset-First contract violation: 3D model file not found on disk: {model}. Run 'python3 tools/asset_finder.py resolve' before rendering.")
+                elif Path(model).suffix.lower() not in (".glb", ".gltf"):
+                    rep.err(where, f"3D model must be a .glb or .gltf file, got {model}")
+            elif variant in ("model_3d", "gltf_model", "model_viewer_3d", "custom_model_3d"):
+                if not s_model:
+                    rep.err(where, f'3D variant "{variant}" requires a "model" path (.glb in media/) or "search_model"')
         elif t == "manim":
             if "manim" not in s:
                 rep.err(where, 'manim scene needs a "manim" object')
@@ -782,8 +824,17 @@ def validate_data(data, root=ROOT):
             if isinstance(s.get("title"), str) and words(s["title"]) > 8:
                 rep.warn(where, "title is over 8 words")
         elif t == "product":
-            if not s.get("image") and not s.get("title") and not s.get("search_image"):
+            img = s.get("image")
+            s_img = s.get("search_image")
+            if not img and not s.get("title") and not s_img:
                 rep.err(where, 'product needs "image", "title", or "search_image"')
+            elif img:
+                exists = (root / img).exists() or (ROOT / img).exists() or (ROOT / "public" / img).exists()
+                if not exists:
+                    if s_img:
+                        rep.warn(where, f'product image not found locally; will auto-fetch via search_image "{s_img}"')
+                    else:
+                        rep.err(where, f"Asset-First contract violation: product cutout image not found on disk: {img}. Download/resolve assets before rendering.")
             if isinstance(s.get("title"), str) and words(s["title"]) > 8:
                 rep.warn(where, "title is over 8 words")
 
@@ -795,7 +846,7 @@ def validate_data(data, root=ROOT):
     ) and not (
         types[0] == "binary_search_visualizer" and scenes[0].get("variant") in ("intro", "book_analogy")
     ) and not (
-        types[0] == "three" and scenes[0].get("variant") in ("phone_layers_3d", "upi_hook_3d", "hook_3d", "smartphone_3d", "mobile_3d", "google_maps_3d", "maps_navigation_3d", "bluetooth_link_3d", "fastag_toll_3d")
+        types[0] == "three" and scenes[0].get("variant") in ("phone_layers_3d", "upi_hook_3d", "hook_3d", "smartphone_3d", "mobile_3d", "google_maps_3d", "maps_navigation_3d", "bluetooth_link_3d", "fastag_toll_3d", "globe_network_3d")
     ) and not (
         types[0] == "quick_commerce" and scenes[0].get("variant") == "customer_order"
     ) and not (
@@ -804,6 +855,10 @@ def validate_data(data, root=ROOT):
         types[0] in ("tower_of_hanoi", "tower_of_hanoi_visualizer") and scenes[0].get("variant") in ("legend_hook", "hook")
     ) and not (
         types[0] in ("emudhra", "emudhra_visualizer") and scenes[0].get("variant") in ("campus_headquarters", "headquarters", "hook")
+    ) and not (
+        types[0] in ("bike_self_start", "bike_self_start_visualizer") and scenes[0].get("variant") in ("button_and_engine", "hook", "starter_button")
+    ) and not (
+        types[0] in ("tree_traversal", "tree_traversal_visualizer") and scenes[0].get("variant") in ("linear_vs_tree", "tree_anatomy", "hook", "intro")
     ):
         rep.warn("scenes", "first scene should be a hook, video, or an interview prompt")
     if types and types[-1] not in ("outro", "interview") and not (
@@ -814,9 +869,11 @@ def validate_data(data, root=ROOT):
         types[-1] in ("aadhaar", "aadhaar_visualizer") and scenes[-1].get("variant") in ("aadhaar_recap_loop", "aadhaar_outro_loop", "recap", "loop", "outro")
     ) and not (
         types[-1] in ("tower_of_hanoi", "tower_of_hanoi_visualizer") and scenes[-1].get("variant") in ("outro_takeaway", "outro")
+    ) and not (
+        types[-1] in ("bike_self_start", "bike_self_start_visualizer") and scenes[-1].get("variant") in ("hero_outro", "outro", "recap")
     ):
         rep.warn("scenes", "last scene should be an outro or recap")
-    if not any(t in types for t in ("manim", "three", "architecture", "code", "gauge", "bento", "benchmark", "hierarchy", "data_structure", "inspector", "quadrant", "concentric", "seat_booking", "neural_network_graph", "interview", "terminal", "screenshot", "chart", "product", "sorting_visualizer", "refrigerator", "air_conditioner", "linear_search_visualizer", "binary_search_visualizer", "tesla_roadster_visualizer", "quick_commerce", "depth_parallax", "google_maps", "google_maps_visualizer", "aadhaar", "aadhaar_visualizer", "tower_of_hanoi", "tower_of_hanoi_visualizer")):
+    if not any(t in types for t in ("manim", "three", "architecture", "code", "gauge", "bento", "benchmark", "hierarchy", "data_structure", "inspector", "quadrant", "concentric", "seat_booking", "neural_network_graph", "interview", "terminal", "screenshot", "chart", "product", "sorting_visualizer", "refrigerator", "air_conditioner", "linear_search_visualizer", "binary_search_visualizer", "tesla_roadster_visualizer", "quick_commerce", "depth_parallax", "google_maps", "google_maps_visualizer", "aadhaar", "aadhaar_visualizer", "tower_of_hanoi", "tower_of_hanoi_visualizer", "bike_self_start", "bike_self_start_visualizer", "tree_traversal", "tree_traversal_visualizer")):
         rep.warn("scenes", "no animated visual explanation (manim, three, architecture, code, gauge, bento, benchmark...); at least one is recommended")
 
     # No Consecutive Twins rule: Never use the exact same scene type and variant twice in a row
@@ -849,6 +906,19 @@ def validate_data(data, root=ROOT):
             rep.warn("slideshow_risk", f"[High Risk] {v}")
         rep.slideshow_score = risk.get("score")
         rep.slideshow_verdict = risk.get("verdict")
+    except Exception:
+        pass
+
+    # Mute-First Design Rule verification (Section 6 checks)
+    try:
+        from tools.mute_test_linter import lint_storyboard, generate_markdown_report
+        m_rep = lint_storyboard(data, ep_dir=root)
+        for w, msg in m_rep.errors:
+            rep.err(f"mute_test:{w}", msg)
+        for w, msg in m_rep.warnings:
+            rep.warn(f"mute_test:{w}", msg)
+        if root and (root / "storyboard.json").exists():
+            generate_markdown_report(m_rep, root / "mute_test_report.md")
     except Exception:
         pass
 
@@ -893,6 +963,16 @@ def validate_file(path):
         rep.err("json", f"line {e.lineno}, column {e.colno}: {e.msg}{hint}")
         return rep
     rep = validate_data(data, root=p.parent)
+    try:
+        from tools.quality_gates import validate_storyboard_quality
+        q_report = validate_storyboard_quality(p)
+        for g_name, g_res in q_report.gate_results.items():
+            for g_err in g_res.errors:
+                rep.err(f"quality_gate_{g_res.gate_number}", g_err)
+            for g_warn in g_res.warnings:
+                rep.warn(f"quality_gate_{g_res.gate_number}", g_warn)
+    except Exception as e:
+        rep.warn("quality_gates", f"Could not complete quality gates check: {e}")
     return rep
 
 

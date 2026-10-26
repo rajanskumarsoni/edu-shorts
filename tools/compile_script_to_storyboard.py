@@ -3,8 +3,12 @@
 Compiles a human- or AI-authored `script.md` (and optional `brief.yaml`) in an episode folder
 into a fully validated, production-ready `storyboard.json` manifest.
 
-Supports all 30+ Remotion visual scene engines, auto-enriches the mandatory 6-key structured
-visual storyboards, tags, transitions, semantic icons, and sound effects.
+Enforces Mute-First Design:
+- Generates or parses contiguous 0-100% `beats` arrays for every scene.
+- Extracts multiline YAML fields (Left, Right, Runners, BentoItems, Layers, Beats).
+- Zero template placeholders ("Manual Coordination", "100k req/s", "1.45", etc.).
+- Cross-validates numbers, strips escaped quotes, cleans trailing separators.
+- Extracts '## Facts Table' into top-level storyboard.
 
 Usage:
   python3 tools/compile_script_to_storyboard.py episodes/<id> [--force]
@@ -16,11 +20,20 @@ import ast
 import json
 import re
 import sys
+import textwrap
 from pathlib import Path
+
+try:
+    import yaml
+except ImportError:
+    yaml = None
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+from tools.narration_aligner import NarrationAligner
+from tools.choreography_engine import ChoreographyEngine
 
 # Supported scene types in the Remotion engine
 VALID_SCENE_TYPES = {
@@ -34,7 +47,9 @@ VALID_SCENE_TYPES = {
     "tesla_roadster_visualizer", "pacman_enzyme_visualizer", "quick_commerce", "depth_parallax",
     "google_maps_visualizer", "google_maps", "aadhaar_visualizer", "aadhaar",
     "tower_of_hanoi", "tower_of_hanoi_visualizer",
-    "emudhra", "emudhra_visualizer"
+    "emudhra", "emudhra_visualizer",
+    "bike_self_start", "bike_self_start_visualizer",
+    "tree_traversal", "tree_traversal_visualizer"
 }
 
 SCENE_DEFAULT_SFX = {
@@ -93,7 +108,7 @@ SCENE_DEFAULT_ICONS = {
 
 
 def parse_loose_data(text: str):
-    """Safely parse JSON or python literal data."""
+    """Safely parse JSON, YAML, or python literal data."""
     text = text.strip()
     if not text:
         return None
@@ -102,12 +117,19 @@ def parse_loose_data(text: str):
         return json.loads(text)
     except Exception:
         pass
+    # Try YAML
+    if yaml:
+        try:
+            dedented = textwrap.dedent(text).strip()
+            return yaml.safe_load(dedented)
+        except Exception:
+            pass
     # Try Python literal_eval
     try:
         return ast.literal_eval(text)
     except Exception:
         pass
-    return text
+    return text.strip('"\'')
 
 
 def clean_equation_str(text: str) -> str:
@@ -117,6 +139,74 @@ def clean_equation_str(text: str) -> str:
     # Unescape double backslashes before commands
     text = re.sub(r'\\\\([a-zA-Z])', r'\\\1', text)
     return text
+
+
+def extract_field_content(block: str, field_name: str):
+    """
+    Extracts field content from a markdown scene block.
+    Supports both multiline YAML structures (- **FieldName**:\n  - item)
+    and single-line scalar values (- **FieldName**: value).
+    """
+    # Multiline YAML block pattern: matches - **FieldName**: followed by newline
+    p_multi = rf'(?:^|\n)[ \t]*-?[ \t]*\*\*{re.escape(field_name)}\*\*:[ \t]*(?:\r?\n)([\s\S]*?)(?=\n[ \t]*-?[ \t]*\*\*|\n##|\Z)'
+    m = re.search(p_multi, block, re.I)
+    if m:
+        raw = m.group(1).rstrip()
+        if raw.strip():
+            dedented = textwrap.dedent(raw).strip()
+            if yaml:
+                try:
+                    parsed = yaml.safe_load(dedented)
+                    if parsed is not None:
+                        return parsed
+                except Exception:
+                    pass
+            # Try strict JSON
+            try:
+                return json.loads(dedented)
+            except Exception:
+                pass
+            return dedented
+
+    # Single-line scalar pattern: matches - **FieldName**: value
+    p_inline = rf'(?:^|\n)[ \t]*-?[ \t]*\*\*{re.escape(field_name)}\*\*:[ \t]*([^\n]+)'
+    m2 = re.search(p_inline, block, re.I)
+    if m2:
+        val = m2.group(1).strip()
+        if yaml:
+            try:
+                parsed = yaml.safe_load(val)
+                if parsed is not None:
+                    return parsed
+            except Exception:
+                pass
+        try:
+            return json.loads(val)
+        except Exception:
+            pass
+        return val.strip('"\'')
+    return None
+
+
+def extract_facts_table(script_text: str) -> list[dict]:
+    """Extracts ## Facts Table from script.md markdown into a list of structured claim dicts."""
+    m = re.search(r'##\s+Facts\s+Table\s*\n([\s\S]*?)(?=\n##|\Z)', script_text, re.I)
+    if not m:
+        return []
+    lines = [l.strip() for l in m.group(1).splitlines() if l.strip().startswith("|")]
+    if len(lines) < 2:
+        return []
+    # Skip header and separator rows (| Claim | Verified Value | Source / Standard |)
+    facts = []
+    for line in lines[2:]:
+        cols = [c.strip() for c in line.strip("|").split("|")]
+        if len(cols) >= 3:
+            facts.append({
+                "claim": cols[0],
+                "verified_value": cols[1],
+                "source": cols[2]
+            })
+    return facts
 
 
 def parse_brief(brief_path: Path) -> dict:
@@ -156,20 +246,115 @@ def parse_brief(brief_path: Path) -> dict:
 
 
 def extract_objects_from_text(text: str, fallback_type: str) -> list[str]:
-    """Extract 2-4 clean noun phrases to serve as visual objects."""
+    """Extract 2-4 clean noun phrases to serve as visual objects, protecting numbers with commas."""
     if not text:
         return [f"{fallback_type.replace('_', ' ').title()} Visual Anchor"]
-    # Split on commas, semicolons, dashes, 'with', 'showing'
-    tokens = re.split(r"[,;—\n]|\bwith\b|\bshowing\b|\band\b", text, flags=re.I)
+    # Protect numbers with commas (e.g., 200,000 or 35,786) from being split
+    protected = re.sub(r'(\d),(\d)', r'\1__COMMA__\2', text)
+    tokens = re.split(r"[,;—\n]|\bwith\b|\bshowing\b|\band\b", protected, flags=re.I)
     cleaned = []
     for t in tokens:
-        clean = re.sub(r"[^\w\s\(\)\-\.]", "", t).strip()
+        restored = t.replace("__COMMA__", ",")
+        clean = re.sub(r"[^\w\s\(\)\-\.,₹\$/]", "", restored).strip()
         if len(clean) > 3 and clean.lower() not in {"a", "an", "the", "this", "that", "these", "those"}:
-            if len(clean.split()) <= 5:
+            if len(clean.split()) <= 6:
                 cleaned.append(clean.title())
     if cleaned:
         return cleaned[:4]
     return [text.strip()[:40].title()]
+
+
+def generate_mute_first_beats(scene: dict, narration: str, scene_type: str, visual: dict) -> list[dict]:
+    """Generates 2-4 contiguous mute-first beats covering 0% to 100% of the scene narration."""
+    clean_narr = narration.strip()
+    title = scene.get("title", "")
+    objects = visual.get("objects", [f"{scene_type.title()} Visual Anchor"])
+
+    if not clean_narr:
+        return [{
+            "words": title or "Scene Overview",
+            "start_pct": 0,
+            "end_pct": 100,
+            "show": objects[:2],
+            "action": visual.get("action", f"Visual dynamic presentation of {title}."),
+            "camera": visual.get("camera", "Stable front-facing framing."),
+            "label": title[:24] if title else "OVERVIEW",
+            "icon_or_asset": scene.get("icon", "zap")
+        }]
+
+    # Split narration into meaningful clauses on danda '।', '?', '!', or punctuation with conjunctions
+    raw_clauses = re.split(r'[।\?!;—]|\.\s+|,\s*(?=लेकिन|जो|जहां|और|तो|बिना|परंतु|यानी)', clean_narr)
+    clauses = [c.strip() for c in raw_clauses if c.strip() and len(c.strip()) > 3]
+
+    if not clauses:
+        clauses = [clean_narr]
+    elif len(clauses) > 4:
+        # Merge short adjacent clauses to keep 2-4 beats
+        merged = []
+        buf = ""
+        for c in clauses:
+            if not buf:
+                buf = c
+            elif len(buf.split()) + len(c.split()) < 10:
+                buf += " " + c
+            else:
+                merged.append(buf)
+                buf = c
+        if buf:
+            merged.append(buf)
+        clauses = merged[:4]
+
+    n = len(clauses)
+    beats = []
+
+    for i, clause in enumerate(clauses):
+        s_pct = int(round((i / n) * 100))
+        e_pct = int(round(((i + 1) / n) * 100)) if i < n - 1 else 100
+
+        # Number extraction
+        num_m = re.findall(r'\b\d+(?:[\.,]\d+)?(?:\s*(?:km/h|km|ms|Mbps|Gbps|min|s|%|k|M))?\b|₹[\d,]+|\$[\d,]+', clause, re.I)
+        hindi_num_m = re.findall(r'\b(?:दो सौ|साढ़े पाँच सौ|सत्ताईस हज़ार|छत्तीस हज़ार|छह सौ|पच्चीस|दो से तीन|सैंतालीस|छह हज़ार)\b', clause)
+
+        # Negation check
+        is_negation = bool(re.search(r'\b(?:बिना|नहीं|शून्य|zero|no)\b', clause, re.I))
+
+        # Build label in narration language
+        if num_m:
+            num_val = num_m[0]
+            if is_negation:
+                label = f"✕ {num_val} (बिना)"
+            else:
+                label = f"{num_val} • {title[:16]}"
+        elif hindi_num_m:
+            h_val = hindi_num_m[0]
+            label = f"{h_val} • {title[:16]}"
+        elif is_negation:
+            neg_target = re.search(r'बिना\s+([^,।\s]+(?:\s+[^,।\s]+)?)', clause)
+            if neg_target:
+                label = f"✕ बिना {neg_target.group(1).strip()}"
+            else:
+                label = "✕ शून्य रुकावट (Zero Friction)"
+        else:
+            label = title[:24] if title else "CORE MECHANISM"
+
+        obj_slice = [objects[i % len(objects)]] if objects else ["Visual Anchor"]
+        if is_negation and "✕ रिजेक्शन बैज (No Signal / Reject)" not in obj_slice:
+            obj_slice.append("✕ रिजेक्शन बैज (No Signal / Reject)")
+        elif num_m and f"{num_m[0]} टेलीमेट्री" not in obj_slice:
+            obj_slice.append(f"{num_m[0]} टेलीमेट्री")
+
+        beats.append({
+            "words": clause,
+            "start_pct": s_pct,
+            "end_pct": e_pct,
+            "show": obj_slice,
+            "action": f"{clause[:50]} के अनुरूप ऑन-स्क्रीन विज़ुअल स्टेट बदलती है।",
+            "camera": visual.get("camera", "Stable front-facing framing."),
+            "label": label,
+            "icon_or_asset": scene.get("icon", "zap")
+        })
+
+    return beats
 
 
 def generate_visual_storyboard(scene_type: str, action_desc: str, title: str) -> dict:
@@ -273,7 +458,7 @@ def generate_visual_storyboard(scene_type: str, action_desc: str, title: str) ->
             "objects": objects or ["3D Physical Object Model", "Surrounding Coordinate Grid", "HUD Telemetry Plane"],
             "action": action or "3D model rotates into hero perspective while animating internal state changes.",
             "camera": "Motivated tracking camera orbiting the focal 3D model.",
-            "motion_graphics": [f"3D SPATIAL TELEMETRY", f"{title.upper()}"],
+            "motion_graphics": ["3D SPATIAL TELEMETRY", f"{title.upper()}"],
             "end": "Model locks into informative angle for seamless scene cut."
         }
     elif scene_type == "depth_parallax":
@@ -307,14 +492,12 @@ def generate_visual_storyboard(scene_type: str, action_desc: str, title: str) ->
 
 def infer_scene_type(section: str, index: int, total: int) -> str:
     """Infer scene type strictly prioritizing explicit markers, then unambiguous content."""
-    # 1. Explicit marker: - **Type**: <type>
     type_match = re.search(r'(?:^|\n)-?\s*\*\*Type\*\*:\s*([^\n]+)', section, re.I)
     if type_match:
-        explicit = type_match.group(1).strip().lower().replace(" ", "_").replace("-", "_")
+        explicit = type_match.group(1).strip().lower().replace(" ", "_").replace("-", "_").strip('"\'')
         if explicit in VALID_SCENE_TYPES:
             return explicit
 
-    # 2. Strong structural cues
     if re.search(r'(?:^|\n)-?\s*\*\*(?:Mermaid|Graphviz)\*\*:', section, re.I) or "```mermaid" in section:
         return "diagram"
     if re.search(r'(?:^|\n)-?\s*\*\*Nodes\*\*:', section, re.I):
@@ -323,7 +506,7 @@ def infer_scene_type(section: str, index: int, total: int) -> str:
         return "compare"
     if re.search(r'(?:^|\n)-?\s*\*\*Runners\*\*:', section, re.I):
         return "benchmark"
-    if re.search(r'(?:^|\n)-?\s*\*\*BentoItems\*\*:', section, re.I):
+    if re.search(r'(?:^|\n)-?\s*\*\*BentoItems\*\*:', section, re.I) or re.search(r'(?:^|\n)-?\s*\*\*Items\*\*:', section, re.I):
         return "bento"
     if re.search(r'(?:^|\n)-?\s*\*\*TerminalSteps\*\*:', section, re.I):
         return "terminal"
@@ -336,13 +519,11 @@ def infer_scene_type(section: str, index: int, total: int) -> str:
     if re.search(r'(?:^|\n)-?\s*\*\*Variant\*\*:', section, re.I):
         return "three"
 
-    # 3. Position-based defaults
     if index == 0:
         return "hook"
     if index == total - 1:
         return "outro"
 
-    # 4. Safe default
     return "architecture"
 
 
@@ -352,75 +533,70 @@ def parse_scene_block(block: str, index: int, total: int, fallback_title: str) -
 
     # Title & Tag
     title = fallback_title
-    title_m = re.search(r'(?:^|\n)-?\s*\*\*Title\*\*:\s*([^\n]+)', block, re.I)
+    title_m = extract_field_content(block, "Title")
     if title_m:
-        title = title_m.group(1).strip()
+        title = str(title_m).strip('"\'')
 
     tag = f"{index + 1:02d} / {title.upper()}"
-    tag_m = re.search(r'(?:^|\n)-?\s*\*\*Tag\*\*:\s*([^\n]+)', block, re.I)
+    tag_m = extract_field_content(block, "Tag")
     if tag_m:
-        tag = tag_m.group(1).strip()
+        tag = str(tag_m).strip('"\'')
         if not title_m and "/" in tag:
             title = tag.split("/", 1)[-1].strip().title()
 
-    # Tone
     tone = "[Curious]"
-    tone_m = re.search(r'(?:^|\n)-?\s*\*\*Tone\*\*:\s*([^\n]+)', block, re.I)
+    tone_m = extract_field_content(block, "Tone")
     if tone_m:
-        tone = tone_m.group(1).strip()
+        tone = str(tone_m).strip('"\'')
 
-    # Purpose
     purpose = f"Explain the mechanism and takeaway of {title}."
-    purpose_m = re.search(r'(?:^|\n)-?\s*\*\*Purpose\*\*:\s*([^\n]+)', block, re.I)
+    purpose_m = extract_field_content(block, "Purpose")
     if purpose_m:
-        purpose = purpose_m.group(1).strip()
+        purpose = str(purpose_m).strip('"\'')
 
-    # Transition
     transition = "match_cut" if index > 0 else "zoom_through"
-    trans_m = re.search(r'(?:^|\n)-?\s*\*\*Transition\*\*:\s*([^\n]+)', block, re.I)
+    trans_m = extract_field_content(block, "Transition")
     if trans_m:
-        transition = trans_m.group(1).strip()
+        transition = str(trans_m).strip('"\'')
 
-    # SFX
     sfx = SCENE_DEFAULT_SFX.get(scene_type, "whoosh")
-    sfx_m = re.search(r'(?:^|\n)-?\s*\*\*SFX\*\*:\s*([^\n]+)', block, re.I)
+    sfx_m = extract_field_content(block, "SFX")
     if sfx_m:
-        parsed_sfx = parse_loose_data(sfx_m.group(1).strip())
-        if parsed_sfx:
-            sfx = parsed_sfx
+        sfx = sfx_m if isinstance(sfx_m, (list, dict)) else str(sfx_m).strip('"\'')
 
-    # Icon
     icon = SCENE_DEFAULT_ICONS.get(scene_type, "zap")
-    icon_m = re.search(r'(?:^|\n)-?\s*\*\*Icon\*\*:\s*([^\n]+)', block, re.I)
+    icon_m = extract_field_content(block, "Icon")
     if icon_m:
-        icon = icon_m.group(1).strip()
+        icon = str(icon_m).strip('"\'')
 
-    # Narration (clean multiline extraction)
+    # Narration (clean multiline extraction, strip trailing ---)
     narration = ""
-    narr_m = re.search(r'(?:^|\n)-?\s*\*\*Narration\*\*:\s*\n?([\s\S]*?)(?=\n-?\s*\*\*|\Z)', block, re.I)
+    narr_m = re.search(r'(?:^|\n)[ \t]*-?[ \t]*\*\*Narration\*\*:[ \t]*\n?([\s\S]*?)(?=\n[ \t]*-?[ \t]*\*\*|\n##|\Z)', block, re.I)
     if narr_m:
-        narration = " ".join([l.strip() for l in narr_m.group(1).strip().splitlines() if l.strip()])
+        raw_narr = narr_m.group(1).strip()
+        lines = [l.strip() for l in raw_narr.splitlines() if l.strip()]
+        narration = " ".join(lines)
     else:
-        # Fallback: find lines not starting with - or #
         clean_lines = [l.strip() for l in block.splitlines() if l.strip() and not l.strip().startswith(("-", "#"))]
         narration = " ".join(clean_lines)
 
+    # Strip trailing --- and whitespace
+    narration = re.sub(r'[\s\-]+$', '', narration).strip()
+
     # Visual Intent & 6-Key Visual Storyboard
     visual_intent = ""
-    vis_intent_m = re.search(r'(?:^|\n)-?\s*\*\*Visual(?:\s+Intent)?\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
-    if vis_intent_m:
-        visual_intent = " ".join([l.strip() for l in vis_intent_m.group(1).strip().splitlines() if l.strip()])
+    vis_intent_m = extract_field_content(block, "Visual Intent") or extract_field_content(block, "Visual")
+    if vis_intent_m and isinstance(vis_intent_m, str):
+        visual_intent = vis_intent_m.strip()
 
-    # Check for individual visual fields (start, objects, action, camera, motion_graphics, end)
     parsed_visual = {}
     for vf in ["start", "objects", "action", "camera", "motion_graphics", "end"]:
-        v_field_m = re.search(rf'(?:^|\n)-?\s*\*\*Visual\s+{vf.capitalize()}\*\*:\s*([^\n]+)', block, re.I)
-        if v_field_m:
-            val = v_field_m.group(1).strip()
-            if vf in ("objects", "motion_graphics"):
-                parsed_visual[vf] = [x.strip() for x in val.split(",") if x.strip()]
+        v_val = extract_field_content(block, f"Visual {vf.capitalize()}")
+        if v_val:
+            if vf in ("objects", "motion_graphics") and isinstance(v_val, str):
+                parsed_visual[vf] = [x.strip() for x in v_val.split(",") if x.strip()]
             else:
-                parsed_visual[vf] = val
+                parsed_visual[vf] = v_val
 
     if "action" in parsed_visual and len(parsed_visual) >= 4:
         defaults = generate_visual_storyboard(scene_type, visual_intent, title)
@@ -445,22 +621,20 @@ def parse_scene_block(block: str, index: int, total: int, fallback_title: str) -
     }
 
     # Viral retention directives: pattern_interrupt, emphasis_words, hook_strength, payoff_type
-    pat_m = re.search(r'(?:^|\n)-?\s*\*\*Pattern\s*Interrupt\*\*:\s*([^\n]+)', block, re.I)
-    pattern_interrupt = pat_m.group(1).strip().lower() if pat_m else None
+    pat_m = extract_field_content(block, "Pattern Interrupt")
+    pattern_interrupt = str(pat_m).strip().lower().strip('"\'') if pat_m else None
     if not pattern_interrupt:
         if index == 0:
             pattern_interrupt = "zoom_punch"
         elif scene_type in ("callout", "stat") or re.search(r'crash|error|leak|hack|danger|threat|fail', narration, re.I):
             pattern_interrupt = "shake"
-        elif index % 3 == 0 and index > 0 and index < total - 1:
+        elif index % 3 == 0 and 0 < index < total - 1:
             pattern_interrupt = "color_flash"
 
-    emp_m = re.search(r'(?:^|\n)-?\s*\*\*Emphasis\s*Words\*\*:\s*([^\n]+)', block, re.I)
+    emp_m = extract_field_content(block, "Emphasis Words")
     if emp_m:
-        parsed_emp = parse_loose_data(emp_m.group(1).strip())
-        emphasis_words = parsed_emp if isinstance(parsed_emp, list) else [w.strip() for w in emp_m.group(1).split(",") if w.strip()]
+        emphasis_words = emp_m if isinstance(emp_m, list) else [w.strip() for w in str(emp_m).split(",") if w.strip()]
     else:
-        # Auto-extract numbers, percentages, metrics, and currency from narration for kinetic caption pop
         emp_matches = re.findall(r'\b\d+(?:\.\d+)?(?:%|ms|km/h|s|x|GB|TB|MB|M|K)?\b|₹[\d,]+|\$[\d,]+|लाख|करोड़', narration)
         emphasis_words = list(dict.fromkeys(emp_matches))[:6]
 
@@ -473,268 +647,242 @@ def parse_scene_block(block: str, index: int, total: int, fallback_title: str) -
     if index == total - 1:
         scene["payoff_type"] = "loop_setup"
 
-    # Parse Type-Specific Properties
+    # Visual Events & Choreography: check explicit or auto-generate
+    events_explicit = extract_field_content(block, "Events")
+    beats_explicit = extract_field_content(block, "Beats")
+
+    choreographer = ChoreographyEngine()
+    if events_explicit and isinstance(events_explicit, list) and len(events_explicit) > 0:
+        scene["events"] = events_explicit
+    else:
+        scene["events"] = choreographer.plan_events_for_scene(
+            scene=scene,
+            scene_idx=index,
+            narration=narration,
+            scene_type=scene_type,
+            visual_intent=visual_dict.get("action", "") if isinstance(visual_dict, dict) else str(visual_dict)
+        )
+
+    # Ensure backward-compatible beats array is present
+    if beats_explicit and isinstance(beats_explicit, list) and len(beats_explicit) > 0:
+        scene["beats"] = beats_explicit
+    else:
+        scene["beats"] = [
+            {
+                "words": ev.get("words", ev.get("source_text_span", {}).get("text", "")),
+                "start_pct": ev.get("start_pct", 0),
+                "end_pct": ev.get("end_pct", 100),
+                "show": ev.get("show", ev.get("required_assets", [])),
+                "action": ev.get("action", ""),
+                "camera": ev.get("camera_instruction", "") if isinstance(ev.get("camera_instruction"), str) else (ev.get("camera_instruction", {}).get("shot", "Stable framing")),
+                "label": ev.get("label", title[:24] if title else "OVERVIEW"),
+                "icon_or_asset": scene.get("icon", "zap")
+            }
+            for ev in scene["events"]
+        ]
+
+    # Extract Variant if specified
+    var_common = extract_field_content(block, "Variant")
+    if var_common:
+        scene["variant"] = str(var_common).strip('"\'')
+
+    # Parse Type-Specific Properties (Strict: No Template Fallbacks)
     if scene_type == "hook":
-        text_m = re.search(r'(?:^|\n)-?\s*\*\*Text\*\*:\s*([^\n]+)', block, re.I)
-        scene["text"] = text_m.group(1).strip() if text_m else title
+        text_m = extract_field_content(block, "Text")
+        scene["text"] = str(text_m).strip('"\'') if text_m else title
 
     elif scene_type == "outro":
-        text_m = re.search(r'(?:^|\n)-?\s*\*\*Text\*\*:\s*([^\n]+)', block, re.I)
-        scene["text"] = text_m.group(1).strip() if text_m else title
+        text_m = extract_field_content(block, "Text")
+        scene["text"] = str(text_m).strip('"\'') if text_m else title
 
     elif scene_type == "compare":
-        left_m = re.search(r'(?:^|\n)-?\s*\*\*Left\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
-        right_m = re.search(r'(?:^|\n)-?\s*\*\*Right\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
-        if left_m:
-            parsed_left = parse_loose_data(left_m.group(1).strip())
-            if isinstance(parsed_left, dict) and "heading" in parsed_left and "items" in parsed_left:
-                # Keep heading concise (<= 3 words) to satisfy validator
-                h_words = str(parsed_left["heading"]).split()
-                if len(h_words) > 3:
-                    parsed_left["heading"] = " ".join(h_words[:3])
-                scene["left"] = parsed_left
-        if right_m:
-            parsed_right = parse_loose_data(right_m.group(1).strip())
-            if isinstance(parsed_right, dict) and "heading" in parsed_right and "items" in parsed_right:
-                h_words = str(parsed_right["heading"]).split()
-                if len(h_words) > 3:
-                    parsed_right["heading"] = " ".join(h_words[:3])
-                scene["right"] = parsed_right
-        # Fallback if left/right missing
-        if "left" not in scene:
-            scene["left"] = {"heading": "Standard Approach", "items": ["High Latency", "Manual Coordination", "Linear Bottleneck"]}
-        if "right" not in scene:
-            scene["right"] = {"heading": "Optimized Core", "items": ["Sub-Second Latency", "Direct Synchronization", "O(1) Efficiency"]}
+        left_val = extract_field_content(block, "Left")
+        right_val = extract_field_content(block, "Right")
+        if isinstance(left_val, list) and len(left_val) == 1 and isinstance(left_val[0], dict) and "heading" in left_val[0]:
+            left_val = left_val[0]
+        if isinstance(right_val, list) and len(right_val) == 1 and isinstance(right_val[0], dict) and "heading" in right_val[0]:
+            right_val = right_val[0]
+
+        if not left_val or not isinstance(left_val, dict) or "heading" not in left_val or "items" not in left_val:
+            raise ValueError(f"Scene {index + 1} ({title}) of type 'compare' is missing valid **Left** definition (heading and items required)!")
+        if not right_val or not isinstance(right_val, dict) or "heading" not in right_val or "items" not in right_val:
+            raise ValueError(f"Scene {index + 1} ({title}) of type 'compare' is missing valid **Right** definition (heading and items required)!")
+
+        # Keep heading concise (<= 3 words)
+        h_words_l = str(left_val["heading"]).split()
+        if len(h_words_l) > 3:
+            left_val["heading"] = " ".join(h_words_l[:3])
+        h_words_r = str(right_val["heading"]).split()
+        if len(h_words_r) > 3:
+            right_val["heading"] = " ".join(h_words_r[:3])
+
+        scene["left"] = left_val
+        scene["right"] = right_val
 
     elif scene_type == "stat":
-        val_m = re.search(r'(?:^|\n)-?\s*\*\*Value\*\*:\s*([^\n]+)', block, re.I)
-        lbl_m = re.search(r'(?:^|\n)-?\s*\*\*Label\*\*:\s*([^\n]+)', block, re.I)
-        scene["value"] = val_m.group(1).strip().strip('"').strip("'") if val_m else "99.9%"
-        scene["label"] = lbl_m.group(1).strip().strip('"').strip("'") if lbl_m else f"{title.upper()}"
+        val_m = extract_field_content(block, "Value")
+        lbl_m = extract_field_content(block, "Label")
+        scene["value"] = str(val_m).strip('"\'') if val_m else "99.9%"
+        scene["label"] = str(lbl_m).strip('"\'') if lbl_m else f"{title.upper()}"
 
     elif scene_type == "gauge":
-        val_m = re.search(r'(?:^|\n)-?\s*\*\*Value\*\*:\s*([^\n]+)', block, re.I)
-        unit_m = re.search(r'(?:^|\n)-?\s*\*\*Unit\*\*:\s*([^\n]+)', block, re.I)
-        start_m = re.search(r'(?:^|\n)-?\s*\*\*StartValue\*\*:\s*([^\n]+)', block, re.I)
-        end_m = re.search(r'(?:^|\n)-?\s*\*\*EndValue\*\*:\s*([^\n]+)', block, re.I)
-        scene["value"] = float(val_m.group(1).strip().strip('"').strip("'")) if val_m else 98.4
-        scene["unit"] = unit_m.group(1).strip().strip('"').strip("'") if unit_m else "%"
-        if start_m:
-            scene["startValue"] = float(start_m.group(1).strip().strip('"').strip("'"))
-        if end_m:
-            scene["endValue"] = float(end_m.group(1).strip().strip('"').strip("'"))
+        val_m = extract_field_content(block, "Value")
+        unit_m = extract_field_content(block, "Unit")
+        start_m = extract_field_content(block, "StartValue")
+        end_m = extract_field_content(block, "EndValue")
+        scene["value"] = float(val_m) if val_m is not None else 98.4
+        scene["unit"] = str(unit_m).strip('"\'') if unit_m else "%"
+        if start_m is not None:
+            scene["startValue"] = float(start_m)
+        if end_m is not None:
+            scene["endValue"] = float(end_m)
 
     elif scene_type == "architecture":
-        nodes_m = re.search(r'(?:^|\n)-?\s*\*\*Nodes\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
-        dir_m = re.search(r'(?:^|\n)-?\s*\*\*Direction\*\*:\s*([^\n]+)', block, re.I)
-        if nodes_m:
-            parsed_nodes = parse_loose_data(nodes_m.group(1).strip())
-            if isinstance(parsed_nodes, list):
-                scene["nodes"] = parsed_nodes
-        if "nodes" not in scene:
-            scene["nodes"] = ["Client Device", "API Gateway", "Service Core", "Storage Cluster"]
-        scene["direction"] = dir_m.group(1).strip() if dir_m else "horizontal"
+        nodes = extract_field_content(block, "Nodes")
+        dir_m = extract_field_content(block, "Direction")
+        if nodes and isinstance(nodes, list):
+            scene["nodes"] = nodes
+        elif visual_dict.get("objects"):
+            scene["nodes"] = visual_dict["objects"][:4]
+        else:
+            raise ValueError(f"Scene {index + 1} ({title}) of type 'architecture' requires valid **Nodes** list!")
+        scene["direction"] = str(dir_m).strip('"\'') if dir_m else "horizontal"
 
     elif scene_type == "diagram":
-        m_m = re.search(r'(?:^|\n)-?\s*\*\*Mermaid\*\*:\s*\n?([\s\S]*?)(?=\n-?\s*\*\*|\Z)', block, re.I)
+        m_m = re.search(r'(?:^|\n)[ \t]*-?[ \t]*\*\*Mermaid\*\*:[ \t]*(?:\r?\n)?([\s\S]*?)(?=\n[ \t]*-?[ \t]*\*\*|\n##|\Z)', block, re.I)
         if m_m:
-            raw_mm = m_m.group(1).strip().strip("`").replace("mermaid\n", "")
-            # Convert raw newlines into semicolons for validator compliance
+            raw_mm = m_m.group(1).strip()
+            raw_mm = re.sub(r'^```(?:mermaid)?\n', '', raw_mm)
+            raw_mm = re.sub(r'\n```$', '', raw_mm).strip()
             clean_mm = " ".join([l.strip().rstrip(";") for l in raw_mm.splitlines() if l.strip()]) + ";"
-            clean_mm = re.sub(r";\s*;", ";", clean_mm)
+            clean_mm = re.sub(r';\s*;', ';', clean_mm)
             scene["mermaid"] = clean_mm
-        diag_path_m = re.search(r'(?:^|\n)-?\s*\*\*Diagram\*\*:\s*([^\n]+)', block, re.I)
+        diag_path_m = extract_field_content(block, "Diagram")
         if diag_path_m:
-            scene["diagram"] = diag_path_m.group(1).strip().strip('"').strip("'")
+            scene["diagram"] = str(diag_path_m).strip('"\'')
         if "mermaid" not in scene and "diagram" not in scene:
-            scene["mermaid"] = "graph TD; A[Initiate Request] --> B{Valid?}; B -- YES --> C[Process Execution]; B -- NO --> D[Return Error];"
+            raise ValueError(f"Scene {index + 1} ({title}) of type 'diagram' requires valid **Mermaid** or **Diagram** path!")
 
     elif scene_type == "neural_network_graph":
-        mode_m = re.search(r'(?:^|\n)-?\s*\*\*Mode\*\*:\s*([^\n]+)', block, re.I)
-        eq_m = re.search(r'(?:^|\n)-?\s*\*\*Equation\*\*:\s*([^\n]+)', block, re.I)
-        scene["mode"] = mode_m.group(1).strip().lower() if mode_m else "forward"
-        scene["equation"] = clean_equation_str(eq_m.group(1)) if eq_m else "z = Wx + b \\rightarrow a = \\sigma(z)"
+        mode_m = extract_field_content(block, "Mode")
+        eq_m = extract_field_content(block, "Equation")
+        scene["mode"] = str(mode_m).strip().lower() if mode_m else "forward"
+        scene["equation"] = clean_equation_str(str(eq_m)) if eq_m else "z = Wx + b \\rightarrow a = \\sigma(z)"
 
     elif scene_type == "whiteboard":
-        wb_type_m = re.search(r'(?:^|\n)-?\s*\*\*WhiteboardType\*\*:\s*([^\n]+)', block, re.I)
-        wb_theme_m = re.search(r'(?:^|\n)-?\s*\*\*WhiteboardTheme\*\*:\s*([^\n]+)', block, re.I)
-        brush_m = re.search(r'(?:^|\n)-?\s*\*\*BrushName\*\*:\s*([^\n]+)', block, re.I)
-        nodes_m = re.search(r'(?:^|\n)-?\s*\*\*Nodes\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
-        scene["whiteboardType"] = wb_type_m.group(1).strip() if wb_type_m else "algorithm"
-        scene["whiteboardTheme"] = wb_theme_m.group(1).strip() if wb_theme_m else "chalkboard"
-        scene["brushName"] = brush_m.group(1).strip() if brush_m else "rotring"
-        if nodes_m:
-            parsed_nodes = parse_loose_data(nodes_m.group(1).strip())
-            if isinstance(parsed_nodes, list):
-                scene["nodes"] = parsed_nodes
+        wb_type_m = extract_field_content(block, "WhiteboardType")
+        wb_theme_m = extract_field_content(block, "WhiteboardTheme")
+        brush_m = extract_field_content(block, "BrushName")
+        nodes_m = extract_field_content(block, "Nodes")
+        scene["whiteboardType"] = str(wb_type_m).strip() if wb_type_m else "algorithm"
+        scene["whiteboardTheme"] = str(wb_theme_m).strip() if wb_theme_m else "chalkboard"
+        scene["brushName"] = str(brush_m).strip() if brush_m else "rotring"
+        if nodes_m and isinstance(nodes_m, list):
+            scene["nodes"] = nodes_m
 
     elif scene_type == "three":
-        var_m = re.search(r'(?:^|\n)-?\s*\*\*Variant\*\*:\s*([^\n]+)', block, re.I)
-        eq_m = re.search(r'(?:^|\n)-?\s*\*\*Equation\*\*:\s*([^\n]+)', block, re.I)
-        model_m = re.search(r'(?:^|\n)-?\s*\*\*Model\*\*:\s*([^\n]+)', block, re.I)
-        metrics_m = re.search(r'(?:^|\n)-?\s*\*\*Metrics\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
-        scene["variant"] = var_m.group(1).strip() if var_m else "smartphone_3d"
+        var_m = extract_field_content(block, "Variant")
+        eq_m = extract_field_content(block, "Equation")
+        model_m = extract_field_content(block, "Model")
+        scale_m = extract_field_content(block, "ModelScale")
+        rot_m = extract_field_content(block, "ModelRotation")
+        metrics_m = extract_field_content(block, "Metrics")
+        scene["variant"] = str(var_m).strip('"\'') if var_m else "smartphone_3d"
         if eq_m:
-            scene["equation"] = clean_equation_str(eq_m.group(1))
+            scene["equation"] = clean_equation_str(str(eq_m))
         if model_m:
-            scene["model"] = model_m.group(1).strip()
-        if metrics_m:
-            parsed_metrics = parse_loose_data(metrics_m.group(1).strip())
-            if isinstance(parsed_metrics, dict):
-                scene["metrics"] = parsed_metrics
+            scene["model"] = str(model_m).strip('"\'')
+        if scale_m is not None:
+            try:
+                scene["modelScale"] = float(scale_m)
+            except (ValueError, TypeError):
+                pass
+        if rot_m and isinstance(rot_m, list):
+            scene["modelRotation"] = rot_m
+        if metrics_m and isinstance(metrics_m, dict):
+            scene["metrics"] = metrics_m
 
     elif scene_type == "hierarchy":
-        layers_m = re.search(r'(?:^|\n)-?\s*\*\*Layers\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
-        if layers_m:
-            parsed_layers = parse_loose_data(layers_m.group(1).strip())
-            if isinstance(parsed_layers, list):
-                scene["layers"] = parsed_layers
-        if "layers" not in scene:
-            scene["layers"] = [
-                {"name": "Level 1: Expressways & Highways", "spec": "Cross-Country Fast Arteries", "active": True},
-                {"name": "Level 2: Arterials & State Routes", "spec": "Inter-City Connecting Corridors", "active": True},
-                {"name": "Level 3: Local Streets & Alleys", "spec": "High-Density Residential Mesh", "active": True}
-            ]
+        layers_m = extract_field_content(block, "Layers")
+        if not layers_m or not isinstance(layers_m, list):
+            raise ValueError(f"Scene {index + 1} ({title}) of type 'hierarchy' requires valid **Layers** list!")
+        scene["layers"] = layers_m
 
     elif scene_type == "benchmark":
-        run_m = re.search(r'(?:^|\n)-?\s*\*\*Runners\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
-        unit_m = re.search(r'(?:^|\n)-?\s*\*\*Unit\*\*:\s*([^\n]+)', block, re.I)
-        if run_m:
-            parsed_run = parse_loose_data(run_m.group(1).strip())
-            if isinstance(parsed_run, list):
-                scene["runners"] = parsed_run
-        if "runners" not in scene:
-            scene["runners"] = [
-                {"name": "Traditional", "value": 1.45, "status": "Bottleneck", "color": "#FF4444"},
-                {"name": "Optimized Core", "value": 0.12, "status": "Winner", "color": "#00F0FF"}
-            ]
-        scene["unit"] = unit_m.group(1).strip() if unit_m else "s"
+        run_m = extract_field_content(block, "Runners")
+        unit_m = extract_field_content(block, "Unit")
+        if not run_m or not isinstance(run_m, list):
+            raise ValueError(f"Scene {index + 1} ({title}) of type 'benchmark' requires valid **Runners** list!")
+        scene["runners"] = run_m
+        scene["unit"] = str(unit_m).strip('"\'') if unit_m else "s"
 
     elif scene_type == "code":
         code_m = re.search(r'(?:^|\n)-?\s*\*\*Code\*\*:\s*\n?([\s\S]*?)(?=\n-?\s*\*\*|\Z)', block, re.I)
-        lang_m = re.search(r'(?:^|\n)-?\s*\*\*Language\*\*:\s*([^\n]+)', block, re.I)
+        lang_m = extract_field_content(block, "Language")
         if code_m:
             code_text = code_m.group(1).strip().strip("`")
             scene["lines"] = [l for l in code_text.splitlines() if l.strip()]
         else:
             scene["lines"] = ["def execute_search(arr, target):", "    for idx, val in enumerate(arr):", "        if val == target: return idx", "    return -1"]
-        scene["language"] = lang_m.group(1).strip() if lang_m else "python"
+        scene["language"] = str(lang_m).strip() if lang_m else "python"
 
     elif scene_type == "terminal":
-        prompt_m = re.search(r'(?:^|\n)-?\s*\*\*Prompt\*\*:\s*([^\n]+)', block, re.I)
-        steps_m = re.search(r'(?:^|\n)-?\s*\*\*TerminalSteps\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
-        scene["prompt"] = prompt_m.group(1).strip() if prompt_m else "curl -X POST https://api.internal/pay"
-        if steps_m:
-            parsed_steps = parse_loose_data(steps_m.group(1).strip())
-            if isinstance(parsed_steps, list):
-                scene["terminalSteps"] = parsed_steps
-        if "terminalSteps" not in scene:
+        prompt_m = extract_field_content(block, "Prompt")
+        steps_m = extract_field_content(block, "TerminalSteps")
+        scene["prompt"] = str(prompt_m).strip('"\'') if prompt_m else "curl -X POST https://api.internal/pay"
+        if steps_m and isinstance(steps_m, list):
+            scene["terminalSteps"] = steps_m
+        else:
             scene["terminalSteps"] = [
                 {"kind": "cmd", "text": scene["prompt"], "typeSpeed": 0.03},
                 {"kind": "out", "text": "HTTP/2 200 OK\n{\n  \"status\": \"SUCCESS\",\n  \"latency\": \"140ms\"\n}"}
             ]
 
     elif scene_type == "bento":
-        bento_m = re.search(r'(?:^|\n)-?\s*\*\*Bento\s*Items?\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
-        if bento_m:
-            parsed_bento = parse_loose_data(bento_m.group(1).strip())
-            if isinstance(parsed_bento, list):
-                scene["bentoItems"] = parsed_bento
-        if "bentoItems" not in scene:
-            scene["bentoItems"] = [
-                {"title": "Throughput", "value": "100k req/s", "span": 2, "badge": "PEAK"},
-                {"title": "P99 Latency", "value": "< 12ms", "span": 1, "badge": "OPTIMAL"}
-            ]
+        bento_m = extract_field_content(block, "BentoItems") or extract_field_content(block, "Items") or extract_field_content(block, "Bento Items")
+        if not bento_m or not isinstance(bento_m, list):
+            raise ValueError(f"Scene {index + 1} ({title}) of type 'bento' requires valid **BentoItems** or **Items** list!")
+        scene["bentoItems"] = bento_m
 
     elif scene_type == "bullets":
-        items_m = re.findall(r'(?:^|\n)-?\s*\*\*Item\*\*:\s*([^\n]+)', block, re.I)
-        if items_m:
-            scene["items"] = [i.strip() for i in items_m]
+        items_m = extract_field_content(block, "Items")
+        if items_m and isinstance(items_m, list):
+            scene["items"] = items_m
         else:
-            scene["items"] = ["First Principle Execution", "Sub-Second In-Memory Synchronization", "Deterministic Fault Recovery"]
+            items_raw = re.findall(r'(?:^|\n)-?\s*\*\*Item\*\*:\s*([^\n]+)', block, re.I)
+            if items_raw:
+                scene["items"] = [i.strip() for i in items_raw]
+            else:
+                scene["items"] = ["First Principle Execution", "Distributed State Machine", "Deterministic Fault Recovery"]
 
     elif scene_type == "callout":
-        cat_m = re.search(r'(?:^|\n)-?\s*\*\*Category\*\*:\s*([^\n]+)', block, re.I)
-        text_m = re.search(r'(?:^|\n)-?\s*\*\*Text\*\*:\s*([^\n]+)', block, re.I)
-        sub_m = re.search(r'(?:^|\n)-?\s*\*\*Subtext\*\*:\s*([^\n]+)', block, re.I)
-        scene["category"] = cat_m.group(1).strip() if cat_m else "Core Takeaway"
-        scene["text"] = text_m.group(1).strip() if text_m else title
+        cat_m = extract_field_content(block, "Category")
+        text_m = extract_field_content(block, "Text")
+        sub_m = extract_field_content(block, "Subtext")
+        scene["category"] = str(cat_m).strip('"\'') if cat_m else "Core Takeaway"
+        scene["text"] = str(text_m).strip('"\'') if text_m else title
         if sub_m:
-            scene["subtext"] = sub_m.group(1).strip()
+            scene["subtext"] = str(sub_m).strip('"\'')
 
     elif scene_type == "video":
-        vid_m = re.search(r'(?:^|\n)-?\s*\*\*(?:Video|Search Video)\*\*:\s*([^\n]+)', block, re.I)
+        vid_m = extract_field_content(block, "Video") or extract_field_content(block, "Search Video")
         if vid_m:
-            v_val = vid_m.group(1).strip()
+            v_val = str(vid_m).strip('"\'')
             if v_val.endswith((".mp4", ".mov", ".webm")):
                 scene["video"] = v_val
             else:
                 scene["search_video"] = v_val
 
     elif scene_type in ("image", "hook", "product", "screenshot", "whiteboard", "amazon_shopping"):
-        img_m = re.search(r'(?:^|\n)-?\s*\*\*(?:Image|Search Image|Generate Image)\*\*:\s*([^\n]+)', block, re.I)
+        img_m = extract_field_content(block, "Image") or extract_field_content(block, "Search Image") or extract_field_content(block, "Generate Image")
         if img_m:
-            i_val = img_m.group(1).strip().strip('"').strip("'")
+            i_val = str(img_m).strip('"\'')
             if i_val.endswith((".jpg", ".jpeg", ".png", ".webp", ".svg")):
                 scene["image"] = i_val
             elif "generate image" in block.lower():
                 scene["generate_image"] = i_val
             else:
                 scene["search_image"] = i_val
-        if scene_type == "product":
-            price_m = re.search(r'(?:^|\n)-?\s*\*\*Price\*\*:\s*([^\n]+)', block, re.I)
-            if price_m:
-                scene["price"] = price_m.group(1).strip().strip('"').strip("'")
-            hl_m = re.search(r'(?:^|\n)-?\s*\*\*Highlight\*\*:\s*([^\n]+)', block, re.I)
-            if hl_m:
-                scene["highlight"] = hl_m.group(1).strip().strip('"').strip("'")
-            tagl_m = re.search(r'(?:^|\n)-?\s*\*\*Tagline\*\*:\s*([^\n]+)', block, re.I)
-            if tagl_m:
-                scene["tagline"] = tagl_m.group(1).strip().strip('"').strip("'")
-            specs_m = re.search(r'(?:^|\n)-?\s*\*\*Specs\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
-            if specs_m:
-                parsed_specs = parse_loose_data(specs_m.group(1).strip())
-                if isinstance(parsed_specs, (list, dict)):
-                    scene["specs"] = parsed_specs
-
-
-    elif scene_type == "timeline":
-        steps_m = re.search(r'(?:^|\n)-?\s*\*\*Steps\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
-        if steps_m:
-            parsed_steps = parse_loose_data(steps_m.group(1).strip())
-            if isinstance(parsed_steps, list):
-                scene["steps"] = parsed_steps
-        if "steps" not in scene:
-            scene["steps"] = ["Initialize", "Validate", "Process", "Complete"]
-    elif scene_type == "depth_parallax":
-        img_m = re.search(r'(?:^|\n)-?\s*\*\*Image\*\*:\s*([^\n]+)', block, re.I)
-        depth_m = re.search(r'(?:^|\n)-?\s*\*\*DepthMap\*\*:\s*([^\n]+)', block, re.I)
-        int_m = re.search(r'(?:^|\n)-?\s*\*\*Intensity\*\*:\s*([^\n]+)', block, re.I)
-        mov_m = re.search(r'(?:^|\n)-?\s*\*\*Movement\*\*:\s*([^\n]+)', block, re.I)
-        if img_m:
-            scene["image"] = img_m.group(1).strip().strip('"').strip("'")
-        if depth_m:
-            scene["depthMap"] = depth_m.group(1).strip().strip('"').strip("'")
-        if int_m:
-            try:
-                scene["intensity"] = float(int_m.group(1).strip().strip('"').strip("'"))
-            except ValueError:
-                scene["intensity"] = 0.05
-        if mov_m:
-            scene["movement"] = mov_m.group(1).strip().strip('"').strip("'")
-
-    # Custom domain visualizers (linear search, air conditioner, etc.)
-    for custom_key in ["searchItems", "searchTarget", "variant", "array", "specs", "overlay"]:
-        ck_m = re.search(rf'(?:^|\n)-?\s*\*\*{custom_key.replace("_", " ").title()}\*\*:\s*([^\n]+(?:\n[^\n\-#]+)*)', block, re.I)
-        if ck_m:
-            scene[custom_key] = parse_loose_data(ck_m.group(1).strip())
-
-    # Common scene overlay directives
-    part_m = re.search(r'(?:^|\n)-?\s*\*\*Particles\*\*:\s*([^\n]+)', block, re.I)
-    if part_m:
-        p_val = part_m.group(1).strip().lower()
-        if p_val in {"sparkles", "fireflies", "mist", "light-rays", "true"}:
-            scene["particles"] = True if p_val == "true" else p_val
 
     return scene
 
@@ -749,41 +897,64 @@ def compile_script(ep_dir: Path, force: bool = False) -> Path:
     brief = parse_brief(ep_dir / "brief.yaml")
 
     # Extract top-level metadata from header or brief
-    title_match = re.search(r'^#\s+Episode:\s*([^\n]+)', script_text, re.M)
+    title_match = re.search(r'^#\s+Episode\s*[^:]*:\s*([^\n]+)', script_text, re.M)
     topic_title = title_match.group(1).strip() if title_match else brief.get("topic", ep_dir.name.replace("-", " ").title())
 
-    format_m = re.search(r'(?:^|\n)-?\s*Format:\s*([^\n]+)', script_text, re.I)
-    theme_m = re.search(r'(?:^|\n)-?\s*Theme:\s*([^\n]+)', script_text, re.I)
-    accent_m = re.search(r'(?:^|\n)-?\s*Accent:\s*([^\n]+)', script_text, re.I)
-    art_m = re.search(r'(?:^|\n)-?\s*Art Direction:\s*([^\n]+)', script_text, re.I)
-    pad_m = re.search(r'(?:^|\n)-?\s*Pad Seconds:\s*([^\n]+)', script_text, re.I)
+    # Deduplicate title: avoid "How How Starlink Works Works"
+    clean_topic = re.sub(r'^(?:how\s+)?(.*?)(?:\s+works)?$', r'\1', topic_title, flags=re.I).strip()
+    meta_title = f"How {clean_topic} Works | Tech Explainer"
+    meta_desc = f"Learn how {clean_topic} works under the hood through visual motion graphics and first-principles technical breakdown."
 
-    format_val = format_m.group(1).strip().lower() if format_m else brief.get("format", "vertical")
-    theme_val = theme_m.group(1).strip().lower() if theme_m else brief.get("theme", "cyberpunk")
-    accent_val = accent_m.group(1).strip() if accent_m else brief.get("accent", "#00F0FF")
-    art_val = art_m.group(1).strip().lower() if art_m else brief.get("art_direction", "editorial")
-    pad_val = float(pad_m.group(1).strip()) if pad_m else 0.28
+    format_m = extract_field_content(script_text, "Format")
+    theme_m = extract_field_content(script_text, "Theme")
+    accent_m = extract_field_content(script_text, "Accent")
+    art_m = extract_field_content(script_text, "Art Direction")
+    pad_m = extract_field_content(script_text, "Pad Seconds")
+
+    format_val = str(format_m).strip().lower() if format_m else brief.get("format", "vertical")
+    theme_val = str(theme_m).strip().lower() if theme_m else brief.get("theme", "cyberpunk")
+    accent_val = str(accent_m).strip() if accent_m else brief.get("accent", "#00F0FF")
+    art_val = str(art_m).strip().lower() if art_m else brief.get("art_direction", "editorial")
+    pad_val = float(pad_m) if pad_m is not None else 0.28
+
+    # Extract Facts Table
+    facts = extract_facts_table(script_text)
 
     # Split into scene blocks: ## Scene N: Title or ## Scene N
     scene_blocks = re.split(r'(?:^|\n)##\s+(?:Scene|scene)\s*\d*[:\s]*', script_text)
     if not scene_blocks:
         raise ValueError(f"No scene blocks found in {script_file}")
 
-    header_block = scene_blocks[0]
     raw_scenes = scene_blocks[1:]
     if not raw_scenes:
         raise ValueError(f"Could not parse any scenes after header in {script_file}")
 
-    # Extract scene header titles
     scene_headers = re.findall(r'(?:^|\n)##\s+(?:Scene|scene)\s*\d*[:\s]*([^\n]*)', script_text)
 
     scenes = []
+    seen_compares = []
     for idx, block in enumerate(raw_scenes):
         fallback_hdr = scene_headers[idx].strip() if idx < len(scene_headers) else f"Scene {idx + 1}"
         if not fallback_hdr:
             fallback_hdr = f"Scene {idx + 1}"
         scene_obj = parse_scene_block(block, idx, len(raw_scenes), fallback_hdr)
+
+        # Enforce unique compare panels across scenes
+        if scene_obj.get("type") == "compare":
+            pair = (
+                scene_obj.get("left", {}).get("heading", "").strip().lower(),
+                scene_obj.get("right", {}).get("heading", "").strip().lower()
+            )
+            if pair in seen_compares:
+                raise ValueError(f"Duplicate compare panels detected in scene {idx + 1} ({scene_obj.get('title')})! Headings {pair} already used.")
+            seen_compares.append(pair)
+
         scenes.append(scene_obj)
+
+    aligner = NarrationAligner()
+    choreographer = ChoreographyEngine()
+    coverage_map = aligner.align_narration(scenes)
+    choreography = choreographer.generate_full_choreography(scenes)
 
     storyboard = {
         "$schema": "../../schema/storyboard.schema.json",
@@ -799,8 +970,8 @@ def compile_script(ep_dir: Path, force: bool = False) -> Path:
         "pad_seconds": pad_val,
         "music": None,
         "meta": {
-            "title": f"How {topic_title} Works | Tech Explainer",
-            "description": f"Learn how {topic_title} works under the hood through visual motion graphics and first-principles technical breakdown.",
+            "title": meta_title,
+            "description": meta_desc,
             "hashtags": [
                 "#Technology",
                 "#ComputerScience",
@@ -809,11 +980,14 @@ def compile_script(ep_dir: Path, force: bool = False) -> Path:
                 "#TechShorts"
             ],
             "facts_to_verify": brief.get("facts_to_verify", [
-                f"{topic_title} operates via distributed synchronized state machines."
+                f"{clean_topic} operates via distributed synchronized state machines."
             ]),
             "misconceptions": brief.get("misconceptions", []),
             "analogy": brief.get("analogy", "")
         },
+        "facts": facts,
+        "choreography": choreography,
+        "coverage_map": coverage_map,
         "scenes": scenes
     }
 

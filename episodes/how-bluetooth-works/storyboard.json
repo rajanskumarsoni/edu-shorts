@@ -12,8 +12,8 @@
   "pad_seconds": 0.28,
   "music": null,
   "meta": {
-    "title": "How How Bluetooth Works Works | Tech Explainer",
-    "description": "Learn how How Bluetooth Works works under the hood through visual motion graphics and first-principles technical breakdown.",
+    "title": "How Bluetooth Technology Works | Tech Explainer",
+    "description": "Learn how Bluetooth Technology works under the hood through visual motion graphics and first-principles technical breakdown.",
     "hashtags": [
       "#Technology",
       "#ComputerScience",
@@ -22,19 +22,646 @@
       "#TechShorts"
     ],
     "facts_to_verify": [
-      "How Bluetooth Works operates via distributed synchronized state machines."
+      "Bluetooth Technology operates via distributed synchronized state machines."
     ],
     "misconceptions": [],
     "analogy": ""
   },
+  "facts": [],
+  "choreography": {
+    "total_events": 17,
+    "actors": [
+      "earbuds",
+      "smartphone",
+      "system_core"
+    ],
+    "targets": [
+      "79 channels • 1600 hops/s_interface",
+      "audio → digital packets_interface",
+      "discover → pair → connect_interface",
+      "earbuds",
+      "no cable • so how?_interface",
+      "radio carries data • earbuds create sound_interface",
+      "radio carries data_interface",
+      "receive + decode → audio_interface"
+    ],
+    "concurrent_pairs": [],
+    "timeline_contiguous": true,
+    "events_summary": [
+      {
+        "event_id": "evt_00_01",
+        "actor": "smartphone",
+        "action": "state_transition",
+        "target": "earbuds",
+        "start_pct": 0,
+        "end_pct": 59
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "orbit_or_travel",
+        "target": "no cable • so how?_interface",
+        "start_pct": 59,
+        "end_pct": 82
+      },
+      {
+        "event_id": "evt_00_03",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "no cable • so how?_interface",
+        "start_pct": 82,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "smartphone",
+        "action": "state_transition",
+        "target": "audio → digital packets_interface",
+        "start_pct": 0,
+        "end_pct": 52
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "pack_goods",
+        "target": "audio → digital packets_interface",
+        "start_pct": 52,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "smartphone",
+        "action": "transmit",
+        "target": "radio carries data_interface",
+        "start_pct": 0,
+        "end_pct": 71
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "radio carries data_interface",
+        "start_pct": 71,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "earbuds",
+        "action": "state_transition",
+        "target": "discover → pair → connect_interface",
+        "start_pct": 0,
+        "end_pct": 39
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "connect",
+        "target": "discover → pair → connect_interface",
+        "start_pct": 39,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "receive + decode → audio_interface",
+        "start_pct": 0,
+        "end_pct": 12
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "earbuds",
+        "action": "pack_goods",
+        "target": "receive + decode → audio_interface",
+        "start_pct": 12,
+        "end_pct": 44
+      },
+      {
+        "event_id": "evt_00_03",
+        "actor": "system_core",
+        "action": "vibrate_or_sound",
+        "target": "receive + decode → audio_interface",
+        "start_pct": 44,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "system_core",
+        "action": "handoff_or_shift",
+        "target": "79 channels • 1600 hops/s_interface",
+        "start_pct": 0,
+        "end_pct": 81
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "79 channels • 1600 hops/s_interface",
+        "start_pct": 81,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "smartphone",
+        "action": "orbit_or_travel",
+        "target": "radio carries data • earbuds create sound_interface",
+        "start_pct": 0,
+        "end_pct": 26
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "earbuds",
+        "action": "state_transition",
+        "target": "radio carries data • earbuds create sound_interface",
+        "start_pct": 26,
+        "end_pct": 63
+      },
+      {
+        "event_id": "evt_00_03",
+        "actor": "system_core",
+        "action": "vibrate_or_sound",
+        "target": "radio carries data • earbuds create sound_interface",
+        "start_pct": 63,
+        "end_pct": 100
+      }
+    ]
+  },
+  "coverage_map": [
+    {
+      "scene_index": 1,
+      "scene_title": "NO CABLE • SO HOW?",
+      "segments": [
+        {
+          "segment_id": "seg_01_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 97,
+            "text": "ज़रा सोचिए… आपके फोन में गाना चल रहा है, कानों में इयर-बड्स हैं… लेकिन दोनों के बीच कोई तार नहीं!"
+          },
+          "entities": [
+            "smartphone",
+            "earbuds"
+          ],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 8.0,
+          "start_pct": 0,
+          "end_pct": 59,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: ज़रा सोचिए… आपके फोन में गाना चल रह."
+          }
+        },
+        {
+          "segment_id": "seg_01_02",
+          "source_text_span": {
+            "start_char": 97,
+            "end_char": 134,
+            "text": "तो क्या आवाज़ हवा में उड़कर जाती है?"
+          },
+          "entities": [],
+          "actions": [
+            "orbit_or_travel"
+          ],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 8.0,
+          "end_time_sec": 11.2,
+          "start_pct": 59,
+          "end_pct": 82,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: orbit_or_travel performed on focal object."
+          }
+        },
+        {
+          "segment_id": "seg_01_03",
+          "source_text_span": {
+            "start_char": 134,
+            "end_char": 161,
+            "text": "आखिर यह जादू होता कैसे है?"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 11.2,
+          "end_time_sec": 13.6,
+          "start_pct": 82,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: आखिर यह जादू होता कैसे है?."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 2,
+      "scene_title": "AUDIO → DIGITAL PACKETS",
+      "segments": [
+        {
+          "segment_id": "seg_02_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 68,
+            "text": "असल में, आपका फोन गाने को डि-जि-टल डा-टा के रूप में प्रोसेस करता है।"
+          },
+          "entities": [
+            "smartphone"
+          ],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 5.6,
+          "start_pct": 0,
+          "end_pct": 52,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: असल में, आपका फोन गाने को डि-जि-टल ."
+          }
+        },
+        {
+          "segment_id": "seg_02_02",
+          "source_text_span": {
+            "start_char": 68,
+            "end_char": 142,
+            "text": "एनालॉग साउंड बाइनरी में बदलकर छोटे-छोटे डा-टा पैकेट्स में पैक हो जाती है!"
+          },
+          "entities": [],
+          "actions": [
+            "pack_goods"
+          ],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 5.6,
+          "end_time_sec": 10.8,
+          "start_pct": 52,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: pack_goods performed on focal object."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 3,
+      "scene_title": "RADIO CARRIES DATA",
+      "segments": [
+        {
+          "segment_id": "seg_03_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 124,
+            "text": "फिर फोन का ब्लू-टूथ ट्रांसमीटर इस डा-टा को दो दशमलव चार गीगा-हर्ट्ज़ के रेडियो सिग्नल्स के ज़रिए हवा में ब्रॉडकास्ट करता है।"
+          },
+          "entities": [
+            "smartphone"
+          ],
+          "actions": [
+            "transmit"
+          ],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 8.8,
+          "start_pct": 0,
+          "end_pct": 71,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: transmit performed on ['smartphone']."
+          }
+        },
+        {
+          "segment_id": "seg_03_02",
+          "source_text_span": {
+            "start_char": 124,
+            "end_char": 174,
+            "text": "यानी हवा में आवाज़ नहीं, रेडियो वेव्ज़ तैरती हैं!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 8.8,
+          "end_time_sec": 12.4,
+          "start_pct": 71,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: यानी हवा में आवाज़ नहीं, रेडियो वेव."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 4,
+      "scene_title": "DISCOVER → PAIR → CONNECT",
+      "segments": [
+        {
+          "segment_id": "seg_04_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 62,
+            "text": "लेकिन इयर-बड्स को कैसे पता चलता है कि सिग्नल उन्हीं के लिए है?"
+          },
+          "entities": [
+            "earbuds"
+          ],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 5.2,
+          "start_pct": 0,
+          "end_pct": 39,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: लेकिन इयर-बड्स को कैसे पता चलता है ."
+          }
+        },
+        {
+          "segment_id": "seg_04_02",
+          "source_text_span": {
+            "start_char": 62,
+            "end_char": 179,
+            "text": "पहली बार दोनों डिवाइसेस पेयरिंग करके सीक्रेट इनक्रिप्शन की एक्सचेंज करते हैं, और एक सुरक्षित कनेक्शन लॉक हो जाता है!"
+          },
+          "entities": [],
+          "actions": [
+            "connect"
+          ],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 5.2,
+          "end_time_sec": 13.2,
+          "start_pct": 39,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: connect performed on focal object."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 5,
+      "scene_title": "RECEIVE + DECODE → AUDIO",
+      "segments": [
+        {
+          "segment_id": "seg_05_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 19,
+            "text": "अब असली कमाल देखिए!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 1.6,
+          "start_pct": 0,
+          "end_pct": 12,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: अब असली कमाल देखिए!."
+          }
+        },
+        {
+          "segment_id": "seg_05_02",
+          "source_text_span": {
+            "start_char": 19,
+            "end_char": 80,
+            "text": "हवा में तैरते ये पैकेट्स इयर-बड्स के रिसीवर में पहुँचते हैं।"
+          },
+          "entities": [
+            "earbuds"
+          ],
+          "actions": [
+            "pack_goods"
+          ],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 1.6,
+          "end_time_sec": 6.0,
+          "start_pct": 12,
+          "end_pct": 44,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: pack_goods performed on ['earbuds']."
+          }
+        },
+        {
+          "segment_id": "seg_05_03",
+          "source_text_span": {
+            "start_char": 80,
+            "end_char": 191,
+            "text": "डिकोडर चिप इन्हें अनपैक करती है, और स्पीकर का डायफ्राम वाइब्रेट होकर असली म्यूज़िक साउंड वेव्ज़ तैयार करता है!"
+          },
+          "entities": [],
+          "actions": [
+            "vibrate_or_sound"
+          ],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 6.0,
+          "end_time_sec": 13.6,
+          "start_pct": 44,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: vibrate_or_sound performed on focal object."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 6,
+      "scene_title": "79 CHANNELS • 1600 HOPS/S",
+      "segments": [
+        {
+          "segment_id": "seg_06_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 118,
+            "text": "और वाई-फाई या माइक्रोवेव के इंटरफेरेंस से बचने के लिए, ब्लू-टूथ हर सेकंड सोलह सौ बार अलग-अलग चैनल्स पर छलांग लगाता है—"
+          },
+          "entities": [],
+          "actions": [
+            "handoff_or_shift"
+          ],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 8.8,
+          "start_pct": 0,
+          "end_pct": 81,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: handoff_or_shift performed on focal object."
+          }
+        },
+        {
+          "segment_id": "seg_06_02",
+          "source_text_span": {
+            "start_char": 118,
+            "end_char": 151,
+            "text": "जिसे कहते हैं फ्रीक्वेंसी हॉपिंग!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 8.8,
+          "end_time_sec": 10.8,
+          "start_pct": 81,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जिसे कहते हैं फ्रीक्वेंसी हॉपिंग!."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 7,
+      "scene_title": "RADIO CARRIES DATA • EARBUDS CREATE SOUND",
+      "segments": [
+        {
+          "segment_id": "seg_07_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 43,
+            "text": "यानी फोन से निकली आवाज़ हवा में नहीं उड़ती—"
+          },
+          "entities": [
+            "smartphone"
+          ],
+          "actions": [
+            "orbit_or_travel"
+          ],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 3.6,
+          "start_pct": 0,
+          "end_pct": 26,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: orbit_or_travel performed on ['smartphone']."
+          }
+        },
+        {
+          "segment_id": "seg_07_02",
+          "source_text_span": {
+            "start_char": 43,
+            "end_char": 112,
+            "text": "रेडियो वेव्ज़ डा-टा ले जाती हैं, और इयर-बड्स उसे आवाज़ में बदलते हैं!"
+          },
+          "entities": [
+            "earbuds"
+          ],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 3.6,
+          "end_time_sec": 8.8,
+          "start_pct": 26,
+          "end_pct": 63,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: रेडियो वेव्ज़ डा-टा ले जाती हैं, और."
+          }
+        },
+        {
+          "segment_id": "seg_07_03",
+          "source_text_span": {
+            "start_char": 112,
+            "end_char": 182,
+            "text": "अगली बार वायरलेस म्यूज़िक सुनें, तो अपने दोस्तों के साथ शेयर करें कि…"
+          },
+          "entities": [],
+          "actions": [
+            "vibrate_or_sound"
+          ],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 8.8,
+          "end_time_sec": 14.0,
+          "start_pct": 63,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: vibrate_or_sound performed on focal object."
+          }
+        }
+      ]
+    }
+  ],
   "scenes": [
     {
       "type": "three",
       "tag": "01 / THE WIRELESS PUZZLE",
       "title": "NO CABLE • SO HOW?",
       "purpose": "Explain the mechanism and takeaway of NO CABLE • SO HOW?.",
-      "tone": "[Curious, high-energy opening]",
-      "narration": "ज़रा सोचिए… आपके फोन में गाना चल रहा है, कानों में इयर-बड्स हैं… लेकिन दोनों के बीच कोई तार नहीं! तो क्या आवाज़ हवा में उड़कर जाती है? आखिर यह जादू होता कैसे है? ---",
+      "tone": "['Curious', 'high-energy opening']",
+      "narration": "ज़रा सोचिए… आपके फोन में गाना चल रहा है, कानों में इयर-बड्स हैं… लेकिन दोनों के बीच कोई तार नहीं! तो क्या आवाज़ हवा में उड़कर जाती है? आखिर यह जादू होता कैसे है?",
       "transition": "zoom_through",
       "sfx": "fast_whoosh",
       "icon": "cube",
@@ -51,7 +678,7 @@
         ],
         "end": "Model locks into informative angle for seamless scene cut."
       },
-      "pattern_interrupt": "\"zoom_punch\"",
+      "pattern_interrupt": "zoom_punch",
       "emphasis_words": [
         "फोन",
         "गाना",
@@ -61,6 +688,261 @@
         "जादू"
       ],
       "hook_strength": 9.5,
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 97,
+            "text": "ज़रा सोचिए… आपके फोन में गाना चल रहा है, कानों में इयर-बड्स हैं… लेकिन दोनों के बीच कोई तार नहीं!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "Smartphone performs state_transition on Earbuds: ज़रा सोचिए… आपके फोन में गाना चल रहा है, कानों में",
+          "required_assets": [
+            "smartphone",
+            "earbuds",
+            "smartphone",
+            "earbuds"
+          ],
+          "actor_or_subject": "smartphone",
+          "target_object": "earbuds",
+          "preconditions": [
+            "smartphone positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "smartphone in neutral baseline resting state",
+          "action": "ज़रा सोचिए… आपके फोन में गाना चल रहा है, कानो के अनुरूप smartphone और earbuds में दृश्य परिवर्तन होता है।",
+          "final_state": "smartphone completes state_transition and transitions earbuds to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 8.0,
+          "start_pct": 0,
+          "end_pct": 59,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "smartphone"
+          },
+          "animation_instruction": {
+            "target": "smartphone",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "smartphone in neutral baseline resting state",
+            "end_state": "smartphone completes state_transition and transitions earbuds to active state (step 1)",
+            "duration_ms": 8000,
+            "completion_condition": "smartphone completes state_transition and transitions earbuds to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "स्मार्टफोन • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "स्मार्टफोन • स्टेट बदलाव",
+          "show": [
+            "Smartphone",
+            "Earbuds"
+          ],
+          "words": "ज़रा सोचिए… आपके फोन में गाना चल रहा है, कानों में इयर-बड्स हैं… लेकिन दोनों के बीच कोई तार नहीं!",
+          "visual_attention_target": {
+            "target_id": "earbuds",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: ज़रा सोचिए… आपके फोन में गाना चल रह."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 97,
+            "end_char": 134,
+            "text": "तो क्या आवाज़ हवा में उड़कर जाती है?"
+          },
+          "semantic_action": "orbit_or_travel",
+          "visual_explanation": "System Core performs orbit_or_travel on No Cable • So How? Interface: तो क्या आवाज़ हवा में उड़कर जाती है?",
+          "required_assets": [
+            "system_core",
+            "no cable • so how?_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "no cable • so how?_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "smartphone completes state_transition and transitions earbuds to active state (step 1)",
+          "action": "तो क्या आवाज़ हवा में उड़कर जाती है? के अनुरूप system_core और no cable • so how?_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes orbit_or_travel and transitions no cable • so how?_interface to active state (step 2)",
+          "start_time": 8.0,
+          "end_time": 11.2,
+          "start_pct": 59,
+          "end_pct": 82,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "no cable • so how?_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "orbit_or_travel",
+            "easing": "ease-out",
+            "start_state": "smartphone completes state_transition and transitions earbuds to active state (step 1)",
+            "end_state": "system_core completes orbit_or_travel and transitions no cable • so how?_interface to active state (step 2)",
+            "duration_ms": 3199,
+            "completion_condition": "system_core completes orbit_or_travel and transitions no cable • so how?_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • सिग्नल मोशन",
+            "badge": "ORBIT_OR_TRAVEL"
+          },
+          "label": "सिस्टम कोर • सिग्नल मोशन",
+          "show": [
+            "System Core",
+            "No Cable • So How? Interface"
+          ],
+          "words": "तो क्या आवाज़ हवा में उड़कर जाती है?",
+          "visual_attention_target": {
+            "target_id": "no cable • so how?_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: orbit_or_travel performed on focal object."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_03",
+          "narration_segment_ids": [
+            "seg_00_03"
+          ],
+          "source_text_span": {
+            "start_char": 134,
+            "end_char": 161,
+            "text": "आखिर यह जादू होता कैसे है?"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on No Cable • So How? Interface: आखिर यह जादू होता कैसे है?",
+          "required_assets": [
+            "system_core",
+            "no cable • so how?_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "no cable • so how?_interface",
+          "preconditions": [
+            "completed evt_00_02",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes orbit_or_travel and transitions no cable • so how?_interface to active state (step 2)",
+          "action": "आखिर यह जादू होता कैसे है? के अनुरूप system_core और no cable • so how?_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions no cable • so how?_interface to active state (step 3)",
+          "start_time": 11.2,
+          "end_time": 13.6,
+          "start_pct": 82,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "no cable • so how?_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes orbit_or_travel and transitions no cable • so how?_interface to active state (step 2)",
+            "end_state": "system_core completes state_transition and transitions no cable • so how?_interface to active state (step 3)",
+            "duration_ms": 2400,
+            "completion_condition": "system_core completes state_transition and transitions no cable • so how?_interface to active state (step 3) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "No Cable • So How? Interface"
+          ],
+          "words": "आखिर यह जादू होता कैसे है?",
+          "visual_attention_target": {
+            "target_id": "no cable • so how?_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: आखिर यह जादू होता कैसे है?."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "ज़रा सोचिए… आपके फोन में गाना चल रहा है, कानों में इयर-बड्स हैं… लेकिन दोनों के बीच कोई तार नहीं!",
+          "start_pct": 0,
+          "end_pct": 59,
+          "show": [
+            "Smartphone",
+            "Earbuds"
+          ],
+          "action": "ज़रा सोचिए… आपके फोन में गाना चल रहा है, कानो के अनुरूप smartphone और earbuds में दृश्य परिवर्तन होता है।",
+          "camera": "establishing_medium",
+          "label": "स्मार्टफोन • स्टेट बदलाव",
+          "icon_or_asset": "cube"
+        },
+        {
+          "words": "तो क्या आवाज़ हवा में उड़कर जाती है?",
+          "start_pct": 59,
+          "end_pct": 82,
+          "show": [
+            "System Core",
+            "No Cable • So How? Interface"
+          ],
+          "action": "तो क्या आवाज़ हवा में उड़कर जाती है? के अनुरूप system_core और no cable • so how?_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • सिग्नल मोशन",
+          "icon_or_asset": "cube"
+        },
+        {
+          "words": "आखिर यह जादू होता कैसे है?",
+          "start_pct": 82,
+          "end_pct": 100,
+          "show": [
+            "System Core",
+            "No Cable • So How? Interface"
+          ],
+          "action": "आखिर यह जादू होता कैसे है? के अनुरूप system_core और no cable • so how?_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "cube"
+        }
+      ],
       "variant": "bluetooth_link_3d"
     },
     {
@@ -68,8 +950,8 @@
       "tag": "02 / MUSIC TO PACKETS",
       "title": "AUDIO → DIGITAL PACKETS",
       "purpose": "Explain the mechanism and takeaway of AUDIO → DIGITAL PACKETS.",
-      "tone": "[Analytical, confident]",
-      "narration": "असल में, आपका फोन गाने को डि-जि-टल डा-टा के रूप में प्रोसेस करता है। एनालॉग साउंड बाइनरी में बदलकर छोटे-छोटे डा-टा पैकेट्स में पैक हो जाती है! ---",
+      "tone": "['Analytical', 'confident']",
+      "narration": "असल में, आपका फोन गाने को डि-जि-टल डा-टा के रूप में प्रोसेस करता है। एनालॉग साउंड बाइनरी में बदलकर छोटे-छोटे डा-टा पैकेट्स में पैक हो जाती है!",
       "transition": "match_cut",
       "sfx": "fast_whoosh",
       "icon": "cube",
@@ -87,13 +969,184 @@
         ],
         "end": "Model locks into informative angle for seamless scene cut."
       },
-      "pattern_interrupt": "\"color_flash\"",
+      "pattern_interrupt": "color_flash",
       "emphasis_words": [
         "डि-जि-टल डा-टा",
         "प्रोसेस",
         "छोटे-छोटे",
         "पैकेट्स",
         "0 और 1"
+      ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 68,
+            "text": "असल में, आपका फोन गाने को डि-जि-टल डा-टा के रूप में प्रोसेस करता है।"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "Smartphone performs state_transition on Audio → Digital Packets Interface: असल में, आपका फोन गाने को डि-जि-टल डा-टा के रूप मे",
+          "required_assets": [
+            "smartphone",
+            "audio → digital packets_interface",
+            "smartphone"
+          ],
+          "actor_or_subject": "smartphone",
+          "target_object": "audio → digital packets_interface",
+          "preconditions": [
+            "smartphone positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "smartphone in neutral baseline resting state",
+          "action": "असल में, आपका फोन गाने को डि-जि-टल डा-टा के र के अनुरूप smartphone और audio → digital packets_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "smartphone completes state_transition and transitions audio → digital packets_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 5.6,
+          "start_pct": 0,
+          "end_pct": 52,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "smartphone"
+          },
+          "animation_instruction": {
+            "target": "smartphone",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "smartphone in neutral baseline resting state",
+            "end_state": "smartphone completes state_transition and transitions audio → digital packets_interface to active state (step 1)",
+            "duration_ms": 5600,
+            "completion_condition": "smartphone completes state_transition and transitions audio → digital packets_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "स्मार्टफोन • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "स्मार्टफोन • स्टेट बदलाव",
+          "show": [
+            "Smartphone",
+            "Audio → Digital Packets Interface"
+          ],
+          "words": "असल में, आपका फोन गाने को डि-जि-टल डा-टा के रूप में प्रोसेस करता है।",
+          "visual_attention_target": {
+            "target_id": "audio → digital packets_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: असल में, आपका फोन गाने को डि-जि-टल ."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 68,
+            "end_char": 142,
+            "text": "एनालॉग साउंड बाइनरी में बदलकर छोटे-छोटे डा-टा पैकेट्स में पैक हो जाती है!"
+          },
+          "semantic_action": "pack_goods",
+          "visual_explanation": "System Core performs pack_goods on Audio → Digital Packets Interface: एनालॉग साउंड बाइनरी में बदलकर छोटे-छोटे डा-टा पैके",
+          "required_assets": [
+            "system_core",
+            "audio → digital packets_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "audio → digital packets_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "smartphone completes state_transition and transitions audio → digital packets_interface to active state (step 1)",
+          "action": "system_core काउंटर से सामान उठाकर थैले में पैक करता है और ग्राहक को सौंपने की मुद्रा में आता है।",
+          "final_state": "goods packed and positioned on counter",
+          "start_time": 5.6,
+          "end_time": 10.8,
+          "start_pct": 52,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "audio → digital packets_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "pack_goods",
+            "easing": "ease-out",
+            "start_state": "smartphone completes state_transition and transitions audio → digital packets_interface to active state (step 1)",
+            "end_state": "goods packed and positioned on counter",
+            "duration_ms": 5200,
+            "completion_condition": "goods packed and positioned on counter visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • पैकिंग",
+            "badge": "PACK_GOODS"
+          },
+          "label": "सिस्टम कोर • पैकिंग",
+          "show": [
+            "System Core",
+            "Audio → Digital Packets Interface"
+          ],
+          "words": "एनालॉग साउंड बाइनरी में बदलकर छोटे-छोटे डा-टा पैकेट्स में पैक हो जाती है!",
+          "visual_attention_target": {
+            "target_id": "audio → digital packets_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: pack_goods performed on focal object."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "असल में, आपका फोन गाने को डि-जि-टल डा-टा के रूप में प्रोसेस करता है।",
+          "start_pct": 0,
+          "end_pct": 52,
+          "show": [
+            "Smartphone",
+            "Audio → Digital Packets Interface"
+          ],
+          "action": "असल में, आपका फोन गाने को डि-जि-टल डा-टा के र के अनुरूप smartphone और audio → digital packets_interface में दृश्य परिवर्तन होता है।",
+          "camera": "establishing_medium",
+          "label": "स्मार्टफोन • स्टेट बदलाव",
+          "icon_or_asset": "cube"
+        },
+        {
+          "words": "एनालॉग साउंड बाइनरी में बदलकर छोटे-छोटे डा-टा पैकेट्स में पैक हो जाती है!",
+          "start_pct": 52,
+          "end_pct": 100,
+          "show": [
+            "System Core",
+            "Audio → Digital Packets Interface"
+          ],
+          "action": "system_core काउंटर से सामान उठाकर थैले में पैक करता है और ग्राहक को सौंपने की मुद्रा में आता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • पैकिंग",
+          "icon_or_asset": "cube"
+        }
       ],
       "variant": "bluetooth_digital_data_3d"
     },
@@ -102,8 +1155,8 @@
       "tag": "03 / 2.4 GHz ISM BAND",
       "title": "RADIO CARRIES DATA",
       "purpose": "Explain the mechanism and takeaway of RADIO CARRIES DATA.",
-      "tone": "[Revelatory, clear]",
-      "narration": "फिर फोन का ब्लू-टूथ ट्रांसमीटर इस डा-टा को दो दशमलव चार गीगा-हर्ट्ज़ के रेडियो सिग्नल्स के ज़रिए हवा में ब्रॉडकास्ट करता है। यानी हवा में आवाज़ नहीं, रेडियो वेव्ज़ तैरती हैं! ---",
+      "tone": "['Revelatory', 'clear']",
+      "narration": "फिर फोन का ब्लू-टूथ ट्रांसमीटर इस डा-टा को दो दशमलव चार गीगा-हर्ट्ज़ के रेडियो सिग्नल्स के ज़रिए हवा में ब्रॉडकास्ट करता है। यानी हवा में आवाज़ नहीं, रेडियो वेव्ज़ तैरती हैं!",
       "transition": "match_cut",
       "sfx": "fast_whoosh",
       "icon": "cube",
@@ -120,13 +1173,184 @@
         ],
         "end": "Model locks into informative angle for seamless scene cut."
       },
-      "pattern_interrupt": "\"zoom_punch\"",
+      "pattern_interrupt": "zoom_punch",
       "emphasis_words": [
         "ब्लू-टूथ ट्रांसमीटर",
         "रेडियो सिग्नल",
         "दो दशमलव चार",
         "गीगा-हर्ट्ज़",
         "हवा"
+      ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 124,
+            "text": "फिर फोन का ब्लू-टूथ ट्रांसमीटर इस डा-टा को दो दशमलव चार गीगा-हर्ट्ज़ के रेडियो सिग्नल्स के ज़रिए हवा में ब्रॉडकास्ट करता है।"
+          },
+          "semantic_action": "transmit",
+          "visual_explanation": "Smartphone performs transmit on Radio Carries Data Interface: फिर फोन का ब्लू-टूथ ट्रांसमीटर इस डा-टा को दो दशमल",
+          "required_assets": [
+            "smartphone",
+            "radio carries data_interface",
+            "smartphone"
+          ],
+          "actor_or_subject": "smartphone",
+          "target_object": "radio carries data_interface",
+          "preconditions": [
+            "smartphone positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "smartphone in neutral baseline resting state",
+          "action": "फिर फोन का ब्लू-टूथ ट्रांसमीटर इस डा-टा को दो के अनुरूप smartphone और radio carries data_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "smartphone completes transmit and transitions radio carries data_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 8.8,
+          "start_pct": 0,
+          "end_pct": 71,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "smartphone"
+          },
+          "animation_instruction": {
+            "target": "smartphone",
+            "motion": "transmit",
+            "easing": "ease-out",
+            "start_state": "smartphone in neutral baseline resting state",
+            "end_state": "smartphone completes transmit and transitions radio carries data_interface to active state (step 1)",
+            "duration_ms": 8800,
+            "completion_condition": "smartphone completes transmit and transitions radio carries data_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "स्मार्टफोन • डेटा ट्रांसमिशन",
+            "badge": "TRANSMIT"
+          },
+          "label": "स्मार्टफोन • डेटा ट्रांसमिशन",
+          "show": [
+            "Smartphone",
+            "Radio Carries Data Interface"
+          ],
+          "words": "फिर फोन का ब्लू-टूथ ट्रांसमीटर इस डा-टा को दो दशमलव चार गीगा-हर्ट्ज़ के रेडियो सिग्नल्स के ज़रिए हवा में ब्रॉडकास्ट करता है।",
+          "visual_attention_target": {
+            "target_id": "radio carries data_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: transmit performed on ['smartphone']."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 124,
+            "end_char": 174,
+            "text": "यानी हवा में आवाज़ नहीं, रेडियो वेव्ज़ तैरती हैं!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Radio Carries Data Interface: यानी हवा में आवाज़ नहीं, रेडियो वेव्ज़ तैरती हैं!",
+          "required_assets": [
+            "system_core",
+            "radio carries data_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "radio carries data_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "smartphone completes transmit and transitions radio carries data_interface to active state (step 1)",
+          "action": "यानी हवा में आवाज़ नहीं, रेडियो वेव्ज़ तैरती  के अनुरूप system_core और radio carries data_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions radio carries data_interface to active state (step 2)",
+          "start_time": 8.8,
+          "end_time": 12.4,
+          "start_pct": 71,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "radio carries data_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "smartphone completes transmit and transitions radio carries data_interface to active state (step 1)",
+            "end_state": "system_core completes state_transition and transitions radio carries data_interface to active state (step 2)",
+            "duration_ms": 3599,
+            "completion_condition": "system_core completes state_transition and transitions radio carries data_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Radio Carries Data Interface"
+          ],
+          "words": "यानी हवा में आवाज़ नहीं, रेडियो वेव्ज़ तैरती हैं!",
+          "visual_attention_target": {
+            "target_id": "radio carries data_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: यानी हवा में आवाज़ नहीं, रेडियो वेव."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "फिर फोन का ब्लू-टूथ ट्रांसमीटर इस डा-टा को दो दशमलव चार गीगा-हर्ट्ज़ के रेडियो सिग्नल्स के ज़रिए हवा में ब्रॉडकास्ट करता है।",
+          "start_pct": 0,
+          "end_pct": 71,
+          "show": [
+            "Smartphone",
+            "Radio Carries Data Interface"
+          ],
+          "action": "फिर फोन का ब्लू-टूथ ट्रांसमीटर इस डा-टा को दो के अनुरूप smartphone और radio carries data_interface में दृश्य परिवर्तन होता है।",
+          "camera": "establishing_medium",
+          "label": "स्मार्टफोन • डेटा ट्रांसमिशन",
+          "icon_or_asset": "cube"
+        },
+        {
+          "words": "यानी हवा में आवाज़ नहीं, रेडियो वेव्ज़ तैरती हैं!",
+          "start_pct": 71,
+          "end_pct": 100,
+          "show": [
+            "System Core",
+            "Radio Carries Data Interface"
+          ],
+          "action": "यानी हवा में आवाज़ नहीं, रेडियो वेव्ज़ तैरती  के अनुरूप system_core और radio carries data_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "cube"
+        }
       ],
       "variant": "bluetooth_radio_3d"
     },
@@ -135,8 +1359,8 @@
       "tag": "04 / SECURE HANDSHAKE",
       "title": "DISCOVER → PAIR → CONNECT",
       "purpose": "Explain the mechanism and takeaway of DISCOVER → PAIR → CONNECT.",
-      "tone": "[Intriguing, authoritative]",
-      "narration": "लेकिन इयर-बड्स को कैसे पता चलता है कि सिग्नल उन्हीं के लिए है? पहली बार दोनों डिवाइसेस पेयरिंग करके सीक्रेट इनक्रिप्शन की एक्सचेंज करते हैं, और एक सुरक्षित कनेक्शन लॉक हो जाता है! ---",
+      "tone": "['Intriguing', 'authoritative']",
+      "narration": "लेकिन इयर-बड्स को कैसे पता चलता है कि सिग्नल उन्हीं के लिए है? पहली बार दोनों डिवाइसेस पेयरिंग करके सीक्रेट इनक्रिप्शन की एक्सचेंज करते हैं, और एक सुरक्षित कनेक्शन लॉक हो जाता है!",
       "transition": "match_cut",
       "sfx": "fast_whoosh",
       "icon": "cube",
@@ -144,9 +1368,9 @@
         "start": "Dark 3D spatial coordinate grid with directional volumetric lighting.",
         "objects": [
           "Target Earbuds Pulse",
+          "Advertising Beacons. Phone Identifies The Device",
           "Initiates Pairing Exchange",
-          "A Bright Green Verification Ring",
-          "Active Glowing Cyan Link Beam."
+          "A Bright Green Verification Ring"
         ],
         "action": "Target earbuds pulse with advertising beacons. Phone identifies the device, initiates pairing exchange, and a glowing 3D security padlock locks in mid-air with a bright green verification ring and active glowing cyan link beam.",
         "camera": "Motivated tracking camera orbiting the focal 3D model.",
@@ -156,7 +1380,7 @@
         ],
         "end": "Model locks into informative angle for seamless scene cut."
       },
-      "pattern_interrupt": "\"color_flash\"",
+      "pattern_interrupt": "color_flash",
       "emphasis_words": [
         "इयर-बड्स",
         "पेयरिंग",
@@ -165,6 +1389,177 @@
         "कनेक्शन",
         "लॉक"
       ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 62,
+            "text": "लेकिन इयर-बड्स को कैसे पता चलता है कि सिग्नल उन्हीं के लिए है?"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "Earbuds performs state_transition on Discover → Pair → Connect Interface: लेकिन इयर-बड्स को कैसे पता चलता है कि सिग्नल उन्ही",
+          "required_assets": [
+            "earbuds",
+            "discover → pair → connect_interface",
+            "earbuds"
+          ],
+          "actor_or_subject": "earbuds",
+          "target_object": "discover → pair → connect_interface",
+          "preconditions": [
+            "earbuds positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "earbuds in neutral baseline resting state",
+          "action": "लेकिन इयर-बड्स को कैसे पता चलता है कि सिग्नल  के अनुरूप earbuds और discover → pair → connect_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "earbuds completes state_transition and transitions discover → pair → connect_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 5.2,
+          "start_pct": 0,
+          "end_pct": 39,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "earbuds"
+          },
+          "animation_instruction": {
+            "target": "earbuds",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "earbuds in neutral baseline resting state",
+            "end_state": "earbuds completes state_transition and transitions discover → pair → connect_interface to active state (step 1)",
+            "duration_ms": 5200,
+            "completion_condition": "earbuds completes state_transition and transitions discover → pair → connect_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "इयर-बड्स • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "इयर-बड्स • स्टेट बदलाव",
+          "show": [
+            "Earbuds",
+            "Discover → Pair → Connect Interface"
+          ],
+          "words": "लेकिन इयर-बड्स को कैसे पता चलता है कि सिग्नल उन्हीं के लिए है?",
+          "visual_attention_target": {
+            "target_id": "discover → pair → connect_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: लेकिन इयर-बड्स को कैसे पता चलता है ."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 62,
+            "end_char": 179,
+            "text": "पहली बार दोनों डिवाइसेस पेयरिंग करके सीक्रेट इनक्रिप्शन की एक्सचेंज करते हैं, और एक सुरक्षित कनेक्शन लॉक हो जाता है!"
+          },
+          "semantic_action": "connect",
+          "visual_explanation": "System Core performs connect on Discover → Pair → Connect Interface: पहली बार दोनों डिवाइसेस पेयरिंग करके सीक्रेट इनक्र",
+          "required_assets": [
+            "system_core",
+            "discover → pair → connect_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "discover → pair → connect_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "earbuds completes state_transition and transitions discover → pair → connect_interface to active state (step 1)",
+          "action": "पहली बार दोनों डिवाइसेस पेयरिंग करके सीक्रेट  के अनुरूप system_core और discover → pair → connect_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes connect and transitions discover → pair → connect_interface to active state (step 2)",
+          "start_time": 5.2,
+          "end_time": 13.2,
+          "start_pct": 39,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "discover → pair → connect_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "connect",
+            "easing": "ease-out",
+            "start_state": "earbuds completes state_transition and transitions discover → pair → connect_interface to active state (step 1)",
+            "end_state": "system_core completes connect and transitions discover → pair → connect_interface to active state (step 2)",
+            "duration_ms": 7999,
+            "completion_condition": "system_core completes connect and transitions discover → pair → connect_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • कनेक्शन",
+            "badge": "CONNECT"
+          },
+          "label": "सिस्टम कोर • कनेक्शन",
+          "show": [
+            "System Core",
+            "Discover → Pair → Connect Interface"
+          ],
+          "words": "पहली बार दोनों डिवाइसेस पेयरिंग करके सीक्रेट इनक्रिप्शन की एक्सचेंज करते हैं, और एक सुरक्षित कनेक्शन लॉक हो जाता है!",
+          "visual_attention_target": {
+            "target_id": "discover → pair → connect_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: connect performed on focal object."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "लेकिन इयर-बड्स को कैसे पता चलता है कि सिग्नल उन्हीं के लिए है?",
+          "start_pct": 0,
+          "end_pct": 39,
+          "show": [
+            "Earbuds",
+            "Discover → Pair → Connect Interface"
+          ],
+          "action": "लेकिन इयर-बड्स को कैसे पता चलता है कि सिग्नल  के अनुरूप earbuds और discover → pair → connect_interface में दृश्य परिवर्तन होता है।",
+          "camera": "establishing_medium",
+          "label": "इयर-बड्स • स्टेट बदलाव",
+          "icon_or_asset": "cube"
+        },
+        {
+          "words": "पहली बार दोनों डिवाइसेस पेयरिंग करके सीक्रेट इनक्रिप्शन की एक्सचेंज करते हैं, और एक सुरक्षित कनेक्शन लॉक हो जाता है!",
+          "start_pct": 39,
+          "end_pct": 100,
+          "show": [
+            "System Core",
+            "Discover → Pair → Connect Interface"
+          ],
+          "action": "पहली बार दोनों डिवाइसेस पेयरिंग करके सीक्रेट  के अनुरूप system_core और discover → pair → connect_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • कनेक्शन",
+          "icon_or_asset": "cube"
+        }
+      ],
       "variant": "bluetooth_pairing_3d"
     },
     {
@@ -172,8 +1567,8 @@
       "tag": "05 / PACKET TO ACOUSTIC SOUND",
       "title": "RECEIVE + DECODE → AUDIO",
       "purpose": "Explain the mechanism and takeaway of RECEIVE + DECODE → AUDIO.",
-      "tone": "[Excited, explanatory, revelatory]",
-      "narration": "अब असली कमाल देखिए! हवा में तैरते ये पैकेट्स इयर-बड्स के रिसीवर में पहुँचते हैं। डिकोडर चिप इन्हें अनपैक करती है, और स्पीकर का डायफ्राम वाइब्रेट होकर असली म्यूज़िक साउंड वेव्ज़ तैयार करता है! ---",
+      "tone": "['Excited', 'explanatory', 'revelatory']",
+      "narration": "अब असली कमाल देखिए! हवा में तैरते ये पैकेट्स इयर-बड्स के रिसीवर में पहुँचते हैं। डिकोडर चिप इन्हें अनपैक करती है, और स्पीकर का डायफ्राम वाइब्रेट होकर असली म्यूज़िक साउंड वेव्ज़ तैयार करता है!",
       "transition": "match_cut",
       "sfx": "fast_whoosh",
       "icon": "cube",
@@ -190,7 +1585,7 @@
         ],
         "end": "Model locks into informative angle for seamless scene cut."
       },
-      "pattern_interrupt": "\"zoom_punch\"",
+      "pattern_interrupt": "zoom_punch",
       "emphasis_words": [
         "पैकेट्स",
         "रिसीवर",
@@ -199,6 +1594,260 @@
         "वाइब्रेट",
         "साउंड वेव्ज़"
       ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 19,
+            "text": "अब असली कमाल देखिए!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Receive + Decode → Audio Interface: अब असली कमाल देखिए!",
+          "required_assets": [
+            "system_core",
+            "receive + decode → audio_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "receive + decode → audio_interface",
+          "preconditions": [
+            "system_core positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "system_core in neutral baseline resting state",
+          "action": "अब असली कमाल देखिए! के अनुरूप system_core और receive + decode → audio_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions receive + decode → audio_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 1.6,
+          "start_pct": 0,
+          "end_pct": 12,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "system_core"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core in neutral baseline resting state",
+            "end_state": "system_core completes state_transition and transitions receive + decode → audio_interface to active state (step 1)",
+            "duration_ms": 1600,
+            "completion_condition": "system_core completes state_transition and transitions receive + decode → audio_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Receive + Decode → Audio Interface"
+          ],
+          "words": "अब असली कमाल देखिए!",
+          "visual_attention_target": {
+            "target_id": "receive + decode → audio_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: अब असली कमाल देखिए!."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 19,
+            "end_char": 80,
+            "text": "हवा में तैरते ये पैकेट्स इयर-बड्स के रिसीवर में पहुँचते हैं।"
+          },
+          "semantic_action": "pack_goods",
+          "visual_explanation": "Earbuds performs pack_goods on Receive + Decode → Audio Interface: हवा में तैरते ये पैकेट्स इयर-बड्स के रिसीवर में पह",
+          "required_assets": [
+            "earbuds",
+            "receive + decode → audio_interface",
+            "earbuds"
+          ],
+          "actor_or_subject": "earbuds",
+          "target_object": "receive + decode → audio_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "earbuds ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions receive + decode → audio_interface to active state (step 1)",
+          "action": "earbuds काउंटर से सामान उठाकर थैले में पैक करता है और ग्राहक को सौंपने की मुद्रा में आता है।",
+          "final_state": "goods packed and positioned on counter",
+          "start_time": 1.6,
+          "end_time": 6.0,
+          "start_pct": 12,
+          "end_pct": 44,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "receive + decode → audio_interface"
+          },
+          "animation_instruction": {
+            "target": "earbuds",
+            "motion": "pack_goods",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions receive + decode → audio_interface to active state (step 1)",
+            "end_state": "goods packed and positioned on counter",
+            "duration_ms": 4400,
+            "completion_condition": "goods packed and positioned on counter visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "इयर-बड्स • पैकिंग",
+            "badge": "PACK_GOODS"
+          },
+          "label": "इयर-बड्स • पैकिंग",
+          "show": [
+            "Earbuds",
+            "Receive + Decode → Audio Interface"
+          ],
+          "words": "हवा में तैरते ये पैकेट्स इयर-बड्स के रिसीवर में पहुँचते हैं।",
+          "visual_attention_target": {
+            "target_id": "receive + decode → audio_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: pack_goods performed on ['earbuds']."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_03",
+          "narration_segment_ids": [
+            "seg_00_03"
+          ],
+          "source_text_span": {
+            "start_char": 80,
+            "end_char": 191,
+            "text": "डिकोडर चिप इन्हें अनपैक करती है, और स्पीकर का डायफ्राम वाइब्रेट होकर असली म्यूज़िक साउंड वेव्ज़ तैयार करता है!"
+          },
+          "semantic_action": "vibrate_or_sound",
+          "visual_explanation": "System Core performs vibrate_or_sound on Receive + Decode → Audio Interface: डिकोडर चिप इन्हें अनपैक करती है, और स्पीकर का डायफ",
+          "required_assets": [
+            "system_core",
+            "receive + decode → audio_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "receive + decode → audio_interface",
+          "preconditions": [
+            "completed evt_00_02",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "goods packed and positioned on counter",
+          "action": "डिकोडर चिप इन्हें अनपैक करती है, और स्पीकर का के अनुरूप system_core और receive + decode → audio_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes vibrate_or_sound and transitions receive + decode → audio_interface to active state (step 3)",
+          "start_time": 6.0,
+          "end_time": 13.6,
+          "start_pct": 44,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "receive + decode → audio_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "vibrate_or_sound",
+            "easing": "ease-out",
+            "start_state": "goods packed and positioned on counter",
+            "end_state": "system_core completes vibrate_or_sound and transitions receive + decode → audio_interface to active state (step 3)",
+            "duration_ms": 7600,
+            "completion_condition": "system_core completes vibrate_or_sound and transitions receive + decode → audio_interface to active state (step 3) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • ऑडियो आउटपुट",
+            "badge": "VIBRATE_OR_SOUND"
+          },
+          "label": "सिस्टम कोर • ऑडियो आउटपुट",
+          "show": [
+            "System Core",
+            "Receive + Decode → Audio Interface"
+          ],
+          "words": "डिकोडर चिप इन्हें अनपैक करती है, और स्पीकर का डायफ्राम वाइब्रेट होकर असली म्यूज़िक साउंड वेव्ज़ तैयार करता है!",
+          "visual_attention_target": {
+            "target_id": "receive + decode → audio_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: vibrate_or_sound performed on focal object."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "अब असली कमाल देखिए!",
+          "start_pct": 0,
+          "end_pct": 12,
+          "show": [
+            "System Core",
+            "Receive + Decode → Audio Interface"
+          ],
+          "action": "अब असली कमाल देखिए! के अनुरूप system_core और receive + decode → audio_interface में दृश्य परिवर्तन होता है।",
+          "camera": "establishing_medium",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "cube"
+        },
+        {
+          "words": "हवा में तैरते ये पैकेट्स इयर-बड्स के रिसीवर में पहुँचते हैं।",
+          "start_pct": 12,
+          "end_pct": 44,
+          "show": [
+            "Earbuds",
+            "Receive + Decode → Audio Interface"
+          ],
+          "action": "earbuds काउंटर से सामान उठाकर थैले में पैक करता है और ग्राहक को सौंपने की मुद्रा में आता है।",
+          "camera": "medium_shot",
+          "label": "इयर-बड्स • पैकिंग",
+          "icon_or_asset": "cube"
+        },
+        {
+          "words": "डिकोडर चिप इन्हें अनपैक करती है, और स्पीकर का डायफ्राम वाइब्रेट होकर असली म्यूज़िक साउंड वेव्ज़ तैयार करता है!",
+          "start_pct": 44,
+          "end_pct": 100,
+          "show": [
+            "System Core",
+            "Receive + Decode → Audio Interface"
+          ],
+          "action": "डिकोडर चिप इन्हें अनपैक करती है, और स्पीकर का के अनुरूप system_core और receive + decode → audio_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • ऑडियो आउटपुट",
+          "icon_or_asset": "cube"
+        }
+      ],
       "variant": "packet_to_sound_3d"
     },
     {
@@ -206,15 +1855,14 @@
       "tag": "06 / ADAPTIVE FREQUENCY HOPPING",
       "title": "79 CHANNELS • 1600 HOPS/S",
       "purpose": "Explain the mechanism and takeaway of 79 CHANNELS • 1600 HOPS/S.",
-      "tone": "[Analytical, dynamic]",
-      "narration": "और वाई-फाई या माइक्रोवेव के इंटरफेरेंस से बचने के लिए, ब्लू-टूथ हर सेकंड सोलह सौ बार अलग-अलग चैनल्स पर छलांग लगाता है—जिसे कहते हैं फ्रीक्वेंसी हॉपिंग! ---",
+      "tone": "['Analytical', 'dynamic']",
+      "narration": "और वाई-फाई या माइक्रोवेव के इंटरफेरेंस से बचने के लिए, ब्लू-टूथ हर सेकंड सोलह सौ बार अलग-अलग चैनल्स पर छलांग लगाता है—जिसे कहते हैं फ्रीक्वेंसी हॉपिंग!",
       "transition": "match_cut",
       "sfx": "fast_whoosh",
       "icon": "cube",
       "visual": {
         "start": "Dark 3D spatial coordinate grid with directional volumetric lighting.",
         "objects": [
-          "600 Times Per Second",
           "Maintaining Unbroken Audio Transmission."
         ],
         "action": "3D spectrum of 79 radio channel bars across the 2.4 GHz band. A red Wi-Fi interference curve blocks several channels, and animated neon hopping beams instantly jump across clean channels 1,600 times per second, maintaining unbroken audio transmission.",
@@ -225,13 +1873,183 @@
         ],
         "end": "Model locks into informative angle for seamless scene cut."
       },
-      "pattern_interrupt": "\"shake\"",
+      "pattern_interrupt": "shake",
       "emphasis_words": [
         "इंटरफेरेंस",
         "वाई-फाई",
         "सोलह सौ",
         "चैनल्स",
         "फ्रीक्वेंसी हॉपिंग"
+      ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 118,
+            "text": "और वाई-फाई या माइक्रोवेव के इंटरफेरेंस से बचने के लिए, ब्लू-टूथ हर सेकंड सोलह सौ बार अलग-अलग चैनल्स पर छलांग लगाता है—"
+          },
+          "semantic_action": "handoff_or_shift",
+          "visual_explanation": "System Core performs handoff_or_shift on 79 Channels • 1600 Hops/S Interface: और वाई-फाई या माइक्रोवेव के इंटरफेरेंस से बचने के ",
+          "required_assets": [
+            "system_core",
+            "79 channels • 1600 hops/s_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "79 channels • 1600 hops/s_interface",
+          "preconditions": [
+            "system_core positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "system_core in neutral baseline resting state",
+          "action": "बीम तत्क्षण पुराने नोड से छूटकर नए नोड 79 channels • 1600 hops/s_interface पर माइक्रो-सेकंड में लॉक हो जाती है।",
+          "final_state": "active beam locked to 79 channels • 1600 hops/s_interface with zero packet loss",
+          "start_time": 0.0,
+          "end_time": 8.8,
+          "start_pct": 0,
+          "end_pct": 81,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "system_core"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "handoff_or_shift",
+            "easing": "ease-out",
+            "start_state": "system_core in neutral baseline resting state",
+            "end_state": "active beam locked to 79 channels • 1600 hops/s_interface with zero packet loss",
+            "duration_ms": 8800,
+            "completion_condition": "active beam locked to 79 channels • 1600 hops/s_interface with zero packet loss visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • हॉपिंग",
+            "badge": "HANDOFF_OR_SHIFT"
+          },
+          "label": "सिस्टम कोर • हॉपिंग",
+          "show": [
+            "System Core",
+            "79 Channels • 1600 Hops/S Interface"
+          ],
+          "words": "और वाई-फाई या माइक्रोवेव के इंटरफेरेंस से बचने के लिए, ब्लू-टूथ हर सेकंड सोलह सौ बार अलग-अलग चैनल्स पर छलांग लगाता है—",
+          "visual_attention_target": {
+            "target_id": "79 channels • 1600 hops/s_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: handoff_or_shift performed on focal object."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 118,
+            "end_char": 151,
+            "text": "जिसे कहते हैं फ्रीक्वेंसी हॉपिंग!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on 79 Channels • 1600 Hops/S Interface: जिसे कहते हैं फ्रीक्वेंसी हॉपिंग!",
+          "required_assets": [
+            "system_core",
+            "79 channels • 1600 hops/s_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "79 channels • 1600 hops/s_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "active beam locked to 79 channels • 1600 hops/s_interface with zero packet loss",
+          "action": "जिसे कहते हैं फ्रीक्वेंसी हॉपिंग! के अनुरूप system_core और 79 channels • 1600 hops/s_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions 79 channels • 1600 hops/s_interface to active state (step 2)",
+          "start_time": 8.8,
+          "end_time": 10.8,
+          "start_pct": 81,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "79 channels • 1600 hops/s_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "active beam locked to 79 channels • 1600 hops/s_interface with zero packet loss",
+            "end_state": "system_core completes state_transition and transitions 79 channels • 1600 hops/s_interface to active state (step 2)",
+            "duration_ms": 2000,
+            "completion_condition": "system_core completes state_transition and transitions 79 channels • 1600 hops/s_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "79 Channels • 1600 Hops/S Interface"
+          ],
+          "words": "जिसे कहते हैं फ्रीक्वेंसी हॉपिंग!",
+          "visual_attention_target": {
+            "target_id": "79 channels • 1600 hops/s_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जिसे कहते हैं फ्रीक्वेंसी हॉपिंग!."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "और वाई-फाई या माइक्रोवेव के इंटरफेरेंस से बचने के लिए, ब्लू-टूथ हर सेकंड सोलह सौ बार अलग-अलग चैनल्स पर छलांग लगाता है—",
+          "start_pct": 0,
+          "end_pct": 81,
+          "show": [
+            "System Core",
+            "79 Channels • 1600 Hops/S Interface"
+          ],
+          "action": "बीम तत्क्षण पुराने नोड से छूटकर नए नोड 79 channels • 1600 hops/s_interface पर माइक्रो-सेकंड में लॉक हो जाती है।",
+          "camera": "establishing_medium",
+          "label": "सिस्टम कोर • हॉपिंग",
+          "icon_or_asset": "cube"
+        },
+        {
+          "words": "जिसे कहते हैं फ्रीक्वेंसी हॉपिंग!",
+          "start_pct": 81,
+          "end_pct": 100,
+          "show": [
+            "System Core",
+            "79 Channels • 1600 Hops/S Interface"
+          ],
+          "action": "जिसे कहते हैं फ्रीक्वेंसी हॉपिंग! के अनुरूप system_core और 79 channels • 1600 hops/s_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "icon_or_asset": "cube"
+        }
       ],
       "variant": "frequency_hopping_3d"
     },
@@ -240,7 +2058,7 @@
       "tag": "07 / THE WIRELESS PAYOFF",
       "title": "RADIO CARRIES DATA • EARBUDS CREATE SOUND",
       "purpose": "Explain the mechanism and takeaway of RADIO CARRIES DATA • EARBUDS CREATE SOUND.",
-      "tone": "[Triumphant, satisfying, action loop]",
+      "tone": "['Triumphant', 'satisfying', 'action loop']",
       "narration": "यानी फोन से निकली आवाज़ हवा में नहीं उड़ती—रेडियो वेव्ज़ डा-टा ले जाती हैं, और इयर-बड्स उसे आवाज़ में बदलते हैं! अगली बार वायरलेस म्यूज़िक सुनें, तो अपने दोस्तों के साथ शेयर करें कि…",
       "transition": "match_cut",
       "sfx": "fast_whoosh",
@@ -258,7 +2076,7 @@
         ],
         "end": "Model locks into informative angle for seamless scene cut."
       },
-      "pattern_interrupt": "\"zoom_punch\"",
+      "pattern_interrupt": "zoom_punch",
       "emphasis_words": [
         "रेडियो",
         "डि-जि-तल डा-टा",
@@ -268,6 +2086,261 @@
         "म्यूज़िक"
       ],
       "payoff_type": "loop_setup",
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 43,
+            "text": "यानी फोन से निकली आवाज़ हवा में नहीं उड़ती—"
+          },
+          "semantic_action": "orbit_or_travel",
+          "visual_explanation": "Smartphone performs orbit_or_travel on Radio Carries Data • Earbuds Create Sound Interface: यानी फोन से निकली आवाज़ हवा में नहीं उड़ती—",
+          "required_assets": [
+            "smartphone",
+            "radio carries data • earbuds create sound_interface",
+            "smartphone"
+          ],
+          "actor_or_subject": "smartphone",
+          "target_object": "radio carries data • earbuds create sound_interface",
+          "preconditions": [
+            "smartphone positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "smartphone in neutral baseline resting state",
+          "action": "यानी फोन से निकली आवाज़ हवा में नहीं उड़ती— के अनुरूप smartphone और radio carries data • earbuds create sound_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "smartphone completes orbit_or_travel and transitions radio carries data • earbuds create sound_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 3.6,
+          "start_pct": 0,
+          "end_pct": 26,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "smartphone"
+          },
+          "animation_instruction": {
+            "target": "smartphone",
+            "motion": "orbit_or_travel",
+            "easing": "ease-out",
+            "start_state": "smartphone in neutral baseline resting state",
+            "end_state": "smartphone completes orbit_or_travel and transitions radio carries data • earbuds create sound_interface to active state (step 1)",
+            "duration_ms": 3600,
+            "completion_condition": "smartphone completes orbit_or_travel and transitions radio carries data • earbuds create sound_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "स्मार्टफोन • सिग्नल मोशन",
+            "badge": "ORBIT_OR_TRAVEL"
+          },
+          "label": "स्मार्टफोन • सिग्नल मोशन",
+          "show": [
+            "Smartphone",
+            "Radio Carries Data • Earbuds Create Sound Interface"
+          ],
+          "words": "यानी फोन से निकली आवाज़ हवा में नहीं उड़ती—",
+          "visual_attention_target": {
+            "target_id": "radio carries data • earbuds create sound_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: orbit_or_travel performed on ['smartphone']."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 43,
+            "end_char": 112,
+            "text": "रेडियो वेव्ज़ डा-टा ले जाती हैं, और इयर-बड्स उसे आवाज़ में बदलते हैं!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "Earbuds performs state_transition on Radio Carries Data • Earbuds Create Sound Interface: रेडियो वेव्ज़ डा-टा ले जाती हैं, और इयर-बड्स उसे आ",
+          "required_assets": [
+            "earbuds",
+            "radio carries data • earbuds create sound_interface",
+            "earbuds"
+          ],
+          "actor_or_subject": "earbuds",
+          "target_object": "radio carries data • earbuds create sound_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "earbuds ready for state transition"
+          ],
+          "initial_state": "smartphone completes orbit_or_travel and transitions radio carries data • earbuds create sound_interface to active state (step 1)",
+          "action": "रेडियो वेव्ज़ डा-टा ले जाती हैं, और इयर-बड्स  के अनुरूप earbuds और radio carries data • earbuds create sound_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "earbuds completes state_transition and transitions radio carries data • earbuds create sound_interface to active state (step 2)",
+          "start_time": 3.6,
+          "end_time": 8.8,
+          "start_pct": 26,
+          "end_pct": 63,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "radio carries data • earbuds create sound_interface"
+          },
+          "animation_instruction": {
+            "target": "earbuds",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "smartphone completes orbit_or_travel and transitions radio carries data • earbuds create sound_interface to active state (step 1)",
+            "end_state": "earbuds completes state_transition and transitions radio carries data • earbuds create sound_interface to active state (step 2)",
+            "duration_ms": 5200,
+            "completion_condition": "earbuds completes state_transition and transitions radio carries data • earbuds create sound_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "इयर-बड्स • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "इयर-बड्स • स्टेट बदलाव",
+          "show": [
+            "Earbuds",
+            "Radio Carries Data • Earbuds Create Sound Interface"
+          ],
+          "words": "रेडियो वेव्ज़ डा-टा ले जाती हैं, और इयर-बड्स उसे आवाज़ में बदलते हैं!",
+          "visual_attention_target": {
+            "target_id": "radio carries data • earbuds create sound_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: रेडियो वेव्ज़ डा-टा ले जाती हैं, और."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_03",
+          "narration_segment_ids": [
+            "seg_00_03"
+          ],
+          "source_text_span": {
+            "start_char": 112,
+            "end_char": 182,
+            "text": "अगली बार वायरलेस म्यूज़िक सुनें, तो अपने दोस्तों के साथ शेयर करें कि…"
+          },
+          "semantic_action": "vibrate_or_sound",
+          "visual_explanation": "System Core performs vibrate_or_sound on Radio Carries Data • Earbuds Create Sound Interface: अगली बार वायरलेस म्यूज़िक सुनें, तो अपने दोस्तों क",
+          "required_assets": [
+            "system_core",
+            "radio carries data • earbuds create sound_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "radio carries data • earbuds create sound_interface",
+          "preconditions": [
+            "completed evt_00_02",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "earbuds completes state_transition and transitions radio carries data • earbuds create sound_interface to active state (step 2)",
+          "action": "अगली बार वायरलेस म्यूज़िक सुनें, तो अपने दोस् के अनुरूप system_core और radio carries data • earbuds create sound_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes vibrate_or_sound and transitions radio carries data • earbuds create sound_interface to active state (step 3)",
+          "start_time": 8.8,
+          "end_time": 14.0,
+          "start_pct": 63,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "radio carries data • earbuds create sound_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "vibrate_or_sound",
+            "easing": "ease-out",
+            "start_state": "earbuds completes state_transition and transitions radio carries data • earbuds create sound_interface to active state (step 2)",
+            "end_state": "system_core completes vibrate_or_sound and transitions radio carries data • earbuds create sound_interface to active state (step 3)",
+            "duration_ms": 5199,
+            "completion_condition": "system_core completes vibrate_or_sound and transitions radio carries data • earbuds create sound_interface to active state (step 3) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • ऑडियो आउटपुट",
+            "badge": "VIBRATE_OR_SOUND"
+          },
+          "label": "सिस्टम कोर • ऑडियो आउटपुट",
+          "show": [
+            "System Core",
+            "Radio Carries Data • Earbuds Create Sound Interface"
+          ],
+          "words": "अगली बार वायरलेस म्यूज़िक सुनें, तो अपने दोस्तों के साथ शेयर करें कि…",
+          "visual_attention_target": {
+            "target_id": "radio carries data • earbuds create sound_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: vibrate_or_sound performed on focal object."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "यानी फोन से निकली आवाज़ हवा में नहीं उड़ती—",
+          "start_pct": 0,
+          "end_pct": 26,
+          "show": [
+            "Smartphone",
+            "Radio Carries Data • Earbuds Create Sound Interface"
+          ],
+          "action": "यानी फोन से निकली आवाज़ हवा में नहीं उड़ती— के अनुरूप smartphone और radio carries data • earbuds create sound_interface में दृश्य परिवर्तन होता है।",
+          "camera": "establishing_medium",
+          "label": "स्मार्टफोन • सिग्नल मोशन",
+          "icon_or_asset": "cube"
+        },
+        {
+          "words": "रेडियो वेव्ज़ डा-टा ले जाती हैं, और इयर-बड्स उसे आवाज़ में बदलते हैं!",
+          "start_pct": 26,
+          "end_pct": 63,
+          "show": [
+            "Earbuds",
+            "Radio Carries Data • Earbuds Create Sound Interface"
+          ],
+          "action": "रेडियो वेव्ज़ डा-टा ले जाती हैं, और इयर-बड्स  के अनुरूप earbuds और radio carries data • earbuds create sound_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "इयर-बड्स • स्टेट बदलाव",
+          "icon_or_asset": "cube"
+        },
+        {
+          "words": "अगली बार वायरलेस म्यूज़िक सुनें, तो अपने दोस्तों के साथ शेयर करें कि…",
+          "start_pct": 63,
+          "end_pct": 100,
+          "show": [
+            "System Core",
+            "Radio Carries Data • Earbuds Create Sound Interface"
+          ],
+          "action": "अगली बार वायरलेस म्यूज़िक सुनें, तो अपने दोस् के अनुरूप system_core और radio carries data • earbuds create sound_interface में दृश्य परिवर्तन होता है।",
+          "camera": "medium_shot",
+          "label": "सिस्टम कोर • ऑडियो आउटपुट",
+          "icon_or_asset": "cube"
+        }
+      ],
       "variant": "bluetooth_reveal_3d"
     }
   ]

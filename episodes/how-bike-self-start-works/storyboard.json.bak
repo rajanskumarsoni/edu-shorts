@@ -1,0 +1,2639 @@
+{
+  "$schema": "../../schema/storyboard.schema.json",
+  "id": "how-bike-self-start-works",
+  "format": "vertical",
+  "art_direction": "editorial",
+  "theme": "cyberpunk",
+  "accent": "#00F0FF",
+  "audio_mode": "scenes",
+  "captions": true,
+  "progress": true,
+  "sfx": true,
+  "pad_seconds": 0.28,
+  "music": null,
+  "meta": {
+    "title": "How Bike Self-Start System Works | Tech Explainer",
+    "description": "Learn how Bike Self-Start System works under the hood through visual motion graphics and first-principles technical breakdown.",
+    "hashtags": [
+      "#Technology",
+      "#ComputerScience",
+      "#Engineering",
+      "#SystemDesign",
+      "#TechShorts"
+    ],
+    "facts_to_verify": [
+      "Bike Self-Start System operates via distributed synchronized state machines."
+    ],
+    "misconceptions": [],
+    "analogy": ""
+  },
+  "facts": [
+    {
+      "claim": "Handlebar Button Current",
+      "verified_value": "1.5 to 2.5 Amps (Control Circuit)",
+      "source": "Motorcycle Electrical Standards (SAE J585)"
+    },
+    {
+      "claim": "Starter Motor Cranking Current",
+      "verified_value": "50 to 80 Amps (Peak up to 100A)",
+      "source": "Denso / Bosch Starter Motor Specifications"
+    },
+    {
+      "claim": "Battery Operating Voltage",
+      "verified_value": "12V Nominal (Drops to 10.5V under load)",
+      "source": "VRLA Motorcycle Battery Cranking Characteristics"
+    },
+    {
+      "claim": "DC Starter Motor Speed",
+      "verified_value": "5,000 to 8,000 RPM (No load)",
+      "source": "Permanent Magnet DC Motor Dynamics"
+    },
+    {
+      "claim": "Gear Reduction Ratio",
+      "verified_value": "10:1 to 15:1 (Typical 12:1 reduction)",
+      "source": "Two-Wheeler Transmission & Starter Gearing"
+    },
+    {
+      "claim": "Cranking Crankshaft Speed",
+      "verified_value": "350 to 500 RPM",
+      "source": "Engine Starting Threshold Dynamics"
+    },
+    {
+      "claim": "Engine Idle Speed",
+      "verified_value": "1,200 to 1,400 RPM",
+      "source": "Single-Cylinder 4-Stroke Engine Benchmarks"
+    },
+    {
+      "claim": "Potential Motor Backdrive Speed",
+      "verified_value": ">15,000 RPM (Catastrophic failure)",
+      "source": "Centrifugal Armature Burst Velocity"
+    },
+    {
+      "claim": "Disengagement Time",
+      "verified_value": "< 10 milliseconds (Passive mechanical slip)",
+      "source": "Sprag Overrunning Clutch Mechanics"
+    },
+    {
+      "claim": "Cranking Duration",
+      "verified_value": "~0.4 to 0.8 seconds (Average 0.5s)",
+      "source": "Telemetry Field Measurements"
+    }
+  ],
+  "choreography": {
+    "total_events": 19,
+    "actors": [
+      "customer",
+      "system_core"
+    ],
+    "targets": [
+      "12x gear reduction_interface",
+      "direct wiring vs relay_interface",
+      "mechanical mastery_interface",
+      "one button • cold engine_interface",
+      "one-way sprag clutch_interface",
+      "self-start system specs_interface",
+      "starter relay (solenoid)_interface"
+    ],
+    "concurrent_pairs": [
+      {
+        "event_a": "evt_00_02",
+        "event_b": "evt_00_03"
+      },
+      {
+        "event_a": "evt_00_03",
+        "event_b": "evt_00_02"
+      }
+    ],
+    "timeline_contiguous": true,
+    "events_summary": [
+      {
+        "event_id": "evt_00_01",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "one button • cold engine_interface",
+        "start_pct": 0,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "direct wiring vs relay_interface",
+        "start_pct": 0,
+        "end_pct": 39
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "direct wiring vs relay_interface",
+        "start_pct": 39,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "starter relay (solenoid)_interface",
+        "start_pct": 0,
+        "end_pct": 37
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "receive_or_decode",
+        "target": "starter relay (solenoid)_interface",
+        "start_pct": 37,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "12x gear reduction_interface",
+        "start_pct": 0,
+        "end_pct": 31
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "12x gear reduction_interface",
+        "start_pct": 31,
+        "end_pct": 63
+      },
+      {
+        "event_id": "evt_00_03",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "12x gear reduction_interface",
+        "start_pct": 63,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "one-way sprag clutch_interface",
+        "start_pct": 0,
+        "end_pct": 14
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "one-way sprag clutch_interface",
+        "start_pct": 14,
+        "end_pct": 32
+      },
+      {
+        "event_id": "evt_00_03",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "one-way sprag clutch_interface",
+        "start_pct": 32,
+        "end_pct": 41
+      },
+      {
+        "event_id": "evt_00_04",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "one-way sprag clutch_interface",
+        "start_pct": 41,
+        "end_pct": 66
+      },
+      {
+        "event_id": "evt_00_05",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "one-way sprag clutch_interface",
+        "start_pct": 66,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "self-start system specs_interface",
+        "start_pct": 0,
+        "end_pct": 11
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "self-start system specs_interface",
+        "start_pct": 11,
+        "end_pct": 55
+      },
+      {
+        "event_id": "evt_00_03",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "self-start system specs_interface",
+        "start_pct": 55,
+        "end_pct": 100
+      },
+      {
+        "event_id": "evt_00_01",
+        "actor": "customer",
+        "action": "state_transition",
+        "target": "mechanical mastery_interface",
+        "start_pct": 0,
+        "end_pct": 21
+      },
+      {
+        "event_id": "evt_00_02",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "mechanical mastery_interface",
+        "start_pct": 21,
+        "end_pct": 66
+      },
+      {
+        "event_id": "evt_00_03",
+        "actor": "system_core",
+        "action": "state_transition",
+        "target": "mechanical mastery_interface",
+        "start_pct": 66,
+        "end_pct": 100
+      }
+    ]
+  },
+  "coverage_map": [
+    {
+      "scene_index": 1,
+      "scene_title": "ONE BUTTON • COLD ENGINE",
+      "segments": [
+        {
+          "segment_id": "seg_01_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 117,
+            "text": "बाइक के हैंडलबार पर लगा ये छोटा सा लाल बटन… सिर्फ आधे सेकंड में सैकड़ों किलो भारी स्टील इंजन को कैसे चालू कर देता है?"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 10.0,
+          "start_pct": 0,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: बाइक के हैंडलबार पर लगा ये छोटा सा ."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 2,
+      "scene_title": "DIRECT WIRING VS RELAY",
+      "segments": [
+        {
+          "segment_id": "seg_02_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 55,
+            "text": "अगर स्टार्टर मोटर का तार सीधे इस बटन से जोड़ दिया जाए,"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 4.8,
+          "start_pct": 0,
+          "end_pct": 39,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: अगर स्टार्टर मोटर का तार सीधे इस बट."
+          }
+        },
+        {
+          "segment_id": "seg_02_02",
+          "source_text_span": {
+            "start_char": 55,
+            "end_char": 143,
+            "text": "तो पचास से अस्सी ऐम्प्स का भीषण करंट पलक झपकते ही बटन और वायरिंग को पिघलाकर खाक कर देगा!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 4.8,
+          "end_time_sec": 12.4,
+          "start_pct": 39,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो पचास से अस्सी ऐम्प्स का भीषण करं."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 3,
+      "scene_title": "STARTER RELAY (SOLENOID)",
+      "segments": [
+        {
+          "segment_id": "seg_03_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 67,
+            "text": "इसलिए बटन सिर्फ डेढ़ ऐम्पियर करंट एक इलेक्ट्रो-मैग्नेट को भेजता है।"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 0.0,
+          "end_time_sec": 4.4,
+          "start_pct": 0,
+          "end_pct": 37,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: इसलिए बटन सिर्फ डेढ़ ऐम्पियर करंट ए."
+          }
+        },
+        {
+          "segment_id": "seg_03_02",
+          "source_text_span": {
+            "start_char": 67,
+            "end_char": 159,
+            "text": "ये चुंबक अंदर एक मोटी तांबे की प्लेट खींचकर बैटरी का भारी करंट सीधे मोटर तक पहुँचा देता है!"
+          },
+          "entities": [],
+          "actions": [
+            "receive_or_decode"
+          ],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 4.4,
+          "end_time_sec": 12.0,
+          "start_pct": 37,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: receive_or_decode performed on focal object."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 4,
+      "scene_title": "12X GEAR REDUCTION",
+      "segments": [
+        {
+          "segment_id": "seg_04_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 56,
+            "text": "लेकिन ये छोटी डी-सी मोटर छह हज़ार आर-पी-एम पर घूमती है,"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [
+            "छह हज़ार"
+          ],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 4.4,
+          "start_pct": 0,
+          "end_pct": 31,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What exact metric or threshold is established on-screen?",
+            "expected_evidence": "Metric छह हज़ार displayed in active telemetry."
+          }
+        },
+        {
+          "segment_id": "seg_04_02",
+          "source_text_span": {
+            "start_char": 56,
+            "end_char": 107,
+            "text": "जिसमें इतना दम नहीं होता कि भारी पिस्टन को दबा सके।"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 4.4,
+          "end_time_sec": 8.8,
+          "start_pct": 31,
+          "end_pct": 63,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जिसमें इतना दम नहीं होता कि भारी पि."
+          }
+        },
+        {
+          "segment_id": "seg_04_03",
+          "source_text_span": {
+            "start_char": 107,
+            "end_char": 178,
+            "text": "इसलिए रिडक्शन गियर इसकी रफ़्तार घटाकर ताकत को बारह गुना बढ़ा देते हैं!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 8.8,
+          "end_time_sec": 14.0,
+          "start_pct": 63,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: इसलिए रिडक्शन गियर इसकी रफ़्तार घटा."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 5,
+      "scene_title": "ONE-WAY SPRAG CLUTCH",
+      "segments": [
+        {
+          "segment_id": "seg_05_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 30,
+            "text": "जैसे ही स्पार्क प्लग जलता है,"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 2.4,
+          "start_pct": 0,
+          "end_pct": 14,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जैसे ही स्पार्क प्लग जलता है,."
+          }
+        },
+        {
+          "segment_id": "seg_05_02",
+          "source_text_span": {
+            "start_char": 30,
+            "end_char": 69,
+            "text": "इंजन चौदह सौ आर-पी-एम पर भागने लगता है।"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 2.4,
+          "end_time_sec": 5.6,
+          "start_pct": 14,
+          "end_pct": 32,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: इंजन चौदह सौ आर-पी-एम पर भागने लगता."
+          }
+        },
+        {
+          "segment_id": "seg_05_03",
+          "source_text_span": {
+            "start_char": 69,
+            "end_char": 90,
+            "text": "अगर मोटर जुड़ी रही,"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 5.6,
+          "end_time_sec": 7.2,
+          "start_pct": 32,
+          "end_pct": 41,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: अगर मोटर जुड़ी रही,."
+          }
+        },
+        {
+          "segment_id": "seg_05_04",
+          "source_text_span": {
+            "start_char": 90,
+            "end_char": 150,
+            "text": "तो गियर उसे सत्रह हज़ार आर-पी-एम पर घुमाकर ब्लास्ट कर देंगे!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 7.2,
+          "end_time_sec": 11.6,
+          "start_pct": 41,
+          "end_pct": 66,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो गियर उसे सत्रह हज़ार आर-पी-एम पर."
+          }
+        },
+        {
+          "segment_id": "seg_05_05",
+          "source_text_span": {
+            "start_char": 150,
+            "end_char": 224,
+            "text": "लेकिन वन-वे स्प्रैग क्लच इंजन शुरू होते ही मोटर को तुरंत फ्री कर देता है!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 11.6,
+          "end_time_sec": 17.6,
+          "start_pct": 66,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: लेकिन वन-वे स्प्रैग क्लच इंजन शुरू ."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 6,
+      "scene_title": "SELF-START SYSTEM SPECS",
+      "segments": [
+        {
+          "segment_id": "seg_06_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 13,
+            "text": "बैटरी, रिले,"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 0.0,
+          "end_time_sec": 1.5,
+          "start_pct": 0,
+          "end_pct": 11,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: बैटरी, रिले,."
+          }
+        },
+        {
+          "segment_id": "seg_06_02",
+          "source_text_span": {
+            "start_char": 13,
+            "end_char": 80,
+            "text": "मोटर और क्लच… ये सब मिलकर सिर्फ आधे सेकंड में काम पूरा कर देते हैं।"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 1.5,
+          "end_time_sec": 7.5,
+          "start_pct": 11,
+          "end_pct": 55,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: मोटर और क्लच… ये सब मिलकर सिर्फ आधे."
+          }
+        },
+        {
+          "segment_id": "seg_06_03",
+          "source_text_span": {
+            "start_char": 80,
+            "end_char": 164,
+            "text": "साथ ही न्यूट्रल और साइड-स्टैंड सेंसर ये पक्का करते हैं कि गियर में बाइक आगे न भागे!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": true,
+          "is_causal": false,
+          "start_time_sec": 7.5,
+          "end_time_sec": 14.3,
+          "start_pct": 55,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: साथ ही न्यूट्रल और साइड-स्टैंड सेंस."
+          }
+        }
+      ]
+    },
+    {
+      "scene_index": 7,
+      "scene_title": "MECHANICAL MASTERY",
+      "segments": [
+        {
+          "segment_id": "seg_07_01",
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 39,
+            "text": "तो अगली बार जब आप सेल्फ स्टार्ट दबाएं,"
+          },
+          "entities": [
+            "customer"
+          ],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 0.0,
+          "end_time_sec": 3.2,
+          "start_pct": 0,
+          "end_pct": 21,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो अगली बार जब आप सेल्फ स्टार्ट दबा."
+          }
+        },
+        {
+          "segment_id": "seg_07_02",
+          "source_text_span": {
+            "start_char": 39,
+            "end_char": 125,
+            "text": "तो याद रखिए… एक छोटा सा इलेक्ट्रो-मैग्नेट और जादुई क्लच आपकी बाइक को जिंदा कर रहे हैं!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": true,
+          "start_time_sec": 3.2,
+          "end_time_sec": 10.0,
+          "start_pct": 21,
+          "end_pct": 66,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो याद रखिए… एक छोटा सा इलेक्ट्रो-म."
+          }
+        },
+        {
+          "segment_id": "seg_07_03",
+          "source_text_span": {
+            "start_char": 125,
+            "end_char": 196,
+            "text": "ऐसी ही कमाल इंजीनियरिंग के लिए राजन का अड्डा को सब्सक्राइब ज़रूर करें!"
+          },
+          "entities": [],
+          "actions": [],
+          "numbers": [],
+          "is_negation": false,
+          "is_concurrent": false,
+          "is_causal": false,
+          "start_time_sec": 10.0,
+          "end_time_sec": 15.2,
+          "start_pct": 66,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "mute_comprehension_criteria": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: ऐसी ही कमाल इंजीनियरिंग के लिए राजन."
+          }
+        }
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "type": "bike_self_start",
+      "tag": "01 / THE 0.5-SECOND MIRACLE",
+      "title": "ONE BUTTON • COLD ENGINE",
+      "purpose": "Explain the mechanism and takeaway of ONE BUTTON • COLD ENGINE.",
+      "tone": "['Curious', 'high-energy mystery opening']",
+      "narration": "बाइक के हैंडलबार पर लगा ये छोटा सा लाल बटन… सिर्फ आधे सेकंड में सैकड़ों किलो भारी स्टील इंजन को कैसे चालू कर देता है?",
+      "transition": "zoom_through",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing ONE BUTTON • COLD ENGINE.",
+        "objects": [
+          "Full-Bleed Cinematic Motorcycle Riding Footage"
+        ],
+        "action": "Full-bleed cinematic motorcycle riding footage with dynamic scanning radar grid. Rider's thumb pushes the illuminated red electric starter button on the handlebar switchgear. Cutaway reveals the heavy steel engine block and crankshaft roaring to life in 0.5 seconds.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "ONE BUTTON • COLD ENGINE",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "pattern_interrupt": "zoom_punch",
+      "emphasis_words": [
+        "हैंडलबार",
+        "छोटा सा लाल बटन",
+        "आधे सेकंड",
+        "सैकड़ों किलो",
+        "इंजन",
+        "ज़िंदा"
+      ],
+      "hook_strength": 9.5,
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 117,
+            "text": "बाइक के हैंडलबार पर लगा ये छोटा सा लाल बटन… सिर्फ आधे सेकंड में सैकड़ों किलो भारी स्टील इंजन को कैसे चालू कर देता है?"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on One Button • Cold Engine Interface: बाइक के हैंडलबार पर लगा ये छोटा सा लाल बटन… सिर्फ ",
+          "required_assets": [
+            "system_core",
+            "one button • cold engine_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "one button • cold engine_interface",
+          "preconditions": [
+            "system_core positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "system_core in neutral baseline resting state",
+          "action": "बाइक के हैंडलबार पर लगा ये छोटा सा लाल बटन… स के अनुरूप system_core और one button • cold engine_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions one button • cold engine_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 10.0,
+          "start_pct": 0,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "one button • cold engine_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core in neutral baseline resting state",
+            "end_state": "system_core completes state_transition and transitions one button • cold engine_interface to active state (step 1)",
+            "duration_ms": 10000,
+            "completion_condition": "system_core completes state_transition and transitions one button • cold engine_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "One Button • Cold Engine Interface"
+          ],
+          "words": "बाइक के हैंडलबार पर लगा ये छोटा सा लाल बटन… सिर्फ आधे सेकंड में सैकड़ों किलो भारी स्टील इंजन को कैसे चालू कर देता है?",
+          "visual_attention_target": {
+            "target_id": "one button • cold engine_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: बाइक के हैंडलबार पर लगा ये छोटा सा ."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "बाइक के हैंडलबार पर लगा ये छोटा सा लाल बटन…",
+          "start_pct": 0,
+          "end_pct": 45,
+          "show": [
+            "हैंडलबार स्विचगियर (Handlebar Switchgear)",
+            "लाल सेल्फ-स्टार्ट बटन (Red Starter Button)"
+          ],
+          "action": "राइडर का अंगूठा लाल सेल्फ स्टार्ट बटन दबाता है और बटन से नीली ऊर्जा तरंगें निकलती हैं।",
+          "camera": "हैंडलबार बटन पर क्लोज़-अप मैक्रो फोकस।",
+          "label": "छोटा सा लाल स्टार्ट बटन",
+          "icon_or_asset": "bike"
+        },
+        {
+          "words": "सिर्फ आधे सेकंड में सैकड़ों किलो भारी स्टील इंजन को कैसे चालू कर देता है?",
+          "start_pct": 45,
+          "end_pct": 100,
+          "show": [
+            "स्टील इंजन ब्लॉक (Engine Cylinder Block)",
+            "क्रैंकशाफ्ट व भारी पिस्टन (Heavy Piston & Crankshaft)"
+          ],
+          "action": "इंजन कटअवे खुलता है और भारी पिस्टन आधा सेकंड (0.5s) में तेजी से ऊपर-नीचे दौड़ने लगता है।",
+          "camera": "इंजन चैंबर पर डायनामिक ज़ूम-इन।",
+          "label": "0.5 सेकंड • भारी स्टील इंजन चालू",
+          "icon_or_asset": "zap"
+        }
+      ],
+      "variant": "button_and_engine"
+    },
+    {
+      "type": "bike_self_start",
+      "tag": "02 / THE 50-AMP FIRE HAZARD",
+      "title": "DIRECT WIRING VS RELAY",
+      "purpose": "Explain the mechanism and takeaway of DIRECT WIRING VS RELAY.",
+      "tone": "['Urgent', 'dramatic warning']",
+      "narration": "अगर स्टार्टर मोटर का तार सीधे इस बटन से जोड़ दिया जाए, तो पचास से अस्सी ऐम्प्स का भीषण करंट पलक झपकते ही बटन और वायरिंग को पिघलाकर खाक कर देगा!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing DIRECT WIRING VS RELAY.",
+        "objects": [
+          "Throwing Sparks",
+          "Burning"
+        ],
+        "action": "Comparative split screen illustrating the fatal flaw of direct wiring. The left panel shows thin wires glowing red-hot, throwing sparks, and burning with a big red ✕ hazard badge when 60 Amps flows through. The right panel shows the thick copper starter relay safely handling the heavy electrical flood.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "DIRECT WIRING VS RELAY",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "pattern_interrupt": "shake",
+      "emphasis_words": [
+        "डायरेक्ट जोड़",
+        "पचास से अस्सी",
+        "ऐम्प्स",
+        "भीषण करंट",
+        "पिघलाकर",
+        "धुआँ"
+      ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 55,
+            "text": "अगर स्टार्टर मोटर का तार सीधे इस बटन से जोड़ दिया जाए,"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Direct Wiring Vs Relay Interface: अगर स्टार्टर मोटर का तार सीधे इस बटन से जोड़ दिया ",
+          "required_assets": [
+            "system_core",
+            "direct wiring vs relay_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "direct wiring vs relay_interface",
+          "preconditions": [
+            "system_core positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "system_core in neutral baseline resting state",
+          "action": "अगर स्टार्टर मोटर का तार सीधे इस बटन से जोड़  के अनुरूप system_core और direct wiring vs relay_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions direct wiring vs relay_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 4.8,
+          "start_pct": 0,
+          "end_pct": 39,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "system_core"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core in neutral baseline resting state",
+            "end_state": "system_core completes state_transition and transitions direct wiring vs relay_interface to active state (step 1)",
+            "duration_ms": 4800,
+            "completion_condition": "system_core completes state_transition and transitions direct wiring vs relay_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Direct Wiring Vs Relay Interface"
+          ],
+          "words": "अगर स्टार्टर मोटर का तार सीधे इस बटन से जोड़ दिया जाए,",
+          "visual_attention_target": {
+            "target_id": "direct wiring vs relay_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: अगर स्टार्टर मोटर का तार सीधे इस बट."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 55,
+            "end_char": 143,
+            "text": "तो पचास से अस्सी ऐम्प्स का भीषण करंट पलक झपकते ही बटन और वायरिंग को पिघलाकर खाक कर देगा!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Direct Wiring Vs Relay Interface: तो पचास से अस्सी ऐम्प्स का भीषण करंट पलक झपकते ही ",
+          "required_assets": [
+            "system_core",
+            "direct wiring vs relay_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "direct wiring vs relay_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions direct wiring vs relay_interface to active state (step 1)",
+          "action": "तो पचास से अस्सी ऐम्प्स का भीषण करंट पलक झपकत के अनुरूप system_core और direct wiring vs relay_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions direct wiring vs relay_interface to active state (step 2)",
+          "start_time": 4.8,
+          "end_time": 12.4,
+          "start_pct": 39,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "direct wiring vs relay_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions direct wiring vs relay_interface to active state (step 1)",
+            "end_state": "system_core completes state_transition and transitions direct wiring vs relay_interface to active state (step 2)",
+            "duration_ms": 7600,
+            "completion_condition": "system_core completes state_transition and transitions direct wiring vs relay_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Direct Wiring Vs Relay Interface"
+          ],
+          "words": "तो पचास से अस्सी ऐम्प्स का भीषण करंट पलक झपकते ही बटन और वायरिंग को पिघलाकर खाक कर देगा!",
+          "visual_attention_target": {
+            "target_id": "direct wiring vs relay_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो पचास से अस्सी ऐम्प्स का भीषण करं."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "अगर स्टार्टर मोटर का तार सीधे इस बटन से जोड़ दिया जाए,",
+          "start_pct": 0,
+          "end_pct": 40,
+          "show": [
+            "पतला स्विच वायर (Thin Copper Wire)",
+            "✕ खतरा अलर्ट (Direct Connection Danger)"
+          ],
+          "action": "बायां पैनल सीधे बटन से मोटर का तार जोड़ता है और लाल डेंजर वार्निंग ब्लिंक होती है।",
+          "camera": "स्प्लिट स्क्रीन बायां भाग फोकस।",
+          "label": "✕ सीधा तार जोड़ना खतरनाक",
+          "icon_or_asset": "alert-triangle"
+        },
+        {
+          "words": "तो पचास से अस्सी ऐम्प्स का भीषण करंट",
+          "start_pct": 40,
+          "end_pct": 70,
+          "show": [
+            "50-80 Amps करंट मीटर",
+            "लाल-गरम पिघलता तार (Melting Wire Sparks)"
+          ],
+          "action": "50-80A का भीषण करंट मीटर लाल जोन में जाता है और पतले तार में से चिंगारियां निकलती हैं।",
+          "camera": "करंट मीटर पर ज़ूम-पंच।",
+          "label": "50 - 80 Amps • भीषण करंट",
+          "icon_or_asset": "activity"
+        },
+        {
+          "words": "पलक झपकते ही बटन और वायरिंग को पिघलाकर खाक कर देगा!",
+          "start_pct": 70,
+          "end_pct": 100,
+          "show": [
+            "पिघला हुआ स्विच (Burnt Switch Shell)",
+            "धुआँ व आग इंडिकेटर (Smoke & Fire Badges)"
+          ],
+          "action": "स्विच बॉक्स से धुआं निकलता है और पिघली वायरिंग पर 'CRITICAL BURNOUT' बैज चमकता है।",
+          "camera": "धुएँ के साथ कैमरा शेक।",
+          "label": "✕ वायरिंग पिघलकर खाक (Burnout)",
+          "icon_or_asset": "flame"
+        }
+      ],
+      "variant": "direct_wire_hazard"
+    },
+    {
+      "type": "bike_self_start",
+      "tag": "03 / THE MAGNETIC GATEKEEPER",
+      "title": "STARTER RELAY (SOLENOID)",
+      "purpose": "Explain the mechanism and takeaway of STARTER RELAY (SOLENOID).",
+      "tone": "['Methodical', 'mechanical revelation']",
+      "narration": "इसलिए बटन सिर्फ डेढ़ ऐम्पियर करंट एक इलेक्ट्रो-मैग्नेट को भेजता है। ये चुंबक अंदर एक मोटी तांबे की प्लेट खींचकर बैटरी का भारी करंट सीधे मोटर तक पहुँचा देता है!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing STARTER RELAY (SOLENOID).",
+        "objects": [
+          "Bridging Two Massive Brass Studs"
+        ],
+        "action": "Technical diagram of the dual-circuit starter solenoid. A thin cyan line carries a safe 1.5-Amp current from the handlebar button to the internal copper coil. The energized electromagnet snaps a heavy iron plunger down, bridging two massive brass studs with a thick copper plate to deliver 60 Amps directly from the 12V battery to the motor.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "STARTER RELAY (SOLENOID)",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "pattern_interrupt": "color_flash",
+      "emphasis_words": [
+        "हैंडलबार का बटन",
+        "सिर्फ डेढ़ ऐम्पियर",
+        "इलेक्ट्रो-मैग्नेट",
+        "मोटी तांबे की प्लेट",
+        "बैटरी से डायरेक्ट"
+      ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 67,
+            "text": "इसलिए बटन सिर्फ डेढ़ ऐम्पियर करंट एक इलेक्ट्रो-मैग्नेट को भेजता है।"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Starter Relay (Solenoid) Interface: इसलिए बटन सिर्फ डेढ़ ऐम्पियर करंट एक इलेक्ट्रो-मैग",
+          "required_assets": [
+            "system_core",
+            "starter relay (solenoid)_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "starter relay (solenoid)_interface",
+          "preconditions": [
+            "system_core positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "system_core in neutral baseline resting state",
+          "action": "इसलिए बटन सिर्फ डेढ़ ऐम्पियर करंट एक इलेक्ट्र के अनुरूप system_core और starter relay (solenoid)_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions starter relay (solenoid)_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 4.4,
+          "start_pct": 0,
+          "end_pct": 37,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "system_core"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core in neutral baseline resting state",
+            "end_state": "system_core completes state_transition and transitions starter relay (solenoid)_interface to active state (step 1)",
+            "duration_ms": 4400,
+            "completion_condition": "system_core completes state_transition and transitions starter relay (solenoid)_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Starter Relay (Solenoid) Interface"
+          ],
+          "words": "इसलिए बटन सिर्फ डेढ़ ऐम्पियर करंट एक इलेक्ट्रो-मैग्नेट को भेजता है।",
+          "visual_attention_target": {
+            "target_id": "starter relay (solenoid)_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: इसलिए बटन सिर्फ डेढ़ ऐम्पियर करंट ए."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 67,
+            "end_char": 159,
+            "text": "ये चुंबक अंदर एक मोटी तांबे की प्लेट खींचकर बैटरी का भारी करंट सीधे मोटर तक पहुँचा देता है!"
+          },
+          "semantic_action": "receive_or_decode",
+          "visual_explanation": "System Core performs receive_or_decode on Starter Relay (Solenoid) Interface: ये चुंबक अंदर एक मोटी तांबे की प्लेट खींचकर बैटरी ",
+          "required_assets": [
+            "system_core",
+            "starter relay (solenoid)_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "starter relay (solenoid)_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions starter relay (solenoid)_interface to active state (step 1)",
+          "action": "ये चुंबक अंदर एक मोटी तांबे की प्लेट खींचकर ब के अनुरूप system_core और starter relay (solenoid)_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes receive_or_decode and transitions starter relay (solenoid)_interface to active state (step 2)",
+          "start_time": 4.4,
+          "end_time": 12.0,
+          "start_pct": 37,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "starter relay (solenoid)_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "receive_or_decode",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions starter relay (solenoid)_interface to active state (step 1)",
+            "end_state": "system_core completes receive_or_decode and transitions starter relay (solenoid)_interface to active state (step 2)",
+            "duration_ms": 7600,
+            "completion_condition": "system_core completes receive_or_decode and transitions starter relay (solenoid)_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • Receive Or Decode",
+            "badge": "RECEIVE_OR_DECODE"
+          },
+          "label": "सिस्टम कोर • Receive Or Decode",
+          "show": [
+            "System Core",
+            "Starter Relay (Solenoid) Interface"
+          ],
+          "words": "ये चुंबक अंदर एक मोटी तांबे की प्लेट खींचकर बैटरी का भारी करंट सीधे मोटर तक पहुँचा देता है!",
+          "visual_attention_target": {
+            "target_id": "starter relay (solenoid)_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What physical action occurs?",
+            "expected_evidence": "Action: receive_or_decode performed on focal object."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "इसलिए बटन सिर्फ डेढ़ ऐम्पियर करंट एक इलेक्ट्रो-मैग्नेट को भेजता है।",
+          "start_pct": 0,
+          "end_pct": 45,
+          "show": [
+            "1.5A सुरक्षित सिग्नल (1.5 Amp Wire)",
+            "कॉपर सोलेनोइड कॉइल (Electromagnetic Coil)"
+          ],
+          "action": "बटन से नीली पतली 1.5A धारा कॉइल में जाती है और चुंबकीय क्षेत्र सक्रिय होता है।",
+          "camera": "फ्लोचार्ट में कॉइल नोड पर फोकस।",
+          "label": "1.5 Amp • सुरक्षित इलेक्ट्रो-मैग्नेट",
+          "icon_or_asset": "zap"
+        },
+        {
+          "words": "ये चुंबक अंदर एक मोटी तांबे की प्लेट खींचकर",
+          "start_pct": 45,
+          "end_pct": 75,
+          "show": [
+            "मोटी तांबे की प्लेट (Heavy Copper Plate)",
+            "प्लंजर रॉड (Iron Plunger Core)"
+          ],
+          "action": "चुंबकीय खिंचाव से भारी कॉपर प्लेट नीचे गिरकर दोनों मुख्य ब्रास टर्मिनल्स को जोड़ देती है।",
+          "camera": "कॉन्टैक्ट प्लेट पर स्लो मोशन ज़ूम।",
+          "label": "मोटी तांबे की प्लेट कनेक्ट",
+          "icon_or_asset": "settings"
+        },
+        {
+          "words": "बैटरी का भारी करंट सीधे मोटर तक पहुँचा देता है!",
+          "start_pct": 75,
+          "end_pct": 100,
+          "show": [
+            "12V भारी बैटरी (Heavy Battery Cables)",
+            "60A डायरेक्ट करंट पाथ (Direct Motor Power)"
+          ],
+          "action": "नारंगी रंग का 60A करंट फ्लड गेट की तरह सीधे स्टार्टर मोटर की तरफ दौड़ पड़ता है।",
+          "camera": "मोटर नोड की ओर हाई-स्पीड पाथ।",
+          "label": "60 Amp • भारी करंट मोटर में",
+          "icon_or_asset": "battery"
+        }
+      ],
+      "variant": "solenoid_relay"
+    },
+    {
+      "type": "three",
+      "tag": "04 / TORQUE MULTIPLICATION",
+      "title": "12X GEAR REDUCTION",
+      "purpose": "Explain the mechanism and takeaway of 12X GEAR REDUCTION.",
+      "tone": "['Energetic', 'scientific discovery']",
+      "narration": "लेकिन ये छोटी डी-सी मोटर छह हज़ार आर-पी-एम पर घूमती है, जिसमें इतना दम नहीं होता कि भारी पिस्टन को दबा सके। इसलिए रिडक्शन गियर इसकी रफ़्तार घटाकर ताकत को बारह गुना बढ़ा देते हैं!",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "cube",
+      "visual": {
+        "start": "Dark 3D spatial coordinate grid with directional volumetric lighting.",
+        "objects": [
+          "Planet Gears",
+          "Bright Pbr Metallic Sheen"
+        ],
+        "action": "Interactive 3D planetary reduction gear train model in dark space. The high-speed 6,000 RPM DC motor armature drives sun and planet gears with bright PBR metallic sheen, stepping speed down to 500 RPM to deliver 12X massive torque multiplication to the heavy crankshaft.",
+        "camera": "Motivated tracking camera orbiting the focal 3D model.",
+        "motion_graphics": [
+          "3D SPATIAL TELEMETRY",
+          "12X GEAR REDUCTION"
+        ],
+        "end": "Model locks into informative angle for seamless scene cut."
+      },
+      "pattern_interrupt": "zoom_punch",
+      "emphasis_words": [
+        "छोटी डी-सी मोटर",
+        "छह हज़ार",
+        "आर-पी-एम",
+        "भारी पिस्टन",
+        "रिडक्शन गियर",
+        "बारह गुना"
+      ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 56,
+            "text": "लेकिन ये छोटी डी-सी मोटर छह हज़ार आर-पी-एम पर घूमती है,"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on 12X Gear Reduction Interface: लेकिन ये छोटी डी-सी मोटर छह हज़ार आर-पी-एम पर घूमत",
+          "required_assets": [
+            "system_core",
+            "12x gear reduction_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "12x gear reduction_interface",
+          "preconditions": [
+            "system_core positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "system_core in neutral baseline resting state",
+          "action": "system_core सक्रिय होता है और छह हज़ार न्यूमेरिक टेलीमेट्री HUD में लॉक होती है।",
+          "final_state": "telemetry threshold छह हज़ार locked at peak state",
+          "start_time": 0.0,
+          "end_time": 4.4,
+          "start_pct": 0,
+          "end_pct": 31,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "system_core"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core in neutral baseline resting state",
+            "end_state": "telemetry threshold छह हज़ार locked at peak state",
+            "duration_ms": 4400,
+            "completion_condition": "telemetry threshold छह हज़ार locked at peak state visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "छह हज़ार • स्टेट बदलाव",
+            "badge": "छह हज़ार"
+          },
+          "label": "छह हज़ार • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "12X Gear Reduction Interface"
+          ],
+          "words": "लेकिन ये छोटी डी-सी मोटर छह हज़ार आर-पी-एम पर घूमती है,",
+          "visual_attention_target": {
+            "target_id": "12x gear reduction_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What exact metric or threshold is established on-screen?",
+            "expected_evidence": "Metric छह हज़ार displayed in active telemetry."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 56,
+            "end_char": 107,
+            "text": "जिसमें इतना दम नहीं होता कि भारी पिस्टन को दबा सके।"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on 12X Gear Reduction Interface: जिसमें इतना दम नहीं होता कि भारी पिस्टन को दबा सके",
+          "required_assets": [
+            "system_core",
+            "12x gear reduction_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "12x gear reduction_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "telemetry threshold छह हज़ार locked at peak state",
+          "action": "जिसमें इतना दम नहीं होता कि भारी पिस्टन को दब के अनुरूप system_core और 12x gear reduction_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions 12x gear reduction_interface to active state (step 2)",
+          "start_time": 4.4,
+          "end_time": 8.8,
+          "start_pct": 31,
+          "end_pct": 63,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "12x gear reduction_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "telemetry threshold छह हज़ार locked at peak state",
+            "end_state": "system_core completes state_transition and transitions 12x gear reduction_interface to active state (step 2)",
+            "duration_ms": 4400,
+            "completion_condition": "system_core completes state_transition and transitions 12x gear reduction_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "12X Gear Reduction Interface"
+          ],
+          "words": "जिसमें इतना दम नहीं होता कि भारी पिस्टन को दबा सके।",
+          "visual_attention_target": {
+            "target_id": "12x gear reduction_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जिसमें इतना दम नहीं होता कि भारी पि."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_03",
+          "narration_segment_ids": [
+            "seg_00_03"
+          ],
+          "source_text_span": {
+            "start_char": 107,
+            "end_char": 178,
+            "text": "इसलिए रिडक्शन गियर इसकी रफ़्तार घटाकर ताकत को बारह गुना बढ़ा देते हैं!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on 12X Gear Reduction Interface: इसलिए रिडक्शन गियर इसकी रफ़्तार घटाकर ताकत को बारह",
+          "required_assets": [
+            "system_core",
+            "12x gear reduction_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "12x gear reduction_interface",
+          "preconditions": [
+            "completed evt_00_02",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions 12x gear reduction_interface to active state (step 2)",
+          "action": "इसलिए रिडक्शन गियर इसकी रफ़्तार घटाकर ताकत को के अनुरूप system_core और 12x gear reduction_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions 12x gear reduction_interface to active state (step 3)",
+          "start_time": 8.8,
+          "end_time": 14.0,
+          "start_pct": 63,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "12x gear reduction_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions 12x gear reduction_interface to active state (step 2)",
+            "end_state": "system_core completes state_transition and transitions 12x gear reduction_interface to active state (step 3)",
+            "duration_ms": 5199,
+            "completion_condition": "system_core completes state_transition and transitions 12x gear reduction_interface to active state (step 3) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "12X Gear Reduction Interface"
+          ],
+          "words": "इसलिए रिडक्शन गियर इसकी रफ़्तार घटाकर ताकत को बारह गुना बढ़ा देते हैं!",
+          "visual_attention_target": {
+            "target_id": "12x gear reduction_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: इसलिए रिडक्शन गियर इसकी रफ़्तार घटा."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "लेकिन ये छोटी डी-सी मोटर छह हज़ार आर-पी-एम पर घूमती है,",
+          "start_pct": 0,
+          "end_pct": 40,
+          "show": [
+            "6,000 RPM हाई-स्पीड मोटर (DC Motor Armature)",
+            "3D सन पिनियन व प्लेनेटरी गियर्स"
+          ],
+          "action": "3D स्टार्टर गियर मॉडल स्क्रीन पर घूमता है, मोटर सन पिनियन 6,000 RPM की हाई-स्पीड पर रोटेट करता है।",
+          "camera": "3D गियर ट्रेन पर स्लो ऑर्बिटल कैमरा रोटेशन।",
+          "label": "6,000 RPM • 3D स्टार्टर मोटर",
+          "icon_or_asset": "gauge"
+        },
+        {
+          "words": "जिसमें इतना दम नहीं होता कि भारी पिस्टन को दबा सके।",
+          "start_pct": 40,
+          "end_pct": 70,
+          "show": [
+            "कमजोर टॉर्क सीमा (Low Direct Torque)",
+            "12:1 गियर मेश"
+          ],
+          "action": "3D मॉडल में प्लेनेटरी गियर्स का जटिल मेश दिखता है जो मोटर की गति को संभालता है।",
+          "camera": "प्लेनेटरी गियर्स मेश पर मैक्रो ज़ूम।",
+          "label": "✕ सीधे पिस्टन घुमाने में असमर्थ",
+          "icon_or_asset": "alert-triangle"
+        },
+        {
+          "words": "इसलिए रिडक्शन गियर इसकी रफ़्तार घटाकर ताकत को बारह गुना बढ़ा देते हैं!",
+          "start_pct": 70,
+          "end_pct": 100,
+          "show": [
+            "12:1 रिडक्शन गियर ट्रेन (Planetary Gears)",
+            "1200% टॉर्क बूस्ट टेलीमेट्री HUD"
+          ],
+          "action": "3D गियर्स 12X टॉर्क डिलीवर करते हैं और टेलीमेट्री HUD में 500 RPM आउटपुट स्पीड लॉक होती है।",
+          "camera": "फुल 3D गियर असेंबली पर वाइड ऑर्बिट।",
+          "label": "12x गुना बढ़ा हुआ टॉर्क",
+          "icon_or_asset": "settings"
+        }
+      ],
+      "variant": "starter_gears_3d",
+      "model": "media/starter_gears.glb",
+      "modelScale": 1.15,
+      "metrics": {
+        "Input Speed": "6,000 RPM",
+        "Ratio": "12 : 1",
+        "Output Speed": "500 RPM",
+        "Torque Boost": "1200%"
+      }
+    },
+    {
+      "type": "three",
+      "tag": "05 / THE 17,000 RPM DISASTER",
+      "title": "ONE-WAY SPRAG CLUTCH",
+      "purpose": "Explain the mechanism and takeaway of ONE-WAY SPRAG CLUTCH.",
+      "tone": "['Suspenseful', 'dramatic payoff']",
+      "narration": "जैसे ही स्पार्क प्लग जलता है, इंजन चौदह सौ आर-पी-एम पर भागने लगता है। अगर मोटर जुड़ी रही, तो गियर उसे सत्रह हज़ार आर-पी-एम पर घुमाकर ब्लास्ट कर देंगे! लेकिन वन-वे स्प्रैग क्लच इंजन शुरू होते ही मोटर को तुरंत फ्री कर देता है!",
+      "transition": "match_cut",
+      "sfx": "fast_whoosh",
+      "icon": "cube",
+      "visual": {
+        "start": "Dark 3D spatial coordinate grid with directional volumetric lighting.",
+        "objects": [
+          "Pbr Metal Materials. The Inner Race",
+          "Sprag Rollers Rotate Into Focus"
+        ],
+        "action": "Real 3D CAD model of the one-way sprag clutch mechanism with PBR metal materials. The inner race and sprag rollers rotate into focus, illustrating how the asymmetrical sprags instantly disengage and slip into freewheel mode within 5 milliseconds as the engine roars to 1,400 RPM, shielding the starter motor from catastrophic 17,000 RPM overspeed destruction.",
+        "camera": "Motivated tracking camera orbiting the focal 3D model.",
+        "motion_graphics": [
+          "3D SPATIAL TELEMETRY",
+          "ONE-WAY SPRAG CLUTCH"
+        ],
+        "end": "Model locks into informative angle for seamless scene cut."
+      },
+      "pattern_interrupt": "shake",
+      "emphasis_words": [
+        "स्पार्क प्लग",
+        "चौदह सौ",
+        "आर-पी-एम",
+        "सत्रह हज़ार",
+        "ब्लास्ट",
+        "एक तरफ़ा क्लच",
+        "तुरंत फ्री"
+      ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 30,
+            "text": "जैसे ही स्पार्क प्लग जलता है,"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on One-Way Sprag Clutch Interface: जैसे ही स्पार्क प्लग जलता है,",
+          "required_assets": [
+            "system_core",
+            "one-way sprag clutch_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "one-way sprag clutch_interface",
+          "preconditions": [
+            "system_core positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "system_core in neutral baseline resting state",
+          "action": "जैसे ही स्पार्क प्लग जलता है, के अनुरूप system_core और one-way sprag clutch_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 2.4,
+          "start_pct": 0,
+          "end_pct": 14,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "system_core"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core in neutral baseline resting state",
+            "end_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 1)",
+            "duration_ms": 2400,
+            "completion_condition": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "One-Way Sprag Clutch Interface"
+          ],
+          "words": "जैसे ही स्पार्क प्लग जलता है,",
+          "visual_attention_target": {
+            "target_id": "one-way sprag clutch_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: जैसे ही स्पार्क प्लग जलता है,."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 30,
+            "end_char": 69,
+            "text": "इंजन चौदह सौ आर-पी-एम पर भागने लगता है।"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on One-Way Sprag Clutch Interface: इंजन चौदह सौ आर-पी-एम पर भागने लगता है।",
+          "required_assets": [
+            "system_core",
+            "one-way sprag clutch_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "one-way sprag clutch_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 1)",
+          "action": "इंजन चौदह सौ आर-पी-एम पर भागने लगता है। के अनुरूप system_core और one-way sprag clutch_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 2)",
+          "start_time": 2.4,
+          "end_time": 5.6,
+          "start_pct": 14,
+          "end_pct": 32,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "one-way sprag clutch_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 1)",
+            "end_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 2)",
+            "duration_ms": 3199,
+            "completion_condition": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "One-Way Sprag Clutch Interface"
+          ],
+          "words": "इंजन चौदह सौ आर-पी-एम पर भागने लगता है।",
+          "visual_attention_target": {
+            "target_id": "one-way sprag clutch_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: इंजन चौदह सौ आर-पी-एम पर भागने लगता."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_03",
+          "narration_segment_ids": [
+            "seg_00_03"
+          ],
+          "source_text_span": {
+            "start_char": 69,
+            "end_char": 90,
+            "text": "अगर मोटर जुड़ी रही,"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on One-Way Sprag Clutch Interface: अगर मोटर जुड़ी रही,",
+          "required_assets": [
+            "system_core",
+            "one-way sprag clutch_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "one-way sprag clutch_interface",
+          "preconditions": [
+            "completed evt_00_02",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 2)",
+          "action": "अगर मोटर जुड़ी रही, के अनुरूप system_core और one-way sprag clutch_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 3)",
+          "start_time": 5.6,
+          "end_time": 7.2,
+          "start_pct": 32,
+          "end_pct": 41,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "one-way sprag clutch_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 2)",
+            "end_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 3)",
+            "duration_ms": 1600,
+            "completion_condition": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 3) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "One-Way Sprag Clutch Interface"
+          ],
+          "words": "अगर मोटर जुड़ी रही,",
+          "visual_attention_target": {
+            "target_id": "one-way sprag clutch_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: अगर मोटर जुड़ी रही,."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_04",
+          "narration_segment_ids": [
+            "seg_00_04"
+          ],
+          "source_text_span": {
+            "start_char": 90,
+            "end_char": 150,
+            "text": "तो गियर उसे सत्रह हज़ार आर-पी-एम पर घुमाकर ब्लास्ट कर देंगे!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on One-Way Sprag Clutch Interface: तो गियर उसे सत्रह हज़ार आर-पी-एम पर घुमाकर ब्लास्ट",
+          "required_assets": [
+            "system_core",
+            "one-way sprag clutch_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "one-way sprag clutch_interface",
+          "preconditions": [
+            "completed evt_00_03",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 3)",
+          "action": "तो गियर उसे सत्रह हज़ार आर-पी-एम पर घुमाकर ब् के अनुरूप system_core और one-way sprag clutch_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 4)",
+          "start_time": 7.2,
+          "end_time": 11.6,
+          "start_pct": 41,
+          "end_pct": 66,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "one-way sprag clutch_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 3)",
+            "end_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 4)",
+            "duration_ms": 4399,
+            "completion_condition": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 4) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "One-Way Sprag Clutch Interface"
+          ],
+          "words": "तो गियर उसे सत्रह हज़ार आर-पी-एम पर घुमाकर ब्लास्ट कर देंगे!",
+          "visual_attention_target": {
+            "target_id": "one-way sprag clutch_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो गियर उसे सत्रह हज़ार आर-पी-एम पर."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_05",
+          "narration_segment_ids": [
+            "seg_00_05"
+          ],
+          "source_text_span": {
+            "start_char": 150,
+            "end_char": 224,
+            "text": "लेकिन वन-वे स्प्रैग क्लच इंजन शुरू होते ही मोटर को तुरंत फ्री कर देता है!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on One-Way Sprag Clutch Interface: लेकिन वन-वे स्प्रैग क्लच इंजन शुरू होते ही मोटर को",
+          "required_assets": [
+            "system_core",
+            "one-way sprag clutch_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "one-way sprag clutch_interface",
+          "preconditions": [
+            "completed evt_00_04",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 4)",
+          "action": "लेकिन वन-वे स्प्रैग क्लच इंजन शुरू होते ही मो के अनुरूप system_core और one-way sprag clutch_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 5)",
+          "start_time": 11.6,
+          "end_time": 17.6,
+          "start_pct": 66,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "one-way sprag clutch_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 4)",
+            "end_state": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 5)",
+            "duration_ms": 6000,
+            "completion_condition": "system_core completes state_transition and transitions one-way sprag clutch_interface to active state (step 5) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "One-Way Sprag Clutch Interface"
+          ],
+          "words": "लेकिन वन-वे स्प्रैग क्लच इंजन शुरू होते ही मोटर को तुरंत फ्री कर देता है!",
+          "visual_attention_target": {
+            "target_id": "one-way sprag clutch_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: लेकिन वन-वे स्प्रैग क्लच इंजन शुरू ."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "जैसे ही स्पार्क प्लग जलता है, इंजन चौदह सौ आर-पी-एम पर भागने लगता है।",
+          "start_pct": 0,
+          "end_pct": 40,
+          "show": [
+            "1,400 RPM इंजन स्पीडोमीटर",
+            "3D स्प्रैग क्लच आउटर गियर"
+          ],
+          "action": "3D स्प्रैग क्लच मॉडल घूमता है, इनर रेस 1,400 RPM इंजन गति के साथ तेजी से रोटेट होती है।",
+          "camera": "3D क्लच असेंबली पर डायनामिक पुश-इन।",
+          "label": "1,400 RPM • इंजन शुरू",
+          "icon_or_asset": "flame"
+        },
+        {
+          "words": "अगर मोटर जुड़ी रही, तो गियर उसे सत्रह हज़ार आर-पी-एम पर घुमाकर ब्लास्ट कर देंगे!",
+          "start_pct": 40,
+          "end_pct": 75,
+          "show": [
+            "17,000 RPM बैकड्राइव स्पीड (Danger)",
+            "ब्लास्ट वार्निंग अलर्ट"
+          ],
+          "action": "टेलीमेट्री HUD में मोटर बैकड्राइव खतरा हाइलाइट होता है और क्लच पर वार्निंग शेक आता है।",
+          "camera": "स्प्रैग रोलर्स पर क्लोज़-अप फोकस।",
+          "label": "17,000 RPM खतरा • मोटर ब्लास्ट",
+          "icon_or_asset": "alert-triangle"
+        },
+        {
+          "words": "लेकिन वन-वे स्प्रैग क्लच इंजन शुरू होते ही मोटर को तुरंत फ्री कर देता है!",
+          "start_pct": 75,
+          "end_pct": 100,
+          "show": [
+            "3D वन-वे स्प्रैग क्लच (Sprag Rollers)",
+            "0 RPM फ्री-व्हीलिंग स्लिप"
+          ],
+          "action": "स्प्रैग रोलर्स तुरंत स्लिप होते हैं, मोटर गियर 0 RPM पर रुक जाता है जबकि इंजन 1,400 RPM पर फ्री चलता रहता है।",
+          "camera": "फ्री-व्हीलिंग स्प्रैग केज पर 3D ऑर्बिट।",
+          "label": "वन-वे क्लच • मोटर तुरंत फ्री",
+          "icon_or_asset": "repeat"
+        }
+      ],
+      "variant": "sprag_clutch_3d",
+      "model": "media/sprag_clutch.glb",
+      "modelScale": 1.2,
+      "metrics": {
+        "Engine Speed": "1,400 RPM",
+        "Motor Backdrive": "0 RPM",
+        "Slip Latency": "< 5ms",
+        "Mechanism": "Sprag Wedging"
+      }
+    },
+    {
+      "type": "bike_self_start",
+      "tag": "06 / 500-MILLISECOND TELEMETRY",
+      "title": "SELF-START SYSTEM SPECS",
+      "purpose": "Explain the mechanism and takeaway of SELF-START SYSTEM SPECS.",
+      "tone": "['Authoritative', 'grand technical payoff']",
+      "narration": "बैटरी, रिले, मोटर और क्लच… ये सब मिलकर सिर्फ आधे सेकंड में काम पूरा कर देते हैं। साथ ही न्यूट्रल और साइड-स्टैंड सेंसर ये पक्का करते हैं कि गियर में बाइक आगे न भागे!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "zap",
+      "visual": {
+        "start": "High-contrast editorial layout establishing SELF-START SYSTEM SPECS.",
+        "objects": [
+          "Modular 4-Quadrant Bento Telemetry Grid",
+          "The 121 Reduction Ratio",
+          "The 0.5S Crank Duration",
+          "Side-Stand Sensors."
+        ],
+        "action": "Modular 4-quadrant bento telemetry grid with 4 interactive glassmorphic cards. Real-time counter animations show the 50-80A battery current pulse, the 12:1 reduction ratio, the 0.5s crank duration, and the dual green safety checkmarks for the neutral gear and side-stand sensors.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "SELF-START SYSTEM SPECS",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "pattern_interrupt": "color_flash",
+      "emphasis_words": [
+        "बैटरी",
+        "रिले",
+        "मोटर",
+        "क्लच",
+        "आधे सेकंड",
+        "सुरक्षा सेंसर",
+        "गियर में आगे न भागे"
+      ],
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 13,
+            "text": "बैटरी, रिले,"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Self-Start System Specs Interface: बैटरी, रिले,",
+          "required_assets": [
+            "system_core",
+            "self-start system specs_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "self-start system specs_interface",
+          "preconditions": [
+            "system_core positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "system_core in neutral baseline resting state",
+          "action": "बैटरी, रिले, के अनुरूप system_core और self-start system specs_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions self-start system specs_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 1.5,
+          "start_pct": 0,
+          "end_pct": 11,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "system_core"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core in neutral baseline resting state",
+            "end_state": "system_core completes state_transition and transitions self-start system specs_interface to active state (step 1)",
+            "duration_ms": 1500,
+            "completion_condition": "system_core completes state_transition and transitions self-start system specs_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Self-Start System Specs Interface"
+          ],
+          "words": "बैटरी, रिले,",
+          "visual_attention_target": {
+            "target_id": "self-start system specs_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: बैटरी, रिले,."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 13,
+            "end_char": 80,
+            "text": "मोटर और क्लच… ये सब मिलकर सिर्फ आधे सेकंड में काम पूरा कर देते हैं।"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Self-Start System Specs Interface: मोटर और क्लच… ये सब मिलकर सिर्फ आधे सेकंड में काम ",
+          "required_assets": [
+            "system_core",
+            "self-start system specs_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "self-start system specs_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions self-start system specs_interface to active state (step 1)",
+          "action": "मोटर और क्लच… ये सब मिलकर सिर्फ आधे सेकंड में के अनुरूप system_core और self-start system specs_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions self-start system specs_interface to active state (step 2)",
+          "start_time": 1.5,
+          "end_time": 7.5,
+          "start_pct": 11,
+          "end_pct": 55,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "self-start system specs_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions self-start system specs_interface to active state (step 1)",
+            "end_state": "system_core completes state_transition and transitions self-start system specs_interface to active state (step 2)",
+            "duration_ms": 6000,
+            "completion_condition": "system_core completes state_transition and transitions self-start system specs_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [
+            "evt_00_03"
+          ],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Self-Start System Specs Interface"
+          ],
+          "words": "मोटर और क्लच… ये सब मिलकर सिर्फ आधे सेकंड में काम पूरा कर देते हैं।",
+          "visual_attention_target": {
+            "target_id": "self-start system specs_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: मोटर और क्लच… ये सब मिलकर सिर्फ आधे."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_03",
+          "narration_segment_ids": [
+            "seg_00_03"
+          ],
+          "source_text_span": {
+            "start_char": 80,
+            "end_char": 164,
+            "text": "साथ ही न्यूट्रल और साइड-स्टैंड सेंसर ये पक्का करते हैं कि गियर में बाइक आगे न भागे!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Self-Start System Specs Interface: साथ ही न्यूट्रल और साइड-स्टैंड सेंसर ये पक्का करते",
+          "required_assets": [
+            "system_core",
+            "self-start system specs_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "self-start system specs_interface",
+          "preconditions": [
+            "completed evt_00_02",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions self-start system specs_interface to active state (step 2)",
+          "action": "साथ ही न्यूट्रल और साइड-स्टैंड सेंसर ये पक्का के अनुरूप system_core और self-start system specs_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions self-start system specs_interface to active state (step 3)",
+          "start_time": 7.5,
+          "end_time": 14.3,
+          "start_pct": 55,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "split_or_wide",
+            "movement": "tracking_pan",
+            "target": "counter_interaction"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions self-start system specs_interface to active state (step 2)",
+            "end_state": "system_core completes state_transition and transitions self-start system specs_interface to active state (step 3)",
+            "duration_ms": 6800,
+            "completion_condition": "system_core completes state_transition and transitions self-start system specs_interface to active state (step 3) visible in frame"
+          },
+          "concurrent_event_ids": [
+            "evt_00_02"
+          ],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Self-Start System Specs Interface"
+          ],
+          "words": "साथ ही न्यूट्रल और साइड-स्टैंड सेंसर ये पक्का करते हैं कि गियर में बाइक आगे न भागे!",
+          "visual_attention_target": {
+            "target_id": "self-start system specs_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: साथ ही न्यूट्रल और साइड-स्टैंड सेंस."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "बैटरी, रिले, मोटर और क्लच…",
+          "start_pct": 0,
+          "end_pct": 35,
+          "show": [
+            "चार प्रमुख घटक (Battery, Relay, Motor, Clutch)",
+            "सिंक आर्किटेक्चर टाइल्स"
+          ],
+          "action": "बेंटो ग्रिड के चारों टाइल्स पर घटक एक-एक करके नीले बॉर्डर के साथ चमकते हैं।",
+          "camera": "बेंटो ग्रिड पर विस्तृत विहंगम दृश्य।",
+          "label": "4 मुख्य घटक • सिंक सिस्टम",
+          "icon_or_asset": "settings"
+        },
+        {
+          "words": "ये सब मिलकर सिर्फ आधे सेकंड में काम पूरा कर देते हैं।",
+          "start_pct": 35,
+          "end_pct": 68,
+          "show": [
+            "0.5 SEC टाइमर टाइल",
+            "सफल स्टार्ट स्टेटस (Cranking Complete)"
+          ],
+          "action": "0.5 SEC का टाइमर कार्ड हरे रंग में लॉक होता है और स्टार्ट कन्फर्मेशन बैज चमकता है।",
+          "camera": "0.5 SEC टाइल पर फोकस।",
+          "label": "0.5 सेकंड • कार्य पूरा",
+          "icon_or_asset": "zap"
+        },
+        {
+          "words": "साथ ही न्यूट्रल और साइड-स्टैंड सेंसर ये पक्का करते हैं कि गियर में बाइक आगे न भागे!",
+          "start_pct": 68,
+          "end_pct": 100,
+          "show": [
+            "न्यूट्रल स्विच सेंसर (Neutral Sensor)",
+            "साइड-स्टैंड इंटरलॉक सेंसर (Side-Stand Interlock)"
+          ],
+          "action": "सेफ्टी इंटरलॉक टाइल पर दो हरे टिकमार्क चमकते हैं, जो बाइक को गियर में अचानक कूदने से रोकते हैं।",
+          "camera": "सेफ्टी इंटरलॉक कार्ड पर ज़ूम।",
+          "label": "✕ गियर में आगे न भागे (Safety)",
+          "icon_or_asset": "shield"
+        }
+      ],
+      "variant": "system_telemetry"
+    },
+    {
+      "type": "bike_self_start",
+      "tag": "07 / THE THUMB MIRACLE",
+      "title": "MECHANICAL MASTERY",
+      "purpose": "Explain the mechanism and takeaway of MECHANICAL MASTERY.",
+      "tone": "['Inspiring payoff & channel CTA']",
+      "narration": "तो अगली बार जब आप सेल्फ स्टार्ट दबाएं, तो याद रखिए… एक छोटा सा इलेक्ट्रो-मैग्नेट और जादुई क्लच आपकी बाइक को जिंदा कर रहे हैं! ऐसी ही कमाल इंजीनियरिंग के लिए राजन का अड्डा को सब्सक्राइब ज़रूर करें!",
+      "transition": "match_cut",
+      "sfx": "whoosh",
+      "icon": "bike",
+      "visual": {
+        "start": "High-contrast editorial layout establishing MECHANICAL MASTERY.",
+        "objects": [
+          "Golden Sparks",
+          "A Ringing Notification Bell."
+        ],
+        "action": "Full-bleed cinematic pull-back of the roaring motorcycle on the open road. The handlebar button pulses one final time with golden sparks, smoothly resolving to the glowing \"Rajan का ADDA\" subscription badge with a ringing notification bell.",
+        "camera": "Stable front-facing vertical framing with safety margins.",
+        "motion_graphics": [
+          "MECHANICAL MASTERY",
+          "TECHNICAL MOTION GRAPHIC"
+        ],
+        "end": "Visual transformation completes, seamlessly resolving into next scene."
+      },
+      "pattern_interrupt": "zoom_punch",
+      "emphasis_words": [
+        "अगली बार",
+        "सेल्फ स्टार्ट बटन",
+        "इलेक्ट्रो-मैग्नेट",
+        "जादुई क्लच",
+        "राजन का अड्डा",
+        "सब्सक्राइब"
+      ],
+      "payoff_type": "loop_setup",
+      "events": [
+        {
+          "event_id": "evt_00_01",
+          "narration_segment_ids": [
+            "seg_00_01"
+          ],
+          "source_text_span": {
+            "start_char": 0,
+            "end_char": 39,
+            "text": "तो अगली बार जब आप सेल्फ स्टार्ट दबाएं,"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "Customer performs state_transition on Mechanical Mastery Interface: तो अगली बार जब आप सेल्फ स्टार्ट दबाएं,",
+          "required_assets": [
+            "customer",
+            "mechanical mastery_interface",
+            "customer"
+          ],
+          "actor_or_subject": "customer",
+          "target_object": "mechanical mastery_interface",
+          "preconditions": [
+            "customer positioned in scene environment",
+            "baseline telemetry active"
+          ],
+          "initial_state": "customer in neutral baseline resting state",
+          "action": "तो अगली बार जब आप सेल्फ स्टार्ट दबाएं, के अनुरूप customer और mechanical mastery_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "customer completes state_transition and transitions mechanical mastery_interface to active state (step 1)",
+          "start_time": 0.0,
+          "end_time": 3.2,
+          "start_pct": 0,
+          "end_pct": 21,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "establishing_medium",
+            "movement": "slow_push_in",
+            "target": "customer"
+          },
+          "animation_instruction": {
+            "target": "customer",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "customer in neutral baseline resting state",
+            "end_state": "customer completes state_transition and transitions mechanical mastery_interface to active state (step 1)",
+            "duration_ms": 3200,
+            "completion_condition": "customer completes state_transition and transitions mechanical mastery_interface to active state (step 1) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "ग्राहक • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "ग्राहक • स्टेट बदलाव",
+          "show": [
+            "Customer",
+            "Mechanical Mastery Interface"
+          ],
+          "words": "तो अगली बार जब आप सेल्फ स्टार्ट दबाएं,",
+          "visual_attention_target": {
+            "target_id": "mechanical mastery_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो अगली बार जब आप सेल्फ स्टार्ट दबा."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_02",
+          "narration_segment_ids": [
+            "seg_00_02"
+          ],
+          "source_text_span": {
+            "start_char": 39,
+            "end_char": 125,
+            "text": "तो याद रखिए… एक छोटा सा इलेक्ट्रो-मैग्नेट और जादुई क्लच आपकी बाइक को जिंदा कर रहे हैं!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Mechanical Mastery Interface: तो याद रखिए… एक छोटा सा इलेक्ट्रो-मैग्नेट और जादुई",
+          "required_assets": [
+            "system_core",
+            "mechanical mastery_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "mechanical mastery_interface",
+          "preconditions": [
+            "completed evt_00_01",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "customer completes state_transition and transitions mechanical mastery_interface to active state (step 1)",
+          "action": "तो याद रखिए… एक छोटा सा इलेक्ट्रो-मैग्नेट और  के अनुरूप system_core और mechanical mastery_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions mechanical mastery_interface to active state (step 2)",
+          "start_time": 3.2,
+          "end_time": 10.0,
+          "start_pct": 21,
+          "end_pct": 66,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "mechanical mastery_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "customer completes state_transition and transitions mechanical mastery_interface to active state (step 1)",
+            "end_state": "system_core completes state_transition and transitions mechanical mastery_interface to active state (step 2)",
+            "duration_ms": 6800,
+            "completion_condition": "system_core completes state_transition and transitions mechanical mastery_interface to active state (step 2) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "continuous_motion",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Mechanical Mastery Interface"
+          ],
+          "words": "तो याद रखिए… एक छोटा सा इलेक्ट्रो-मैग्नेट और जादुई क्लच आपकी बाइक को जिंदा कर रहे हैं!",
+          "visual_attention_target": {
+            "target_id": "mechanical mastery_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: तो याद रखिए… एक छोटा सा इलेक्ट्रो-म."
+          },
+          "validation_status": "passed"
+        },
+        {
+          "event_id": "evt_00_03",
+          "narration_segment_ids": [
+            "seg_00_03"
+          ],
+          "source_text_span": {
+            "start_char": 125,
+            "end_char": 196,
+            "text": "ऐसी ही कमाल इंजीनियरिंग के लिए राजन का अड्डा को सब्सक्राइब ज़रूर करें!"
+          },
+          "semantic_action": "state_transition",
+          "visual_explanation": "System Core performs state_transition on Mechanical Mastery Interface: ऐसी ही कमाल इंजीनियरिंग के लिए राजन का अड्डा को सब",
+          "required_assets": [
+            "system_core",
+            "mechanical mastery_interface"
+          ],
+          "actor_or_subject": "system_core",
+          "target_object": "mechanical mastery_interface",
+          "preconditions": [
+            "completed evt_00_02",
+            "system_core ready for state transition"
+          ],
+          "initial_state": "system_core completes state_transition and transitions mechanical mastery_interface to active state (step 2)",
+          "action": "ऐसी ही कमाल इंजीनियरिंग के लिए राजन का अड्डा  के अनुरूप system_core और mechanical mastery_interface में दृश्य परिवर्तन होता है।",
+          "final_state": "system_core completes state_transition and transitions mechanical mastery_interface to active state (step 3)",
+          "start_time": 10.0,
+          "end_time": 15.2,
+          "start_pct": 66,
+          "end_pct": 100,
+          "timing_confidence": "estimated_phrase",
+          "spatial_relationships": {
+            "actor_position": "foreground_focal",
+            "target_position": "midground_aligned"
+          },
+          "camera_instruction": {
+            "shot": "medium_shot",
+            "movement": "stable_hold",
+            "target": "mechanical mastery_interface"
+          },
+          "animation_instruction": {
+            "target": "system_core",
+            "motion": "state_transition",
+            "easing": "ease-out",
+            "start_state": "system_core completes state_transition and transitions mechanical mastery_interface to active state (step 2)",
+            "end_state": "system_core completes state_transition and transitions mechanical mastery_interface to active state (step 3)",
+            "duration_ms": 5199,
+            "completion_condition": "system_core completes state_transition and transitions mechanical mastery_interface to active state (step 3) visible in frame"
+          },
+          "concurrent_event_ids": [],
+          "transition_to_next_event": "scene_boundary",
+          "on_screen_text": {
+            "label": "सिस्टम कोर • स्टेट बदलाव",
+            "badge": "STATE_TRANSITION"
+          },
+          "label": "सिस्टम कोर • स्टेट बदलाव",
+          "show": [
+            "System Core",
+            "Mechanical Mastery Interface"
+          ],
+          "words": "ऐसी ही कमाल इंजीनियरिंग के लिए राजन का अड्डा को सब्सक्राइब ज़रूर करें!",
+          "visual_attention_target": {
+            "target_id": "mechanical mastery_interface",
+            "emphasis": "reticle"
+          },
+          "mute_comprehension_test": {
+            "question": "What key transition or relationship is illustrated?",
+            "expected_evidence": "State transition explaining: ऐसी ही कमाल इंजीनियरिंग के लिए राजन."
+          },
+          "validation_status": "passed"
+        }
+      ],
+      "beats": [
+        {
+          "words": "तो अगली बार जब आप सेल्फ स्टार्ट दबाएं, तो याद रखिए…",
+          "start_pct": 0,
+          "end_pct": 45,
+          "show": [
+            "राइडर का हाथ (Motorcycle Rider)",
+            "हैंडलबार सेल्फ स्टार्ट बटन"
+          ],
+          "action": "राइडर की बाइक सड़क पर तैयार दिखती है और सेल्फ स्टार्ट बटन पर गोल्डन रोशनी चमकती है।",
+          "camera": "राइडर से पूरे दृश्य की ओर सिनेमैटिक पुल-बैक।",
+          "label": "अगली बार • सेल्फ स्टार्ट",
+          "icon_or_asset": "bike"
+        },
+        {
+          "words": "एक छोटा सा इलेक्ट्रो-मैग्नेट और जादुई क्लच आपकी बाइक को जिंदा कर रहे हैं!",
+          "start_pct": 45,
+          "end_pct": 75,
+          "show": [
+            "इलेक्ट्रो-मैग्नेट रिले (Electromagnet)",
+            "वन-वे स्प्रैग क्लच (Magic Clutch)"
+          ],
+          "action": "इलेक्ट्रो-मैग्नेट और स्प्रैग क्लच के गोल्डन 3D आइकन स्क्रीन पर विनर बैज की तरह चमकते हैं।",
+          "camera": "हीरो कार्ड्स पर फोकस।",
+          "label": "इलेक्ट्रो-मैग्नेट व जादुई क्लच",
+          "icon_or_asset": "sparkles"
+        },
+        {
+          "words": "ऐसी ही कमाल इंजीनियरिंग के लिए राजन का अड्डा को सब्सक्राइब ज़रूर करें!",
+          "start_pct": 75,
+          "end_pct": 100,
+          "show": [
+            "राजन का अड्डा लोगो बैज (Rajan Ka Adda Badge)",
+            "सब्सक्राइब व घंटी बटन (Bell Icon CTA)"
+          ],
+          "action": "राजन का अड्डा का लोगो सामने आता है और घंटी का आइकन एनीमेशन के साथ रिंग करता है।",
+          "camera": "ब्रांडेड आउट्रो हीरो फ्रेम।",
+          "label": "राजन का अड्डा • सब्सक्राइब करें",
+          "icon_or_asset": "sparkles"
+        }
+      ],
+      "variant": "hero_outro"
+    }
+  ]
+}

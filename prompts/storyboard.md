@@ -52,7 +52,23 @@ Before writing a single line of JSON, conduct deep web research on:
 4. **Supported Engine & Resource Selection**:
    - Prefer the smallest existing renderer that explains the scene. Native Remotion scene types and registered Three.js variants are the primary in-pipeline choices; select only types registered in current code and schema.
    - Manim, HTML recording, diagram rendering, model downloads, and external skills are conditional. Check the executable/package, provider, credentials, input files, and output support before selecting them. Do not assume React Three Fiber, Drei, D3.js, KaTeX, or any other library is installed because it seems suitable.
-   - A skill is not a storyboard type. If a skill produces an image or MP4, read its `SKILL.md`, verify the output and licensing, then put the asset under `episodes/<id>/media/` and use a supported `image` or `video` scene.
+   - **Asset Authoring & Engine Skills Catalog (Saving Assets to `episodes/<id>/media/`)**:
+     A skill is not a storyboard type, but an asset-authoring and execution workflow. Always verify its output, save generated media under `episodes/<id>/media/`, and reference them inside supported scenes:
+     * **Three.js WebGL Suite (`threejs-*`)**: Use `threejs-shaders`, `threejs-lighting`, and `threejs-loaders` to configure procedural geometry, CAD `.glb` models, and dynamic shaders for `three` scene types.
+     * **Manimce Suite (`manimce-best-practices`, `manim-composer`)**: Use to write and render mathematical derivation clips under `episodes/<id>/media/` for `manim` scene types.
+     * **Headless Blender 3D Suite (`blender-*`)**: Use `blender-rendering` (Cycles 32 samples + OpenImageDenoise), `blender-cameras`, and `blender-animation` to generate photorealistic CAD b-roll clips saved to `episodes/<id>/media/` for `video` scene types.
+     * **`bs-chalkboard-infographic`**: Hand-drawn chalk illustrations on charcoal background formatted for 9:16 vertical shorts. Set `whiteboard` scene type with `"image": "media/<file>.png"` or procedural whiteboard parameters.
+     * **`bs-claude-style-illustration`**: Editorial visual metaphors with clean linework and warm palettes. Reference inside `image` scene type.
+     * **`bs-hand-drawn-visual-notes`**: Sketchnotes and whiteboard logic drawings. Reference inside `image` or `whiteboard` scenes.
+     * **`bs-creatormotion-type-title-takeover`**: Kinetic punch headlines for high-impact hook scenes.
+     * **`bs-creatormotion-cards-action-checklist`**: Synchronized step checklist for procedural flows.
+     * **`bs-hyperframes-*`**: Realistic product/UI launch stings:
+       - `bs-hyperframes-device-canvas-launch`: Studio device canvas zooms for `screenshot` scenes.
+       - `bs-hyperframes-code-change-launch`: Rapid diff/code capability reels for `code` and `terminal` scenes.
+       - `bs-hyperframes-chat-to-result-launch`: AI prompt-and-response cascades.
+     * **`bs-dot-avatar-maker` / `bs-grokbot-avatar` / `bs-monochrome-studio-portrait`**: Speaker portraits for `interview` scene speakers.
+     * **`bs-linktree-style-og` / `bs-notion-style-og`**: High-CTR YouTube Shorts cover cards saved to `episodes/<id>/media/thumbnail.png`.
+     * **`playwright-cli`**: Browser automation for distributing finalized videos across social channels.
 
 ---
 
@@ -78,6 +94,7 @@ Every `storyboard.json` must be structured with deep, rich detail for every fiel
 | `music` | `string \| null` | Path to ambient background music loop (e.g. `"audio/Warm Focus.wav"` or `null`). | `"audio/Warm Focus.wav"` |
 | `music_volume`| `number` | Background music volume (0.01 to 0.15; default `0.06` to prevent speech masking). | `0.06` |
 | `music_ducking`| `boolean`| Dynamic speech-aware sidechain ducking: lowers music to 35% during speech and swells during pauses. | `true` |
+| `facts` | `array` | **Mandatory Canonical Facts Table**: List of objects (`name`, `value`, `unit`, `source`, `verified_date`). All numbers in narration, labels, benchmark values, runners, and visuals must strictly read from this table. | `[{"name": "Starlink Altitude", "value": 550, "unit": "km", "source": "SpaceX Starlink Specs"}]` |
 | `meta` | `object` | Comprehensive episode metadata (see below). | `{ ... }` |
 
 #### `meta` Object Specification
@@ -102,15 +119,16 @@ Every `storyboard.json` must be structured with deep, rich detail for every fiel
 | `tag` | `string` | Uppercase tracked step tag with scene index (e.g. `"01 / THE LEARNING PUZZLE"`, `"03 / STAGE 1: FORWARD PASS"`). |
 | `purpose` | `string` | Pedagogical objective: what cognitive shift or understanding must occur in the viewer's mind. |
 | `tone` | `string` | Voice delivery mood guidance for synthesis (e.g. `"[Curious, high energy]"`, `"[Analytical, revealing]"`, `"[Triumphant]"`). |
-| `narration` | `string` | Spoken conversational Hindi text for VoiceStudio (`rajan story teller` profile). All technical terms hyphenated phonetically (`चैट-जी-पी-टी`, `न्यूरल नेटवर्क`, `लॉस फंक्शन`). |
+| `narration` | `string` | Spoken conversational Hindi text for VoiceStudio (`rajan story teller` profile). Clean of trailing `---` or separators. All technical terms hyphenated phonetically (`चैट-जी-पी-टी`, `न्यूरल नेटवर्क`, `लॉस फंक्शन`). |
 | `transition` | `string` | Visual handoff: `"zoom_through"`, `"match_cut"`, `"whip_pan"`, `"morph"`, `"dissolve"`, `"cross_fade"`. |
 | `sfx` | `array \| string` | Frame-accurate sound effect cues from `public/sfx/` (`whoosh`, `radar_beep`, `ting`, `click`, `pop`, `glitch`, `impact`, `ka_ching`, `sparkle`, `typing`). |
 | `hook_strength` | `number` | *(Viral Retention)* 1.0 to 10.0 score evaluating opening tension and thumb-stopping power. |
 | `payoff_type` | `string` | *(Viral Retention)* Category of payoff: `"loop_setup"`, `"curiosity_reveal"`, `"metric_shock"`, `"mechanism_clarity"`, `"actionable_tip"`. |
-| `pattern_interrupt` | `string` | *(Viral Retention)* Procedural visual disruption: `"zoom_punch"` (1.08x spring punch), `"shake"` (error jitter), `"color_flash"`, `"glitch"`. |
-| `emphasis_words` | `string[]` | *(Viral Retention)* Array of high-impact words/phrases to pop in vibrant Neon Yellow (`#FFE600`) in mobile captions. |
-| `cta_reason` | `string` | *(Viral Retention)* Concrete motivation to save or share (e.g. `"Send to your developer partner"`, `"Save for system design interviews"`). |
-| `visual` | `object` | **Mandatory 6-key structured visual storyboard object** (see Section 3.3). |
+| `pattern_interrupt` | `string` | *(Viral Retention)* Plain string without escaped quotes: `"zoom_punch"`, `"shake"`, `"color_flash"`, `"glitch"`. |
+| `emphasis_words` | `string[]` | *(Viral Retention)* Array of words that MUST actually appear in the scene's narration to pop in vibrant Neon Yellow (`#FFE600`) in mobile captions. |
+| `cta_reason` | `string` | *(Viral Retention)* Concrete motivation to save or share. |
+| `visual` | `object` | **Mandatory 6-key structured visual storyboard object** (`start`, `objects`, `action`, `camera`, `motion_graphics`, `end`). |
+| `beats` | `array` | **Mandatory Mute-First Beats Array**: Micro-events jointly covering 100% of scene narration from 0% to 100%. See Section 3.3. |
 
 ---
 
@@ -138,7 +156,38 @@ Every scene MUST include all six fields with deep, specific visual choreography:
 
 ---
 
-### 3.4 Scene-Specific Deep Properties & Scene Engine Catalog
+### 3.3.1 The Mandatory Mute-First `beats` Specification
+Every scene MUST include a `beats` array where each micro-event is synchronized to narration:
+```json
+"beats": [
+  {
+    "words": "exact spoken narration phrase this beat covers",
+    "start_pct": 0,
+    "end_pct": 45,
+    "show": ["Concrete real-world object 1", "Concrete real-world object 2"],
+    "action": "One literal physical action occurring on screen",
+    "camera": "Shot type and focus framing",
+    "label": "Short on-screen text/icon in the narration language (Hindi e.g. '550 km कक्षा' or '25 ms पिंग')",
+    "icon_or_asset": "asset identifier or prompt"
+  }
+]
+```
+**Strict Mute-First Rules**:
+1. **100% Coverage**: The beats must sequentially and jointly cover 0% to 100% of the narration with zero gaps.
+2. **One Idea Per Beat**: Typically 2–5 seconds per beat.
+3. **Every Number Must Appear on Screen**: Any number spoken in narration (e.g. `27,000 km/h`, `600 ms`, `65x`) MUST have a corresponding prominent on-screen label.
+4. **Negations Need Visuals**: Negative statements ("no towers", "no moving parts") must display a visual with an explicit red cross (e.g. tower icon with red cross).
+5. **Labels in Narration Language**: On-screen labels and text overlays must be written in the narration language (Hindi / Devanagari) so the video is fully understandable with sound OFF.
+
+---
+
+### 3.3.2 Removal of Template Placeholders & Data Consistency Rules
+1. **Never Insert Template Fillers**: Prohibited strings include `"Standard Approach"`, `"Optimized Core"`, `"Manual Coordination"`, `"Linear Bottleneck"`, `"O(1) Efficiency"`, `"Throughput: 100k req/s"`, `"P99 Latency: < 12ms"`, runners `1.45` / `0.12`.
+2. **Derive Exclusively from Topic Facts**: Compare panels, benchmarks, and stats must contain topic-specific numbers derived directly from the top-level `facts` table.
+3. **Never Duplicate Panel Content**: Two scenes must never have identical left/right compare panels.
+4. **Strict Number Agreement**: The exact same number must appear across narration, labels, visual text, and benchmark runners.
+
+---
 
 Select the scene engine that best conveys the concept:
 
@@ -214,6 +263,16 @@ Select the scene engine that best conveys the concept:
     - `equation`: Optional math formula displayed on a floating HUD card above safe zones.
     - `whiteboardData`: Optional data array `[{"value": 64, "highlight": false}, {"value": 34, "highlight": true}]`.
 
+14. **`tree_traversal` / `tree_traversal_visualizer`** (Data Structures & Algorithm Visualizers):
+    - Adheres to `.agents/skills/dsa-visualizer-standards/SKILL.md` with **4-tier information architecture**:
+      * **Tier 1 (Header)**: Algorithm pill (`"INORDER TRAVERSAL"`), traversal formula (`"LEFT → ROOT → RIGHT"`).
+      * **Tier 2 (Hero Canvas)**: Fixed SVG tree/graph with SVG `<feDropShadow>` filters and animated glowing pointer.
+      * **Tier 3 (Dual Telemetry)**: Real-time **Call Stack (LIFO)** or **Queue (FIFO)** push/pop + Rule / Intuition card.
+      * **Tier 4 (Output & Code)**: Pre-allocated dashed slots `[ 4 ] [ 2 ] [ ] [ ]` with visited counter (`3 / 7`) + active code line.
+    - `mode`: `"preorder"` | `"inorder"` | `"postorder"` | `"levelorder"` | `"intro"` | `"summary"`.
+    - `visitedOrder`: Array of visited values in sequence (e.g. `[4, 2, 5, 1, 6, 3, 7]`).
+    - `rule`: Concrete pedagogical takeaway (e.g. `"Produces sorted order in BST"`).
+
 ---
 
 ## 4. Scene Disambiguation & Pacing Strategy
@@ -255,25 +314,33 @@ The workspace links to a broad skill catalog, much of which is for websites, dec
 
 ---
 
-## 5. Strict Real-Object Visualization Policy
+## 5. Strict Real-Object Visualization Policy & Asset-First Contract
 
 Whenever real physical objects are mentioned:
-1. **Always use crisp transparent PNGs, SVGs, or vector icons** in 2D/2.5D scenes.
-2. **Never represent real-world objects with generic boxes, cubes, or bare text labels**.
-3. **In 3D scenes, use realistic CAD models (`.glb`)** or detailed procedural meshes.
-4. **Abstract graphics (pulses, waves, packets) must layer around real objects**, never replace them.
+1. **Asset-First Rule (Assets Before Animation)**: Always download and verify authentic assets in `episodes/<id>/media/` FIRST before creating 3D or 2D animation. Declare `search_model`, `model`, `search_image`, or `image` so the automated resolver fetches them.
+2. **Always use crisp transparent PNGs, SVGs, or vector icons** in 2D/2.5D scenes.
+3. **Never represent real-world objects with generic boxes, cubes, or bare text labels**.
+4. **In 3D scenes, use realistic CAD models (`.glb`)** downloaded via `tools/model_manager.py` or `tools/asset_finder.py`.
+5. **Abstract graphics (pulses, waves, packets) must layer around real objects**, never replace them.
 
 ---
 
-## 6. Validation & Pre-Flight Verification
+## 6. Validation & 10 Mandatory Quality Gates
 
 Immediately after generating `storyboard.json`, run:
 ```bash
+python3 tools/quality_gates.py episodes/<id>/storyboard.json
 python3 validate.py episodes/<id>/storyboard.json
 ```
 Ensure:
-- 0 errors and 0 warnings.
-- Visual momentum score >= 4.0 / 5.0 (verified by `tools/slideshow_risk.py`).
-- Contrast ratio >= 3.0:1 for accent against background.
-- All 6 structured `visual` fields populated in every scene.
-- Audio synthesis verified via `python3 tts.py episodes/<id>/storyboard.json`.
+- 0 errors, 10/10 quality gates passed (Overall Score: 100%).
+- **Gate 1: Narration Coverage**: 100% of meaningful narration spans map to visible events.
+- **Gate 2: Action Executability**: Concrete animations, transitions, or explicit visual fallbacks (no descriptive-only text).
+- **Gate 3: Asset Completeness**: All critical 3D models and images present on disk in `episodes/<id>/media/`.
+- **Gate 4: State Continuity**: Valid preconditions, targets, and distinct initial ➔ final state progressions.
+- **Gate 5: Timeline Consistency**: Contiguous 0-100% timing without gaps or conflicting timestamps.
+- **Gate 6: Visual Clarity**: Safe zones respected, mobile legibility, labels <= 4 words.
+- **Gate 7: Mute Comprehension**: Sound-off comprehension criteria and Devanagari labels for Hindi explainers.
+- **Gate 8: Technical Accuracy**: Grounded metrics, zero NaN/placeholders, verified facts.
+- **Gate 9: Final Render Inspection**: Post-render container and frame validation.
+- **Gate 10: Repair & Revalidation**: Actionable diagnostic report for targeted scene repair.

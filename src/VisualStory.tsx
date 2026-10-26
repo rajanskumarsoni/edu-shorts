@@ -1,17 +1,28 @@
 import React from "react";
 import { interpolate, useCurrentFrame, useVideoConfig } from "remotion";
-import type { VisualBeat } from "./types";
+import type { VisualBeat, VisualEvent } from "./types";
 import { FONT } from "./theme";
 
 export function getActiveVisualBeat(
-  beats: VisualBeat[] | undefined,
+  beats: (VisualBeat | VisualEvent)[] | undefined,
   progress: number
-): VisualBeat | undefined {
+): (VisualBeat | VisualEvent) | undefined {
   if (!beats?.length) return undefined;
 
+  const pct = progress * 100;
+  for (const beat of beats) {
+    if (beat.start_pct !== undefined && beat.end_pct !== undefined) {
+      if (pct >= beat.start_pct && pct <= beat.end_pct) {
+        return beat;
+      }
+    }
+  }
+
+  // Fallback to legacy `at` or closest beat
   let active = beats[0];
   for (const beat of beats) {
-    if (beat.at > progress) break;
+    const beatAt = beat.at !== undefined ? beat.at : (beat.start_pct !== undefined ? beat.start_pct / 100 : 0);
+    if (beatAt > progress) break;
     active = beat;
   }
   return active;
@@ -19,83 +30,15 @@ export function getActiveVisualBeat(
 
 export const VisualBeatOverlay: React.FC<{
   beats?: VisualBeat[];
+  events?: VisualEvent[];
   accent: string;
   artDirection?: "editorial" | "cinematic";
   localFrame?: number;
   sceneDuration?: number;
-}> = ({ beats, accent, artDirection = "editorial", localFrame, sceneDuration }) => {
-  const frame = useCurrentFrame();
-  const { durationInFrames, width, height } = useVideoConfig();
-  const effectiveFrame = localFrame !== undefined ? localFrame : frame;
-  const effectiveDuration = sceneDuration !== undefined ? sceneDuration : durationInFrames;
-  const progress = effectiveFrame / Math.max(effectiveDuration - 1, 1);
-  const beat = getActiveVisualBeat(beats, progress);
-
-  if (!beat) return null;
-
-  const beatProgress = progress - beat.at;
-  const opacity = interpolate(beatProgress, [0, 0.025, 0.07], [0, 1, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  return (
-    <div
-      style={{
-        position: "absolute",
-        left: width * 0.06,
-        right: width * 0.06,
-        bottom: height > width ? 430 : 110,
-        zIndex: 45,
-        opacity,
-        pointerEvents: "none",
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 900,
-          padding: artDirection === "editorial" ? "12px 18px" : "18px 24px",
-          borderRadius: artDirection === "editorial" ? 4 : 16,
-          border:
-            artDirection === "editorial"
-              ? `1px solid rgba(180, 195, 216, 0.24)`
-              : `1px solid ${accent}99`,
-          borderLeft: artDirection === "editorial" ? `3px solid ${accent}` : undefined,
-          background: "rgba(8, 17, 34, 0.94)",
-          boxShadow:
-            artDirection === "editorial"
-              ? "none"
-              : `0 12px 32px rgba(0,0,0,0.35), 0 0 24px ${accent}22`,
-          fontFamily: FONT,
-        }}
-      >
-        <div
-          style={{
-            color: accent,
-            fontFamily: "monospace",
-            fontSize: 28,
-            fontWeight: 800,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            marginBottom: 6,
-          }}
-        >
-          {beat.label}
-        </div>
-        <div style={{ color: "#F5F7FF", fontSize: 30, fontWeight: 750, lineHeight: 1.2 }}>
-          {beat.action}
-        </div>
-        {beat.state && (
-          <div style={{ color: accent, fontSize: 28, fontWeight: 800, marginTop: 8 }}>
-            {beat.state}
-          </div>
-        )}
-      </div>
-    </div>
-  );
+}> = () => {
+  // Permanently disabled: Static whole-text caption boxes are forbidden to prevent duplicate captions.
+  // Only dynamic active word-by-word captions (Captions.tsx) are rendered.
+  return null;
 };
 
 export const JourneyRail: React.FC<{

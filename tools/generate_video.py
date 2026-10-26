@@ -23,6 +23,7 @@ Usage:
 import argparse
 import datetime
 import json
+import os
 import subprocess
 import sys
 import urllib.error
@@ -114,6 +115,7 @@ def main():
     parser.add_argument("--force-tts", action="store_true", help="Force re-synthesizing all TTS audio clips")
     parser.add_argument("--upload", type=str, choices=["private", "unlisted", "public"], help="Optional YouTube upload visibility")
     parser.add_argument("--upload-platform", type=str, default="youtube", help="Platform destination for auto-upload")
+    parser.add_argument("--concurrency", type=int, default=min(os.cpu_count() or 4, 8), help="Remotion render concurrency worker threads")
     parser.add_argument("--no-clean", action="store_true", help="Keep ephemeral staging cache in public/")
     parser.add_argument("--no-board", action="store_true", help="Skip appending to .agents/BOARD.md")
     args = parser.parse_args()
@@ -172,6 +174,31 @@ def main():
                     blender_tool = ROOT / "tools" / "blender_render.py"
                     run_cmd([sys.executable, str(blender_tool), "convert", str(cad_file), "--out", str(glb_target)], "Blender Model Conversion")
 
+    # Re-read storyboard data in case assets were bound
+    storyboard_data = json.loads(storyboard_file.read_text(encoding="utf-8"))
+
+    # Strict Asset-First Verification Gate: verify all declared physical assets exist in media/ before rendering
+    print("\n🛡️  Asset-First Gate: Verifying physical assets on disk before animation rendering...")
+    missing_assets = []
+    for idx, s in enumerate(storyboard_data.get("scenes", []), 1):
+        stag = s.get("tag", f"Scene {idx}")
+        for asset_key in ("model", "image", "video", "icon_path"):
+            val = s.get(asset_key)
+            if val and isinstance(val, str) and not val.startswith(("http://", "https://")):
+                asset_p = (ep_dir / val) if not Path(val).is_absolute() else Path(val)
+                alt_p = ROOT / "public" / val
+                if not asset_p.exists() and not alt_p.exists():
+                    missing_assets.append(f"[{stag}] {asset_key}: {val}")
+
+    if missing_assets:
+        print("\n❌ Asset-First Verification Failed! The following assets must be downloaded and present on disk before rendering:")
+        for miss in missing_assets:
+            print(f"   - {miss}")
+        print(f"\nRun: python3 tools/asset_finder.py resolve {storyboard_file}")
+        sys.exit(1)
+    else:
+        print("   ✅ All declared scene media assets verified on disk.")
+
     # 5. Phase 4: Synthesize Audio
     if not args.skip_tts:
         print("\n🎙️  Phase 4: Synthesizing Narration Audio...")
@@ -190,7 +217,7 @@ def main():
 
     # 6. Phase 5: Production Video Render (Remotion + FFmpeg)
     print("\n🎬 Phase 5: Rendering Production Video...")
-    pipe_cmd = [sys.executable, str(ROOT / "pipeline.py"), str(storyboard_file)]
+    pipe_cmd = [sys.executable, str(ROOT / "pipeline.py"), str(storyboard_file), f"--concurrency={args.concurrency}"]
     if args.preview:
         pipe_cmd.append("--preview")
     if args.upload:
@@ -209,12 +236,23 @@ def main():
     if not final_video.is_file():
         sys.exit(f"❌ Expected rendered video not found at: {final_video}")
 
-    # 7. Phase 6: Automated QA Verification
-    print("\n📊 Phase 6: Executing Unified QA Suite...")
+    # 7. Phase 6: Automated QA Verification & 10 Quality Gates
+    print("\n📊 Phase 6: Executing Unified QA Suite & 10 Quality Gates...")
     qa_tool = ROOT / "tools" / "qa_suite.py"
     qa_cmd = [sys.executable, str(qa_tool), str(final_video)]
     code_qa = run_cmd(qa_cmd, "Unified QA & Contact Sheet Generation")
     qa_passed = (code_qa == 0)
+
+    try:
+        from tools.quality_gates import validate_storyboard_quality
+        q_rep = validate_storyboard_quality(storyboard_file, render_path=final_video)
+        print(f"\n🎬 10 Quality Gates Verification: Score {q_rep.overall_score * 100:.1f}% | All Passed: {q_rep.all_passed}")
+        if not q_rep.all_passed:
+            print("⚠️ Some quality gates reported issues:")
+            for p in q_rep.repair_plan:
+                print(f"   - {p}")
+    except Exception as e:
+        print(f"⚠️ Quality gates post-render check warning: {e}")
 
     # 8. Phase 7: Publishing Kit Generation
     generate_post_markdown(storyboard_data, ep_dir / "post.md")

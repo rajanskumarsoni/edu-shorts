@@ -1223,6 +1223,16 @@ def main():
     for plat, outcome in results.items():
         print(f"  • {plat:<20}: {outcome}")
     print("=" * 65)
+
+    # Automatic Post-Upload Learning Routine
+    try:
+        from tools.post_upload_learn import run_learn
+        processed = run_learn()
+        if processed:
+            print(f"🎓 Post-Upload Learn executed for: {', '.join(processed)}")
+    except Exception as e:
+        print(f"⚠️ Post-Upload Learn notice: {e}")
+
     return 0
 
 

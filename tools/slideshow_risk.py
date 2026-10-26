@@ -42,7 +42,9 @@ DYNAMIC_VISUAL_TYPES = {
     "linear_search_visualizer", "binary_search_visualizer", "tesla_roadster_visualizer", "pacman_enzyme_visualizer",
     "whiteboard", "compare", "depth_parallax", "quick_commerce", "google_maps", "google_maps_visualizer",
     "aadhaar", "aadhaar_visualizer", "tower_of_hanoi", "tower_of_hanoi_visualizer",
-    "emudhra", "emudhra_visualizer"
+    "emudhra", "emudhra_visualizer",
+    "bike_self_start", "bike_self_start_visualizer",
+    "tree_traversal", "tree_traversal_visualizer"
 }
 
 

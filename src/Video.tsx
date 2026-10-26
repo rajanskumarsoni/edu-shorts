@@ -35,7 +35,7 @@ import { Quadrant } from "./scenes/Quadrant";
 import { Concentric } from "./scenes/Concentric";
 import { Captions } from "./Captions";
 import { useBeatPulse } from "./layout";
-import { getActiveVisualBeat, JourneyRail, VisualBeatOverlay } from "./VisualStory";
+import { getActiveVisualBeat, JourneyRail } from "./VisualStory";
 import { SeatBookingScene } from "./scenes/SeatBooking";
 import { InterviewCard } from "./scenes/InterviewCard";
 import { VideoScene } from "./scenes/VideoScene";
@@ -61,6 +61,8 @@ import { GoogleMapsVisualizer } from "./scenes/GoogleMapsVisualizer";
 import { AadhaarVisualizer } from "./scenes/AadhaarVisualizer";
 import { TowerOfHanoiVisualizer } from "./scenes/TowerOfHanoiVisualizer";
 import { EMudhraVisualizer } from "./scenes/EMudhraVisualizer";
+import { BikeSelfStartVisualizer } from "./scenes/BikeSelfStartVisualizer";
+import { TreeTraversalVisualizer } from "./scenes/TreeTraversalVisualizer";
 
 const SCENES = {
   hook: Hook,
@@ -112,6 +114,10 @@ const SCENES = {
   tower_of_hanoi_visualizer: TowerOfHanoiVisualizer,
   emudhra: EMudhraVisualizer,
   emudhra_visualizer: EMudhraVisualizer,
+  bike_self_start: BikeSelfStartVisualizer,
+  bike_self_start_visualizer: BikeSelfStartVisualizer,
+  tree_traversal: TreeTraversalVisualizer,
+  tree_traversal_visualizer: TreeTraversalVisualizer,
 };
 
 const DEFAULT_SFX_VOLUMES: Record<string, number> = {
@@ -589,7 +595,6 @@ const SceneView: React.FC<{
           color={scene.particleColor || accent}
         />
       )}
-      <VisualBeatOverlay beats={scene.beats} accent={accent} artDirection={sceneArtDirection} localFrame={localFrame} sceneDuration={durationInFrames} />
       {sceneArtDirection === "cinematic" && <LightSweep />}
       {captions && scene.narration && (
         <Captions

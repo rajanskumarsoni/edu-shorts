@@ -44,6 +44,13 @@ codex exec "review the changes in src/ and write findings to .agents/BOARD.md"
 - ChatGPT extension: No direct agent-to-agent hook; human references or pastes `BOARD.md` entries.
 - Antigravity: Coordinates natively through the shared files and `.agents/BOARD.md`.
 
+### Post-Upload Learning Contract (/learn)
+Upon completion of multi-platform video distribution (YouTube, Telegram, 𝕏/Twitter, LinkedIn, Threads, Facebook, Instagram), agents must trigger the `/learn` cycle:
+- Automatically executed by `python3 tools/post_upload_learn.py` (via scheduled daemon or post-upload hook).
+- Evaluates episode retention, pacing, and visual fitness against core guidelines.
+- Synthesizes findings into `episodes/<id>/learnings.md` and appends an operational summary to `.agents/BOARD.md`.
+- Persists winning techniques into prompt guidelines (`prompts/script.md`) or skills (`.agents/skills/`) before starting subsequent episodes.
+
 ## Research & Evidence Before Production
 Before writing factual narration or storyboard claims:
 1. Check current primary sources (standards, official technical documentation, original research) for claims that can change; use secondary sources to explain or cross-check them.
@@ -56,9 +63,10 @@ Before writing factual narration or storyboard claims:
 ## Golden Rules
 1. **Max Video Duration**: 3 minutes (180 seconds).
 2. **Rendering Time Budget**: Final video rendering time (Manim clips + Remotion composition + FFmpeg encoding) can take up to 30 minutes per video (not the total creation/workflow time).
-3. **Strict Language Division**:
-   - **Narration ONLY in Hindi**: Day-to-day conversational Hindi (बोलचाल की हिंदी / Hinglish) with VoiceStudio (`rajan story teller` profile). Spell all technical acronyms phonetically with hyphens (एन-पी-सी-आई, यू-पी-आई, क्यू-आर, ए-पी-आई, सी-बी-एस, एच-एस-एम) and large numbers naturally ("दस लाख", "सौ रुपये").
-   - **Designed visuals in English ONLY**: ALL designed on-screen text, titles, bullet points, labels, stats, compare tables, Manim node text, equations, telemetry, and diagrams MUST be strictly in English. Captions are a subtitle exception and display the approved Hindi narration verbatim in Devanagari; do not transliterate or rewrite it.
+3. **Mute-First Sound-Off Comprehension & Single Dynamic Caption Rule**:
+   - **Narration ONLY in Hindi**: Day-to-day conversational Hindi (बोलचाल की हिंदी / Hinglish) with VoiceStudio (`rajan story teller` profile). Spell all technical acronyms phonetically with hyphens (एन-पी-सी-आई, यू-पी-आई, क्यू-आर, ए-पी-आई, सी-बी-एस, एच-एस-एम) and large numbers naturally ("दस लाख", "सौ रुपये", "छत्तीस हज़ार").
+   - **Single Dynamic Captions ONLY (No Whole-Text Duplicate Boxes)**: Videos must display ONLY ONE caption track: the dynamic word-by-word active highlighted caption (`Captions.tsx`). Static whole-text caption boxes, action text cards, or beat overlay cards (`VisualBeatOverlay`) are permanently removed and strictly forbidden across all scenes to prevent duplicate subtitles. Captions display approved Hindi narration verbatim in Devanagari in punchy 2-3 word active windows.
+   - **Mute-First On-Screen Visuals**: Every noun, verb, and number in narration MUST be grounded in the primary visual diagram, 3D model, or kinetic telemetry. Technical formulas, architecture node labels, and standard acronyms remain in crisp English typography.
 4. **Storytelling Formula & Non-Technical Explanation Flow**:
    - Formula: `HOOK → PROBLEM → CURIOSITY → EXPLANATION → PAYOFF`.
    - Viewer psychology progression: "दर्शक के मन में सवाल" ➔ "वीडियो में क्या होगा".
@@ -83,6 +91,8 @@ Before writing factual narration or storyboard claims:
        - Fetch curated tech models: `python3 tools/model_manager.py get <smartphone|server_rack|shipping_container|credit_card|laptop> --topic <topic>`
        - Download any web model: `python3 tools/model_manager.py download <url> --topic <topic> --name <file>.glb`
        - Generate with AI: `python3 tools/model_manager.py generate "<prompt>" --topic <topic>` (requires `TRIPO_API_KEY` or `MESHY_API_KEY`)
+       - Direct Sketchfab API Ingestion: Use `SKETCHFAB_API_TOKEN` with `https://api.sketchfab.com/v3/search?type=models&q=...&downloadable=true` directly via REST curl/scripts instead of headless browser scraping. Save to `episodes/<id>/media/` and record CC attribution in `ATTRIBUTIONS.md`.
+       - Headless Blender Render Budgets: For CPU Cycles renders, default to **32 samples with OpenImageDenoise** (or Eevee for non-raytraced sequences) to keep 1080x1920 animation renders within 10-12 minutes for 150-300 frames. Always verify a single test frame (scale calibration, ground raycast alignment, camera framing) before starting multi-frame sequence renders.
    - **Extensibility**: Create a new Three.js component only when a physical metaphor materially improves understanding. Clear vector diagrams are valid explanatory visuals.
    - Camera movement, depth of field, volumetric lighting, bloom, particles, and SFX are optional tools. Use them only when motivated by the specific visual event; keep diagram geometry stable and legible.
    - Use a concise uppercase step tag (`tag`) when it helps orient the viewer; do not force a header onto scenes that read more clearly without one.
@@ -102,7 +112,58 @@ Before writing factual narration or storyboard claims:
      * **3D Saturation Limit**: Maximum **3 3D scenes** per 90-second short. 3D works best when punctuated by crisp editorial 2D diagrams.
      * **Engine Disambiguation**: Use `diagram` (Mermaid) for chronological handshakes/state machines; `architecture` for static systems; `neural_network_graph` for forward pass activations and backprop error flows; `stat` for a single bold number; `gauge` for values jumping A to B; `bento` for telemetry tiles; and `benchmark` for speed races. (See full matrix in `prompts/storyboard.md`).
    - **BIG Equation & Metric Fonts**: Equations, formulas, and primary statistics must be large, bold, and prominent (scaled to 75–85% screen width), paired with clean tracked uppercase sub-tags.
-   - **Optional Visual Skills**: The workspace exposes specialized skills for different tasks, but many are for websites, decks, illustrations, or other deliverables—not video scenes. Use a skill only when its stated purpose fits the episode and its instructions are available; read its `SKILL.md` and verify its output format, dependencies, and aspect-ratio support. A skill is an asset-authoring workflow, not automatically a storyboard scene type. Inspect its output and import/normalize rendered clips into the episode before use. Never assume every skill supports 9:16 or is needed.
+   - **Pipeline Skills Integration Matrix (Stage-by-Stage Usage)**:
+     The workspace exposes specialized skills for distinct stages of the video production pipeline. Use each skill when its stated capability matches the production phase:
+     * **Stage 1 (Research & Ideation / Scripting)**:
+       - `bs-project-knowledge-graph`: Ingest technical whitepapers/RFCs into entity, relation, and dependency maps to guarantee causal accuracy.
+       - `bs-interactive-system-map`: Trace architectural dataflows, network handshakes, and lifecycle state machines before scripting.
+       - `bs-consulting-storyline-deck` / `bs-article-brief-deck`: Structure the pedagogical spine (`HOOK → PROBLEM → CURIOSITY → EXPLANATION → PAYOFF`).
+     * **Stage 2 (Storyboard Architecture & Scene Asset Authoring)**:
+       - **Remotion Core Suite**:
+         * `remotion-best-practices`: Scene timeline architecture, frame rates, composition memoization, and vertical 9:16 layout guidelines.
+         * `remotion-markup`: Responsive flex/grid containers, strict typographic scale, and mobile safe zones (top 180px, bottom 350px).
+         * `remotion-maps`: Procedural map animations for geographic routing (undersea cables, satellite downlinks, datacenters).
+       - **Three.js WebGL & 3D Shaders Suite (`cloudai-x/threejs-skills`)**:
+         * `threejs-animation` & `threejs-shaders`: WebGL loss landscapes, procedural noise, glowing vertex paths, and GLSL pulse waves.
+         * `threejs-lighting` & `threejs-materials`: Realistic PBR materials, neon emissive shaders, volumetric studio rim lighting.
+         * `threejs-loaders` & `threejs-asset-pipeline`: Loading and optimizing CAD `.glb` models into `ThreeScene.tsx`.
+         * `threejs-geometry` & `threejs-performance`: Procedural buffer geometries, instancing, and GPU draw-call budgeting.
+       - **Manim Mathematical Animation Suite (`adithya-s-k/manim_skill`)**:
+         * `manimce-best-practices`: Clean mathematical derivations, vector fields, and transformation rates.
+         * `manim-composer`: Scripting modular ManimCE scenes rendered to intermediate clips under `episodes/<id>/media/`.
+         * `manimgl-best-practices`: OpenGL hardware-accelerated scientific visualizers.
+       - **Headless Blender 3D Suite (`roble3/cc-blender-skill`)**:
+         * `blender-rendering`: Cycles denoised headless rendering (32 samples with OpenImageDenoise).
+         * `blender-lighting` & `blender-cameras`: Procedural studio lighting, 40mm chase cameras, depth of field.
+         * `blender-animation` & `blender-pro-workflow`: Vehicle wheel-spin keyframing, banking physics, curve trajectories.
+         * `reference-to-3d` & `text-to-blender`: Converting technical reference sketches into physical 3D mesh assets.
+       - **Algorithm & Data Structure Explainer Suite**:
+         * `dsa-visualizer-standards`: 4-tier vertical information architecture (Header, SVG Hero Canvas, Dual Telemetry with LIFO/FIFO Stack/Queue, Output Container Slots + Executing Code) with native SVG `<feDropShadow>` filter glows for Trees, Graphs, Sorting, and Dynamic Programming.
+       - **Creative Vector & Sketchnote Assets**:
+         * `bs-chalkboard-infographic`: Hand-drawn chalkboard infographics formatted for 9:16 vertical shorts (directly powers `whiteboard` scene type).
+         * `bs-claude-style-illustration`: Editorial visual metaphors saved to `episodes/<id>/media/` for `image` scenes.
+         * `bs-hand-drawn-visual-notes`: Visual sketchnotes and technical whiteboard diagrams.
+         * `bs-creatormotion-type-title-takeover`: Punchy kinetic typography takeovers for high-impact hook/problem scenes.
+         * `bs-creatormotion-cards-action-checklist`: Action checklist tracking step-by-step algorithms and protocol steps.
+       - **Launch & Kinetic Stings (`bs-hyperframes-*`)**:
+         * `bs-hyperframes-code-change-launch`: Fast-scrolling code diffs for `code` and `terminal` scenes.
+         * `bs-hyperframes-device-canvas-launch`: Studio phone/laptop screen zoom transitions for `screenshot` and `product` scenes.
+         * `bs-hyperframes-chat-to-result-launch`: AI prompt typing + answer streaming for LLM/AI explainers.
+         * `bs-hyperframes-velocity-sting`: Velocity-matched continuous camera cuts across scenes.
+       - **Persona Avatars**: `bs-dot-avatar-maker` / `bs-grokbot-avatar` / `bs-monochrome-studio-portrait` for `interview` scene speakers (`INTERVIEWER`, `YOU`, `ENGINEER`).
+     * **Stage 3 (Narration, Audio Synchronization & Captions)**:
+       - `remotion-captions`: Word-by-word active highlighted Devanagari captions in `src/Captions.tsx`, active word pulse scaling (1.12x), and timestamp sync.
+       - `remotion-multimedia`: Audio mixing, dynamic sidechain ducking (to 35% during speech), sound effects layering (`public/sfx/`), and format handling.
+     * **Stage 4 (Dev Preview & Inspection)**:
+       - `remotion-studio`: Live visual inspection in Remotion Studio via `npm start` or `--preview`.
+       - `remotion-interactivity`: Timeline scrubbing, frame stepping, and component inspection during preview.
+     * **Stage 5 (Headless Production Rendering & Verification)**:
+       - `remotion-render`: Headless Remotion CLI rendering flags (`--concurrency`, `--gl=angle`, caching, memory limits).
+       - `remotion-upgrade`: Safe dependency updates for Remotion packages and engine tools.
+       - `animation-quality-gate`: Enforcing frame continuity, zero dropped frames, and resolution scaling.
+     * **Stage 6 (Packaging, Thumbnails & Browser Publishing Distribution)**:
+       - `bs-linktree-style-og` / `bs-notion-style-og`: High-CTR YouTube Shorts cover cards and social preview thumbnails saved into `episodes/<id>/media/thumbnail.png`.
+       - `playwright-cli` (`microsoft/playwright-cli`): Automated browser publishing workflows across YouTube Shorts, Telegram, 𝕏/Twitter, LinkedIn, Threads, Facebook Reels, and Instagram Reels using Microsoft Edge.
    - Motion and transitions must clarify the sequence; do not force a beat animation, camera move, particle, or glow when a stable hold communicates better.
    - Keep a coherent palette and type hierarchy; prioritize high contrast, whitespace, and focused English labels over decorative atmosphere.
 6. **Sound Design & Procedural Audio FX (19-Sound Local Library)**:
@@ -262,6 +323,14 @@ Before writing factual narration or storyboard claims:
       | **Voiceover / Narration** | Spoken Audio | **VoiceStudio** (`rajan story teller`) | **Edge-TTS** (`hi-IN-MadhurNeural`) | `tts.py` | Natural conversational Hindi with phonetic acronyms. |
       | **Micro Sound Design** | Frame-Accurate SFX | **Local 19-Sound Library** (`public/sfx/`) | **Freesound API** | Built-in SFX engine | Accentuates transitions, alerts, scans, and metric drops without clutter. |
       | **Mobile Subtitles / Captions** | Word-Level Highlighting | **Whisper / Faster-Whisper** | Pre-timed timestamps | `Captions.tsx` | High-retention active word pop with safe-zone clearance. |
+21. **Asset-First Pipeline Contract (Mandatory Asset Pre-Fetch — Assets Before Animation)**:
+    - **Core Directive**: Never begin animating or rendering 3D or 2D scenes representing physical objects without downloading and securing the authentic asset in `episodes/<id>/media/` FIRST.
+    - **Enforcement Protocol**:
+      1. **Pre-Fetch Before Animation**: Whenever a storyboard features real physical entities (smartphones, earbuds, laptops, server racks, credit cards, vehicles, hardware), agents and compilers MUST query and download authentic assets (3D `.glb` models, 2D transparent PNG cutouts, SVG vector icons) into `episodes/<id>/media/` prior to any rendering or animation coding.
+      2. **Strict Ban on Stand-In Procedural Primitives**: Never use bare boxes, cubes, cylinders, or generic `div`s to simulate real physical devices. Real objects must be loaded from authentic `.glb` models (`ThreeDModelViewer` / `model_3d`) or high-resolution transparent PNG cutouts (`ProductScene`).
+      3. **Procedural Motion Graphics Layering**: Procedural code is strictly reserved for *motion graphics layered around real assets* (wavefronts, signal lines, packets, telemetry, HUDs, charts, math graphs), NOT for replacing real physical objects with generic boxes and spheres.
+      4. **Mandatory Automated Asset Resolution**: Multi-agent workflows must always execute `python3 tools/asset_finder.py resolve episodes/<id>/storyboard.json` to guarantee all assets exist on disk before triggering video rendering.
+      5. **Zero-Missing-Asset Gate**: The pipeline (`validate.py` and `tools/generate_video.py`) will strictly fail and abort if an asset declared in a scene is missing on disk.
 
 ## Workflow & QA Commands
 - **Asset Acquisition & Licensing**:

@@ -45,9 +45,11 @@ import re
 import shutil
 import subprocess
 import sys
+import threading
 import urllib.error
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
 
@@ -576,13 +578,28 @@ def search_image(
 # ==============================================================================
 # Vector Icon Search & Downloader (Iconify API / Lucide)
 # ==============================================================================
+ICON_ALIASES = {
+    "cube": "box",
+    "gear": "settings",
+    "cog": "settings",
+    "cellphone": "smartphone",
+    "sound": "volume-2",
+    "audio": "volume-2",
+    "headset": "headphones",
+    "tick": "check",
+    "lock-closed": "lock",
+    "warning": "alert-triangle",
+    "workflow": "git-merge",
+}
+
 def search_icon(name: str, out_path: Path = None, topic: str = None, color: str = "#00F0FF", collection: str = "lucide") -> dict:
     """
-    Downloads vector SVG icon from Iconify API (Lucide, Simple Icons, Material, etc.).
+    Downloads vector SVG icon from Iconify API (Lucide, Tabler, Material Design).
+    Features alias resolution and graceful fallback across icon sets.
     """
     clean_name = name.lower().replace(" ", "-")
+    resolved_name = ICON_ALIASES.get(clean_name, clean_name)
     encoded_color = urllib.parse.quote(color)
-    url = f"https://api.iconify.design/{collection}:{clean_name}.svg?color={encoded_color}"
 
     if not out_path:
         target_dir = (ROOT / "episodes" / topic / "media") if topic else (ROOT / "scratch" / "icons")
@@ -591,8 +608,24 @@ def search_icon(name: str, out_path: Path = None, topic: str = None, color: str 
         out_path = Path(out_path)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    print(f"Fetching vector icon '{name}' from Iconify ({collection}) -> {out_path}...")
-    download_file(url, out_path)
+    
+    # Try preferred collection first, then fallbacks
+    collections_to_try = [collection, "tabler", "mdi"]
+    downloaded = False
+    last_err = None
+
+    for col in collections_to_try:
+        url = f"https://api.iconify.design/{col}/{resolved_name}.svg?color={encoded_color}"
+        try:
+            print(f"Fetching vector icon '{name}' from Iconify ({col}) -> {out_path}...")
+            download_file(url, out_path)
+            downloaded = True
+            break
+        except Exception as e:
+            last_err = e
+
+    if not downloaded:
+        raise last_err or RuntimeError(f"Could not download icon '{name}' from any collection")
 
     rel_path = f"media/{out_path.name}"
     return {
@@ -970,10 +1003,300 @@ def search_sfx(query: str, out_path: Path = None, provider: str = "auto") -> dic
 # ==============================================================================
 # Storyboard Asset Resolution
 # ==============================================================================
+def clean_asset_query(text: str, fallback: str = "technology") -> str:
+    """Sanitizes noise, step tags, punctuation, and non-visual filler words for high search precision."""
+    if not text:
+        return fallback
+    # 1. Strip step prefix (01 / , STEP 2:, etc.)
+    t = re.sub(r"^\s*(?:\d+\s*[/•-]\s*|step\s*\d+\s*[:/-]\s*)", "", str(text), flags=re.IGNORECASE)
+    # 2. Strip noise punctuation
+    t = re.sub(r"[•→\-:!?|/*\"#~`]+", " ", t)
+    # 3. Strip Devanagari and non-ASCII characters
+    t = re.sub(r"[^\x00-\x7F]+", " ", t)
+    # 4. Strip filler phrases
+    fillers = [
+        r"\b(?:so how|no cable|the mystery of|miracle of|how does it work|how it works|explained|why|what is)\b",
+        r"\b(?:3d|2d|isometric|animated|realistic)\b"
+    ]
+    for fil in fillers:
+        t = re.sub(fil, " ", t, flags=re.IGNORECASE)
+    t = re.sub(r"\s+", " ", t).strip()
+    return t if len(t) >= 3 else fallback
+
+
+REAL_OBJECT_PRESETS = {
+    "smartphone": ["smartphone", "phone", "mobile", "iphone", "android", "cell phone"],
+    "earbuds": ["earbud", "earbuds", "earphone", "earphones", "headphone", "headphones", "airpods", "headset"],
+    "credit_card": ["credit card", "debit card", "smart card", "atm card", "bank card", "emv card"],
+    "server_rack": ["server rack", "datacenter", "server", "cluster", "blade server"],
+    "shipping_container": ["shipping container", "container", "cargo container", "docker container"],
+    "laptop": ["laptop", "macbook", "notebook", "computer", "pc", "workstation"],
+    "car": ["car", "vehicle", "automobile", "tesla", "roadster"],
+    "barrier_gate": ["barrier", "toll barrier", "boom barrier", "gate barrier"],
+    "rfid_reader": ["rfid reader", "rfid scanner", "gantry scanner"],
+    "human": ["human", "person", "pedestrian", "engineer"],
+    "duck": ["duck", "toy duck"],
+    "cube": ["cube", "box primitive", "data packet container"]
+}
+
+
+def resolve_single_scene(
+    s: dict,
+    idx: int,
+    episode_dir: Path | None,
+    media_dir: Path,
+    vid: str,
+    accent: str,
+    force: bool,
+    dry_run: bool,
+    attr_lock: threading.Lock,
+) -> bool:
+    """Resolves all assets required by a single scene across every supported scene type."""
+    stype = s.get("type", "scene")
+    tag = s.get("tag", f"Scene {idx}")
+    vis_objs = s.get("visual", {}).get("objects", [])
+    primary_obj = clean_asset_query(vis_objs[0]) if (vis_objs and isinstance(vis_objs, list)) else ""
+    scene_title = clean_asset_query(s.get("title", ""))
+    variant = str(s.get("variant", ""))
+    modified = False
+
+    # 1. GenAI Image Generation (Pollinations.ai)
+    if s.get("generate_image"):
+        prompt = s["generate_image"]
+        slug = slugify(prompt)
+        target_file = media_dir / f"{slug}.jpg"
+        if target_file.exists() and not force:
+            s["image"] = f"media/{target_file.name}"
+            modified = True
+        elif not dry_run:
+            try:
+                res = generate_pollinations_image(prompt, out_path=target_file, topic=vid)
+                s["image"] = f"media/{target_file.name}"
+                modified = True
+                if episode_dir:
+                    with attr_lock:
+                        record_attribution(episode_dir, f"media/{target_file.name}", res)
+                print(f"  [{tag}] Resolved GenAI image -> {s['image']}")
+            except Exception as e:
+                print(f"  [{tag}] Error generating GenAI image: {e}")
+
+    # 2. 2D Cutouts, Product Hardware & Editorial Images
+    # Supports: product, image, hook, screenshot, whiteboard, amazon_shopping, quick_commerce, aadhaar, emudhra
+    cutout_types = ("product", "amazon_shopping", "quick_commerce", "aadhaar", "aadhaar_visualizer", "emudhra_visualizer")
+    image_types = ("image", "hook", "screenshot", "whiteboard", "depth_parallax") + cutout_types
+
+    if s.get("search_image") or (stype in image_types and not s.get("image")):
+        raw_query = s.get("search_image") or primary_obj or scene_title or vid.replace("-", " ")
+        query = clean_asset_query(raw_query)
+        slug = slugify(query)
+        is_cutout = (stype in cutout_types) or s.get("nobg", False)
+        target_ext = ".png" if is_cutout else ".jpg"
+        target_file = media_dir / f"{slug}{target_ext}"
+
+        if target_file.exists() and not force:
+            s["image"] = f"media/{target_file.name}"
+            modified = True
+        elif not dry_run:
+            try:
+                # Fast cross-episode local asset cache check
+                cached_local = None
+                ep_root = ROOT / "episodes"
+                if ep_root.is_dir():
+                    for past_ep in ep_root.iterdir():
+                        if not past_ep.is_dir() or past_ep.name == vid:
+                            continue
+                        cand = past_ep / "media" / target_file.name
+                        if cand.is_file():
+                            cached_local = cand
+                            break
+                if cached_local and cached_local.is_file():
+                    target_file.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy(cached_local, target_file)
+                    s["image"] = f"media/{target_file.name}"
+                    modified = True
+                    print(f"  [{tag}] Resolved image ({'cutout' if is_cutout else 'photo'}) from local episode cache -> {s['image']}")
+                else:
+                    provider = s.get("image_provider", "auto")
+                    search_term = f"{query} tech hardware" if is_cutout else query
+                    res = search_image(search_term, out_path=target_file, topic=vid, provider=provider, nobg=is_cutout)
+                    s["image"] = f"media/{target_file.name}"
+                    modified = True
+                    if episode_dir:
+                        with attr_lock:
+                            record_attribution(episode_dir, f"media/{target_file.name}", res)
+                    print(f"  [{tag}] Resolved image ({'cutout' if is_cutout else 'photo'}) -> {s['image']}")
+            except Exception as e:
+                print(f"  [{tag}] Error resolving image: {e}")
+
+    # 3. Stock Footage & B-Roll Video (MP4)
+    if s.get("search_video") or (stype == "video" and not s.get("video")):
+        raw_query = s.get("search_video") or primary_obj or scene_title or "technology"
+        query = clean_asset_query(raw_query)
+        slug = slugify(query)
+        target_file = media_dir / f"{slug}.mp4"
+
+        if target_file.exists() and not force:
+            s["video"] = f"media/{target_file.name}"
+            modified = True
+        elif not dry_run:
+            try:
+                v_provider = s.get("video_provider", "auto")
+                res = search_video(query, out_path=target_file, topic=vid, provider=v_provider)
+                s["video"] = f"media/{target_file.name}"
+                modified = True
+                if episode_dir:
+                    with attr_lock:
+                        record_attribution(episode_dir, f"media/{target_file.name}", res)
+                print(f"  [{tag}] Resolved 9:16 stock video B-roll -> {s['video']}")
+            except Exception as e:
+                print(f"  [{tag}] Error resolving video B-roll: {e}")
+
+    # 4. Diagram & Architecture Rendering
+    if stype == "diagram" and not s.get("diagram"):
+        if s.get("mermaid") or s.get("graphviz"):
+            diag_slug = slugify(scene_title or f"diagram_{idx}")
+            target_diag = media_dir / f"{diag_slug}.svg"
+            if not target_diag.exists() and not dry_run:
+                try:
+                    diag_renderer = ROOT / "tools" / "diagram_renderer.py"
+                    if s.get("mermaid"):
+                        cmd = [sys.executable, str(diag_renderer), "--type", "mermaid", "--code", s["mermaid"], "--out", str(target_diag)]
+                    else:
+                        cmd = [sys.executable, str(diag_renderer), "--type", "graphviz", "--code", s["graphviz"], "--out", str(target_diag)]
+                    sub_p = subprocess.run(cmd, capture_output=True, text=True)
+                    if sub_p.returncode == 0 and target_diag.exists():
+                        s["diagram"] = f"media/{target_diag.name}"
+                        modified = True
+                        print(f"  [{tag}] Rendered vector diagram -> {s['diagram']}")
+                except Exception as e:
+                    print(f"  [{tag}] Error rendering diagram: {e}")
+
+    # 5. Universal Vector Icon Resolution (for ALL analytical and narrative scenes)
+    if s.get("search_icon") or (s.get("icon") and not s.get("icon_path")):
+        raw_icon = s.get("search_icon") or s.get("icon")
+        clean_icon = clean_asset_query(str(raw_icon)).replace(" ", "-").lower()
+        target_icon = media_dir / f"{clean_icon}.svg"
+        if not target_icon.exists() and not dry_run:
+            try:
+                res = search_icon(clean_icon, out_path=target_icon, topic=vid, color=accent)
+                s["icon_path"] = f"media/{target_icon.name}"
+                modified = True
+                if episode_dir:
+                    with attr_lock:
+                        record_attribution(episode_dir, f"media/{target_icon.name}", res)
+                print(f"  [{tag}] Resolved vector icon -> {s['icon_path']}")
+            except Exception as e:
+                print(f"  [{tag}] Error resolving icon '{clean_icon}': {e}")
+        elif target_icon.exists():
+            s["icon_path"] = f"media/{target_icon.name}"
+            modified = True
+
+    # 6. Universal Sound Effects Resolution (for ALL scene types)
+    if s.get("search_sfx"):
+        sfx_query = clean_asset_query(s["search_sfx"])
+        if not dry_run:
+            try:
+                res = search_sfx(sfx_query)
+                s["sfx"] = res["name"]
+                modified = True
+                if episode_dir:
+                    with attr_lock:
+                        record_attribution(episode_dir, f"sfx/{res['name']}.wav", res)
+                print(f"  [{tag}] Resolved SFX -> {s['sfx']}")
+            except Exception as e:
+                print(f"  [{tag}] Error resolving SFX: {e}")
+
+    # 7. 3D CAD Model Resolution (Asset-First Contract)
+    # Supports: three, refrigerator, air_conditioner, tesla_roadster_visualizer, or any variant ending in _3d
+    three_candidate = (stype == "three") or variant.endswith("_3d") or bool(s.get("search_model"))
+    if three_candidate and not s.get("model"):
+        model_url = str(s.get("model", ""))
+        if model_url.startswith(("http://", "https://")) or "sketchfab.com" in model_url:
+            if not dry_run:
+                try:
+                    model_mgr = ROOT / "tools" / "model_manager.py"
+                    cmd = [sys.executable, str(model_mgr), "download", model_url, "--topic", vid]
+                    sub_proc = subprocess.run(cmd, capture_output=True, text=True)
+                    if sub_proc.returncode == 0:
+                        slug_match = re.search(r"/3d-models/([a-zA-Z0-9_-]+)-[0-9a-fA-F]{32}", model_url)
+                        final_name = (slug_match.group(1).replace("-", "_") + ".glb") if slug_match else Path(model_url.split("?")[0]).name
+                        if not final_name.endswith((".glb", ".gltf")):
+                            final_name += ".glb"
+                        s["model"] = f"media/{final_name}"
+                        modified = True
+                        print(f"  [{tag}] Auto-downloaded 3D model -> {s['model']}")
+                except Exception as e:
+                    print(f"  [{tag}] Error auto-downloading 3D model: {e}")
+        else:
+            model_query = s.get("search_model")
+            if not model_query:
+                combined_desc = f"{scene_title} {primary_obj} {variant}".lower()
+                for preset_name, kw_list in REAL_OBJECT_PRESETS.items():
+                    if any(re.search(r"\b" + re.escape(kw) + r"\b", combined_desc) for kw in kw_list):
+                        model_query = preset_name
+                        break
+
+            if model_query or variant in ("model_3d", "gltf_model", "model_viewer_3d"):
+                target_query = model_query or primary_obj or scene_title or "tech_object"
+                slug = slugify(target_query)
+                target_file = (episode_dir / "media" / f"{slug}.glb") if episode_dir else (ROOT / "public" / "models" / vid / f"{slug}.glb")
+
+                if target_file.exists() and not force:
+                    s["model"] = f"media/{target_file.name}"
+                    modified = True
+                elif not dry_run:
+                    try:
+                        # Fast Local Catalog Check first
+                        local_gen = ROOT / "public" / "models" / "general" / f"{slug}.glb"
+                        preset_match = next((p for p in REAL_OBJECT_PRESETS if p in slug or slug in p), None)
+                        if not local_gen.exists() and preset_match:
+                            local_gen = ROOT / "public" / "models" / "general" / f"{preset_match}.glb"
+
+                        # Fast cross-episode check
+                        if not local_gen.exists() and (ROOT / "episodes").is_dir():
+                            for past_ep in (ROOT / "episodes").iterdir():
+                                if not past_ep.is_dir() or past_ep.name == vid:
+                                    continue
+                                cand = past_ep / "media" / f"{slug}.glb"
+                                if cand.is_file():
+                                    local_gen = cand
+                                    break
+                                if preset_match:
+                                    cand_p = past_ep / "media" / f"{preset_match}.glb"
+                                    if cand_p.is_file():
+                                        local_gen = cand_p
+                                        break
+
+                        if local_gen.exists():
+                            target_file.parent.mkdir(parents=True, exist_ok=True)
+                            shutil.copy(local_gen, target_file)
+                            s["model"] = f"media/{target_file.name}"
+                            modified = True
+                            print(f"  [{tag}] Resolved local 3D model from shared/episode catalog -> {s['model']}")
+                        else:
+                            model_mgr = ROOT / "tools" / "model_manager.py"
+                            if preset_match:
+                                cmd = [sys.executable, str(model_mgr), "get", preset_match, "--topic", vid, "--name", f"{slug}.glb"]
+                            elif os.environ.get("TRIPO_API_KEY"):
+                                cmd = [sys.executable, str(model_mgr), "generate", target_query, "--topic", vid, "--name", f"{slug}.glb"]
+                            else:
+                                cmd = [sys.executable, str(model_mgr), "get", "cube", "--topic", vid, "--name", f"{slug}.glb"]
+                            sub_proc = subprocess.run(cmd, capture_output=True, text=True)
+                            if sub_proc.returncode == 0 and target_file.exists():
+                                s["model"] = f"media/{target_file.name}"
+                                modified = True
+                                print(f"  [{tag}] Resolved 3D model -> {s['model']}")
+                    except Exception as e:
+                        print(f"  [{tag}] Error resolving 3D model: {e}")
+
+    return modified
+
+
 def resolve_spec_assets(spec_path: Path, force: bool = False, dry_run: bool = False) -> bool:
     """
-    Scans a storyboard JSON or episode directory, resolves all search_* / generate_*
-    directives and missing assets by downloading them into place and updating attributions.
+    High-efficiency parallel asset resolution across all storyboard stages and scenes.
+    Scans every scene type, pre-fetches 3D models, cutouts, B-roll, icons, and audio,
+    and updates the licensing ledger before rendering begins.
     """
     spec_path = Path(spec_path)
     if spec_path.is_dir():
@@ -985,176 +1308,92 @@ def resolve_spec_assets(spec_path: Path, force: bool = False, dry_run: bool = Fa
 
     data = json.loads(spec_path.read_text(encoding="utf-8"))
     vid = data.get("id") or spec_path.parent.name
+    accent = data.get("accent", "#00F0FF")
     episode_dir = spec_path.parent if (spec_path.parent / "storyboard.json").exists() else None
     media_dir = (episode_dir / "media") if episode_dir else (ROOT / "episodes" / vid / "media")
     media_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"\n=======================================================")
-    print(f"Asset Auto-Resolution for Episode: [{vid}]")
+    print(f"🚀 High-Efficiency Asset Resolver: [{vid}]")
     print(f"Target Media Directory: {media_dir}")
     print(f"=======================================================")
 
     modified = False
+    attr_lock = threading.Lock()
+
+    # -------------------------------------------------------------
+    # Stage 1: Top-Level Audio (Background Music)
+    # -------------------------------------------------------------
+    music_val = data.get("music")
+    if music_val in (None, "none", ""):
+        default_music = ROOT / "public" / "music" / "warm_focus.mp3"
+        if default_music.exists():
+            data["music"] = "public/music/warm_focus.mp3"
+            modified = True
+            print("  [Stage 1] Bound default background music -> public/music/warm_focus.mp3")
+
+    # -------------------------------------------------------------
+    # Stage 2: Top-Level Cover Thumbnail Artwork
+    # -------------------------------------------------------------
+    cover_file = media_dir / "cover.jpg"
+    if not cover_file.exists() and episode_dir and not dry_run:
+        try:
+            cover_prompt = f"{data.get('meta', {}).get('title', vid)} high quality 3d technological cinematic lighting youtube thumbnail"
+            generate_pollinations_image(cover_prompt, out_path=cover_file, topic=vid, width=1080, height=1920)
+            print(f"  [Stage 2] Synthesized high-CTR cover background -> media/cover.jpg")
+        except Exception as e:
+            print(f"  [Stage 2 Warning] Cover artwork generation skipped: {e}")
+
+    # -------------------------------------------------------------
+    # Stage 3: Multi-Threaded Parallel Scene Resolution
+    # -------------------------------------------------------------
     scenes = data.get("scenes", [])
+    with ThreadPoolExecutor(max_workers=6) as executor:
+        futures = {
+            executor.submit(
+                resolve_single_scene,
+                scene,
+                idx,
+                episode_dir,
+                media_dir,
+                vid,
+                accent,
+                force,
+                dry_run,
+                attr_lock,
+            ): idx
+            for idx, scene in enumerate(scenes, 1)
+        }
 
-    for i, s in enumerate(scenes, 1):
-        stype = s.get("type")
-        tag = s.get("tag", f"Scene {i}")
-
-        # 1. GenAI Image Resolution (Pollinations.ai)
-        if s.get("generate_image"):
-            prompt = s["generate_image"]
-            slug = slugify(prompt)
-            target_file = media_dir / f"{slug}.jpg"
-            if target_file.exists() and not force:
-                print(f"[{tag}] Using cached GenAI image: {target_file.name}")
-            else:
-                if dry_run:
-                    print(f"[{tag}] WOULD generate image via Pollinations: '{prompt}'")
-                else:
-                    try:
-                        res = generate_pollinations_image(prompt, out_path=target_file, topic=vid)
-                        s["image"] = f"media/{target_file.name}"
-                        modified = True
-                        if episode_dir:
-                            record_attribution(episode_dir, f"media/{target_file.name}", res)
-                        print(f"  [{tag}] Resolved GenAI image -> {s['image']}")
-                    except Exception as e:
-                        print(f"  [{tag}] Error generating image: {e}")
-
-        # 2. Image Search Resolution
-        elif s.get("search_image") or (stype == "image" and not s.get("image")):
-            query = s.get("search_image") or s.get("title") or (s.get("visual", {}).get("objects", ["tech"])[0])
-            slug = slugify(query)
-            target_file = media_dir / f"{slug}.jpg"
-
-            if target_file.exists() and not force:
-                print(f"[{tag}] Using cached image: {target_file.name}")
-            else:
-                if dry_run:
-                    print(f"[{tag}] WOULD search and download image: '{query}'")
-                else:
-                    try:
-                        provider = s.get("image_provider", "auto")
-                        res = search_image(query, out_path=target_file, topic=vid, provider=provider)
-                        s["image"] = f"media/{target_file.name}"
-                        modified = True
-                        if episode_dir:
-                            record_attribution(episode_dir, f"media/{target_file.name}", res)
-                        print(f"  [{tag}] Resolved image -> {s['image']}")
-                    except Exception as e:
-                        print(f"  [{tag}] Error resolving image: {e}")
-
-        # 3. Vector Icon Resolution
-        if s.get("search_icon") or (s.get("icon") and s.get("icon").endswith(".svg")):
-            icon_query = s.get("search_icon") or s.get("icon")
-            slug = slugify(icon_query)
-            target_file = media_dir / f"{slug}.svg"
-            if not target_file.exists() and not dry_run:
-                try:
-                    res = search_icon(icon_query, out_path=target_file, topic=vid)
-                    s["icon_path"] = f"media/{target_file.name}"
+        for future in as_completed(futures):
+            try:
+                scene_modified = future.result()
+                if scene_modified:
                     modified = True
-                    if episode_dir:
-                        record_attribution(episode_dir, f"media/{target_file.name}", res)
-                    print(f"  [{tag}] Resolved vector icon -> {s['icon_path']}")
-                except Exception as e:
-                    print(f"  [{tag}] Error resolving icon: {e}")
+            except Exception as e:
+                print(f"  [Worker Error] Scene asset resolution exception: {e}")
 
-        # 4. Video B-Roll Search Resolution
-        if s.get("search_video") or (stype == "video" and not s.get("video")):
-            query = s.get("search_video") or s.get("title") or "technology network"
-            slug = slugify(query)
-            target_file = media_dir / f"{slug}.mp4"
+    # -------------------------------------------------------------
+    # Stage 4: Asset-First Verification Ledger
+    # -------------------------------------------------------------
+    print("\n🛡️  Asset-First Verification Summary:")
+    missing_spec_assets = []
+    for s in data.get("scenes", []):
+        stag = s.get("tag", "Scene")
+        for k in ("model", "image", "video", "icon_path"):
+            val = s.get(k)
+            if val and isinstance(val, str) and not val.startswith(("http://", "https://")):
+                fp = (episode_dir / val) if not Path(val).is_absolute() else Path(val)
+                alt_p = ROOT / "public" / val
+                if not fp.exists() and not alt_p.exists():
+                    missing_spec_assets.append(f"[{stag}] {k}: {val}")
 
-            if target_file.exists() and not force:
-                print(f"[{tag}] Using cached video: {target_file.name}")
-            else:
-                if dry_run:
-                    print(f"[{tag}] WOULD search and download video B-roll: '{query}'")
-                else:
-                    try:
-                        v_provider = s.get("video_provider", "auto")
-                        res = search_video(query, out_path=target_file, topic=vid, provider=v_provider)
-                        s["video"] = f"media/{target_file.name}"
-                        modified = True
-                        if episode_dir:
-                            record_attribution(episode_dir, f"media/{target_file.name}", res)
-                        print(f"  [{tag}] Resolved video -> {s['video']}")
-                    except Exception as e:
-                        print(f"  [{tag}] Error resolving video: {e}")
-
-        # 5. SFX Resolution
-        if s.get("search_sfx"):
-            query = s["search_sfx"]
-            if dry_run:
-                print(f"[{tag}] WOULD search SFX: '{query}'")
-            else:
-                try:
-                    res = search_sfx(query)
-                    s["sfx"] = res["name"]
-                    modified = True
-                    if episode_dir:
-                        record_attribution(episode_dir, f"sfx/{res['name']}.wav", res)
-                    print(f"  [{tag}] Resolved SFX -> {s['sfx']}")
-                except Exception as e:
-                    print(f"  [{tag}] Error resolving SFX: {e}")
-
-        # 6. 3D Model Resolution (Hook to model_manager.py)
-        model_url = s.get("model", "")
-        if isinstance(model_url, str) and (model_url.startswith("http://") or model_url.startswith("https://") or "sketchfab.com" in model_url):
-            if dry_run:
-                print(f"[{tag}] WOULD auto-download 3D model from URL: '{model_url}'")
-            else:
-                try:
-                    model_mgr = ROOT / "tools" / "model_manager.py"
-                    cmd = [sys.executable, str(model_mgr), "download", model_url, "--topic", vid]
-                    sub_proc = subprocess.run(cmd, capture_output=True, text=True)
-                    if sub_proc.returncode == 0:
-                        slug_match = re.search(r"/3d-models/([a-zA-Z0-9_-]+)-[0-9a-fA-F]{32}", model_url)
-                        if slug_match:
-                            final_name = slug_match.group(1).replace("-", "_") + ".glb"
-                        else:
-                            final_name = Path(model_url.split("?")[0]).name
-                            if not final_name.endswith((".glb", ".gltf")):
-                                final_name += ".glb"
-                        s["model"] = f"media/{final_name}"
-                        modified = True
-                        print(f"  [{tag}] Auto-downloaded 3D model -> {s['model']}")
-                    else:
-                        print(f"  [{tag}] 3D model download output: {sub_proc.stdout.strip() or sub_proc.stderr.strip()}")
-                except Exception as e:
-                    print(f"  [{tag}] Error auto-downloading 3D model: {e}")
-
-        elif s.get("search_model") or (stype == "three" and s.get("variant") == "model_3d" and not s.get("model")):
-            query = s.get("search_model") or s.get("title") or "tech object"
-            slug = slugify(query)
-            target_file = (episode_dir / "media" / f"{slug}.glb") if episode_dir else (ROOT / "public" / "models" / vid / f"{slug}.glb")
-            if target_file.exists() and not force:
-                print(f"[{tag}] Using cached 3D model: {target_file.name}")
-                s["model"] = f"media/{target_file.name}"
-                modified = True
-            else:
-                if dry_run:
-                    print(f"[{tag}] WOULD fetch/generate 3D model: '{query}'")
-                else:
-                    try:
-                        model_mgr = ROOT / "tools" / "model_manager.py"
-                        presets = ["smartphone", "credit_card", "server_rack", "shipping_container", "laptop", "duck", "cube"]
-                        preset_match = next((p for p in presets if p in slug or slug in p), None)
-                        if preset_match:
-                            cmd = [sys.executable, str(model_mgr), "get", preset_match, "--topic", vid, "--name", f"{slug}.glb"]
-                        elif os.environ.get("TRIPO_API_KEY"):
-                            cmd = [sys.executable, str(model_mgr), "generate", query, "--topic", vid, "--name", f"{slug}.glb"]
-                        else:
-                            cmd = [sys.executable, str(model_mgr), "get", "cube", "--topic", vid, "--name", f"{slug}.glb"]
-                        sub_proc = subprocess.run(cmd, capture_output=True, text=True)
-                        if sub_proc.returncode == 0 and target_file.exists():
-                            s["model"] = f"media/{target_file.name}"
-                            modified = True
-                            print(f"  [{tag}] Resolved 3D model -> {s['model']}")
-                    except Exception as e:
-                        print(f"  [{tag}] Error resolving 3D model: {e}")
+    if missing_spec_assets:
+        print("⚠️  Warning: The following assets could not be resolved on disk:")
+        for m in missing_spec_assets:
+            print(f"   - {m}")
+    else:
+        print("✅ All scene assets successfully resolved and verified in media/.")
 
     if modified and not dry_run:
         backup = spec_path.with_suffix(".json.bak")

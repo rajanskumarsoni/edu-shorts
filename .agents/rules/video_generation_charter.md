@@ -17,7 +17,8 @@ The system must prioritize visual quality, emotional storytelling, audience rete
 2. **Maximum final video rendering time**: The final video rendering phase (Manim rendering, Remotion multi-layer composition, and audio encoding) can take up to 30 minutes per video. Total video creation and development time is not constrained by this rendering limit.
 3. **Strict Language Division**:
    - **Narration ONLY in Hindi**: Spoken day-to-day conversational Hindi (बोलचाल की हिंदी / Hinglish) via VoiceStudio (`rajan story teller`).
-   - **Designed visuals in English ONLY**: All designed on-screen content (titles, bullets, labels, stats, compare tables, Manim diagrams, equations, images) must be strictly in English. Captions are a subtitle exception and display the approved Hindi narration verbatim in Devanagari; never transliterate or rewrite it.
+   - **Designed visuals in English ONLY**: All designed on-screen content (titles, bullets, labels, stats, compare tables, Manim diagrams, equations, images) must be strictly in English.
+   - **Single Dynamic Captions ONLY (No Whole-Text Duplicate Boxes)**: Videos must display ONLY ONE caption track: the dynamic word-by-word active highlighted caption (`Captions.tsx`). Static whole-text caption boxes or beat overlay cards (`VisualBeatOverlay`) are permanently forbidden across all scenes to prevent duplicate subtitles. Captions display approved Hindi narration verbatim in Devanagari in punchy 2-3 word active windows.
 4. **Bold & Large Equation Typography**:
    - Equation fonts and mathematical formulas must be **BIG, BOLD, and PROMINENT**.
    - Never use small equation fonts that require squinting on phone screens. Scale formulas to fill the safe screen width.
@@ -42,13 +43,21 @@ Before implementation, inspect the actual operating system, CPU architecture, in
 - Check VoiceStudio connectivity and the configured profile before relying on local TTS.
 - Select a rendering strategy appropriate for the detected environment. Do not download large models without evaluating their impact on the 30-minute rendering budget.
 
-### PHASE 2: OPEN-SOURCE TECHNOLOGY ECOSYSTEM
-- **Primary Animation Frameworks**:
-  - Motion Canvas / Remotion: Main animation timeline, technical diagrams, kinetic typography, transitions, narration-synchronized motion graphics.
+### PHASE 2: OPEN-SOURCE TECHNOLOGY ECOSYSTEM & SPECIALIZED SKILLS
+- **Primary Animation Frameworks & Remotion Skills**:
+  - Remotion Core (`remotion-best-practices`, `remotion-markup`, `remotion-interactivity`): Main animation timeline, technical diagrams, kinetic typography, transitions, narration-synchronized motion graphics.
   - Manim Community Edition: Mathematical equations, geometric transformations, graphs, scientific explanations, algorithm visualizations.
   - Three.js & Shaders (GLSL): 3D visualizations, loss surfaces, animated architectures, particle systems, procedural camera movements.
+  - Remotion Captions & Audio (`remotion-captions`, `remotion-multimedia`): Verbatim Devanagari word-by-word active captioning and dynamic speech ducking.
+  - Remotion Render & Studio (`remotion-render`, `remotion-studio`): Headless CLI multi-process rendering, GPU acceleration, and live preview studio.
   - GSAP & SVG Morphing: Advanced tweening, complex path morphs, kinetic timeline synchronization.
   - Physics Engines (Matter.js for 2D, Cannon-es for 3D): Procedural physics, collisions, gravity, and inertia to visually demonstrate physical principles.
+- **Visual Asset Authoring Skills**:
+  - `bs-chalkboard-infographic`: Hand-drawn chalkboard infographics formatted for 9:16 vertical shorts (powers `whiteboard` scene).
+  - `bs-claude-style-illustration` & `bs-hand-drawn-visual-notes`: Editorial technical visual metaphors and sketchnotes saved to `episodes/<id>/media/`.
+  - `bs-creatormotion-*` & `bs-hyperframes-*`: Kinetic title punches, step checklists, code diff scrolls, and realistic device canvas zooms.
+  - `bs-dot-avatar-maker` / `bs-grokbot-avatar` / `bs-monochrome-studio-portrait`: Speaker avatars for `interview` scenes.
+  - `bs-linktree-style-og` / `bs-notion-style-og`: High-CTR video cover thumbnails and social banners.
 - **Scientific Computation**: NumPy, SciPy, SymPy, Matplotlib, NetworkX.
 - **Graphics & Assets**: Lucide React icons, Pillow, OpenCV, SVG vector rendering, LaTeX for equations.
 - **Audio & Synchronization**: Local VoiceStudio TTS (`rajan story teller`), FFmpeg for mixing/encoding. Use narration as primary timing reference.
@@ -188,30 +197,7 @@ To ensure videos are produced exactly according to creator expectations, every J
    - `beats`: Optional timed visual beat array. The renderer displays the active action/state, while purpose-built scenes animate their actual objects and data to match that state.
 
 3. **Scene-Specific Deep Properties**:
-   - `three`: `title`, `variant` (`upi_hook_3d`, `upi_tunnel_3d`, `upi_city_3d`, `upi_phone_layers_3d`, `qr_inspection_3d`, `concentric_security_3d`, `server_rack_3d`, `bank_vault_3d`, `globe_network_3d`, `neural_network_3d`, `gradient_descent`), `equation` (LaTeX formula string), `metrics` (telemetry dictionary e.g. `{"Protocol": "ISO-20022", "Latency": "< 240ms"}`).
-   - `neural_network_graph`: `title`, `tag`, `mode` (`"forward"` | `"backward"`), `equation` (LaTeX formula string), `metrics` (telemetry dictionary e.g. `{"Weights": "128k", "Loss": "0.042"}`).
-   - `inspector`: `title`, `tag`, `sections: [{"name": "...", "desc": "...", "color": "..."}]`.
-   - `concentric`: `title`, `tag`, `rings: ["Hardware Keystore", "Common Library", "Bank HSM"]`.
-   - `manim`: `title`, `manim` with:
-     * `{"template": "Equations", "lines": ["\\theta_{t+1} = \\theta_t - \\alpha \\nabla L_i"]}` (double backslashes required in JSON)
-     * `{"template": "Graph", "fn": "x**2", "x_range": [-3, 3, 1], "y_range": [-2, 5, 1]}`
-     * `{"template": "Flow", "items": ["Input", "Hidden", "Loss", "Update"]}`
-   - `compare`: `title`, `left: {heading, items}`, `right: {heading, items}`.
-   - `benchmark`: `title`, `unit` (`"s"`, `"ms"`, `"GB"`), `runners: [{"name": "...", "value": 0.45, "status": "Winner", "color": "#00F0FF"}]`.
-   - `gauge`: `title`, `startValue`, `endValue`, `unit`, `status`, `badge`.
-   - `stat`: `value` (bold metric card, max 8 chars), `label`, `icon`.
-   - `code`: `title`, `language`, `filename`, `lines` (array of code strings), `highlight` (line index or array).
-   - `architecture`: `title`, `nodes` (list of services/modules), `tag`, `direction`, `activeNode`.
-   - `callout`: `category` (`"Golden Rule"`, `"Pro Tip"`, `"Warning"`), `title`, `text`, `subtext`.
-   - `bento`: `title`, `bentoItems: [{"title": "...", "value": "...", "span": 2, "badge": "..."}]`.
-   - `hierarchy`: `title`, `layers: [{"name": "...", "spec": "...", "active": true}]`.
-   - `timeline`: `title`, `steps`, `activeStep`.
-   - `data_structure`: `title`, `structure` (`"queue"`, `"stack"`, `"buffer"`), `operations`.
-   - `quadrant`: `title`, `xAxis`, `yAxis`, `points: [{"name": "...", "x": 8, "y": 9}]`.
-   - `outro`: `text` (CTA statement), `icon` (`"sparkles"`, `"thumbs-up"`).
-   - `terminal`: `title`, `tag`, `prompt`, `terminalSteps: [{"kind": "cmd" | "out" | "pause" | "pill", "text": "...", "typeSpeed": 0.035}]`.
-   - `screenshot`: `title`, `tag`, `image`, `screenshotSteps: [{"kind": "cursor_move" | "click_pulse" | "type_into" | "bubble_append" | "highlight_box", "to": [0.5, 0.4]}]`.
-   - `chart`: `title`, `tag`, `chartType: "bar" | "line" | "kpi"`, `chartData: [{"label": "...", "value": 94.2}]`, `unit`.
+   - For complete scene schemas, types (`three`, `manim`, `neural_network_graph`, `benchmark`, `terminal`, `screenshot`, etc.), and visual fitness guidance, refer directly to the canonical definitions in [prompts/storyboard.md](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/prompts/storyboard.md) Section 3 and formal JSON validation schemas in [schema/storyboard.schema.json](file:///Users/rajankumarsoni/Desktop/projects/edu-shorts/schema/storyboard.schema.json).
 
 4. **Gold Standard Reference**:
    - `videos/how-upi-works.json` is a technical architecture reference, not a required 3D style. Match its causal detail while choosing the clearest medium and restraint for each topic.
@@ -243,11 +229,13 @@ To ensure videos are produced exactly according to creator expectations, every J
 1. Inspect environment.
 2. Choose animation architecture.
 3. Generate storyboard & narration.
-4. Render scenes & Manim clips.
-5. Assemble final video via FFmpeg/Remotion.
-6. QA inspection & verification: Store all QA stills, scene captures, and high-CTR thumbnails into `episodes/<topic-id>/media/`.
-7. Deliver final playable MP4.
-8. Publishing is opt-in: use `--upload private|unlisted|public` only when the user explicitly requests upload; otherwise use `--no-upload`.
+4. Asset-First Pre-Fetch & Resolution: Identify, download, and verify all authentic 3D CAD models (`.glb`), 2D transparent PNG cutouts, and vector icons into `episodes/<topic-id>/media/` BEFORE any 2D/3D animation code or video rendering begins (`tools/asset_finder.py resolve`).
+5. Synthesize narration audio (`tts.py`).
+6. Render scenes, Manim clips, and Remotion composition.
+7. Assemble final video via FFmpeg/Remotion.
+8. QA inspection & verification: Store all QA stills, scene captures, and high-CTR thumbnails into `episodes/<topic-id>/media/`.
+9. Deliver final playable MP4.
+10. Publishing is opt-in: use `--upload private|unlisted|public` only when the user explicitly requests upload; otherwise use `--no-upload`.
 
 ### PHASE 12: DELIVERABLES
 Deliver:
@@ -267,6 +255,16 @@ Whenever a human review requests a change, reports an aesthetic issue, or identi
    - If the issue is mechanically detectable (e.g. consecutive twin scenes, diagram exceeding 960px height) ➔ Add an assertion to `validate.py` or `tools/qa_suite.py`.
    - If a custom interactive component was engineered (e.g. `AmazonShoppingHook`, `SortingVisualizer`) ➔ Generalize it into a reusable component under `src/scenes/`.
 3. **Execution Contract**: When executing user feedback, the agent must explicitly summarize which pipeline layers were updated to ensure the mistake cannot recur.
+
+### PHASE 13B: AUTOMATIC POST-UPLOAD LEARNING CYCLE (/learn)
+Whenever an episode completes distribution across all target platforms (tracked via `episodes/.uploaded_manifest.json`):
+1. **Trigger `/learn` Automatically**: The system executes `python3 tools/post_upload_learn.py` (via background daemon schedule or direct upload hook).
+2. **Classify Learnings**:
+   - Pedagogical/Retention patterns (hooks, watch-time, pacing) ➔ Update `prompts/script.md`.
+   - Visual/Layout rules (safe-zone tolerances, contrast, typography) ➔ Update `video_generation_charter.md`.
+   - Reusable tool chains or animation modules ➔ Create or update corresponding `.agents/skills/`.
+3. **Persist Findings**: Record lessons in `episodes/<id>/learnings.md` and append an operational entry to `.agents/BOARD.md`.
+4. **Idempotency Guard**: Deduplication is enforced via `episodes/.learned_manifest.json` so learning runs exactly once per completed episode.
 
 ### PHASE 14: PUBLISHING BRAND POLICY & BROWSER GOVERNANCE
 - **Strict Brand Channel Only ("Rajan का ADDA")**: All videos across EVERY platform (YouTube, Telegram, Instagram, Facebook, Twitter/𝕏, LinkedIn, Threads) MUST ONLY be published to the official brand account: **"Rajan का ADDA"** (`rajan_ka_adda` / `rajan.ka.adda` / `Rajan का ADDA`). Never upload or publish to any personal account or secondary handle. Every tool must verify the destination account identity before uploading and abort immediately if the active session is not "Rajan का ADDA".
